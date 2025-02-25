@@ -4,8 +4,8 @@ const nextConfig = {
     return [
       {
         source: '/api/v1/:path*',
-        destination: `${process.env.NEXT_PUBLIC_API_URL}/api/v1/:path*`,
-      },
+        destination: `${process.env.NEXT_PUBLIC_API_URL}/api/v1/:path*`
+      }
     ];
   },
   images: {
@@ -14,10 +14,14 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'hebbkx1anhila5yf.public.blob.vercel-storage.com',
         port: '',
-        pathname: '/**',
+        pathname: '/**'
       },
-    ],
-  },
+      {
+        protocol: 'https',
+        hostname: 'loremflickr.com'
+      }
+    ]
+  }
 };
 
-module.exports = nextConfig; 
+module.exports = nextConfig;
