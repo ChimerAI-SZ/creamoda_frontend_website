@@ -1,20 +1,17 @@
-"use client";
-import { Inter } from "next/font/google";
-import { useState } from "react";
-import Logo from "./logo";
-import Avatar from "./avatar";
+'use client';
+import { Inter } from 'next/font/google';
+import { useState } from 'react';
+import Logo from './components/Logo';
+import Avatar from './components/Avatar';
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ['latin'] });
 
 function Popup({ message, onClose }: { message: string; onClose: () => void }) {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white p-4 rounded-lg shadow-lg">
         <p>{message}</p>
-        <button
-          onClick={onClose}
-          className="mt-4 px-4 py-2 bg-[#FF7B0D] text-white rounded hover:bg-[#FF7B0D]/80"
-        >
+        <button onClick={onClose} className="mt-4 px-4 py-2 bg-[#FF7B0D] text-white rounded hover:bg-[#FF7B0D]/80">
           Close
         </button>
       </div>
@@ -34,19 +31,11 @@ export function Header() {
       <div className="flex h-full items-center justify-between px-6">
         <Logo />
         <nav className="flex items-center gap-6">
-          <span className="text-[#FF7B0D] font-semibold text-sm text-center cursor-default">
-            Design
-          </span>
-          <span
-            className="text-[#999999] font-semibold text-sm text-center cursor-pointer hover:text-[#FF7B0D]"
-            onClick={() => handleTagClick("Production")}
-          >
+          <span className="text-[#FF7B0D] font-semibold text-sm text-center cursor-default">Design</span>
+          <span className="text-[#999999] font-semibold text-sm text-center cursor-pointer hover:text-[#FF7B0D]" onClick={() => handleTagClick('Production')}>
             Production
           </span>
-          <span
-            className="text-[#999999] font-semibold text-sm text-center cursor-pointer hover:text-[#FF7B0D]"
-            onClick={() => handleTagClick("Online shop")}
-          >
+          <span className="text-[#999999] font-semibold text-sm text-center cursor-pointer hover:text-[#FF7B0D]" onClick={() => handleTagClick('Online shop')}>
             Online shop
           </span>
         </nav>

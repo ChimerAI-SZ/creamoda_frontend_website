@@ -4,8 +4,8 @@
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "cSpell.words": ["Aliyun", "chakra", "CREAMODA", "lucide", "splinetool", "swiper"],
 
-  "prettier.semi": false,
-  "prettier.singleQuote": false,
+  "prettier.semi": true,
+  "prettier.singleQuote": true,
   "prettier.printWidth": 120,
   "prettier.tabWidth": 2,
   "prettier.useTabs": false,

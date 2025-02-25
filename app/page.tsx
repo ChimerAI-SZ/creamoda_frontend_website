@@ -1,7 +1,7 @@
-import { Header } from "@/app/app-components/header";
-import { Sidebar } from "@/app/app-components/sidebar";
-import { MenuBar } from "@/app/app-components/menu-bar";
-import { ImageGrid } from "@/app/app-components/image-grid";
+import { Header } from '@/components/Header';
+import { Sidebar } from '@/app/app-components/sidebar';
+import { MenuBar } from '@/app/app-components/menu-bar';
+import { ImageGrid } from '@/app/app-components/image-grid';
 
 export default function Page() {
   return (

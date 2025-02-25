@@ -1,11 +1,11 @@
-"use client"
+'use client';
 
-import Image from "next/image"
-import { useState } from "react"
-import { User, Settings, LogOut } from "lucide-react"
+import Image from 'next/image';
+import { useState } from 'react';
+import { User, Settings, LogOut } from 'lucide-react';
 
 export default function Avatar() {
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <div className="relative">
@@ -37,6 +37,5 @@ export default function Avatar() {
         </div>
       )}
     </div>
-  )
+  );
 }
-
