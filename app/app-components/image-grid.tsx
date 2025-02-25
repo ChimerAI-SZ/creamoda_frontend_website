@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { mockAPI } from '@/lib/axios';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
@@ -12,17 +12,71 @@ export function ImageGrid() {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(50);
   const [total, setTotal] = useState(1000);
+  // 加载状态
+  const [loading, setLoading] = useState(false);
+  // 是否还有更多数据
+  const [hasMore, setHasMore] = useState(true);
+  // 容器引用
+  const containerRef = useRef<HTMLDivElement>(null);
+  // 观察器引用
+  const observer = useRef<IntersectionObserver | null>(null);
+  // 最后一个元素引用
+  const lastImageElementRef = useCallback(
+    (node: HTMLDivElement) => {
+      if (loading) return;
+      if (observer.current) observer.current.disconnect();
 
-  useEffect(() => {
-    const fetchImages = async () => {
-      const URL = `/m2/5875613-5562180-default/261961292?page=${page}&pageSize=${pageSize}`;
+      observer.current = new IntersectionObserver(
+        entries => {
+          if (entries[0].isIntersecting && hasMore) {
+            loadMoreImages();
+          }
+        },
+        {
+          rootMargin: '300px' // 提前触发加载的距离
+        }
+      );
+
+      if (node) observer.current.observe(node);
+    },
+    [loading, hasMore]
+  );
+
+  // 加载图片数据
+  const fetchImages = async (currentPage: number) => {
+    setLoading(true);
+    try {
+      const URL = `/m2/5875613-5562180-default/261961292?page=${currentPage}&pageSize=${pageSize}`;
       const { data } = await mockAPI.get(URL);
 
       if (data.code === 0) {
-        setImages(data.data.list);
+        if (currentPage === 1) {
+          setImages(data.data.list);
+        } else {
+          setImages(prev => [...prev, ...data.data.list]);
+        }
+
+        setTotal(data.data.total || 1000);
+        setHasMore(currentPage * pageSize < (data.data.total || 1000));
       }
-    };
-    fetchImages();
+    } catch (error) {
+      console.error('加载图片失败:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 加载更多图片
+  const loadMoreImages = () => {
+    if (loading || !hasMore) return;
+    const nextPage = page + 1;
+    setPage(nextPage);
+    fetchImages(nextPage);
+  };
+
+  // 初始加载
+  useEffect(() => {
+    fetchImages(1);
   }, []);
 
   return (
@@ -38,6 +92,7 @@ export function ImageGrid() {
     // [3440px, 3840px): 8栏布局 (min-[3440px]:grid-cols-8)
     // >= 3840px: 9栏布局 (min-[3840px]:grid-cols-9)
     <div
+      ref={containerRef}
       className="grid gap-4 pr-[26px] relative z-0
     grid-cols-1
     sm:grid-cols-2 
@@ -51,12 +106,17 @@ export function ImageGrid() {
     min-[3840px]:grid-cols-9"
     >
       {images.map((src, index) => (
-        <div key={index} className="aspect-[3/4] relative overflow-hidden rounded-lg group">
+        <div
+          key={index}
+          ref={index === images.length - Math.min(9, images.length / 3) ? lastImageElementRef : undefined}
+          className="aspect-[3/4] relative overflow-hidden rounded-lg group"
+        >
           <Image
             src={src.resultPic || '/placeholder.svg'}
             alt={`Fashion image ${index + 1}`}
             fill
             className="object-cover"
+            loading="lazy"
           />
           {/* 添加渐变遮罩层和按钮 */}
           <div
@@ -72,6 +132,16 @@ export function ImageGrid() {
           </div>
         </div>
       ))}
+
+      {loading && (
+        <div className="col-span-full flex justify-center py-4">
+          <div className="animate-spin h-6 w-6 border-2 border-gray-500 border-t-transparent rounded-full"></div>
+        </div>
+      )}
+
+      {!hasMore && images.length > 0 && (
+        <div className="col-span-full text-center py-4 text-gray-500">没有更多图片了</div>
+      )}
     </div>
   );
 }
