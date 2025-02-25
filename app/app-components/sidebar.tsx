@@ -1,4 +1,5 @@
 "use client";
+
 import type React from "react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -41,7 +42,7 @@ export function Sidebar() {
 
   return (
     <div
-      className={`w-[320px] h-[calc(100vh-64px)] flex-shrink-0 bg-white border-r border-gray-200 flex flex-col ${inter.className}`}
+      className={`w-[320px] h-[calc(100vh-64px)] flex-shrink-0 bg-white border-r border-gray-200 flex flex-col z-10 ${inter.className}`}
     >
       <div className="flex justify-center items-center w-full px-3 border-b border-[#DCDCDC]">
         <ToggleTag

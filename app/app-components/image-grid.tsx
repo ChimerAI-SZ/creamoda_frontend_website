@@ -9,7 +9,7 @@ export function ImageGrid() {
   ]
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 relative z-0">
       {images.map((src, index) => (
         <div key={index} className="aspect-[3/4] relative overflow-hidden rounded-lg">
           <Image src={src || "/placeholder.svg"} alt={`Fashion image ${index + 1}`} fill className="object-cover" />

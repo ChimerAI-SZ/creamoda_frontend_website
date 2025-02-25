@@ -1,7 +1,7 @@
-import { Header } from "@/components/app-components/header";
-import { Sidebar } from "@/components/app-components/sidebar";
-import { MenuBar } from "@/components/app-components/menu-bar";
-import { ImageGrid } from "@/components/app-components/image-grid";
+import { Header } from "@/app/app-components/header";
+import { Sidebar } from "@/app/app-components/sidebar";
+import { MenuBar } from "@/app/app-components/menu-bar";
+import { ImageGrid } from "@/app/app-components/image-grid";
 
 export default function Page() {
   return (
@@ -10,7 +10,7 @@ export default function Page() {
       <div className="flex">
         <MenuBar />
         <Sidebar />
-        <main className="flex-1 p-6">
+        <main className="flex-1 p-6 z-0">
           <ImageGrid />
         </main>
       </div>
