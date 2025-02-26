@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { GenerateButton } from '@/components/previous-version-ui/generate-button';
+import { GenerateButton } from '@/app/app-components/GenerateButton';
 
 interface ImageUploadFormProps {
   onSubmit?: (data: ImageUploadFormData) => void;

@@ -1,22 +1,22 @@
-"use client"
+'use client';
 
-import { X } from "lucide-react"
-import Image from "next/image"
-import { Button } from "./button"
-import { Input } from "./input"
+import { X } from 'lucide-react';
+import Image from 'next/image';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 interface LoginModalProps {
-  isOpen: boolean
-  onClose: () => void
+  isOpen: boolean;
+  onClose: () => void;
 }
 
 export function LoginModal({ isOpen, onClose }: LoginModalProps) {
-  if (!isOpen) return null
+  if (!isOpen) return null;
 
   return (
     <div
       className="fixed inset-0 bg-black/50 flex items-center justify-center z-[99999]"
-      style={{ isolation: "isolate" }}
+      style={{ isolation: 'isolate' }}
     >
       <div className="bg-white rounded-xl p-8 w-full max-w-md relative z-[100000]">
         <button onClick={onClose} className="absolute right-4 top-4 text-gray-500 hover:text-gray-700">
@@ -66,7 +66,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
             </Button>
 
             <p className="text-center text-sm text-gray-500">
-              No account?{" "}
+              No account?{' '}
               <a href="#" className="underline font-medium text-gray-900">
                 Sign Up here
               </a>
@@ -75,6 +75,5 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }
-

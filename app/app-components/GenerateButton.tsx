@@ -1,24 +1,24 @@
-"use client"
+'use client';
 
-import { useState } from "react"
-import { LoginModal } from "./login-modal"
+import { useState } from 'react';
+import { LoginModal } from './LoginModal';
 
 interface GenerateButtonProps {
-  onClick: () => void
-  disabled: boolean
-  isLoggedIn?: boolean
+  onClick: () => void;
+  disabled: boolean;
+  isLoggedIn?: boolean;
 }
 
 export function GenerateButton({ onClick, disabled, isLoggedIn = false }: GenerateButtonProps) {
-  const [showLoginModal, setShowLoginModal] = useState(false)
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   const handleClick = () => {
     if (isLoggedIn) {
-      onClick()
+      onClick();
     } else {
-      setShowLoginModal(true)
+      setShowLoginModal(true);
     }
-  }
+  };
 
   return (
     <>
@@ -44,6 +44,5 @@ export function GenerateButton({ onClick, disabled, isLoggedIn = false }: Genera
 
       <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
     </>
-  )
+  );
 }
-
