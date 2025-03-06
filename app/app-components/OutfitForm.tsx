@@ -1,17 +1,11 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { GenerateButton } from "@/components/previous-version-ui/generate-button";
+import * as React from 'react';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { GenerateButton } from '@/app/app-components/GenerateButton';
 
 interface OutfitFormProps {
   onSubmit?: (data: OutfitFormData) => void;
@@ -19,7 +13,7 @@ interface OutfitFormProps {
 
 interface OutfitFormData {
   description: string;
-  gender: "female" | "male";
+  gender: 'female' | 'male';
   age: string;
   country: string;
   type: string;
@@ -27,11 +21,11 @@ interface OutfitFormData {
 
 export function OutfitForm({ onSubmit }: OutfitFormProps) {
   const [formData, setFormData] = React.useState<OutfitFormData>({
-    description: "",
-    gender: "female",
-    age: "25",
-    country: "Vatican",
-    type: "mid-size",
+    description: '',
+    gender: 'female',
+    age: '25',
+    country: 'Vatican',
+    type: 'mid-size'
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -41,10 +35,7 @@ export function OutfitForm({ onSubmit }: OutfitFormProps) {
 
   return (
     <div className="relative h-full flex flex-col">
-      <form
-        onSubmit={handleSubmit}
-        className="flex-1 overflow-y-auto space-y-6"
-      >
+      <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto space-y-6">
         <div className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="description" className="text-base font-semibold">
@@ -55,9 +46,7 @@ export function OutfitForm({ onSubmit }: OutfitFormProps) {
               placeholder="You can describe the clothing type, fit, color, print, etc."
               className="min-h-[200px] resize-none"
               value={formData.description}
-              onChange={(e) =>
-                setFormData({ ...formData, description: e.target.value })
-              }
+              onChange={e => setFormData({ ...formData, description: e.target.value })}
             />
           </div>
 
@@ -69,10 +58,10 @@ export function OutfitForm({ onSubmit }: OutfitFormProps) {
                 <Label>Gender</Label>
                 <RadioGroup
                   defaultValue="female"
-                  onValueChange={(value) =>
+                  onValueChange={value =>
                     setFormData({
                       ...formData,
-                      gender: value as "female" | "male",
+                      gender: value as 'female' | 'male'
                     })
                   }
                   className="flex gap-4"
@@ -90,17 +79,12 @@ export function OutfitForm({ onSubmit }: OutfitFormProps) {
 
               <div className="space-y-2">
                 <Label htmlFor="age">Age</Label>
-                <Select
-                  value={formData.age}
-                  onValueChange={(value) =>
-                    setFormData({ ...formData, age: value })
-                  }
-                >
+                <Select value={formData.age} onValueChange={value => setFormData({ ...formData, age: value })}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select age" />
                   </SelectTrigger>
                   <SelectContent>
-                    {Array.from({ length: 83 }, (_, i) => i + 18).map((age) => (
+                    {Array.from({ length: 83 }, (_, i) => i + 18).map(age => (
                       <SelectItem key={age} value={age.toString()}>
                         {age}
                       </SelectItem>
@@ -111,40 +95,28 @@ export function OutfitForm({ onSubmit }: OutfitFormProps) {
 
               <div className="space-y-2">
                 <Label htmlFor="country">Country</Label>
-                <Select
-                  value={formData.country}
-                  onValueChange={(value) =>
-                    setFormData({ ...formData, country: value })
-                  }
-                >
+                <Select value={formData.country} onValueChange={value => setFormData({ ...formData, country: value })}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select country" />
                   </SelectTrigger>
                   <SelectContent>
-                    {["Vatican", "Italy", "France", "Spain", "Germany"].map(
-                      (country) => (
-                        <SelectItem key={country} value={country}>
-                          {country}
-                        </SelectItem>
-                      )
-                    )}
+                    {['Vatican', 'Italy', 'France', 'Spain', 'Germany'].map(country => (
+                      <SelectItem key={country} value={country}>
+                        {country}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="type">Type</Label>
-                <Select
-                  value={formData.type}
-                  onValueChange={(value) =>
-                    setFormData({ ...formData, type: value })
-                  }
-                >
+                <Select value={formData.type} onValueChange={value => setFormData({ ...formData, type: value })}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select type" />
                   </SelectTrigger>
                   <SelectContent>
-                    {["petite", "mid-size", "plus-size"].map((type) => (
+                    {['petite', 'mid-size', 'plus-size'].map(type => (
                       <SelectItem key={type} value={type}>
                         {type}
                       </SelectItem>
@@ -157,10 +129,7 @@ export function OutfitForm({ onSubmit }: OutfitFormProps) {
         </div>
       </form>
       <div className="sticky bottom-0 left-0 right-0 px-6 pb-4 bg-white">
-        <GenerateButton
-          onClick={handleSubmit}
-          disabled={!formData.description.trim()}
-        />
+        <GenerateButton onClick={handleSubmit} disabled={!formData.description.trim()} />
       </div>
     </div>
   );
