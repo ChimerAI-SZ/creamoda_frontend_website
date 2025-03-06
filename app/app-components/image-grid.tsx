@@ -20,6 +20,42 @@ export function ImageGrid() {
   const containerRef = useRef<HTMLDivElement>(null);
   // 观察器引用
   const observer = useRef<IntersectionObserver | null>(null);
+
+  // 加载图片数据
+  const fetchImages = useCallback(
+    async (currentPage: number) => {
+      setLoading(true);
+      try {
+        const URL = `/m2/5875613-5562180-default/261961292?page=${currentPage}&pageSize=${pageSize}`;
+        const { data } = await mockAPI.get(URL);
+
+        if (data.code === 0) {
+          if (currentPage === 1) {
+            setImages(data.data.list);
+          } else {
+            setImages(prev => [...prev, ...data.data.list]);
+          }
+
+          setTotal(data.data.total || 1000);
+          setHasMore(currentPage * pageSize < (data.data.total || 1000));
+        }
+      } catch (error) {
+        console.error('加载图片失败:', error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [pageSize]
+  );
+
+  // 加载更多图片
+  const loadMoreImages = useCallback(() => {
+    if (loading || !hasMore) return;
+    const nextPage = page + 1;
+    setPage(nextPage);
+    fetchImages(nextPage);
+  }, [loading, hasMore, page, fetchImages]);
+
   // 最后一个元素引用
   const lastImageElementRef = useCallback(
     (node: HTMLDivElement) => {
@@ -39,45 +75,13 @@ export function ImageGrid() {
 
       if (node) observer.current.observe(node);
     },
-    [loading, hasMore]
+    [loading, hasMore, loadMoreImages]
   );
-
-  // 加载图片数据
-  const fetchImages = async (currentPage: number) => {
-    setLoading(true);
-    try {
-      const URL = `/m2/5875613-5562180-default/261961292?page=${currentPage}&pageSize=${pageSize}`;
-      const { data } = await mockAPI.get(URL);
-
-      if (data.code === 0) {
-        if (currentPage === 1) {
-          setImages(data.data.list);
-        } else {
-          setImages(prev => [...prev, ...data.data.list]);
-        }
-
-        setTotal(data.data.total || 1000);
-        setHasMore(currentPage * pageSize < (data.data.total || 1000));
-      }
-    } catch (error) {
-      console.error('加载图片失败:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // 加载更多图片
-  const loadMoreImages = () => {
-    if (loading || !hasMore) return;
-    const nextPage = page + 1;
-    setPage(nextPage);
-    fetchImages(nextPage);
-  };
 
   // 初始加载
   useEffect(() => {
     fetchImages(1);
-  }, []);
+  }, [fetchImages]);
 
   return (
     // 响应式布局规则:
@@ -93,7 +97,7 @@ export function ImageGrid() {
     // >= 3840px: 9栏布局 (min-[3840px]:grid-cols-9)
     <div
       ref={containerRef}
-      className="grid gap-4 pr-[26px] relative z-0
+      className="grid gap-4 relative z-0
     grid-cols-1
     sm:grid-cols-2 
     min-[800px]:grid-cols-2 

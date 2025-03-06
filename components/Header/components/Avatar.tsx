@@ -11,8 +11,7 @@ export default function Avatar() {
     <div className="relative">
       <div
         className="w-8 h-8 rounded-full overflow-hidden focus:outline-none focus:ring-2 focus:ring-[#FF7B0D] focus:ring-offset-2 cursor-pointer"
-        onMouseEnter={() => setIsOpen(true)}
-        onMouseLeave={() => setIsOpen(false)}
+        onClick={() => setIsOpen(!isOpen)}
       >
         <Image src="/placeholder.svg?height=32&width=32" alt="User Avatar" width={32} height={32} />
       </div>
