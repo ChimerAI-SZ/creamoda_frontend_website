@@ -21,6 +21,11 @@ const nextConfig = {
         hostname: 'loremflickr.com'
       }
     ]
+  },
+  experimental: {
+    outputFileTracingExcludes: {
+      '*': ['**/*']
+    }
   }
 };
 
