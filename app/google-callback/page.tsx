@@ -2,7 +2,11 @@
 
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import axios from 'axios';
+
+// 添加 dynamic 导入以禁用预渲染
+export const dynamic = 'force-dynamic';
+// 添加 runtime 指定为仅客户端
+export const runtime = 'edge';
 
 export default function GoogleCallback() {
   const searchParams = useSearchParams();
@@ -12,7 +16,7 @@ export default function GoogleCallback() {
     const code = searchParams.get('code');
     const error = searchParams.get('error');
 
-    if (!window.opener) {
+    if (typeof window === 'undefined' || !window.opener) {
       setStatus('Error: Unable to communicate with the main window. Please close this window and try again.');
       return;
     }
