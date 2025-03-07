@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { GenerateButton } from '@/app/app-components/GenerateButton';
+import { GenerateButton } from '@/components/GenerateButton/GenerateButton';
 
 interface ImageUploadFormProps {
   onSubmit?: (data: ImageUploadFormData) => void;
@@ -58,14 +58,18 @@ export function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = () => {
+    onSubmit?.(formData);
+  };
+
+  const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit?.(formData);
   };
 
   return (
     <div className="flex flex-col h-full">
-      <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto space-y-6 pb-20">
+      <form onSubmit={handleFormSubmit} className="flex-1 overflow-y-auto space-y-6 pb-20">
         <div className="space-y-2">
           <Label htmlFor="image-upload" className="text-base font-semibold">
             Upload image
@@ -143,7 +147,7 @@ export function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
       <div className="sticky bottom-0 left-0 right-0 px-6 pb-4 bg-white">
         <GenerateButton
           onClick={handleSubmit}
-          disabled={!formData.description.trim() || (!formData.image && !formData.imageUrl)}
+          state={!formData.description.trim() || (!formData.image && !formData.imageUrl) ? 'disabled' : 'ready'}
         />
       </div>
     </div>

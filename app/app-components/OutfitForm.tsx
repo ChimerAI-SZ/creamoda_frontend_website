@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { GenerateButton } from '@/app/app-components/GenerateButton';
+import { GenerateButton } from '@/components/GenerateButton/GenerateButton';
 
 interface OutfitFormProps {
   onSubmit?: (data: OutfitFormData) => void;
@@ -28,14 +28,18 @@ export function OutfitForm({ onSubmit }: OutfitFormProps) {
     type: 'mid-size'
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = () => {
+    onSubmit?.(formData);
+  };
+
+  const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit?.(formData);
   };
 
   return (
     <div className="relative h-full flex flex-col">
-      <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto space-y-6">
+      <form onSubmit={handleFormSubmit} className="flex-1 overflow-y-auto space-y-6">
         <div className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="description" className="text-base font-semibold">
@@ -129,7 +133,7 @@ export function OutfitForm({ onSubmit }: OutfitFormProps) {
         </div>
       </form>
       <div className="sticky bottom-0 left-0 right-0 px-6 pb-4 bg-white">
-        <GenerateButton onClick={handleSubmit} disabled={!formData.description.trim()} />
+        <GenerateButton onClick={handleSubmit} state={'ready'} />
       </div>
     </div>
   );
