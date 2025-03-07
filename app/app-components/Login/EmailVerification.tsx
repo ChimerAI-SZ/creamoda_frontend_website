@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import google from '@/images/login/google.svg';
+import { GoogleLoginButton } from './GoogleLoginButton';
 
 interface EmailVerificationProps {
   email?: string;
@@ -10,6 +9,7 @@ interface EmailVerificationProps {
 
 export const EmailVerification = ({ email, onBackToLogin }: EmailVerificationProps) => {
   const [isResending, setIsResending] = useState(false);
+  const [googleLoginError, setGoogleLoginError] = useState('');
 
   const handleResendEmail = async () => {
     setIsResending(true);
@@ -17,6 +17,11 @@ export const EmailVerification = ({ email, onBackToLogin }: EmailVerificationPro
     setTimeout(() => {
       setIsResending(false);
     }, 2000);
+  };
+
+  const handleGoogleLoginSuccess = () => {
+    // 登录成功后可能需要关闭模态框或重定向
+    window.location.reload(); // 简单示例：刷新页面
   };
 
   return (
@@ -37,10 +42,13 @@ export const EmailVerification = ({ email, onBackToLogin }: EmailVerificationPro
         <h2 className="text-xl font-semibold text-center text-[#121316] font-inter">Check your email</h2>
       </div>
 
-      <button className="h-[52px] w-full py-[10px] px-4 flex items-center justify-center gap-[6px] rounded-[4px] border border-[rgba(249,121,23,0.3)] bg-white hover:bg-gray-50 transition-colors">
-        <Image src={google.src} alt="Google Logo" width={20} height={20} className="cursor-pointer" />
-        <span className="text-sm font-medium text-[#121316] font-inter">Continue with Google</span>
-      </button>
+      {googleLoginError && (
+        <div className="p-3 bg-red-50 border border-red-200 rounded-md">
+          <p className="text-[#E50000] text-sm font-inter">{googleLoginError}</p>
+        </div>
+      )}
+
+      <GoogleLoginButton onSuccess={handleGoogleLoginSuccess} onError={error => setGoogleLoginError(error)} />
 
       <div className="relative">
         <div className="absolute inset-0 flex items-center">

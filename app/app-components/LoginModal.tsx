@@ -3,10 +3,10 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import x from '@/images/login/x.svg';
-import google from '@/images/login/google.svg';
 import { LoginForm } from './Login/LoginForm';
 import { SignUpForm } from './Login/SignUpForm';
 import { EmailVerification } from './Login/EmailVerification';
+import { GoogleLoginButton } from './Login/GoogleLoginButton';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -19,16 +19,30 @@ type ModalView = 'login' | 'signup' | 'email-verification';
 export function LoginModal({ isOpen, onClose }: LoginModalProps) {
   const [currentView, setCurrentView] = useState<ModalView>('login');
   const [verificationEmail, setVerificationEmail] = useState('');
+  const [googleLoginError, setGoogleLoginError] = useState('');
 
   if (!isOpen) return null;
 
   const handleToggleView = (view: ModalView) => {
     setCurrentView(view);
+    // 清除之前的错误
+    setGoogleLoginError('');
   };
 
   const handleSignupSuccess = (email: string) => {
     setVerificationEmail(email);
     setCurrentView('email-verification');
+  };
+
+  const handleGoogleLoginSuccess = () => {
+    // 登录成功后关闭模态框
+    onClose();
+    // 可选：重定向到首页或仪表板
+    // window.location.href = '/dashboard';
+  };
+
+  const handleGoogleLoginError = (error: string) => {
+    setGoogleLoginError(error);
   };
 
   // 根据当前视图状态确定标题
@@ -67,10 +81,13 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
           <EmailVerification email={verificationEmail} onBackToLogin={() => handleToggleView('login')} />
         ) : (
           <div className="space-y-6 w-full">
-            <button className="h-[52px] w-full py-[10px] px-4 flex items-center justify-center gap-[6px] rounded-[4px] border border-[rgba(249,121,23,0.3)] bg-white hover:bg-gray-50 transition-colors">
-              <Image src={google.src} alt="Google Logo" width={20} height={20} className="cursor-pointer" />
-              <span className="text-sm font-medium text-[#121316] font-inter">Continue with Google</span>
-            </button>
+            {googleLoginError && (
+              <div className="p-3 bg-red-50 border border-red-200 rounded-md">
+                <p className="text-[#E50000] text-sm font-inter">{googleLoginError}</p>
+              </div>
+            )}
+
+            <GoogleLoginButton onSuccess={handleGoogleLoginSuccess} onError={handleGoogleLoginError} />
 
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
