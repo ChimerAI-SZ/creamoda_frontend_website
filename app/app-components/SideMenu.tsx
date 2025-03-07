@@ -17,6 +17,7 @@ interface ToggleTagProps {
 }
 
 function ToggleTag({ icon, label, isActive, onClick }: ToggleTagProps) {
+  console.log(isActive);
   return (
     <button
       onClick={onClick}
