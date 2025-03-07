@@ -1,6 +1,14 @@
 import React, { ReactNode } from 'react';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTrigger } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTrigger
+} from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 interface NavDialogProps {
   trigger: ReactNode;
@@ -19,12 +27,19 @@ const NavDialog: React.FC<NavDialogProps> = ({ trigger }) => {
               something amazing! 🎉
             </div>
             <div className="flex justify-center mt-[16px]">
-              <Button
-                variant="outline"
-                className="flex w-[142px] h-[40px] px-0 py-[10px] justify-center items-center rounded-1"
+              <DialogClose
+                className={cn(
+                  'rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground',
+                  'focus-visible:outline-none focus-visible:ring-0'
+                )}
               >
-                <span className="text-[#F97917] font-inter text-sm font-medium leading-5">OK</span>
-              </Button>
+                <Button
+                  variant="outline"
+                  className="flex w-[142px] h-[40px] px-0 py-[10px] justify-center items-center rounded-1"
+                >
+                  <span className="text-[#F97917] font-inter text-sm font-medium leading-5">OK</span>
+                </Button>
+              </DialogClose>
             </div>
           </DialogDescription>
         </DialogHeader>

@@ -4,7 +4,7 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 import { mockAPI } from '@/lib/axios';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-
+import GetIntTouchDialog from '@/components/GetIntTouchDialog';
 export function ImageGrid() {
   // 图片列表
   const [images, setImages] = useState<any[]>([]);
@@ -129,10 +129,13 @@ export function ImageGrid() {
               background: 'linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.5) 100%)'
             }}
           >
-            {/* todo 3d making 按钮 点击事件 */}
-            <Button size="sm" className="w-[calc(100%-32px)] absolute bottom-8 w-fit">
-              3D making
-            </Button>
+            <GetIntTouchDialog
+              trigger={
+                <Button size="sm" className="w-[104px] h-[28px] absolute bottom-8">
+                  3D making
+                </Button>
+              }
+            />
           </div>
         </div>
       ))}
