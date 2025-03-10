@@ -19,6 +19,14 @@ interface OutfitFormData {
   type: string;
 }
 
+const StyledLabel = ({ content, htmlFor }: { content: string; htmlFor?: string }) => {
+  return (
+    <Label htmlFor={htmlFor} className="text-[#1A1A1A] font-inter text-[14px] font-medium leading-[20px] py-[6px]">
+      {content}
+    </Label>
+  );
+};
+
 export function OutfitForm({ onSubmit }: OutfitFormProps) {
   const [formData, setFormData] = React.useState<OutfitFormData>({
     description: '',
@@ -42,25 +50,26 @@ export function OutfitForm({ onSubmit }: OutfitFormProps) {
       <form onSubmit={handleFormSubmit} className="flex-1 overflow-y-auto space-y-6">
         <div className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="description" className="text-base font-semibold">
-              Describe your outfit
-            </Label>
+            <StyledLabel htmlFor="text_to_img_description" content="Describe your outfit" />
+
             <Textarea
-              id="description"
+              id="text_to_img_description"
               placeholder="You can describe the clothing type, fit, color, print, etc."
-              className="min-h-[200px] resize-none"
+              className="min-h-[288px] mt-[10px] resize-none"
               value={formData.description}
               onChange={e => setFormData({ ...formData, description: e.target.value })}
             />
           </div>
 
-          <div className="space-y-4">
-            <h3 className="text-base font-semibold">With human model</h3>
+          <div className="mt-4">
+            <h3 className="text-[#121316] font-inter text-sm font-medium leading-5 py-[6px]">With human model</h3>
 
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label>Gender</Label>
+            <div className="mt-3">
+              <div className="flex items-center justify-between mt-2">
+                <StyledLabel htmlFor="text_to_img_gender" content="Gender" />
+
                 <RadioGroup
+                  id="text_to_img_gender"
                   defaultValue="female"
                   onValueChange={value =>
                     setFormData({
@@ -68,7 +77,7 @@ export function OutfitForm({ onSubmit }: OutfitFormProps) {
                       gender: value as 'female' | 'male'
                     })
                   }
-                  className="flex gap-4"
+                  className="flex gap-4 w-[155px]"
                 >
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="female" id="female" />
@@ -81,10 +90,11 @@ export function OutfitForm({ onSubmit }: OutfitFormProps) {
                 </RadioGroup>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="age">Age</Label>
+              <div className="flex items-center justify-between mt-2">
+                <StyledLabel content="Age" />
+
                 <Select value={formData.age} onValueChange={value => setFormData({ ...formData, age: value })}>
-                  <SelectTrigger>
+                  <SelectTrigger className="w-[155px]">
                     <SelectValue placeholder="Select age" />
                   </SelectTrigger>
                   <SelectContent>
@@ -97,10 +107,11 @@ export function OutfitForm({ onSubmit }: OutfitFormProps) {
                 </Select>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="country">Country</Label>
+              <div className="flex items-center justify-between mt-2">
+                <StyledLabel content="Country" />
+
                 <Select value={formData.country} onValueChange={value => setFormData({ ...formData, country: value })}>
-                  <SelectTrigger>
+                  <SelectTrigger className="w-[155px]">
                     <SelectValue placeholder="Select country" />
                   </SelectTrigger>
                   <SelectContent>
@@ -113,10 +124,11 @@ export function OutfitForm({ onSubmit }: OutfitFormProps) {
                 </Select>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="type">Type</Label>
+              <div className="flex items-center justify-between mt-2">
+                <StyledLabel content="Type" />
+
                 <Select value={formData.type} onValueChange={value => setFormData({ ...formData, type: value })}>
-                  <SelectTrigger>
+                  <SelectTrigger className="w-[155px]">
                     <SelectValue placeholder="Select type" />
                   </SelectTrigger>
                   <SelectContent>
