@@ -1,12 +1,11 @@
 'use client';
 
 import * as React from 'react';
-import { Upload } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { GenerateButton } from '@/components/GenerateButton/GenerateButton';
+import { ImageUploader } from '@/components/Sidebar/components/ImageUploader';
 
 interface ImageUploadFormProps {
   onSubmit?: (data: ImageUploadFormData) => void;
@@ -27,37 +26,6 @@ export function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
     description: ''
   });
 
-  const [dragActive, setDragActive] = React.useState(false);
-
-  const handleDrag = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (e.type === 'dragenter' || e.type === 'dragover') {
-      setDragActive(true);
-    } else if (e.type === 'dragleave') {
-      setDragActive(false);
-    }
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
-
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      const file = e.dataTransfer.files[0];
-      if (file.type.includes('image/')) {
-        setFormData(prev => ({ ...prev, image: file }));
-      }
-    }
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setFormData(prev => ({ ...prev, image: e.target.files![0] }));
-    }
-  };
-
   const handleSubmit = () => {
     onSubmit?.(formData);
   };
@@ -67,6 +35,14 @@ export function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
     onSubmit?.(formData);
   };
 
+  const handleImageChange = (image: File | null) => {
+    setFormData(prev => ({ ...prev, image }));
+  };
+
+  const handleImageUrlChange = (imageUrl: string) => {
+    setFormData(prev => ({ ...prev, imageUrl }));
+  };
+
   return (
     <div className="flex flex-col h-full">
       <form onSubmit={handleFormSubmit} className="flex-1 overflow-y-auto space-y-6 pb-20">
@@ -74,40 +50,11 @@ export function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
           <Label htmlFor="image-upload" className="text-base font-semibold">
             Upload image
           </Label>
-          <div
-            className={`relative h-[200px] rounded-lg border-2 border-dashed transition-colors ${
-              dragActive ? 'border-[#FF7B0D] bg-[#FFE4D2]' : 'border-gray-200 hover:bg-gray-50'
-            }`}
-            onDragEnter={handleDrag}
-            onDragLeave={handleDrag}
-            onDragOver={handleDrag}
-            onDrop={handleDrop}
-          >
-            <input
-              id="image-upload"
-              type="file"
-              className="hidden"
-              accept="image/jpeg,image/png"
-              onChange={handleFileChange}
-            />
-            <label
-              htmlFor="image-upload"
-              className="flex h-full w-full cursor-pointer flex-col items-center justify-center gap-2"
-            >
-              <div className="rounded-lg bg-[#FFE4D2] p-2">
-                <Upload className="h-6 w-6 text-[#FF7B0D]" />
-              </div>
-              <span className="text-sm font-medium">Upload image</span>
-              <span className="text-xs text-gray-500">Format: jpeg, .png</span>
-              {formData.image && <span className="text-xs text-[#FF7B0D]">{formData.image.name}</span>}
-            </label>
-          </div>
-          <Input
-            type="text"
-            placeholder="Or paste image address"
-            value={formData.imageUrl}
-            onChange={e => setFormData(prev => ({ ...prev, imageUrl: e.target.value }))}
-            className="mt-2"
+          <ImageUploader
+            onImageChange={handleImageChange}
+            onImageUrlChange={handleImageUrlChange}
+            imageUrl={formData.imageUrl}
+            currentImage={formData.image}
           />
         </div>
 
