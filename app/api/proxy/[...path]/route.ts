@@ -27,7 +27,9 @@ export async function POST(request: NextRequest, { params }: { params: { path: s
     const response = await fetch(`http://8.130.25.28:8000/${path}`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        Authorization:
+          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MTcyNTM3ODJAcXEuY29tIiwiZXhwIjoxNzQyMTk1ODYwfQ.CA7U7us-WqysWG1qgWEZk7wE-JPut-kAV73eLO4LqdQ'
       },
       body: JSON.stringify(body)
     });
