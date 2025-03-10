@@ -13,9 +13,9 @@ export function ToggleTag({ icon, label, isActive, onClick }: ToggleTagProps) {
     <button
       onClick={onClick}
       className={cn(
-        'flex flex-col items-center gap-2 px-4 py-2 rounded-t-lg transition-colors relative',
+        'flex flex-col items-center gap-2 py-4 rounded-t-lg transition-colors relative',
         isActive ? 'text-[#F97917] bg-white' : 'text-[#999] hover:text-[#F97917]',
-        'font-inter text-sm font-medium'
+        'font-inter text-sm font-medium leading-5'
       )}
     >
       {icon}
