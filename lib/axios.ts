@@ -15,7 +15,7 @@ export const mockAPI = axios.create({
 });
 
 export const localAPI = axios.create({
-  baseURL: '/api/proxy',
+  baseURL: process.env.NEXT_LOCAL_API_URL,
   headers: {
     'Content-Type': 'application/json',
     Authorization:

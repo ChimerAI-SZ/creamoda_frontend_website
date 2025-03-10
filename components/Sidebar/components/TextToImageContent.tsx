@@ -8,16 +8,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { GenerateButton } from '@/components/GenerateButton/GenerateButton';
 import { useState, useEffect } from 'react';
 
+import { OutfitFormData } from '../index';
+
 interface OutfitFormProps {
   onSubmit?: (data: OutfitFormData) => void;
-}
-
-interface OutfitFormData {
-  description: string;
-  gender: 1 | 2;
-  age: string;
-  country: string;
-  modelSize: string;
 }
 
 const StyledLabel = ({ content, htmlFor }: { content: string; htmlFor?: string }) => {
@@ -30,11 +24,12 @@ const StyledLabel = ({ content, htmlFor }: { content: string; htmlFor?: string }
 
 export default function OutfitForm({ onSubmit }: OutfitFormProps) {
   const [formData, setFormData] = useState<OutfitFormData>({
-    description: '',
+    prompt: '',
     gender: 2,
     age: '25',
     country: 'Vatican',
-    modelSize: 'mid-size'
+    modelSize: 'mid-size',
+    withHumanModel: 1
   });
   const [btnState, setBtnState] = useState<'disabled' | 'ready' | 'generating'>('disabled');
 
@@ -43,7 +38,7 @@ export default function OutfitForm({ onSubmit }: OutfitFormProps) {
   };
 
   useEffect(() => {
-    if (formData.description.length > 0 && formData.gender && formData.age && formData.country && formData.modelSize) {
+    if (formData.prompt.length > 0 && formData.gender && formData.age && formData.country && formData.modelSize) {
       setBtnState('ready');
     } else {
       setBtnState('disabled');
@@ -62,8 +57,8 @@ export default function OutfitForm({ onSubmit }: OutfitFormProps) {
                 id="text_to_img_description"
                 placeholder="You can describe the clothing type, fit, color, print, etc."
                 className="min-h-[288px] mt-[10px] resize-none"
-                value={formData.description}
-                onChange={e => setFormData({ ...formData, description: e.target.value })}
+                value={formData.prompt}
+                onChange={e => setFormData({ ...formData, prompt: e.target.value })}
               />
             </div>
 
@@ -144,7 +139,7 @@ export default function OutfitForm({ onSubmit }: OutfitFormProps) {
                       <SelectValue placeholder="Select type" />
                     </SelectTrigger>
                     <SelectContent>
-                      {['petite', 'mid-size', 'plus-size'].map(type => (
+                      {['Small-size', 'Mid-size', 'Plus-size', 'Pregnant'].map(type => (
                         <SelectItem key={type} value={type}>
                           {type}
                         </SelectItem>

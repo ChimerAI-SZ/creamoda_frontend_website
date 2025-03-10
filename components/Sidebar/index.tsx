@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Inter } from 'next/font/google';
 
 import { ToggleTag } from './components/ToggleTag';
@@ -11,21 +11,44 @@ const inter = Inter({ subsets: ['latin'] });
 
 import { localAPI } from '@/lib/axios';
 
-interface OutfitFormData {
-  description: string;
+export interface OutfitFormData {
+  prompt: string;
   gender: 1 | 2;
   age: string;
   country: string;
   modelSize: string;
+  withHumanModel: 1 | 0;
+}
+
+// 添加新的接口定义
+interface OptionItem {
+  code: string;
+  name: string;
 }
 
 export function Sidebar() {
   const [activeTag, setActiveTag] = useState<'text' | 'image'>('text');
+  const [modelSizes, setModelSizes] = useState<OptionItem[]>([]);
+  const [variationTypes, setVariationTypes] = useState<OptionItem[]>([]);
 
   const handleSubmit = (data: OutfitFormData) => {
     console.log(data);
     localAPI.post('/api/v1/img/txt_generate', data);
   };
+
+  useEffect(() => {
+    // 使用Promise.all同步执行两个请求
+    Promise.all([localAPI.get('/api/v1/common/model_size/list'), localAPI.get('/api/v1/common/variation_type/list')])
+      .then(([modelSizesRes, variationTypesRes]) => {
+        console.log('模型尺寸列表:', modelSizesRes);
+        console.log('变化类型列表:', variationTypesRes);
+        setModelSizes(modelSizesRes.data || []);
+        setVariationTypes(variationTypesRes.data || []);
+      })
+      .catch(error => {
+        console.error('获取数据失败:', error);
+      });
+  }, []);
 
   return (
     <div
