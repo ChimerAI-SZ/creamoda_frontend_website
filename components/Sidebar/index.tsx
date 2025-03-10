@@ -2,14 +2,30 @@
 
 import { useState } from 'react';
 import { Inter } from 'next/font/google';
+
 import { ToggleTag } from './components/ToggleTag';
-import { TextToImageContent } from './components/TextToImageContent';
+import TextToImageContent from './components/TextToImageContent';
 import { ImageToImageContent } from './components/ImageToImageContent';
 
 const inter = Inter({ subsets: ['latin'] });
 
+import { localAPI } from '@/lib/axios';
+
+interface OutfitFormData {
+  description: string;
+  gender: 1 | 2;
+  age: string;
+  country: string;
+  modelSize: string;
+}
+
 export function Sidebar() {
   const [activeTag, setActiveTag] = useState<'text' | 'image'>('text');
+
+  const handleSubmit = (data: OutfitFormData) => {
+    console.log(data);
+    localAPI.post('/api/v1/img/txt_generate', data);
+  };
 
   return (
     <div
@@ -20,12 +36,11 @@ export function Sidebar() {
         <ToggleTag label="Image to image" isActive={activeTag === 'image'} onClick={() => setActiveTag('image')} />
       </div>
       <div className="flex-1 overflow-hidden pt-4 px-4">
-        {activeTag === 'text' ? <TextToImageContent /> : <ImageToImageContent />}
+        {activeTag === 'text' ? <TextToImageContent onSubmit={handleSubmit} /> : <ImageToImageContent />}
       </div>
     </div>
   );
 }
 
 export * from './components/ToggleTag';
-export * from './components/TextToImageContent';
 export * from './components/ImageToImageContent';

@@ -39,11 +39,11 @@ export function GenerateButton({ onClick, state = 'disabled', className = '' }: 
   }, []);
 
   const handleClick = () => {
-    if (isLoggedIn) {
-      onClick();
-    } else {
-      setShowLoginModal(true);
-    }
+    // if (isLoggedIn) {
+    onClick();
+    // } else {
+    //   setShowLoginModal(true);
+    // }
   };
 
   // Button text based on state
