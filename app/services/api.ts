@@ -79,6 +79,24 @@ export const authApi = {
   }
 };
 
+// 通用 API
+export const commonApi = {
+  // 获取变化类型列表
+  getVariationTypeList: async () => {
+    try {
+      const response = await api.get('/api/v1/common/variation_type/list');
+      if (response.data.code === 0 && response.data.data && response.data.data.list) {
+        return response.data.data.list;
+      } else {
+        throw new Error(response.data.msg || 'Failed to get variation type list');
+      }
+    } catch (error) {
+      console.error('Error getting variation type list:', error);
+      throw error;
+    }
+  }
+};
+
 // 保存认证令牌
 export const saveAuthToken = (token: string) => {
   localStorage.setItem('auth_token', token);
@@ -100,4 +118,31 @@ export const clearAuthToken = () => {
 // 检查用户是否已登录
 export const isAuthenticated = () => {
   return !!getAuthToken();
+};
+
+// 上传图片
+export const uploadImage = async (file: File) => {
+  try {
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://3.12.238.000';
+    const token = getAuthToken();
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const response = await api.post(`/api/v1/common/img/upload`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: token || ''
+      }
+    });
+
+    if (response.data.code === 0 && response.data.data && response.data.data.url) {
+      return response.data.data.url;
+    } else {
+      throw new Error(response.data.msg || 'Failed to upload image');
+    }
+  } catch (error) {
+    console.error('Error uploading image:', error);
+    throw error;
+  }
 };

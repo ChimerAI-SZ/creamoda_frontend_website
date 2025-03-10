@@ -20,7 +20,7 @@ export function Sidebar() {
         <ToggleTag label="Image to image" isActive={activeTag === 'image'} onClick={() => setActiveTag('image')} />
       </div>
       <div className="flex-1 overflow-hidden pt-4 px-4">
-        {activeTag !== 'text' ? <TextToImageContent /> : <ImageToImageContent />}
+        {activeTag === 'text' ? <TextToImageContent /> : <ImageToImageContent />}
       </div>
     </div>
   );

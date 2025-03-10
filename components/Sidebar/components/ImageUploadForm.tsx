@@ -1,11 +1,15 @@
 'use client';
 
 import * as React from 'react';
-import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { GenerateButton } from '@/components/GenerateButton/GenerateButton';
+import { GenerateButton, GenerateButtonState } from '@/components/GenerateButton/GenerateButton';
 import { ImageUploader } from '@/components/Sidebar/components/ImageUploader';
+import { FormLabel } from '@/components/Sidebar/components/FormLabel';
+import { VariationTypeSelect } from '@/components/Sidebar/components/VariationTypeSelect';
+import { FidelitySlider } from '@/components/Sidebar/components/FidelitySlider';
+import { useState } from 'react';
+import { useToast } from '@/hooks/use-toast';
+import { uploadImage } from '@/app/services/api';
 
 interface ImageUploadFormProps {
   onSubmit?: (data: ImageUploadFormData) => void;
@@ -16,23 +20,109 @@ interface ImageUploadFormData {
   imageUrl: string;
   variationType: string;
   description: string;
+  fidelity: number;
 }
 
 export function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
+  const { toast } = useToast();
   const [formData, setFormData] = React.useState<ImageUploadFormData>({
     image: null,
     imageUrl: '',
     variationType: '',
-    description: ''
+    description: '',
+    fidelity: 50
   });
 
-  const handleSubmit = () => {
-    onSubmit?.(formData);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async () => {
+    if (onSubmit) {
+      onSubmit(formData);
+      return;
+    }
+
+    // 如果没有提供 onSubmit 回调，则直接调用 API
+    try {
+      setIsLoading(true);
+
+      // 确保有图片URL和描述
+      if (!formData.imageUrl && !formData.image) {
+        toast({
+          title: 'Error',
+          description: 'Please upload an image or provide an image URL',
+          variant: 'destructive'
+        });
+        return;
+      }
+
+      if (!formData.description.trim()) {
+        toast({
+          title: 'Error',
+          description: 'Please provide a description',
+          variant: 'destructive'
+        });
+        return;
+      }
+
+      // 如果有本地图片但没有URL，需要先上传图片获取URL
+      let finalImageUrl = formData.imageUrl;
+      if (formData.image && !formData.imageUrl) {
+        try {
+          finalImageUrl = await uploadImage(formData.image);
+          // 更新表单数据中的图片URL
+          setFormData(prev => ({ ...prev, imageUrl: finalImageUrl }));
+        } catch (error) {
+          console.error('Error uploading image:', error);
+          toast({
+            title: 'Error',
+            description: error instanceof Error ? error.message : 'Failed to upload image',
+            variant: 'destructive'
+          });
+          return;
+        }
+      }
+
+      // 调用换衣服生成API
+      const response = await fetch('/api/v1/img/change_clothes_generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          originalPicUrl: finalImageUrl,
+          prompt: formData.description
+        })
+      });
+
+      const data = await response.json();
+
+      if (data.code === 0) {
+        toast({
+          title: 'Success',
+          description: 'Image generation request submitted successfully'
+        });
+      } else {
+        toast({
+          title: 'Error',
+          description: data.msg || 'Failed to generate image',
+          variant: 'destructive'
+        });
+      }
+    } catch (error) {
+      console.error('Error generating image:', error);
+      toast({
+        title: 'Error',
+        description: 'An unexpected error occurred',
+        variant: 'destructive'
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit?.(formData);
+    handleSubmit();
   };
 
   const handleImageChange = (image: File | null) => {
@@ -43,13 +133,19 @@ export function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
     setFormData(prev => ({ ...prev, imageUrl }));
   };
 
+  // 确定按钮状态
+  const buttonState =
+    !formData.description.trim() || (!formData.image && !formData.imageUrl)
+      ? 'disabled'
+      : isLoading
+      ? 'ready'
+      : 'ready';
+
   return (
     <div className="flex flex-col h-full">
       <form onSubmit={handleFormSubmit} className="flex-1 overflow-y-auto space-y-6 pb-20">
         <div className="space-y-2">
-          <Label htmlFor="image-upload" className="text-base font-semibold">
-            Upload image
-          </Label>
+          <FormLabel htmlFor="image-upload">Upload image</FormLabel>
           <ImageUploader
             onImageChange={handleImageChange}
             onImageUrlChange={handleImageUrlChange}
@@ -58,30 +154,13 @@ export function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
           />
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="variation-type" className="text-base font-semibold">
-            Variation Type
-          </Label>
-          <Select
-            value={formData.variationType}
-            onValueChange={value => setFormData(prev => ({ ...prev, variationType: value }))}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Category Switcher" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="style">Style Change</SelectItem>
-              <SelectItem value="color">Color Change</SelectItem>
-              <SelectItem value="pattern">Pattern Change</SelectItem>
-              <SelectItem value="material">Material Change</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+        <VariationTypeSelect
+          value={formData.variationType}
+          onChange={value => setFormData(prev => ({ ...prev, variationType: value }))}
+        />
 
         <div className="space-y-2">
-          <Label htmlFor="description" className="text-base font-semibold">
-            Describe the final design
-          </Label>
+          <FormLabel htmlFor="description">Describe the final design</FormLabel>
           <Textarea
             id="description"
             placeholder="Please describe the category you would like to change."
@@ -90,12 +169,16 @@ export function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
             onChange={e => setFormData(prev => ({ ...prev, description: e.target.value }))}
           />
         </div>
+
+        {formData.variationType === 'style' && (
+          <FidelitySlider
+            value={formData.fidelity}
+            onChange={value => setFormData(prev => ({ ...prev, fidelity: value }))}
+          />
+        )}
       </form>
       <div className="sticky bottom-0 left-0 right-0 px-6 pb-4 bg-white">
-        <GenerateButton
-          onClick={handleSubmit}
-          state={!formData.description.trim() || (!formData.image && !formData.imageUrl) ? 'disabled' : 'ready'}
-        />
+        <GenerateButton onClick={handleSubmit} state={buttonState} />
       </div>
     </div>
   );
