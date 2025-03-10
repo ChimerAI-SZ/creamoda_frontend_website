@@ -1,12 +1,13 @@
 'use client';
 
-import * as React from 'react';
+import { useState, useEffect } from 'react';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { GenerateButton } from '@/components/GenerateButton/GenerateButton';
-import { useState, useEffect } from 'react';
+
+import { useModelStore } from '@/stores/useModelStore';
 
 import { OutfitFormData } from '../index';
 
@@ -32,6 +33,10 @@ export default function OutfitForm({ onSubmit }: OutfitFormProps) {
     withHumanModel: 1
   });
   const [btnState, setBtnState] = useState<'disabled' | 'ready' | 'generating'>('disabled');
+
+  const { modelSizes, variationTypes } = useModelStore();
+
+  console.log(modelSizes);
 
   const handleSubmit = () => {
     onSubmit?.(formData);
@@ -139,9 +144,9 @@ export default function OutfitForm({ onSubmit }: OutfitFormProps) {
                       <SelectValue placeholder="Select type" />
                     </SelectTrigger>
                     <SelectContent>
-                      {['Small-size', 'Mid-size', 'Plus-size', 'Pregnant'].map(type => (
-                        <SelectItem key={type} value={type}>
-                          {type}
+                      {modelSizes.map(type => (
+                        <SelectItem key={type.code} value={type.code}>
+                          {type.name}
                         </SelectItem>
                       ))}
                     </SelectContent>

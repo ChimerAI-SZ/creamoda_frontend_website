@@ -29,7 +29,7 @@ export async function POST(request: NextRequest, { params }: { params: { path: s
       headers: {
         'Content-Type': 'application/json',
         Authorization:
-          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MTcyNTM3ODJAcXEuY29tIiwiZXhwIjoxNzQyMTk1ODYwfQ.CA7U7us-WqysWG1qgWEZk7wE-JPut-kAV73eLO4LqdQ'
+          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJyaWNrLnlsaXVAZm94bWFpbC5jb20iLCJleHAiOjE3NDIyMDM4MTB9.4VDi1Zz7KlhtEDMSG0g_Rf4D2tG27ZuLSKx4acu9U6o'
       },
       body: JSON.stringify(body)
     });
