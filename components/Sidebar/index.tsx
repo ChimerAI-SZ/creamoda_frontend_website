@@ -11,6 +11,8 @@ const inter = Inter({ subsets: ['latin'] });
 
 import { localAPI } from '@/lib/axios';
 
+import { useModelStore } from '@/stores/useModelStore';
+
 export interface OutfitFormData {
   prompt: string;
   gender: 1 | 2;
@@ -21,15 +23,10 @@ export interface OutfitFormData {
 }
 
 // 添加新的接口定义
-interface OptionItem {
-  code: string;
-  name: string;
-}
 
 export function Sidebar() {
   const [activeTag, setActiveTag] = useState<'text' | 'image'>('text');
-  const [modelSizes, setModelSizes] = useState<OptionItem[]>([]);
-  const [variationTypes, setVariationTypes] = useState<OptionItem[]>([]);
+  const { setModelSizes, setVariationTypes } = useModelStore();
 
   const handleSubmit = (data: OutfitFormData) => {
     console.log(data);
@@ -37,18 +34,32 @@ export function Sidebar() {
   };
 
   useEffect(() => {
-    // 使用Promise.all同步执行两个请求
-    Promise.all([localAPI.get('/api/v1/common/model_size/list'), localAPI.get('/api/v1/common/variation_type/list')])
-      .then(([modelSizesRes, variationTypesRes]) => {
-        console.log('模型尺寸列表:', modelSizesRes);
-        console.log('变化类型列表:', variationTypesRes);
-        setModelSizes(modelSizesRes.data || []);
-        setVariationTypes(variationTypesRes.data || []);
+    Promise.allSettled([
+      localAPI.get('/api/v1/common/modelSize/list'),
+      localAPI.get('/api/v1/common/variationType/list')
+    ])
+      .then(results => {
+        results.forEach((result, index) => {
+          if (result.status === 'fulfilled') {
+            const { data } = result.value || {};
+
+            if (data?.code === 0) {
+              if (index === 0) {
+                setModelSizes(data.data.list || []);
+              } else {
+                setVariationTypes(data.data.list || []);
+              }
+            } else {
+              const errorType = index === 0 ? '模型尺寸' : '变化类型';
+              console.error(`获取${errorType}失败:`, data?.message);
+            }
+          }
+        });
       })
       .catch(error => {
-        console.error('获取数据失败:', error);
+        console.error('请求失败:', error);
       });
-  }, []);
+  }, [setModelSizes, setVariationTypes]);
 
   return (
     <div
