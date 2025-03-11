@@ -106,13 +106,39 @@ export const authApi = {
       const response = await api.get('/api/v1/auth/google');
       console.log('Google auth URL response:', response.data);
 
-      if (response.data.code === 0 && response.data.data && response.data.data.auth_url) {
-        return response.data.data.auth_url;
+      if (response.data.auth_url) {
+        return response.data.auth_url;
       } else {
         throw new Error(response.data.msg || 'Failed to get Google auth URL');
       }
     } catch (error) {
       console.error('Error getting Google auth URL:', error);
+      throw error;
+    }
+  },
+
+  // 获取 Google 回调
+  getGoogleCallback: async (code: string) => {
+    try {
+      const response = await axios.get('http://47.251.122.83:8090/api/v1/auth/callback', {
+        params: {
+          code
+        }
+      });
+      // const response = await api.get('/api/v1/auth/callback', {
+      //   params: {
+      //     code
+      //   }
+      // });
+      console.log('Google callback response:', response.data);
+
+      if (response.data.code === 0) {
+        return response.data;
+      } else {
+        throw new Error(response.data.msg || 'Failed to process Google authentication');
+      }
+    } catch (error) {
+      console.error('Error processing Google callback:', error);
       throw error;
     }
   }

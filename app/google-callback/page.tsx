@@ -1,69 +1,84 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { authApi, saveAuthToken } from '@/app/services/api';
 
-// 添加 dynamic 导入以禁用预渲染
+// Add dynamic import to disable pre-rendering
 export const dynamic = 'force-dynamic';
-// 添加 runtime 指定为仅客户端
+// Specify runtime as edge only
 export const runtime = 'edge';
 
 export default function GoogleCallback() {
+  const router = useRouter();
   const searchParams = useSearchParams();
-  const [status, setStatus] = useState('Processing Google login...');
 
   useEffect(() => {
-    const code = searchParams.get('code');
-    const error = searchParams.get('error');
-
-    if (typeof window === 'undefined' || !window.opener) {
-      setStatus('Error: Unable to communicate with the main window. Please close this window and try again.');
-      return;
-    }
-
-    const processCallback = async () => {
+    const handleCallback = async () => {
       try {
-        if (code) {
-          // 后端已经处理了回调，这里只需通知父窗口登录成功
-          window.opener.postMessage({ type: 'GOOGLE_LOGIN_SUCCESS' }, window.location.origin);
-          setStatus('Login successful! You can close this window now.');
-        } else if (error) {
-          // 向父窗口发送错误消息
-          window.opener.postMessage({ type: 'GOOGLE_LOGIN_ERROR', error }, window.location.origin);
-          setStatus('Login failed. You can close this window now.');
-        } else {
-          setStatus('No authentication data received. You can close this window now.');
-        }
+        // Get the authorization code from URL parameters
+        const code = searchParams.get('code');
 
-        // 3秒后自动关闭窗口
-        setTimeout(() => {
-          window.close();
-        }, 3000);
-      } catch (err) {
-        console.error('Error in callback processing:', err);
-        setStatus('An error occurred. Please close this window and try again.');
+        if (!code) {
+          throw new Error('No authorization code received from Google');
+        }
+        // Exchange the code for a token
+        const response = await authApi.getGoogleCallback(code);
+
+        // Check if we have a token in the response
+        // The backend returns token as 'authorization' in the data object
+        if (response.data && response.data.authorization) {
+          // Save the token
+          saveAuthToken(response.data.authorization);
+
+          // Send success message to parent window
+          if (window.opener) {
+            window.opener.postMessage(
+              { type: 'GOOGLE_LOGIN_SUCCESS', token: response.data.authorization },
+              window.location.origin
+            );
+          }
+
+          // Close this window if it was opened by another window
+          if (window.opener) {
+            // window.close();
+          } else {
+            // If opened directly, redirect to home
+            router.push('/');
+          }
+        } else {
+          throw new Error('No token received from server');
+        }
+      } catch (error) {
+        console.error('Google callback error:', error);
+
+        // Send error message to parent window
+        if (window.opener) {
+          window.opener.postMessage(
+            {
+              type: 'GOOGLE_LOGIN_ERROR',
+              error: error instanceof Error ? error.message : 'Failed to complete Google login'
+            },
+            window.location.origin
+          );
+          // window.close();
+        } else {
+          // If opened directly, redirect to login page with error
+          router.push('/login?error=google-login-failed');
+        }
       }
     };
 
-    processCallback();
-  }, [searchParams]);
+    handleCallback();
+  }, [searchParams, router]);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4 text-center">
-      <div className="mb-4">
-        {status.includes('successful') ? (
-          <svg className="w-16 h-16 text-green-500 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-          </svg>
-        ) : status.includes('failed') || status.includes('Error') ? (
-          <svg className="w-16 h-16 text-red-500 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        ) : (
-          <div className="w-16 h-16 border-4 border-gray-300 border-t-[#F97917] rounded-full animate-spin mx-auto"></div>
-        )}
+    <div className="flex items-center justify-center min-h-screen">
+      <div className="text-center">
+        <div className="w-12 h-12 border-4 border-t-[#F97917] border-gray-200 rounded-full animate-spin mx-auto mb-4"></div>
+        <h2 className="text-xl font-medium text-gray-700">Completing Google login...</h2>
+        <p className="text-gray-500 mt-2">Please wait while we process your login.</p>
       </div>
-      <p className="text-lg">{status}</p>
     </div>
   );
 }
