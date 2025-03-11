@@ -11,7 +11,7 @@ export default function Page() {
       <div className="flex">
         <MenuBar />
         <Sidebar />
-        <main className="flex-1 p-6 z-0 h-[calc(100vh-64px)] overflow-y-auto">
+        <main className="flex-1 p-6 z-0 h-[calc(100vh-64px)] overflow-y-auto bg-[#FFFDFA]">
           <ImageGrid />
         </main>
       </div>

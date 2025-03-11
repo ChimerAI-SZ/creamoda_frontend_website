@@ -8,6 +8,7 @@ import GetIntTouchDialog from '@/components/GetIntTouchDialog';
 
 import { emitter } from '@/utils/events';
 import { localAPI } from '@/lib/axios';
+import { cn } from '@/lib/utils';
 
 export function ImageGrid() {
   // 图片列表
@@ -115,6 +116,10 @@ export function ImageGrid() {
             pendingIdsRef.current = new Set([...pendingIdsRef.current, ...newPendingIds]);
 
             if (!pollTimerRef.current) {
+              setTimeout(() => {
+                checkPendingImages();
+              }, 0);
+
               pollTimerRef.current = setInterval(checkPendingImages, 3000);
             }
           }
@@ -208,7 +213,7 @@ export function ImageGrid() {
     // >= 3840px: 9栏布局 (min-[3840px]:grid-cols-9)
     <div
       ref={containerRef}
-      className="grid gap-4 relative z-0
+      className="grid gap-4 relative z-0 bg-[#FFFDFA]
     grid-cols-1
     sm:grid-cols-2 
     min-[800px]:grid-cols-2 
@@ -222,18 +227,19 @@ export function ImageGrid() {
     >
       {images.map((src, index) => {
         const isGenerating = src.status === 1 || src.status === 2;
+        const isFailed = src.status === 4;
         const isLoaded = loadedImages.get(src.genImgId);
-        const showLoading = isGenerating || (!isLoaded && [3, 4].includes(src.status));
+        const showLoading = isGenerating || (!isLoaded && src.status === 3);
 
         return (
           <div
             key={src.genImgId || index}
             ref={index === images.length - Math.min(9, images.length / 3) ? lastImageElementRef : undefined}
-            className="aspect-[3/4] relative overflow-hidden rounded-lg group"
+            className="aspect-[3/4] relative overflow-hidden group border-none"
           >
-            {/* 生成中或加载中状态 */}
+            {/* 生成中状态 */}
             {showLoading && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center bg-white">
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#FAFAFA] z-[1] rounded-[4px] border border-[#DCDCDC]">
                 <div className="relative w-[64px] h-[64px]">
                   <Image
                     src="/images/generate/loading.gif"
@@ -254,22 +260,44 @@ export function ImageGrid() {
               </div>
             )}
 
-            {/* 结果图片 (始终渲染，但在加载完成前隐藏) */}
-            <div className={!showLoading ? 'opacity-100' : 'opacity-0'}>
-              <Image
-                src={src.resultPic || '/placeholder.svg'}
-                alt={`Fashion image ${index + 1}`}
-                fill
-                className="object-cover"
-                loading="lazy"
-                onLoadingComplete={() => src.genImgId && handleImageLoad(src.genImgId)}
-              />
-            </div>
+            {/* 生成失败状态 */}
+            {isFailed && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#FAFAFA] z-[1] rounded-[4px] border border-[#DCDCDC]">
+                <div className="relative w-[150px] h-[150px]">
+                  <Image
+                    src="/images/generate/failToGenerate.svg"
+                    alt="Generation Failed"
+                    fill
+                    className="object-cover"
+                    priority
+                  />
+                </div>
+              </div>
+            )}
 
-            {/* 正常状态的悬浮效果 */}
-            {!showLoading && (
+            {/* 结果图片 (仅在成功生成且加载完成时显示) */}
+            {!isFailed && (
               <div
-                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center"
+                className={cn(
+                  'absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center bg-[#FAFAFA] rounded-[4px] border border-[#DCDCDC] overflow-hidden',
+                  !showLoading ? 'opacity-100' : 'opacity-0'
+                )}
+              >
+                <Image
+                  src={src.resultPic || '/placeholder.svg'}
+                  alt={`Fashion image ${index + 1}`}
+                  fill
+                  className="object-cover"
+                  loading="lazy"
+                  onLoadingComplete={() => src.genImgId && handleImageLoad(src.genImgId)}
+                />
+              </div>
+            )}
+
+            {/* 正常状态的悬浮效果 (仅在成功生成时显示) */}
+            {!showLoading && !isFailed && (
+              <div
+                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center rounded-[4px]"
                 style={{
                   background: 'linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.5) 100%)'
                 }}
