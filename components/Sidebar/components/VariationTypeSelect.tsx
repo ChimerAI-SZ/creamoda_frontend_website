@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { FormLabel } from '@/components/Sidebar/components/FormLabel';
 import { commonApi } from '@/app/services/api';
 import { cn } from '@/lib/utils';
-
+import { useModelStore } from '@/stores/useModelStore';
 interface VariationType {
   code: string;
   name: string;
@@ -26,39 +26,11 @@ export function VariationTypeSelect({
   placeholder = 'Category Switcher',
   className = ''
 }: VariationTypeSelectProps) {
-  const [variationTypes, setVariationTypes] = React.useState<VariationType[]>([]);
-  const [loading, setLoading] = React.useState(true);
-  const [error, setError] = React.useState<string | null>(null);
-
-  React.useEffect(() => {
-    const fetchVariationTypes = async () => {
-      try {
-        setLoading(true);
-        const data = await commonApi.getVariationTypeList();
-        setVariationTypes(data);
-        setError(null);
-      } catch (err) {
-        console.error('Failed to fetch variation types:', err);
-        setError('Failed to load variation types');
-        // 设置一些默认值，以防 API 调用失败
-        setVariationTypes([
-          { code: 'style', name: 'Style Change' },
-          { code: 'color', name: 'Color Change' },
-          { code: 'pattern', name: 'Pattern Change' },
-          { code: 'material', name: 'Material Change' }
-        ]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchVariationTypes();
-  }, []);
-
+  const { variationTypes } = useModelStore();
   return (
     <div className={`space-y-2 ${className}`}>
       {label && <FormLabel htmlFor="variation-type">{label}</FormLabel>}
-      <Select value={value} onValueChange={onChange} disabled={loading}>
+      <Select value={value} onValueChange={onChange}>
         <SelectTrigger
           className={cn(
             'rounded-md border border-[rgba(249,121,23,0.4)]',
@@ -66,10 +38,9 @@ export function VariationTypeSelect({
             'focus:ring-[rgba(249,121,23,0.4)] focus:border-[rgba(249,121,23,0.6)]'
           )}
         >
-          <SelectValue placeholder={loading ? 'Loading...' : placeholder} />
+          <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent>
-          {error && <div className="px-2 py-1 text-sm text-red-500">{error}</div>}
           {variationTypes.map(type => (
             <SelectItem key={type.code} value={type.code}>
               {type.name}

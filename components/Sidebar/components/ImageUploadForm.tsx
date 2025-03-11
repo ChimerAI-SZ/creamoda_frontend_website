@@ -10,7 +10,7 @@ import { FidelitySlider } from '@/components/Sidebar/components/FidelitySlider';
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { uploadImage, changeClothesGenerate, copyStyleGenerate } from '@/app/services/api';
-
+import { emitter } from '@/utils/events';
 interface ImageUploadFormProps {
   onSubmit?: (data: ImageUploadFormData) => void;
 }
@@ -88,9 +88,11 @@ export function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
       if (formData.variationType === '2') {
         // 调用复制风格API
         response = await copyStyleGenerate(finalImageUrl, formData.description, formData.fidelity);
+        emitter.emit('sidebar:submit-success', response);
       } else {
         // 默认调用换衣服API
         response = await changeClothesGenerate(finalImageUrl, formData.description);
+        emitter.emit('sidebar:submit-success', response);
       }
 
       if (response.code === 0) {
