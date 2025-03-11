@@ -11,9 +11,10 @@ interface ImageDetailProps {
   onClose: () => void;
   isOpen: boolean;
   imgList: ImageItem[];
+  onImageChange: (image: ImageItem | null) => void;
 }
 
-export default function ImageDetail({ image, onClose, isOpen, imgList }: ImageDetailProps) {
+export default function ImageDetail({ image, onClose, isOpen, imgList, onImageChange }: ImageDetailProps) {
   if (!isOpen) return null;
 
   return (
@@ -64,6 +65,38 @@ export default function ImageDetail({ image, onClose, isOpen, imgList }: ImageDe
             </div>
           </div>
         )}
+
+        <div className="flex items-center justify-center gap-[20px] absolute left-[50%] translate-x-[-50%] bottom-[-144px] h-[112px] rounded-[4px] ">
+          {imgList
+            .filter(item => item.genId === image?.genId)
+            .map(pic => {
+              const isCurrentImage = pic.genImgId === image?.genImgId;
+              return (
+                <div
+                  key={pic.genImgId}
+                  className={`${isCurrentImage ? 'w-[85px]' : 'w-[70px]'} transition-all duration-300 cursor-pointer`}
+                  onClick={() => {
+                    // 当点击缩略图时，将该图片设为当前查看的大图
+                    if (!isCurrentImage && pic.genImgId !== image?.genImgId) {
+                      const newImage = imgList.find(item => item.genImgId === pic.genImgId) || null;
+                      if (newImage) {
+                        // 这里需要通过父组件传入的函数来更新当前查看的图片
+                        onImageChange(newImage);
+                      }
+                    }
+                  }}
+                >
+                  <Image
+                    src={pic.resultPic}
+                    width={isCurrentImage ? 85 : 70}
+                    height={isCurrentImage ? 85 : 70}
+                    alt="image"
+                    className={`rounded-[4px] overflow-hidden`}
+                  />
+                </div>
+              );
+            })}
+        </div>
       </div>
     </Overlay>
   );
