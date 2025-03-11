@@ -14,6 +14,15 @@ export const mockAPI = axios.create({
   }
 });
 
+export const localAPI = axios.create({
+  baseURL: process.env.NEXT_LOCAL_API_URL,
+  headers: {
+    'Content-Type': 'application/json',
+    Authorization:
+      'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJyaWNrLnlsaXVAZm94bWFpbC5jb20iLCJleHAiOjE3NDIyMDM4MTB9.4VDi1Zz7KlhtEDMSG0g_Rf4D2tG27ZuLSKx4acu9U6o'
+  }
+});
+
 // 修改拦截器返回类型
 api.interceptors.response.use(
   response => response.data,
