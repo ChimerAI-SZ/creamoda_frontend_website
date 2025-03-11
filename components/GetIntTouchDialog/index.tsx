@@ -18,7 +18,7 @@ import { localAPI } from '@/lib/axios';
 
 interface GetIntTouchDialogProps {
   trigger: ReactNode;
-  genImgId: string;
+  genImgId: number;
   source: string;
 }
 
