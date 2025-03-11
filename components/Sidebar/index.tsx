@@ -31,7 +31,6 @@ export function Sidebar() {
 
   const handleSubmit = (data: OutfitFormData) => {
     localAPI.post('/api/v1/img/txt_generate', data).then(res => {
-      console.log(res);
       emitter.emit('sidebar:submit-success', res);
     });
   };
@@ -53,9 +52,9 @@ export function Sidebar() {
                 setVariationTypes(data.data.list || []);
               }
             } else {
-              const errorType = index === 0 ? '模型尺寸' : '变化类型';
+              const errorType = index === 0 ? 'model size' : 'variation type';
 
-              showErrorDialog(`获取${errorType}失败: ${data?.message}`);
+              showErrorDialog(`fail to get ${errorType}: ${data?.message}`);
             }
           }
         });
