@@ -1,10 +1,14 @@
 'use client';
 
 import { useEffect, useState, useRef, useCallback } from 'react';
-import { mockAPI } from '@/lib/axios';
 import Image from 'next/image';
+
 import { Button } from '@/components/ui/button';
 import GetIntTouchDialog from '@/components/GetIntTouchDialog';
+
+import { emitter } from '@/utils/events';
+import { localAPI } from '@/lib/axios';
+
 export function ImageGrid() {
   // 图片列表
   const [images, setImages] = useState<any[]>([]);
@@ -12,8 +16,7 @@ export function ImageGrid() {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(50);
   const [total, setTotal] = useState(1000);
-  // 加载状态
-  const [loading, setLoading] = useState(false);
+
   // 是否还有更多数据
   const [hasMore, setHasMore] = useState(true);
   // 容器引用
@@ -24,10 +27,9 @@ export function ImageGrid() {
   // 加载图片数据
   const fetchImages = useCallback(
     async (currentPage: number) => {
-      setLoading(true);
       try {
-        const URL = `/m2/5875613-5562180-default/261961292?page=${currentPage}&pageSize=${pageSize}`;
-        const { data } = await mockAPI.get(URL);
+        const URL = `/api/v1/img/generate/list?page=${currentPage}&pageSize=${pageSize}`;
+        const { data } = await localAPI.get(URL);
 
         if (data.code === 0) {
           if (currentPage === 1) {
@@ -41,25 +43,36 @@ export function ImageGrid() {
         }
       } catch (error) {
         console.error('加载图片失败:', error);
-      } finally {
-        setLoading(false);
       }
     },
     [pageSize]
   );
 
+  // 查询最近生成的图片
+  const fetchRecentImages = useCallback(async () => {
+    try {
+      const URL = `/api/v1/img/generate/list?page=1&pageSize=10`;
+      const { data } = await localAPI.get(URL);
+
+      if (data.code === 0) {
+        console.log(data);
+      }
+    } catch (error) {
+      console.error('加载最近图片失败:', error);
+    }
+  }, []);
+
   // 加载更多图片
   const loadMoreImages = useCallback(() => {
-    if (loading || !hasMore) return;
+    if (!hasMore) return;
     const nextPage = page + 1;
     setPage(nextPage);
     fetchImages(nextPage);
-  }, [loading, hasMore, page, fetchImages]);
+  }, [hasMore, page, fetchImages]);
 
   // 最后一个元素引用
   const lastImageElementRef = useCallback(
     (node: HTMLDivElement) => {
-      if (loading) return;
       if (observer.current) observer.current.disconnect();
 
       observer.current = new IntersectionObserver(
@@ -75,13 +88,29 @@ export function ImageGrid() {
 
       if (node) observer.current.observe(node);
     },
-    [loading, hasMore, loadMoreImages]
+    [hasMore, loadMoreImages]
   );
 
   // 初始加载
   useEffect(() => {
     fetchImages(1);
   }, [fetchImages]);
+
+  useEffect(() => {
+    // 监听事件
+    const handler = (data: { data: any }) => {
+      console.log('收到 Sidebar 提交成功事件', data);
+      // 当收到提交成功事件时，刷新最近图片
+      fetchRecentImages();
+    };
+
+    emitter.on('sidebar:submit-success', handler);
+
+    // 组件卸载时取消监听
+    return () => {
+      emitter.off('sidebar:submit-success', handler);
+    };
+  }, [fetchRecentImages]);
 
   return (
     // 响应式布局规则:
@@ -140,15 +169,9 @@ export function ImageGrid() {
         </div>
       ))}
 
-      {loading && (
-        <div className="col-span-full flex justify-center py-4">
-          <div className="animate-spin h-6 w-6 border-2 border-gray-500 border-t-transparent rounded-full"></div>
-        </div>
-      )}
-
-      {!hasMore && images.length > 0 && (
+      {/* {!hasMore && images.length > 0 && (
         <div className="col-span-full text-center py-4 text-gray-500">没有更多图片了</div>
-      )}
+      )} */}
     </div>
   );
 }

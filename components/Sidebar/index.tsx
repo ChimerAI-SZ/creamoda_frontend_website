@@ -12,13 +12,14 @@ const inter = Inter({ subsets: ['latin'] });
 
 import { localAPI } from '@/lib/axios';
 import { useModelStore } from '@/stores/useModelStore';
+import { emitter } from '@/utils/events';
 
 export interface OutfitFormData {
   prompt: string;
   gender: 1 | 2;
   age: string;
   country: string;
-  modelSize: string;
+  modelSize: number;
   withHumanModel: 1 | 0;
 }
 
@@ -29,8 +30,10 @@ export function Sidebar() {
   const { setModelSizes, setVariationTypes } = useModelStore();
 
   const handleSubmit = (data: OutfitFormData) => {
-    console.log(data);
-    localAPI.post('/api/v1/img/txt_generate', data);
+    localAPI.post('/api/v1/img/txt_generate', data).then(res => {
+      console.log(res);
+      emitter.emit('sidebar:submit-success', res);
+    });
   };
 
   useEffect(() => {
