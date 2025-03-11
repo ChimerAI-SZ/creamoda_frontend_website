@@ -43,7 +43,7 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
 
       const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://3.12.238.000';
       const token = getAuthToken();
-
+      console.log('token', token);
       const response = await axios.post(`${API_URL}/api/v1/common/img/upload`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',

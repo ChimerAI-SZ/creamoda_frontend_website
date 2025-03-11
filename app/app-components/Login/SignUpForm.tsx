@@ -104,12 +104,24 @@ export const SignUpForm = ({ onToggleView, onSignupSuccess }: SignUpFormProps) =
     setApiError('');
 
     try {
-      const response = await authApi.register(formData.email, formData.password);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          pwd: formData.password,
+          username: formData.name
+        })
+      });
 
-      if (response.code === 0) {
+      const data = await response.json();
+
+      if (response.ok && data.code === 0) {
         // Registration successful
         setRegistrationSuccess(true);
-        console.log('Registration successful:', response);
+        console.log('Registration successful:', data);
 
         // Call the success callback with the email
         if (onSignupSuccess) {
@@ -122,7 +134,7 @@ export const SignUpForm = ({ onToggleView, onSignupSuccess }: SignUpFormProps) =
         }
       } else {
         // API returned an error
-        setApiError(response.msg || 'Registration failed. Please try again.');
+        setApiError(data.msg || data.error || 'Registration failed. Please try again.');
       }
     } catch (error) {
       console.error('Registration error:', error);

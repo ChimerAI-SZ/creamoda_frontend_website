@@ -9,7 +9,7 @@ import { VariationTypeSelect } from '@/components/Sidebar/components/VariationTy
 import { FidelitySlider } from '@/components/Sidebar/components/FidelitySlider';
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { uploadImage } from '@/app/services/api';
+import { uploadImage, changeClothesGenerate, copyStyleGenerate } from '@/app/services/api';
 
 interface ImageUploadFormProps {
   onSubmit?: (data: ImageUploadFormData) => void;
@@ -36,10 +36,10 @@ export function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async () => {
-    if (onSubmit) {
-      onSubmit(formData);
-      return;
-    }
+    // if (onSubmit) {
+    //   onSubmit(formData);
+    //   return;
+    // }
 
     // 如果没有提供 onSubmit 回调，则直接调用 API
     try {
@@ -82,21 +82,18 @@ export function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
         }
       }
 
-      // 调用换衣服生成API
-      const response = await fetch('/api/v1/img/change_clothes_generate', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          originalPicUrl: finalImageUrl,
-          prompt: formData.description
-        })
-      });
+      // 根据不同的变化类型调用不同的API
+      let response;
 
-      const data = await response.json();
+      if (formData.variationType === '2') {
+        // 调用复制风格API
+        response = await copyStyleGenerate(finalImageUrl, formData.description, formData.fidelity);
+      } else {
+        // 默认调用换衣服API
+        response = await changeClothesGenerate(finalImageUrl, formData.description);
+      }
 
-      if (data.code === 0) {
+      if (response.code === 0) {
         toast({
           title: 'Success',
           description: 'Image generation request submitted successfully'
@@ -104,7 +101,7 @@ export function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
       } else {
         toast({
           title: 'Error',
-          description: data.msg || 'Failed to generate image',
+          description: response.msg || 'Failed to generate image',
           variant: 'destructive'
         });
       }
@@ -170,7 +167,7 @@ export function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
           />
         </div>
 
-        {formData.variationType === 'style' && (
+        {formData.variationType === '1' && (
           <FidelitySlider
             value={formData.fidelity}
             onChange={value => setFormData(prev => ({ ...prev, fidelity: value }))}

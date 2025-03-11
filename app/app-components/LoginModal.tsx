@@ -78,7 +78,11 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
         </div>
 
         {currentView === 'email-verification' ? (
-          <EmailVerification email={verificationEmail} onBackToLogin={() => handleToggleView('login')} />
+          <EmailVerification
+            email={verificationEmail}
+            onBackToLogin={() => handleToggleView('login')}
+            onClose={onClose}
+          />
         ) : (
           <div className="space-y-6 w-full">
             {googleLoginError && (
@@ -100,7 +104,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
             <div className="space-y-6">
               {currentView === 'login' ? (
-                <LoginForm onToggleView={() => handleToggleView('signup')} />
+                <LoginForm onToggleView={() => handleToggleView('signup')} onSuccess={handleGoogleLoginSuccess} />
               ) : (
                 <SignUpForm onToggleView={() => handleToggleView('login')} onSignupSuccess={handleSignupSuccess} />
               )}

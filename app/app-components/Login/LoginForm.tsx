@@ -6,9 +6,10 @@ import { authApi, saveAuthToken } from '@/app/services/api';
 
 interface LoginFormProps {
   onToggleView: () => void;
+  onSuccess: () => void;
 }
 
-export const LoginForm = ({ onToggleView }: LoginFormProps) => {
+export const LoginForm = ({ onToggleView, onSuccess }: LoginFormProps) => {
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -77,7 +78,7 @@ export const LoginForm = ({ onToggleView }: LoginFormProps) => {
           // For example:
           // window.location.href = '/dashboard';
           // or
-          // onClose();
+          onSuccess();
         } else {
           setApiError('Authentication token not received. Please try again.');
         }

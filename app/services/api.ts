@@ -12,20 +12,46 @@ const GOOGLE_REDIRECT_URI =
 
 // 创建 axios 实例
 const api = axios.create({
-  baseURL: API_URL,
+  baseURL: API_URL, // 使用相对路径，让 Next.js 的重写规则生效
   headers: {
     'Content-Type': 'application/json'
   }
 });
 
+// Add a request interceptor to handle CORS preflight
+api.interceptors.request.use(
+  config => {
+    // You can add custom headers here if needed
+    return config;
+  },
+  error => {
+    return Promise.reject(error);
+  }
+);
+
+// Add a response interceptor to handle CORS errors
+api.interceptors.response.use(
+  response => {
+    return response;
+  },
+  error => {
+    if (error.message === 'Network Error' || error.code === 'ERR_NETWORK') {
+      console.error('CORS or Network Error:', error);
+      // You can show a more user-friendly message here
+    }
+    return Promise.reject(error);
+  }
+);
+
 // 用户相关 API
 export const authApi = {
   // 注册
-  register: async (email: string, password: string) => {
+  register: async (email: string, password: string, username?: string) => {
     try {
       const response = await api.post('/api/v1/user/register', {
         email,
-        pwd: password
+        pwd: password,
+        username: username || email // Use username if provided, otherwise fallback to email
       });
       return response.data;
     } catch (error) {
@@ -44,6 +70,19 @@ export const authApi = {
       return response.data;
     } catch (error) {
       console.error('Login error:', error);
+      throw error;
+    }
+  },
+
+  // 验证邮箱
+  verifyEmail: async (verifyCode: string) => {
+    try {
+      const response = await api.post('/api/v1/user/email/verify', {
+        verifyCode
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Email verification error:', error);
       throw error;
     }
   },
@@ -84,7 +123,7 @@ export const commonApi = {
   // 获取变化类型列表
   getVariationTypeList: async () => {
     try {
-      const response = await api.get('/api/v1/common/variation_type/list');
+      const response = await api.get('/api/v1/common/variationType/list');
       if (response.data.code === 0 && response.data.data && response.data.data.list) {
         return response.data.data.list;
       } else {
@@ -145,4 +184,46 @@ export const uploadImage = async (file: File) => {
     console.error('Error uploading image:', error);
     throw error;
   }
+};
+
+// 换衣服生成
+export const changeClothesGenerate = async (originalPicUrl: string, prompt: string) => {
+  try {
+    const token = getAuthToken();
+    const response = await api.post(
+      '/api/v1/img/change_clothes_generate',
+      {
+        originalPicUrl,
+        prompt
+      },
+      {
+        headers: {
+          Authorization: token || ''
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error changing clothes generate:', error);
+    throw error;
+  }
+};
+
+export const copyStyleGenerate = async (originalPicUrl: string, prompt: string, fidelity: number) => {
+  const token = getAuthToken();
+  const response = await api.post(
+    '/api/v1/img/copy_style_generate',
+    {
+      originalPicUrl,
+      fidelity,
+      prompt
+    },
+    {
+      headers: {
+        Authorization: token || ''
+      }
+    }
+  );
+
+  return response.data;
 };
