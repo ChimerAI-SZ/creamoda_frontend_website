@@ -303,6 +303,8 @@ export function ImageGrid() {
                 }}
               >
                 <GetIntTouchDialog
+                  source="3d_making"
+                  genImgId={src.genImgId}
                   trigger={
                     <Button size="sm" className="w-[104px] h-[28px] absolute bottom-8">
                       3D making
