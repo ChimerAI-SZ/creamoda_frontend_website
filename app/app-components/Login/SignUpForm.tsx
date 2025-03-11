@@ -170,9 +170,9 @@ export const SignUpForm = ({ onToggleView, onSignupSuccess }: SignUpFormProps) =
       )}
 
       <FormField
-        label="Name"
+        label="Username"
         type="text"
-        placeholder="Your name"
+        placeholder="johndoe"
         value={formData.name}
         onChange={handleChange('name')}
         onBlur={handleBlur('name')}
@@ -182,7 +182,7 @@ export const SignUpForm = ({ onToggleView, onSignupSuccess }: SignUpFormProps) =
       <FormField
         label="Email"
         type="email"
-        placeholder="mail@email.com"
+        placeholder="creamoda@email.com"
         value={formData.email}
         onChange={handleChange('email')}
         onBlur={handleBlur('email')}
@@ -192,7 +192,7 @@ export const SignUpForm = ({ onToggleView, onSignupSuccess }: SignUpFormProps) =
       <FormField
         label="Password"
         type="password"
-        placeholder="Password"
+        placeholder="••••••••"
         value={formData.password}
         onChange={handleChange('password')}
         onBlur={handleBlur('password')}
@@ -200,9 +200,9 @@ export const SignUpForm = ({ onToggleView, onSignupSuccess }: SignUpFormProps) =
       />
 
       <FormField
-        label="Re-Enter Password"
+        label="Confirm Password"
         type="password"
-        placeholder="Password"
+        placeholder="••••••••"
         value={formData.confirmPassword}
         onChange={handleChange('confirmPassword')}
         onBlur={handleBlur('confirmPassword')}
@@ -220,20 +220,6 @@ export const SignUpForm = ({ onToggleView, onSignupSuccess }: SignUpFormProps) =
       >
         {isLoading ? 'Signing up...' : 'Sign Up'}
       </Button>
-
-      <p className="text-center text-sm text-gray-500">
-        Already have an account?{' '}
-        <a
-          href="#"
-          className="underline font-medium text-gray-900"
-          onClick={e => {
-            e.preventDefault();
-            onToggleView();
-          }}
-        >
-          Log In here
-        </a>
-      </p>
     </form>
   );
 };

@@ -13,7 +13,7 @@ interface LoginModalProps {
   onClose: () => void;
 }
 
-// 定义模态框可能的视图状态
+// Define possible modal view states
 type ModalView = 'login' | 'signup' | 'email-verification';
 
 export function LoginModal({ isOpen, onClose }: LoginModalProps) {
@@ -25,7 +25,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
   const handleToggleView = (view: ModalView) => {
     setCurrentView(view);
-    // 清除之前的错误
+    // Clear previous errors
     setGoogleLoginError('');
   };
 
@@ -35,9 +35,9 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
   };
 
   const handleGoogleLoginSuccess = () => {
-    // 登录成功后关闭模态框
+    // Close modal after successful login
     onClose();
-    // 可选：重定向到首页或仪表板
+    // Optional: redirect to homepage or dashboard
     // window.location.href = '/dashboard';
   };
 
@@ -45,17 +45,31 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
     setGoogleLoginError(error);
   };
 
-  // 根据当前视图状态确定标题
+  // Determine title based on current view
   const getTitle = () => {
     switch (currentView) {
       case 'login':
-        return 'Log In';
+        return 'Login';
       case 'signup':
-        return 'Sign Up';
+        return 'Create an account';
       case 'email-verification':
         return 'Check your email';
       default:
-        return 'Log In';
+        return 'Login';
+    }
+  };
+
+  // Get subtitle based on current view
+  const getSubtitle = () => {
+    switch (currentView) {
+      case 'login':
+        return 'Enter your credentials to access your account';
+      case 'signup':
+        return 'Enter your information to create an account';
+      case 'email-verification':
+        return '';
+      default:
+        return '';
     }
   };
 
@@ -64,18 +78,13 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
       className="fixed inset-0 bg-black/50 flex items-center justify-center z-[99999]"
       style={{ isolation: 'isolate' }}
     >
-      <div className="bg-white rounded-xl p-6 w-[480px] flex flex-col items-start relative z-[100000]">
-        <div className="w-full flex justify-center items-center relative mb-6">
-          <h1 className="text-2xl font-semibold text-center text-[#121316] font-inter">{getTitle()}</h1>
-          <Image
-            src={x.src}
-            alt="Close"
-            width={24}
-            height={24}
-            className="absolute right-0 cursor-pointer"
-            onClick={onClose}
-          />
+      <div className="bg-white rounded-lg p-6 w-[480px] flex flex-col items-start relative z-[100000]">
+        <div className="w-full flex justify-between items-center relative mb-2">
+          <h1 className="text-2xl font-semibold text-[#121316] font-inter">{getTitle()}</h1>
+          <Image src={x.src} alt="Close" width={24} height={24} className="cursor-pointer" onClick={onClose} />
         </div>
+
+        {getSubtitle() && <p className="text-gray-500 text-sm mb-6">{getSubtitle()}</p>}
 
         {currentView === 'email-verification' ? (
           <EmailVerification
@@ -91,22 +100,44 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
               </div>
             )}
 
-            <GoogleLoginButton onSuccess={handleGoogleLoginSuccess} onError={handleGoogleLoginError} />
+            {currentView === 'login' ? (
+              <LoginForm onToggleView={() => handleToggleView('signup')} onSuccess={handleGoogleLoginSuccess} />
+            ) : (
+              <SignUpForm onToggleView={() => handleToggleView('login')} onSignupSuccess={handleSignupSuccess} />
+            )}
 
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-[#666]" />
+                <div className="w-full border-t border-gray-300" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-[#666] font-inter text-sm font-medium leading-5">OR</span>
+                <span className="px-2 bg-white text-gray-500 font-inter">OR CONTINUE WITH</span>
               </div>
             </div>
 
-            <div className="space-y-6">
+            <GoogleLoginButton onSuccess={handleGoogleLoginSuccess} onError={handleGoogleLoginError} />
+
+            <div className="text-center mt-4">
               {currentView === 'login' ? (
-                <LoginForm onToggleView={() => handleToggleView('signup')} onSuccess={handleGoogleLoginSuccess} />
+                <p className="text-sm text-gray-600">
+                  Don&apos;t have an account?{' '}
+                  <span
+                    className="text-black font-medium cursor-pointer hover:underline"
+                    onClick={() => handleToggleView('signup')}
+                  >
+                    Sign up here
+                  </span>
+                </p>
               ) : (
-                <SignUpForm onToggleView={() => handleToggleView('login')} onSignupSuccess={handleSignupSuccess} />
+                <p className="text-sm text-gray-600">
+                  Already have an account?{' '}
+                  <span
+                    className="text-black font-medium cursor-pointer hover:underline"
+                    onClick={() => handleToggleView('login')}
+                  >
+                    Log in here
+                  </span>
+                </p>
               )}
             </div>
           </div>

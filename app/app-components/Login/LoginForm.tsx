@@ -125,11 +125,6 @@ export const LoginForm = ({ onToggleView, onSuccess }: LoginFormProps) => {
           onBlur={handleBlur('password')}
           error={errors.password}
         />
-        <div className="flex justify-end">
-          <a href="#" className="text-sm font-normal text-[#A3A3A3] font-inter leading-5">
-            Forgot password? <span className="underline">Send email</span>
-          </a>
-        </div>
       </div>
 
       <Button
@@ -141,22 +136,8 @@ export const LoginForm = ({ onToggleView, onSuccess }: LoginFormProps) => {
             : 'bg-[rgba(249,121,23,0.5)] cursor-not-allowed'
         } text-white font-inter text-sm font-medium leading-5`}
       >
-        {isLoading ? 'Logging in...' : 'Log In'}
+        {isLoading ? 'Logging in...' : 'Login'}
       </Button>
-
-      <p className="text-center text-sm text-gray-500">
-        No account?{' '}
-        <a
-          href="#"
-          className="underline font-medium text-gray-900"
-          onClick={e => {
-            e.preventDefault();
-            onToggleView();
-          }}
-        >
-          Sign Up here
-        </a>
-      </p>
     </form>
   );
 };
