@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Inter } from 'next/font/google';
+import { showErrorDialog } from '@/utils/index';
 
 import { ToggleTag } from './components/ToggleTag';
 import TextToImageContent from './components/TextToImageContent';
@@ -10,15 +11,15 @@ import { ImageToImageContent } from './components/ImageToImageContent';
 const inter = Inter({ subsets: ['latin'] });
 
 import { localAPI } from '@/lib/axios';
-
 import { useModelStore } from '@/stores/useModelStore';
+import { emitter } from '@/utils/events';
 
 export interface OutfitFormData {
   prompt: string;
   gender: 1 | 2;
   age: string;
   country: string;
-  modelSize: string;
+  modelSize: number;
   withHumanModel: 1 | 0;
 }
 
@@ -29,8 +30,10 @@ export function Sidebar() {
   const { setModelSizes, setVariationTypes } = useModelStore();
 
   const handleSubmit = (data: OutfitFormData) => {
-    console.log(data);
-    localAPI.post('/api/v1/img/txt_generate', data);
+    localAPI.post('/api/v1/img/txt_generate', data).then(res => {
+      console.log(res);
+      emitter.emit('sidebar:submit-success', res);
+    });
   };
 
   useEffect(() => {
@@ -51,13 +54,14 @@ export function Sidebar() {
               }
             } else {
               const errorType = index === 0 ? '模型尺寸' : '变化类型';
-              console.error(`获取${errorType}失败:`, data?.message);
+
+              showErrorDialog(`获取${errorType}失败: ${data?.message}`);
             }
           }
         });
       })
       .catch(error => {
-        console.error('请求失败:', error);
+        showErrorDialog('Something went wrong. Please try again later or contact support if the issue persists');
       });
   }, [setModelSizes, setVariationTypes]);
 

@@ -24,19 +24,18 @@ const StyledLabel = ({ content, htmlFor }: { content: string; htmlFor?: string }
 };
 
 export default function OutfitForm({ onSubmit }: OutfitFormProps) {
+  // 从 store 中获取模特尺寸枚举
+  const { modelSizes } = useModelStore();
+
   const [formData, setFormData] = useState<OutfitFormData>({
     prompt: '',
     gender: 2,
     age: '25',
     country: 'Vatican',
-    modelSize: 'mid-size',
+    modelSize: Number(modelSizes.find(size => size.name === 'Mid-size')?.code) || 2,
     withHumanModel: 1
   });
   const [btnState, setBtnState] = useState<'disabled' | 'ready' | 'generating'>('disabled');
-
-  const { modelSizes, variationTypes } = useModelStore();
-
-  console.log(modelSizes);
 
   const handleSubmit = () => {
     onSubmit?.(formData);
@@ -76,7 +75,7 @@ export default function OutfitForm({ onSubmit }: OutfitFormProps) {
 
                   <RadioGroup
                     id="text_to_img_gender"
-                    defaultValue="female"
+                    defaultValue="2"
                     onValueChange={value =>
                       setFormData({
                         ...formData,
@@ -137,8 +136,8 @@ export default function OutfitForm({ onSubmit }: OutfitFormProps) {
                   <StyledLabel content="Type" />
 
                   <Select
-                    value={formData.modelSize}
-                    onValueChange={value => setFormData({ ...formData, modelSize: value })}
+                    value={formData.modelSize.toString()}
+                    onValueChange={value => setFormData({ ...formData, modelSize: Number(value) })}
                   >
                     <SelectTrigger className="w-[155px]">
                       <SelectValue placeholder="Select type" />
