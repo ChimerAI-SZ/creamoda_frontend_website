@@ -123,6 +123,10 @@ export function ImageGrid() {
     setDetailVisible(true);
   }, []);
 
+  const handleImageChange = useCallback((image: ImageItem | null) => {
+    setSelectedImage(image);
+  }, []);
+
   // 初始加载
   useEffect(() => {
     fetchImages(1);
@@ -175,7 +179,15 @@ export function ImageGrid() {
           />
         ))}
       </div>
-      <ImageDetail imgList={images} image={selectedImage} isOpen={detailVisible} onClose={() => {}} />
+      <ImageDetail
+        imgList={images}
+        image={selectedImage}
+        isOpen={detailVisible}
+        onClose={() => {
+          setDetailVisible(false);
+        }}
+        onImageChange={handleImageChange}
+      />
     </>
   );
 }
