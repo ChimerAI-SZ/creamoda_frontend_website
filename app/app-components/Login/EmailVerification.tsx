@@ -1,20 +1,22 @@
 import { useState, useEffect, ChangeEvent, FormEvent, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { VerificationSuccess } from './VerificationSuccess';
+import { api, authApi } from '@/app/services/api';
 
 interface EmailVerificationProps {
   email?: string;
   onBackToLogin: () => void;
   onVerificationComplete?: () => void;
   onClose?: () => void;
+  skipInitialSend?: boolean;
 }
 
 export const EmailVerification = ({
   email,
   onBackToLogin,
   onVerificationComplete,
-  onClose
+  onClose,
+  skipInitialSend = true
 }: EmailVerificationProps) => {
   const [verificationCode, setVerificationCode] = useState('');
   const [isResending, setIsResending] = useState(false);
@@ -24,22 +26,14 @@ export const EmailVerification = ({
   const initialSendRef = useRef(false);
 
   useEffect(() => {
-    if (!email || initialSendRef.current) return;
+    if (!email || initialSendRef.current || skipInitialSend) return;
 
     const sendInitialVerificationCode = async () => {
       initialSendRef.current = true;
       setIsResending(true);
 
       try {
-        const response = await fetch(`${process.env.NEXT_LOCAL_API_URL}/api/v1/user/email/resend`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ email })
-        });
-
-        const data = await response.json();
+        const data = await authApi.resendVerificationCode(email);
 
         if (data.code !== 0) {
           setErrorMessage(data.msg || 'Failed to send verification code. Please try again.');
@@ -52,7 +46,7 @@ export const EmailVerification = ({
     };
 
     sendInitialVerificationCode();
-  }, [email]);
+  }, [email, skipInitialSend]);
 
   useEffect(() => {
     if (resendCountdown <= 0) return;
@@ -71,15 +65,7 @@ export const EmailVerification = ({
     setErrorMessage('');
 
     try {
-      const response = await fetch(`${process.env.NEXT_LOCAL_API_URL}/api/v1/user/email/resend`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email })
-      });
-
-      const data = await response.json();
+      const data = await authApi.resendVerificationCode(email);
 
       if (data.code !== 0) {
         setErrorMessage(data.msg || 'Failed to resend verification code. Please try again.');
@@ -105,18 +91,7 @@ export const EmailVerification = ({
     setErrorMessage('');
 
     try {
-      const response = await fetch(`${process.env.NEXT_LOCAL_API_URL}/api/v1/user/email/verify`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          verifyCode: verificationCode,
-          email: email
-        })
-      });
-
-      const data = await response.json();
+      const data = await authApi.verifyEmail(verificationCode, email || '');
 
       if (data.code === 0) {
         if (onVerificationComplete) {

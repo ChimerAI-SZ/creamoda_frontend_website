@@ -3,7 +3,7 @@ import axios from 'axios';
 // 使用环境变量中的 API URL
 const API_URL = process.env.NEXT_LOCAL_API_URL;
 // 创建 axios 实例
-const api = axios.create({
+export const api = axios.create({
   baseURL: API_URL, // 使用相对路径，让 Next.js 的重写规则生效
   headers: {
     'Content-Type': 'application/json'
@@ -67,14 +67,28 @@ export const authApi = {
   },
 
   // 验证邮箱
-  verifyEmail: async (verifyCode: string) => {
+  verifyEmail: async (verifyCode: string, email: string) => {
     try {
       const response = await api.post('/api/v1/user/email/verify', {
-        verifyCode
+        verifyCode,
+        email
       });
       return response.data;
     } catch (error) {
       console.error('Email verification error:', error);
+      throw error;
+    }
+  },
+
+  // 重发验证码
+  resendVerificationCode: async (email: string) => {
+    try {
+      const response = await api.post('/api/v1/user/email/resend', {
+        email
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Resend verification code error:', error);
       throw error;
     }
   },

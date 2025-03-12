@@ -173,21 +173,9 @@ export const SignUpForm = ({ onToggleView, onSignupSuccess }: SignUpFormProps) =
     setApiError('');
 
     try {
-      const response = await fetch(`${process.env.NEXT_LOCAL_API_URL}/api/v1/user/register`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          pwd: formData.password,
-          username: formData.name
-        })
-      });
+      const data = await authApi.register(formData.email, formData.password, formData.name);
 
-      const data = await response.json();
-
-      if (response.ok && (data.code === 0 || data.code === 402)) {
+      if (data.code === 0 || data.code === 402) {
         // Registration successful or email not verified (both cases proceed to next step)
         setRegistrationSuccess(true);
         console.log('Registration process:', data);
