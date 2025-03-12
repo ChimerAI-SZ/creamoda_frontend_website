@@ -1,12 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import x from '@/images/login/x.svg';
 import { LoginForm } from './Login/LoginForm';
 import { SignUpForm } from './Login/SignUpForm';
 import { EmailVerification } from './Login/EmailVerification';
 import { GoogleLoginButton } from './Login/GoogleLoginButton';
+
+import { emitter } from '@/utils/events';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -21,12 +23,33 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
   const [verificationEmail, setVerificationEmail] = useState('');
   const [googleLoginError, setGoogleLoginError] = useState('');
 
-  if (!isOpen) return null;
+  const [modalVisible, setModalVisible] = useState(false);
+
+  // 监听事件
+  useEffect(() => {
+    const handler = (data: { isOpen: boolean }) => {
+      setModalVisible(data.isOpen);
+    };
+
+    emitter.on('login:handleLogin', handler);
+
+    return () => {
+      emitter.off('login:handleLogin', handler);
+    };
+  }, []);
+
+  if (!modalVisible) return null;
 
   const handleToggleView = (view: ModalView) => {
     setCurrentView(view);
     // 清除之前的错误
     setGoogleLoginError('');
+  };
+
+  // 关闭模态框并调用父组件的关闭方法
+  const handleCloseModal = () => {
+    setModalVisible(false);
+    onClose();
   };
 
   const handleSignupSuccess = (email: string) => {
@@ -73,7 +96,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
             width={24}
             height={24}
             className="absolute right-0 cursor-pointer"
-            onClick={onClose}
+            onClick={handleCloseModal}
           />
         </div>
 
