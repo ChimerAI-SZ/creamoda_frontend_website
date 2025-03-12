@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { api } from '@/lib/axios';
+import { localAPI as api } from '@/lib/axios';
 
 // 用户相关 API
 export const authApi = {
