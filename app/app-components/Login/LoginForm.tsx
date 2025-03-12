@@ -34,7 +34,7 @@ export const LoginForm = ({ onToggleView, onSuccess }: LoginFormProps) => {
     [apiError]
   );
 
-  const handleBlur = useCallback(
+  const handleKeyUp = useCallback(
     (field: 'email' | 'password') => () => {
       if (field === 'email') {
         setErrors(prev => ({ ...prev, email: validators.email(formData.email) }));
@@ -98,7 +98,7 @@ export const LoginForm = ({ onToggleView, onSuccess }: LoginFormProps) => {
     formData.email.trim() !== '' && formData.password.trim() !== '' && !errors.email && !errors.password;
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit}>
       {apiError && (
         <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
           <p className="text-[#E50000] text-sm font-inter">{apiError}</p>
@@ -111,7 +111,7 @@ export const LoginForm = ({ onToggleView, onSuccess }: LoginFormProps) => {
         placeholder="mail@email.com"
         value={formData.email}
         onChange={handleChange('email')}
-        onBlur={handleBlur('email')}
+        onKeyUp={handleKeyUp('email')}
         error={errors.email}
       />
 
@@ -122,7 +122,7 @@ export const LoginForm = ({ onToggleView, onSuccess }: LoginFormProps) => {
           placeholder="Password"
           value={formData.password}
           onChange={handleChange('password')}
-          onBlur={handleBlur('password')}
+          onKeyUp={handleKeyUp('password')}
           error={errors.password}
         />
       </div>

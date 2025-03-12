@@ -1,8 +1,10 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { FormField } from './FormField';
 import { validators } from './validators';
 import { authApi } from '@/app/services/api';
+import { PasswordRequirements } from './PasswordRequirements';
+import { UsernameRequirements } from './UsernameRequirements';
 
 interface SignUpFormProps {
   onToggleView: () => void;
@@ -22,19 +24,76 @@ export const SignUpForm = ({ onToggleView, onSignupSuccess }: SignUpFormProps) =
     password: '',
     confirmPassword: ''
   });
+  const [focusedField, setFocusedField] = useState<keyof typeof formData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [apiError, setApiError] = useState('');
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
+
+  // Add effect to track active element for tab navigation
+  useEffect(() => {
+    const handleFocusChange = () => {
+      const activeElement = document.activeElement;
+
+      // Check which input is focused
+      if (activeElement && activeElement.tagName === 'INPUT') {
+        const inputName = activeElement.getAttribute('name');
+
+        if (inputName === 'name') {
+          setFocusedField('name');
+        } else if (inputName === 'email') {
+          setFocusedField('email');
+        } else if (inputName === 'password') {
+          setFocusedField('password');
+        } else if (inputName === 'confirmPassword') {
+          setFocusedField('confirmPassword');
+        }
+      }
+    };
+
+    // Add event listeners for focus and blur
+    document.addEventListener('focusin', handleFocusChange);
+
+    return () => {
+      document.removeEventListener('focusin', handleFocusChange);
+    };
+  }, []);
+
+  // Handle focus events
+  const handleFocus = (field: keyof typeof formData) => () => {
+    // Force a re-render by setting the focused field
+    setFocusedField(null);
+
+    // Use setTimeout to ensure the DOM has updated before showing the requirements
+    setTimeout(() => {
+      setFocusedField(field);
+    }, 10);
+  };
+
+  // Handle blur events
+  const handleBlur = () => {
+    // Use setTimeout with a longer delay for tab navigation
+    setTimeout(() => {
+      // Check if the active element is still within the form
+      const activeElement = document.activeElement;
+      const isStillInForm =
+        activeElement &&
+        (activeElement.tagName === 'INPUT' ||
+          activeElement.tagName === 'BUTTON' ||
+          activeElement.closest('form') === document.querySelector('form'));
+
+      // Only clear focused field if we've moved out of the form
+      if (!isStillInForm) {
+        setFocusedField(null);
+      }
+    }, 200);
+  };
 
   const handleChange = useCallback(
     (field: keyof typeof formData) => (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
       setFormData(prev => ({ ...prev, [field]: value }));
 
-      // Clear error when typing
-      if (value.trim()) {
-        setErrors(prev => ({ ...prev, [field]: '' }));
-      }
+      // Don't clear errors immediately, let the keyUp handler do validation
 
       // Special handling for password fields
       if (field === 'password' && formData.confirmPassword) {
@@ -57,26 +116,36 @@ export const SignUpForm = ({ onToggleView, onSignupSuccess }: SignUpFormProps) =
     [formData.password, formData.confirmPassword, apiError]
   );
 
-  const handleBlur = useCallback(
+  const handleKeyUp = useCallback(
     (field: keyof typeof formData) => () => {
-      let errorMessage = '';
+      // Use setTimeout to debounce validation
+      setTimeout(() => {
+        let errorMessage = '';
 
-      switch (field) {
-        case 'name':
-          errorMessage = validators.name(formData.name);
-          break;
-        case 'email':
-          errorMessage = validators.email(formData.email);
-          break;
-        case 'password':
-          errorMessage = validators.password(formData.password);
-          break;
-        case 'confirmPassword':
-          errorMessage = validators.confirmPassword(formData.confirmPassword, formData.password);
-          break;
-      }
+        switch (field) {
+          case 'name':
+            errorMessage = validators.name(formData.name);
+            break;
+          case 'email':
+            errorMessage = validators.email(formData.email);
+            break;
+          case 'password':
+            errorMessage = validators.password(formData.password);
+            // Also validate confirm password when password changes
+            if (formData.confirmPassword) {
+              setErrors(prev => ({
+                ...prev,
+                confirmPassword: validators.confirmPassword(formData.confirmPassword, formData.password)
+              }));
+            }
+            break;
+          case 'confirmPassword':
+            errorMessage = validators.confirmPassword(formData.confirmPassword, formData.password);
+            break;
+        }
 
-      setErrors(prev => ({ ...prev, [field]: errorMessage }));
+        setErrors(prev => ({ ...prev, [field]: errorMessage }));
+      }, 300); // 300ms debounce
     },
     [formData]
   );
@@ -118,10 +187,10 @@ export const SignUpForm = ({ onToggleView, onSignupSuccess }: SignUpFormProps) =
 
       const data = await response.json();
 
-      if (response.ok && data.code === 0) {
-        // Registration successful
+      if (response.ok && (data.code === 0 || data.code === 402)) {
+        // Registration successful or email not verified (both cases proceed to next step)
         setRegistrationSuccess(true);
-        console.log('Registration successful:', data);
+        console.log('Registration process:', data);
 
         // Call the success callback with the email
         if (onSignupSuccess) {
@@ -156,7 +225,7 @@ export const SignUpForm = ({ onToggleView, onSignupSuccess }: SignUpFormProps) =
     !errors.confirmPassword;
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit}>
       {apiError && (
         <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
           <p className="text-[#E50000] text-sm font-inter">{apiError}</p>
@@ -169,43 +238,63 @@ export const SignUpForm = ({ onToggleView, onSignupSuccess }: SignUpFormProps) =
         </div>
       )}
 
-      <FormField
-        label="Username"
-        type="text"
-        placeholder="johndoe"
-        value={formData.name}
-        onChange={handleChange('name')}
-        onBlur={handleBlur('name')}
-        error={errors.name}
-      />
+      <div className="space-y-1">
+        <FormField
+          label="Username"
+          type="text"
+          name="name"
+          placeholder="johndoe"
+          value={formData.name}
+          onChange={handleChange('name')}
+          onKeyUp={handleKeyUp('name')}
+          onFocus={handleFocus('name')}
+          onBlur={handleBlur}
+          error={errors.name}
+        />
+        {focusedField === 'name' && formData.name.length > 0 && <UsernameRequirements username={formData.name} />}
+      </div>
 
       <FormField
         label="Email"
         type="email"
+        name="email"
         placeholder="creamoda@email.com"
         value={formData.email}
         onChange={handleChange('email')}
-        onBlur={handleBlur('email')}
+        onKeyUp={handleKeyUp('email')}
+        onFocus={handleFocus('email')}
+        onBlur={handleBlur}
         error={errors.email}
       />
 
-      <FormField
-        label="Password"
-        type="password"
-        placeholder="••••••••"
-        value={formData.password}
-        onChange={handleChange('password')}
-        onBlur={handleBlur('password')}
-        error={errors.password}
-      />
+      <div className="space-y-1">
+        <FormField
+          label="Password"
+          type="password"
+          name="password"
+          placeholder=""
+          value={formData.password}
+          onChange={handleChange('password')}
+          onKeyUp={handleKeyUp('password')}
+          onFocus={handleFocus('password')}
+          onBlur={handleBlur}
+          error={errors.password}
+        />
+        {focusedField === 'password' && formData.password.length > 0 && (
+          <PasswordRequirements password={formData.password} />
+        )}
+      </div>
 
       <FormField
         label="Confirm Password"
         type="password"
-        placeholder="••••••••"
+        name="confirmPassword"
+        placeholder=""
         value={formData.confirmPassword}
         onChange={handleChange('confirmPassword')}
-        onBlur={handleBlur('confirmPassword')}
+        onKeyUp={handleKeyUp('confirmPassword')}
+        onFocus={handleFocus('confirmPassword')}
+        onBlur={handleBlur}
         error={errors.confirmPassword}
       />
 

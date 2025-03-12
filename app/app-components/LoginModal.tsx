@@ -1,12 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import x from '@/images/login/x.svg';
 import { LoginForm } from './Login/LoginForm';
 import { SignUpForm } from './Login/SignUpForm';
 import { EmailVerification } from './Login/EmailVerification';
 import { GoogleLoginButton } from './Login/GoogleLoginButton';
+import { VerificationSuccess } from './Login/VerificationSuccess';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -14,12 +15,21 @@ interface LoginModalProps {
 }
 
 // Define possible modal view states
-type ModalView = 'login' | 'signup' | 'email-verification';
+type ModalView = 'login' | 'signup' | 'email-verification' | 'verification-success';
 
 export function LoginModal({ isOpen, onClose }: LoginModalProps) {
   const [currentView, setCurrentView] = useState<ModalView>('login');
   const [verificationEmail, setVerificationEmail] = useState('');
   const [googleLoginError, setGoogleLoginError] = useState('');
+
+  // Reset state when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setCurrentView('login');
+      setGoogleLoginError('');
+      setVerificationEmail('');
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -32,6 +42,11 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
   const handleSignupSuccess = (email: string) => {
     setVerificationEmail(email);
     setCurrentView('email-verification');
+  };
+
+  const handleVerificationComplete = () => {
+    // 验证成功时切换到成功视图
+    setCurrentView('verification-success');
   };
 
   const handleGoogleLoginSuccess = () => {
@@ -53,7 +68,9 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
       case 'signup':
         return 'Create an account';
       case 'email-verification':
-        return 'Check your email';
+        return 'Verify your email';
+      case 'verification-success':
+        return 'Email Verified';
       default:
         return 'Login';
     }
@@ -67,6 +84,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
       case 'signup':
         return 'Enter your information to create an account';
       case 'email-verification':
+      case 'verification-success':
         return '';
       default:
         return '';
@@ -79,19 +97,34 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
       style={{ isolation: 'isolate' }}
     >
       <div className="bg-white rounded-lg p-6 w-[480px] flex flex-col items-start relative z-[100000]">
-        <div className="w-full flex justify-between items-center relative mb-2">
-          <h1 className="text-2xl font-semibold text-[#121316] font-inter">{getTitle()}</h1>
-          <Image src={x.src} alt="Close" width={24} height={24} className="cursor-pointer" onClick={onClose} />
-        </div>
-
-        {getSubtitle() && <p className="text-gray-500 text-sm mb-6">{getSubtitle()}</p>}
+        {currentView !== 'email-verification' && currentView !== 'verification-success' && (
+          <>
+            <div className="w-full flex justify-between items-center relative mb-2">
+              <h1 className="text-2xl font-semibold text-[#121316] font-inter">{getTitle()}</h1>
+              <Image src={x.src} alt="Close" width={24} height={24} className="cursor-pointer" onClick={onClose} />
+            </div>
+            {getSubtitle() && <p className="text-gray-500 text-sm mb-6">{getSubtitle()}</p>}
+          </>
+        )}
 
         {currentView === 'email-verification' ? (
-          <EmailVerification
-            email={verificationEmail}
-            onBackToLogin={() => handleToggleView('login')}
-            onClose={onClose}
-          />
+          <div className="w-full">
+            <div className="w-full flex justify-between items-center relative mb-2">
+              <h1 className="text-2xl font-semibold text-[#121316] font-inter">{getTitle()}</h1>
+              <Image src={x.src} alt="Close" width={24} height={24} className="cursor-pointer" onClick={onClose} />
+            </div>
+            {getSubtitle() && <p className="text-gray-500 text-sm mb-6">{getSubtitle()}</p>}
+            <EmailVerification
+              email={verificationEmail}
+              onBackToLogin={() => handleToggleView('login')}
+              onVerificationComplete={handleVerificationComplete}
+              onClose={onClose}
+            />
+          </div>
+        ) : currentView === 'verification-success' ? (
+          <div className="w-full">
+            <VerificationSuccess onBackToLogin={() => handleToggleView('login')} />
+          </div>
         ) : (
           <div className="space-y-6 w-full">
             {googleLoginError && (
