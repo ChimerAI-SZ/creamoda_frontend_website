@@ -18,27 +18,27 @@ export function GenerateButton({
   className = '',
   autoOpenLogin = true
 }: GenerateButtonProps) {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  useEffect(() => {
-    // 检查用户是否已登录
-    const checkLoginStatus = () => {
-      const token = localStorage.getItem('auth_token');
-      const isAuthenticated = !!token;
-      setIsLoggedIn(isAuthenticated);
-    };
-    // 监听存储变化，以便在其他标签页登录/登出时更新状态
-    const handleStorageChange = () => {
-      checkLoginStatus();
-    };
-    window.addEventListener('storage', handleStorageChange);
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-    };
-  }, []);
+  // useEffect(() => {
+  //   // 检查用户是否已登录
+  //   const checkLoginStatus = () => {
+  //     const token = localStorage.getItem('auth_token');
+  //     const isAuthenticated = !!token;
+  //     setIsLoggedIn(isAuthenticated);
+  //   };
+  //   // 监听存储变化，以便在其他标签页登录/登出时更新状态
+  //   const handleStorageChange = () => {
+  //     checkLoginStatus();
+  //   };
+  //   window.addEventListener('storage', handleStorageChange);
+  //   return () => {
+  //     window.removeEventListener('storage', handleStorageChange);
+  //   };
+  // }, []);
 
   const handleClick = () => {
-    if (isLoggedIn) {
+    const token = localStorage.getItem('auth_token');
+    const isAuthenticated = !!token;
+    if (isAuthenticated) {
       onClick();
     } else {
       emitter.emit('login:handleLogin', { isOpen: true });
