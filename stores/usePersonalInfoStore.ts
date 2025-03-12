@@ -29,7 +29,7 @@ interface ModelState {
   ) => void;
 }
 
-export const useModelStore = create<ModelState>(set => ({
+export const usePersonalInfoStore = create<ModelState>(set => ({
   username: '',
   email: '',
   status: '',
@@ -46,4 +46,4 @@ export const useModelStore = create<ModelState>(set => ({
 }));
 
 // 导出 store
-export default useModelStore;
+export default usePersonalInfoStore;

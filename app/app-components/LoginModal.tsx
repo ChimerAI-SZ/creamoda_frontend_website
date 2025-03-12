@@ -8,6 +8,8 @@ import { SignUpForm } from './Login/SignUpForm';
 import { EmailVerification } from './Login/EmailVerification';
 import { GoogleLoginButton } from './Login/GoogleLoginButton';
 import { VerificationSuccess } from './Login/VerificationSuccess';
+import { usePersonalInfoStore } from '@/stores/usePersonalInfoStore';
+import { authApi } from '@/app/services/api';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -49,11 +51,29 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
     setCurrentView('verification-success');
   };
 
-  const handleGoogleLoginSuccess = () => {
-    // Close modal after successful login
-    onClose();
-    // Optional: redirect to homepage or dashboard
-    // window.location.href = '/dashboard';
+  const handleGoogleLoginSuccess = async () => {
+    try {
+      // Fetch user info after successful login using the API service
+      const userData = await authApi.getUserInfo();
+
+      // Update user info in the store
+      usePersonalInfoStore.getState().updateUserInfo({
+        username: userData.username || '',
+        email: userData.email || '',
+        status: userData.status || '',
+        headPic: userData.headPic || '',
+        emailVerified: userData.emailVerified || ''
+      });
+
+      // Close modal after successful login
+      onClose();
+      // Optional: redirect to homepage or dashboard
+      // window.location.href = '/dashboard';
+    } catch (error) {
+      console.error('Failed to fetch user info:', error);
+      // Still close the modal even if fetching user info fails
+      onClose();
+    }
   };
 
   const handleGoogleLoginError = (error: string) => {

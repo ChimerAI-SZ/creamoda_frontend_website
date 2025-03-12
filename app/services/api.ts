@@ -1,15 +1,7 @@
 import axios from 'axios';
 
 // 使用环境变量中的 API URL
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://3.12.238.000';
-// 使用 NEXT_PUBLIC_ 前缀的环境变量，确保客户端可以访问
-const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
-// 修改重定向 URI 为本地开发环境的回调路径
-const GOOGLE_REDIRECT_URI =
-  process.env.NODE_ENV === 'development'
-    ? 'http://localhost:3000/google-callback'
-    : process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI || 'https://google.creamoda.ai/google-callback';
-
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 // 创建 axios 实例
 const api = axios.create({
   baseURL: API_URL, // 使用相对路径，让 Next.js 的重写规则生效
@@ -139,6 +131,21 @@ export const authApi = {
       }
     } catch (error) {
       console.error('Error processing Google callback:', error);
+      throw error;
+    }
+  },
+
+  // 获取用户信息
+  getUserInfo: async () => {
+    try {
+      const response = await api.get('/api/v1/user/info');
+      if (response.data.code === 0 && response.data.data) {
+        return response.data.data;
+      } else {
+        throw new Error(response.data.msg || 'Failed to get user info');
+      }
+    } catch (error) {
+      console.error('Error getting user info:', error);
       throw error;
     }
   }

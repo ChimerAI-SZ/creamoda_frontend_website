@@ -17,7 +17,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
 
   return (
     <div
-      className="fixed inset-0 bg-black/50 flex items-center justify-center z-[99999]"
+      className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[99999]"
       style={{ isolation: 'isolate' }}
       onClick={onClose}
     >
