@@ -195,7 +195,7 @@ export const isAuthenticated = () => {
 // 上传图片
 export const uploadImage = async (file: File) => {
   try {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://3.12.238.000';
+    const API_URL = process.env.NEXT_LOCAL_API_URL || 'http://3.12.238.000';
     const token = getAuthToken();
 
     const formData = new FormData();

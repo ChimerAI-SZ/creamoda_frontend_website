@@ -173,7 +173,7 @@ export const SignUpForm = ({ onToggleView, onSignupSuccess }: SignUpFormProps) =
     setApiError('');
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/register`, {
+      const response = await fetch(`${process.env.NEXT_LOCAL_API_URL}/api/v1/user/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
