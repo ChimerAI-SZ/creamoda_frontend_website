@@ -3,7 +3,8 @@ import axios from 'axios';
 export const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
   headers: {
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${localStorage.getItem('auth_token')}`
   }
 });
 
@@ -17,7 +18,8 @@ export const mockAPI = axios.create({
 export const localAPI = axios.create({
   baseURL: process.env.NEXT_LOCAL_API_URL,
   headers: {
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${localStorage.getItem('auth_token')}`
   }
 });
 
