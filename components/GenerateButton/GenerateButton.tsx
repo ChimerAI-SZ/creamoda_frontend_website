@@ -10,17 +10,32 @@ interface GenerateButtonProps {
   onClick: () => void;
   state?: GenerateButtonState;
   className?: string;
+  autoOpenLogin?: boolean;
 }
 
-export function GenerateButton({ onClick, state = 'disabled', className = '' }: GenerateButtonProps) {
+export function GenerateButton({
+  onClick,
+  state = 'disabled',
+  className = '',
+  autoOpenLogin = true
+}: GenerateButtonProps) {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [initialCheckDone, setInitialCheckDone] = useState(false);
 
   useEffect(() => {
     // 检查用户是否已登录
     const checkLoginStatus = () => {
       const token = localStorage.getItem('auth_token');
-      setIsLoggedIn(!!token);
+      const isAuthenticated = !!token;
+      setIsLoggedIn(isAuthenticated);
+
+      // 首次检查完成后，如果启用了自动登录且用户未登录，则显示登录模态框
+      if (!initialCheckDone && autoOpenLogin && !isAuthenticated) {
+        setShowLoginModal(true);
+      }
+
+      setInitialCheckDone(true);
     };
 
     // 初始检查
@@ -36,7 +51,7 @@ export function GenerateButton({ onClick, state = 'disabled', className = '' }: 
     return () => {
       window.removeEventListener('storage', handleStorageChange);
     };
-  }, []);
+  }, [autoOpenLogin, initialCheckDone]);
 
   const handleClick = () => {
     if (isLoggedIn) {
