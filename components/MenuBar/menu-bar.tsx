@@ -4,6 +4,7 @@ import Image from 'next/image';
 import crown from '@/images/menu/crown.svg';
 import wand from '@/images/menu/wand.svg';
 import home from '@/images/menu/home.svg';
+import ComingSoonDialog from '@/components/ComingSoonDialog';
 
 interface MenuItemProps {
   icon: React.ReactNode;
@@ -41,12 +42,14 @@ export function MenuBar() {
     <div
       className={cn(
         'group bg-white border-r border-gray-200 h-[calc(100vh-64px)] flex flex-col px-2 transition-all duration-200 ',
-        'hover:w-[160px] '
+        'hover:w-[128px] '
       )}
     >
       <MenuItem icon={<Image src={home.src} alt="home" width={16} height={16} />} title="Home" isActive />
-      <MenuItem icon={<Image src={crown.src} alt="second" width={16} height={16} />} title="AI Generation" />
-      <MenuItem icon={<Image src={wand.src} alt="third" width={16} height={16} />} title="Premium" />
+      <ComingSoonDialog
+        trigger={<MenuItem icon={<Image src={crown.src} alt="second" width={16} height={16} />} title="My style" />}
+      />
+      {/* <MenuItem icon={<Image src={wand.src} alt="third" width={16} height={16} />} title="Premium" /> */}
     </div>
   );
 }

@@ -5,6 +5,7 @@ import {
   DialogContent,
   DialogDescription,
   DialogHeader,
+  DialogTitle,
   DialogTrigger
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -20,6 +21,7 @@ const NavDialog: React.FC<NavDialogProps> = ({ trigger }) => {
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent className="w-[360px] h-[168px] p-[24px] pb-[16px]">
         <DialogHeader>
+          <DialogTitle className="sr-only">Coming Soon</DialogTitle>
           <DialogDescription>
             <div className="flex flex-col items-center justify-center text-[#121316] text-center font-inter text-base font-medium leading-[32px]">
               We are creating

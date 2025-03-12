@@ -93,7 +93,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
   return (
     <div
-      className="fixed inset-0 bg-black/50 flex items-center justify-center z-[99999]"
+      className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[99999]"
       style={{ isolation: 'isolate' }}
     >
       <div className="bg-white rounded-lg p-6 w-[480px] flex flex-col items-start relative z-[100000]">
