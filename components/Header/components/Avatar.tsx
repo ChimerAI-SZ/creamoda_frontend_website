@@ -2,10 +2,31 @@
 
 import Image from 'next/image';
 import { useState } from 'react';
-import { User, Settings, LogOut } from 'lucide-react';
+import { X } from 'lucide-react';
+
+import { Button } from '@/components/ui/button';
+
+import { localAPI } from '@/lib/axios';
+import usePersonalInfoStore from '@/stores/usePersonalInfoStore';
+import { showErrorDialog } from '@/utils/index';
 
 export default function Avatar() {
   const [isOpen, setIsOpen] = useState(false);
+
+  const { username, email, headPic } = usePersonalInfoStore();
+  console.log(username, email, headPic);
+
+  const handleLogout = () => {
+    setIsOpen(false);
+
+    // 清除认证令牌
+    localStorage.removeItem('auth_token');
+
+    // 调用登出接口
+    localAPI.post('/api/v1/user/logout').catch(error => {
+      showErrorDialog('failed to logout');
+    });
+  };
 
   return (
     <div className="relative">
@@ -13,26 +34,58 @@ export default function Avatar() {
         className="w-8 h-8 rounded-full overflow-hidden focus:outline-none focus:ring-2 focus:ring-[#FF7B0D] focus:ring-offset-2 cursor-pointer"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <Image src="/placeholder.svg?height=32&width=32" alt="User Avatar" width={32} height={32} />
+        <Image
+          src={headPic || '/images/defaultAvatar.svg'}
+          alt="用户头像"
+          width={32}
+          height={32}
+          className="w-full h-full object-cover"
+        />
       </div>
+
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
-          <div className="px-4 py-2 border-b">
-            <p className="text-sm font-medium">John Doe</p>
-            <p className="text-xs text-gray-500">john.doe@example.com</p>
+        <div className="fixed top-[48px] right-6 bg-white z-50 flex flex-col items-center p-6 w-[480px] rounded-[6px] shadow-[-2px_4px_10px_0px_rgba(0,0,0,0.05)]">
+          <button onClick={() => setIsOpen(false)} className="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
+            <X className="w-6 h-6" />
+          </button>
+
+          <div className="mt-[12px] mb-8">
+            <div className="w-[60px] h-[60px] mx-auto overflow-hidden rounded-[50%] border-[#666] border-[1px]">
+              <Image
+                src={headPic || '/images/defaultAvatar.svg'}
+                alt="用户头像"
+                width={60}
+                height={60}
+                className="w-full h-full object-cover"
+              />
+            </div>
           </div>
-          <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-            <User className="inline-block w-4 h-4 mr-2" />
-            Profile
-          </a>
-          <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-            <Settings className="inline-block w-4 h-4 mr-2" />
-            Settings
-          </a>
-          <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-            <LogOut className="inline-block w-4 h-4 mr-2" />
-            Log out
-          </a>
+
+          <div className="w-full max-w-md space-y-8">
+            <div>
+              <div className="mb-[24px]">
+                <h3 className="text-[#121316] font-inter text-sm font-medium leading-5 mb-[6px]">Username</h3>
+                <div className="p-[10px] w-full border rounded-lg">
+                  <p className="text-[#141414] font-inter text-sm font-normal leading-5 h-[20px]">{username}</p>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-[#121316] font-inter text-sm font-medium leading-5 mb-[6px]">Email</h3>
+                <div className="mt-1 p-[10px] w-full border rounded-lg">
+                  <p className="text-[#141414] font-inter text-sm font-normal leading-5 h-[20px]">{email}</p>
+                </div>
+              </div>
+            </div>
+
+            <Button
+              variant="outline"
+              className="mt-6 w-full sm:w-auto px-[16px] py-[12px] border border-[#FF7B0D] text-[#FF7B0D] rounded-lg hover:bg-orange-50 transition-colors"
+              onClick={handleLogout}
+            >
+              <span className="text-[#121316] font-inter text-sm font-medium leading-5">Log out</span>
+            </Button>
+          </div>
         </div>
       )}
     </div>

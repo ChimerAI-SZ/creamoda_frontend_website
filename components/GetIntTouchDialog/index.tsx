@@ -1,4 +1,5 @@
-import React, { ReactNode, useState, useEffect } from 'react';
+import React, { ReactNode, useState } from 'react';
+
 import {
   Dialog,
   DialogClose,
@@ -9,16 +10,24 @@ import {
   DialogTrigger
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
+import usePersonalInfoStore from '@/stores/usePersonalInfoStore';
+import { localAPI } from '@/lib/axios';
+
 interface GetIntTouchDialogProps {
   trigger: ReactNode;
+  genImgId: number;
+  source: string;
 }
 
-const GetIntTouchDialog: React.FC<GetIntTouchDialogProps> = ({ trigger }) => {
-  const [email, setEmail] = useState('');
+const GetIntTouchDialog: React.FC<GetIntTouchDialogProps> = ({ trigger, genImgId, source }) => {
+  // 获取登录用户的邮箱
+  const { email: userEmail } = usePersonalInfoStore();
+  const [email, setEmail] = useState(userEmail);
+  // 添加一个状态来控制对话框的开关
+  const [open, setOpen] = useState(false);
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -28,6 +37,21 @@ const GetIntTouchDialog: React.FC<GetIntTouchDialogProps> = ({ trigger }) => {
     // 处理提交逻辑
     console.log('提交的邮箱:', email);
     // 这里可以添加API调用或其他处理逻辑
+    localAPI
+      .post('/api/v1/common/contact', {
+        contactEmail: email,
+        genImgId,
+        source
+      })
+      .then(res => {
+        console.log(res);
+        // API调用成功后关闭对话框
+        setOpen(false);
+      })
+      .catch(err => {
+        console.error('提交失败:', err);
+        // 可以在这里添加错误处理逻辑
+      });
   };
 
   // 组件挂载时从 localStorage 获取邮箱
@@ -42,7 +66,7 @@ const GetIntTouchDialog: React.FC<GetIntTouchDialogProps> = ({ trigger }) => {
   }, []);
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent closeBtnUnvisible={false} className="w-[420px] h-[260px] p-6 gap-0">
         <DialogHeader>
@@ -66,23 +90,20 @@ const GetIntTouchDialog: React.FC<GetIntTouchDialogProps> = ({ trigger }) => {
           </div>
 
           <div className="flex justify-center items-center gap-[24px] mt-[24px]">
-            <DialogClose asChild>
-              <Button
-                variant="outline"
-                className="w-[96px] h-[40px] py-[10px] px-[16px] text-base font-medium border-[#DCDCDC]"
-              >
-                <span className="text-[#121316] font-inter text-sm font-medium leading-5">Cancel</span>
-              </Button>
-            </DialogClose>
-            <DialogClose asChild>
-              <Button
-                variant="default"
-                onClick={handleSubmit}
-                className="w-[96px] h-[40px] py-[10px] px-[16px] text-base font-medium"
-              >
-                <span className="text-white font-inter text-sm font-medium leading-5">Confirm</span>
-              </Button>
-            </DialogClose>
+            <Button
+              variant="outline"
+              onClick={() => setOpen(false)}
+              className="w-[96px] h-[40px] py-[10px] px-[16px] text-base font-medium border-[#DCDCDC]"
+            >
+              <span className="text-[#121316] font-inter text-sm font-medium leading-5">Cancel</span>
+            </Button>
+            <Button
+              variant="default"
+              onClick={handleSubmit}
+              className="w-[96px] h-[40px] py-[10px] px-[16px] text-base font-medium"
+            >
+              <span className="text-white font-inter text-sm font-medium leading-5">Confirm</span>
+            </Button>
           </div>
         </div>
       </DialogContent>
