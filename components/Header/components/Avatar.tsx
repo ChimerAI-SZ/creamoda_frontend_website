@@ -9,12 +9,22 @@ import { Button } from '@/components/ui/button';
 import { localAPI } from '@/lib/axios';
 import usePersonalInfoStore from '@/stores/usePersonalInfoStore';
 import { showErrorDialog } from '@/utils/index';
-
+import { emitter } from '@/utils/events';
 export default function Avatar() {
   const [isOpen, setIsOpen] = useState(false);
-
+  // 获取用户信息
   const { username, email, headPic } = usePersonalInfoStore();
-  console.log(username, email, headPic);
+
+  const handleViewDetail = () => {
+    const token = localStorage.getItem('auth_token');
+
+    // 已经登录了就打开详情，没有登录就出发登录弹窗
+    if (token) {
+      setIsOpen(true);
+    } else {
+      emitter.emit('login:handleLogin', { isOpen: true });
+    }
+  };
 
   const handleLogout = () => {
     setIsOpen(false);
@@ -32,7 +42,7 @@ export default function Avatar() {
     <div className="relative">
       <div
         className="w-8 h-8 rounded-full overflow-hidden focus:outline-none focus:ring-2 focus:ring-[#FF7B0D] focus:ring-offset-2 cursor-pointer"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={handleViewDetail}
       >
         <Image
           src={headPic || '/images/defaultAvatar.svg'}

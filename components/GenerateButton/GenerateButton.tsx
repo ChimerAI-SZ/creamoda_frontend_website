@@ -38,9 +38,6 @@ export function GenerateButton({
       setInitialCheckDone(true);
     };
 
-    // 初始检查
-    checkLoginStatus();
-
     // 监听存储变化，以便在其他标签页登录/登出时更新状态
     const handleStorageChange = () => {
       checkLoginStatus();

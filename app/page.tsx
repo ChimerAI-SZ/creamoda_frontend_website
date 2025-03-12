@@ -1,3 +1,7 @@
+'use client';
+
+import { useEffect } from 'react';
+
 import { Header } from '@/components/Header';
 import { MenuBar } from '@/components/MenuBar/menu-bar';
 
