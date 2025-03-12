@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // 使用环境变量中的 API URL
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_URL = process.env.NEXT_LOCAL_API_URL;
 // 创建 axios 实例
 const api = axios.create({
   baseURL: API_URL, // 使用相对路径，让 Next.js 的重写规则生效
