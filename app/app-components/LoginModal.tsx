@@ -9,7 +9,7 @@ import { EmailVerification } from './Login/EmailVerification';
 import { GoogleLoginButton } from './Login/GoogleLoginButton';
 import { VerificationSuccess } from './Login/VerificationSuccess';
 import { usePersonalInfoStore } from '@/stores/usePersonalInfoStore';
-import { authApi } from '@/app/services/api';
+import { authApi } from '@/lib/login/api';
 
 import { emitter } from '@/utils/events';
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { authApi, isAuthenticated } from '@/app/services/api';
+import { authApi, isAuthenticated } from '@/lib/login/api';
 import { usePersonalInfoStore } from '@/stores/usePersonalInfoStore';
 
 export function UserDataInitializer() {

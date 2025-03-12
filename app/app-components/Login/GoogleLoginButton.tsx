@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { authApi, saveAuthToken } from '@/app/services/api';
+import { authApi, saveAuthToken } from '@/lib/login/api';
 import google from '@/images/login/google.svg';
 
 interface GoogleLoginButtonProps {

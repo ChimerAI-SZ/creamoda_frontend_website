@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { authApi } from '@/app/services/api';
+import { authApi } from '@/lib/login/api';
 
 export default function GoogleTest() {
   const [authUrl, setAuthUrl] = useState('');

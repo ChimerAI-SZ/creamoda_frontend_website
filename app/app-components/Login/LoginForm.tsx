@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { FormField } from './FormField';
 import { validators } from './validators';
-import { authApi, saveAuthToken } from '@/app/services/api';
+import { authApi, saveAuthToken } from '@/lib/login/api';
 
 interface LoginFormProps {
   onToggleView: () => void;

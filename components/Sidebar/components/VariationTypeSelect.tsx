@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { FormLabel } from '@/components/Sidebar/components/FormLabel';
-import { commonApi } from '@/app/services/api';
+import { commonApi } from '@/lib/login/api';
 import { cn } from '@/lib/utils';
 import { useModelStore } from '@/stores/useModelStore';
 interface VariationType {

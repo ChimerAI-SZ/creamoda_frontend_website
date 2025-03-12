@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { authApi, saveAuthToken } from '@/app/services/api';
+import { authApi, saveAuthToken } from '@/lib/login/api';
 
 // Add dynamic import to disable pre-rendering
 export const dynamic = 'force-dynamic';

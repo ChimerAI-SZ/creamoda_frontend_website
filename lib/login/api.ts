@@ -1,39 +1,5 @@
 import axios from 'axios';
-
-// 使用环境变量中的 API URL
-const API_URL = process.env.NEXT_LOCAL_API_URL;
-// 创建 axios 实例
-export const api = axios.create({
-  baseURL: API_URL, // 使用相对路径，让 Next.js 的重写规则生效
-  headers: {
-    'Content-Type': 'application/json'
-  }
-});
-
-// Add a request interceptor to handle CORS preflight
-api.interceptors.request.use(
-  config => {
-    // You can add custom headers here if needed
-    return config;
-  },
-  error => {
-    return Promise.reject(error);
-  }
-);
-
-// Add a response interceptor to handle CORS errors
-api.interceptors.response.use(
-  response => {
-    return response;
-  },
-  error => {
-    if (error.message === 'Network Error' || error.code === 'ERR_NETWORK') {
-      console.error('CORS or Network Error:', error);
-      // You can show a more user-friendly message here
-    }
-    return Promise.reject(error);
-  }
-);
+import { api } from '@/lib/axios';
 
 // 用户相关 API
 export const authApi = {
@@ -126,7 +92,7 @@ export const authApi = {
   // 获取 Google 回调
   getGoogleCallback: async (code: string) => {
     try {
-      const response = await axios.get('http://47.251.122.83:8090/api/v1/auth/callback', {
+      const response = await axios.get('https://google.creamoda.ai/api/v1/auth/callback', {
         params: {
           code
         }

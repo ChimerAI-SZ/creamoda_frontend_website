@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { FormField } from './FormField';
 import { validators } from './validators';
-import { authApi } from '@/app/services/api';
+import { authApi } from '@/lib/login/api';
 import { PasswordRequirements } from './PasswordRequirements';
 import { UsernameRequirements } from './UsernameRequirements';
 
