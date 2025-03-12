@@ -66,7 +66,7 @@ export function Sidebar() {
 
   return (
     <div
-      className={`w-[334px] h-[calc(100vh-64px)] flex-shrink-0 bg-white border-r box-content border-gray-200 flex flex-col z-10 ${inter.className}`}
+      className={`w-[334px] h-[calc(100vh-64px)] flex-shrink-0 bg-white border-r box-content border-gray-200 flex flex-col z-0 ${inter.className}`}
     >
       <div className="flex justify-center items-center w-full px-3 border-b border-[#DCDCDC] gap-[46px]">
         <ToggleTag label="Text to image" isActive={activeTag === 'text'} onClick={() => setActiveTag('text')} />
