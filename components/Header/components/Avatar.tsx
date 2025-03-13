@@ -41,9 +41,6 @@ export default function Avatar() {
   const handleLogout = () => {
     setIsOpen(false);
 
-    // 清除认证令牌
-    localStorage.removeItem('auth_token');
-
     // 调用登出接口
     localAPI
       .post('/api/v1/user/logout')
@@ -52,6 +49,9 @@ export default function Avatar() {
       })
       .catch(error => {
         showErrorDialog('failed to logout');
+      })
+      .finally(() => {
+        localStorage.removeItem('auth_token');
       });
   };
 

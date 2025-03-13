@@ -78,11 +78,12 @@ export function LoginModal() {
     setCurrentView('verification-success');
   };
 
-  const handleGoogleLoginSuccess = async () => {
+  const handleLoginSuccess = async () => {
     try {
       // 先关闭模态框，提高用户体验
       handleCloseModal();
 
+      emitter.emit('imageList:generate-list', { data: {} });
       // 然后再获取用户信息
       await usePersonalInfoStore.getState().fetchUserInfo();
 
@@ -187,7 +188,7 @@ export function LoginModal() {
               )}
 
               {currentView === 'login' ? (
-                <LoginForm onToggleView={() => handleToggleView('signup')} onSuccess={handleGoogleLoginSuccess} />
+                <LoginForm onToggleView={() => handleToggleView('signup')} onSuccess={handleLoginSuccess} />
               ) : (
                 <SignUpForm onToggleView={() => handleToggleView('login')} onSignupSuccess={handleSignupSuccess} />
               )}
@@ -201,7 +202,7 @@ export function LoginModal() {
                 </div>
               </div>
 
-              <GoogleLoginButton onSuccess={handleGoogleLoginSuccess} onError={handleGoogleLoginError} />
+              <GoogleLoginButton onSuccess={handleLoginSuccess} onError={handleGoogleLoginError} />
 
               <div className="text-center mt-4">
                 {currentView === 'login' ? (

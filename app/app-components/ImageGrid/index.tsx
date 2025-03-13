@@ -9,7 +9,7 @@ import { useImageLoader } from './hooks/useImageLoader';
 import { useInfiniteScroll } from './hooks/useInfiniteScroll';
 import { usePendingImages } from './hooks/usePendingImages';
 
-import { emitter } from '@/utils/events';
+import { emitter, eventBus } from '@/utils/events';
 import { generate } from '@/lib/api';
 
 // 定义图片类型接口
@@ -67,6 +67,23 @@ export function ImageGrid() {
     },
     [pageSize]
   );
+
+  // 监听图片列表生成事件
+  // 当用户登录成功或提交生成请求后，会触发此事件来刷新图片列表
+  useEffect(() => {
+    const handler = (data: any) => {
+      // 收到事件后重新获取当前页的图片数据
+      fetchImages(page);
+    };
+
+    // 订阅 imageList:generate-list 事件
+    eventBus.on('imageList:generate-list', handler);
+
+    // 组件卸载时清理事件监听，防止内存泄漏
+    return () => {
+      eventBus.off('imageList:generate-list', handler);
+    };
+  }, [fetchImages, page]);
 
   // 加载最近图片
   const fetchRecentImages = useCallback(async () => {
