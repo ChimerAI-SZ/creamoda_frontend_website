@@ -87,6 +87,7 @@ export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(
             style={{
               background: 'linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.5) 100%)'
             }}
+            onClick={e => e.stopPropagation()}
           >
             <GetIntTouchDialog
               source="3d_making"
