@@ -39,7 +39,7 @@ export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(
             <div className="absolute top-[10px] left-[10px] text-center">
               <div className="inline-flex px-2 py-[2px] justify-center items-center gap-1 rounded-[9999px] border border-[#DCDCDC] bg-white">
                 <span className="inline-flex px-2 py-[2px] justify-center items-center gap-1 text-sm font-medium text-gray-700 leading-4">
-                  Generating ≈ 20s
+                  Generating
                 </span>
               </div>
             </div>

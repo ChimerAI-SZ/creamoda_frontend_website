@@ -26,7 +26,7 @@ const NavDialog: React.FC<NavDialogProps> = ({ trigger }) => {
             <div className="flex flex-col items-center justify-center text-[#121316] text-center font-inter text-base font-medium leading-[32px]">
               We are creating
               <br />
-              something amazing! 🎉
+              something amazing ! 🎉
             </div>
             <div className="flex justify-center mt-[16px]">
               <DialogClose
