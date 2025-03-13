@@ -9,7 +9,8 @@ import { GenerateButton } from '@/components/GenerateButton/GenerateButton';
 
 import { useModelStore } from '@/stores/useModelStore';
 
-import { OutfitFormData } from '../index';
+import { OutfitFormData } from '../../index';
+import { COUNTRIES_LIST } from './constant';
 
 interface OutfitFormProps {
   onSubmit?: (data: OutfitFormData) => void;
@@ -31,7 +32,7 @@ export default function OutfitForm({ onSubmit }: OutfitFormProps) {
     prompt: '',
     gender: 2,
     age: '25',
-    country: 'Vatican',
+    country: 'usa',
     modelSize: Number(modelSizes.find(size => size.name === 'Mid-size')?.code) || 2,
     withHumanModel: 1
   });
@@ -123,9 +124,9 @@ export default function OutfitForm({ onSubmit }: OutfitFormProps) {
                       <SelectValue placeholder="Select country" />
                     </SelectTrigger>
                     <SelectContent>
-                      {['Vatican', 'Italy', 'France', 'Spain', 'Germany'].map(country => (
-                        <SelectItem key={country} value={country}>
-                          {country}
+                      {COUNTRIES_LIST.map(country => (
+                        <SelectItem key={country.value} value={country.value}>
+                          {country.label}
                         </SelectItem>
                       ))}
                     </SelectContent>
