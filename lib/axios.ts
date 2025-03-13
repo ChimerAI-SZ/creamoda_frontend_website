@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
-
+import { emitter } from '@/utils/events';
 // Create a function to get token, safely handling localStorage
 const getAuthToken = (): string | null => {
   if (typeof window !== 'undefined') {
@@ -12,15 +12,21 @@ const getAuthToken = (): string | null => {
 const handleUnauthorized = (): void => {
   if (typeof window !== 'undefined') {
     localStorage.removeItem('auth_token');
-    // Redirect to login page
-    window.location.href = '/';
+    emitter.emit('auth:login', { isOpen: true });
   }
 };
 
 // Configure response interceptor for an axios instance
 const configureResponseInterceptor = (instance: AxiosInstance): void => {
   instance.interceptors.response.use(
-    (response: AxiosResponse) => response,
+    (response: AxiosResponse) => {
+      // Handle cases where API returns 200 but the response body contains code: 401
+      if (response.data?.code === 401) {
+        handleUnauthorized();
+        return Promise.reject(response.data);
+      }
+      return response;
+    },
     (error: AxiosError) => {
       // Handle unauthorized errors (401)
       if (error.response?.status === 401) {
