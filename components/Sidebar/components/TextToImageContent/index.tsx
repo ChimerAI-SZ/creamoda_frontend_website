@@ -57,11 +57,10 @@ export default function OutfitForm({ onSubmit }: OutfitFormProps) {
           <div className="space-y-6">
             <div className="space-y-2">
               <StyledLabel htmlFor="text_to_img_description" content="Describe your outfit" />
-
               <Textarea
                 id="text_to_img_description"
                 placeholder="You can describe the clothing type, fit, color, print, etc."
-                className="min-h-[288px] mt-[10px] resize-none"
+                className="min-h-[288px] mt-[10px] resize-none p-4 placeholder:text-[#D5D5D5] placeholder:font-inter placeholder:text-[14px] placeholder:font-normal placeholder:leading-[20px] rounded-sm"
                 value={formData.prompt}
                 onChange={e => setFormData({ ...formData, prompt: e.target.value })}
               />
@@ -87,11 +86,22 @@ export default function OutfitForm({ onSubmit }: OutfitFormProps) {
                   >
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="2" id="female" />
-                      <Label htmlFor="female">Female</Label>
+
+                      <Label
+                        className="text-[#121316] font-inter text-[14px] font-normal leading-5 py-[6px]"
+                        htmlFor="female"
+                      >
+                        Female
+                      </Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="1" id="male" />
-                      <Label htmlFor="male">Male</Label>
+                      <Label
+                        className="text-[#121316] font-inter text-[14px] font-normal leading-5 py-[6px]"
+                        htmlFor="male"
+                      >
+                        Male
+                      </Label>
                     </div>
                   </RadioGroup>
                 </div>
@@ -100,7 +110,7 @@ export default function OutfitForm({ onSubmit }: OutfitFormProps) {
                   <StyledLabel content="Age" />
 
                   <Select value={formData.age} onValueChange={value => setFormData({ ...formData, age: value })}>
-                    <SelectTrigger className="w-[155px]">
+                    <SelectTrigger className="w-[155px] rounded-sm">
                       <SelectValue placeholder="Select age" />
                     </SelectTrigger>
                     <SelectContent>
@@ -120,7 +130,7 @@ export default function OutfitForm({ onSubmit }: OutfitFormProps) {
                     value={formData.country}
                     onValueChange={value => setFormData({ ...formData, country: value })}
                   >
-                    <SelectTrigger className="w-[155px]">
+                    <SelectTrigger className="w-[155px] rounded-sm">
                       <SelectValue placeholder="Select country" />
                     </SelectTrigger>
                     <SelectContent>
@@ -140,7 +150,7 @@ export default function OutfitForm({ onSubmit }: OutfitFormProps) {
                     value={formData.modelSize.toString()}
                     onValueChange={value => setFormData({ ...formData, modelSize: Number(value) })}
                   >
-                    <SelectTrigger className="w-[155px]">
+                    <SelectTrigger className="w-[155px] rounded-sm">
                       <SelectValue placeholder="Select type" />
                     </SelectTrigger>
                     <SelectContent>

@@ -53,8 +53,6 @@ const GetIntTouchDialog: React.FC<GetIntTouchDialogProps> = ({ trigger, genImgId
       return;
     }
 
-    // 邮箱验证通过，继续处理提交逻辑
-    console.log('提交的邮箱:', email);
     // 这里可以添加API调用或其他处理逻辑
     localAPI
       .post('/api/v1/common/contact', {

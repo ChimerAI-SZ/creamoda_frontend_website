@@ -42,7 +42,7 @@ export function GenerateButton({ onClick, state = 'disabled', className = '' }: 
         onClick={handleClick}
       >
         <Image src="/images/operation/generate.svg" alt="Generate" width={16} height={16} />
-        {buttonText}
+        <span className="text-white font-inter text-[14px] font-medium leading-[20px]">{buttonText}</span>
       </button>
     </>
   );
