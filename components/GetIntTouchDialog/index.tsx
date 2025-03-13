@@ -31,6 +31,9 @@ const GetIntTouchDialog: React.FC<GetIntTouchDialogProps> = ({ trigger, genImgId
   // 添加邮箱错误状态
   const [emailError, setEmailError] = useState<string>('');
 
+  // 留言成功后显示的确认对话框
+  const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
+
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
     // 当用户输入时清除错误信息
@@ -82,56 +85,89 @@ const GetIntTouchDialog: React.FC<GetIntTouchDialogProps> = ({ trigger, genImgId
   }, []);
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent closeBtnUnvisible={false} className="w-[420px] h-[260px] p-6 gap-0">
-        <DialogHeader>
-          <DialogTitle className="text-[#121316] font-inter text-2xl font-semibold leading-8">Get in touch</DialogTitle>
+    <>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>{trigger}</DialogTrigger>
+        <DialogContent closeBtnUnvisible={false} className="w-[420px] h-[260px] p-6 gap-0">
+          <DialogHeader>
+            <DialogTitle className="text-[#121316] font-inter text-2xl font-semibold leading-8">
+              Get in touch
+            </DialogTitle>
 
-          <DialogDescription className="text-[#737373] font-inter text-sm font-normal leading-5 mt-2">
-            Leave your email address so we can contact you ASAP.
-          </DialogDescription>
-        </DialogHeader>
+            <DialogDescription className="text-[#737373] font-inter text-sm font-normal leading-5 mt-2">
+              Leave your email address so we can contact you ASAP.
+            </DialogDescription>
+          </DialogHeader>
 
-        <div className="mt-6">
-          <div className="relative">
-            <Label
-              htmlFor="email"
-              className="text-[#121316] font-inter text-sm font-medium leading-5 mb-[6px] inline-block"
-            >
-              Email address
-            </Label>
-            {/* 自动带入用户登陆用的邮箱 */}
-            <Input
-              id="email"
-              type="email"
-              value={email}
-              onChange={handleEmailChange}
-              className={`h-[40px] text-base ${emailError ? 'border-red-500' : ''}`}
-            />
-            {/* 显示邮箱错误信息 */}
-            {emailError && <p className="text-red-500 text-xs mt-1 absolute bottom-[-18px]">{emailError}</p>}
+          <div className="mt-6">
+            <div className="relative">
+              <Label
+                htmlFor="email"
+                className="text-[#121316] font-inter text-sm font-medium leading-5 mb-[6px] inline-block"
+              >
+                Email address
+              </Label>
+              {/* 自动带入用户登陆用的邮箱 */}
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={handleEmailChange}
+                className={`h-[40px] text-base ${emailError ? 'border-red-500' : ''}`}
+              />
+              {/* 显示邮箱错误信息 */}
+              {emailError && <p className="text-red-500 text-xs mt-1 absolute bottom-[-18px]">{emailError}</p>}
+            </div>
+
+            <div className="flex justify-center items-center gap-[24px] mt-[24px]">
+              <Button
+                variant="outline"
+                onClick={() => setOpen(false)}
+                className="w-[96px] h-[40px] py-[10px] px-[16px] text-base font-medium border-[#DCDCDC]"
+              >
+                <span className="text-[#121316] font-inter text-sm font-medium leading-5">Cancel</span>
+              </Button>
+              <Button
+                variant="default"
+                onClick={handleSubmit}
+                className="w-[96px] h-[40px] py-[10px] px-[16px] text-base font-medium"
+              >
+                <span className="text-white font-inter text-sm font-medium leading-5">Confirm</span>
+              </Button>
+            </div>
           </div>
-
-          <div className="flex justify-center items-center gap-[24px] mt-[24px]">
+        </DialogContent>
+      </Dialog>
+      <Dialog open={confirmDialogVisible}>
+        <DialogContent className="w-[386px] p-[24px] gap-[12px]">
+          <DialogHeader className="flex items-center justify-between">
+            <DialogTitle className="text-center w-full">
+              <span className="text-[#121316] text-center font-inter text-2xl font-semibold leading-8">
+                Message Received!
+              </span>
+            </DialogTitle>
+          </DialogHeader>
+          <div className="text-center">
+            <span className="text-[#121316] text-center font-inter text-[12px] font-normal leading-5">
+              Thank you for reaching out to us. We have received your message and will get back to you shortly.
+            </span>
+          </div>
+          <div className="flex justify-center mt-3">
             <Button
               variant="outline"
-              onClick={() => setOpen(false)}
-              className="w-[96px] h-[40px] py-[10px] px-[16px] text-base font-medium border-[#DCDCDC]"
+              className="w-[142px] h-[40px] px-0 py-[10px] justify-center items-center rounded-1"
+              onClick={() => {
+                // 同时关闭两个弹窗
+                setConfirmDialogVisible(false);
+                setOpen(false);
+              }}
             >
-              <span className="text-[#121316] font-inter text-sm font-medium leading-5">Cancel</span>
-            </Button>
-            <Button
-              variant="default"
-              onClick={handleSubmit}
-              className="w-[96px] h-[40px] py-[10px] px-[16px] text-base font-medium"
-            >
-              <span className="text-white font-inter text-sm font-medium leading-5">Confirm</span>
+              <span className="text-[#F97917] font-inter text-[14px] font-medium leading-[20px]">OK</span>
             </Button>
           </div>
-        </div>
-      </DialogContent>
-    </Dialog>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
