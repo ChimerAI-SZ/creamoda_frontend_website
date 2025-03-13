@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { Input } from '@/components/ui/input';
 import { X, Loader2 } from 'lucide-react';
 import axios from 'axios';
-import { getAuthToken } from '@/lib/api';
+import { uploadImage } from '@/lib/api';
 
 interface ImageUploaderProps {
   onImageChange: (image: File | null) => void;
@@ -40,25 +40,11 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
     try {
       const formData = new FormData();
       formData.append('file', file);
-
-      const API_URL = process.env.NEXT_LOCAL_API_URL || 'http://3.12.238.000';
-      const token = getAuthToken();
-      console.log('token', token);
-      const response = await axios.post(`${API_URL}/api/v1/common/img/upload`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          Authorization: token || ''
-        }
-      });
-
-      if (response.data.code === 0 && response.data.data?.url) {
-        // Success - update with the URL from the server
-        onImageUrlChange(response.data.data.url);
-        // Clear the file reference since we're now using the URL
-        onImageChange(null);
-      } else {
-        throw new Error(response.data.msg || 'Upload failed');
-      }
+      const url = await uploadImage(file);
+      // Success - update with the URL from the server
+      onImageUrlChange(url);
+      // Clear the file reference since we're now using the URL
+      onImageChange(null);
     } catch (error) {
       console.error('Image upload error:', error);
       setUploadError(error instanceof Error ? error.message : 'Failed to upload image');

@@ -19,8 +19,14 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'loremflickr.com'
+      },
+      {
+        protocol: 'https',
+        hostname: 'creamoda-test.oss-cn-beijing.aliyuncs.com',
+        pathname: '/uploads/**'
       }
-    ]
+    ],
+    domains: ['creamoda-test.oss-cn-beijing.aliyuncs.com']
   },
   outputFileTracingExcludes: {
     '*': ['**/*']
