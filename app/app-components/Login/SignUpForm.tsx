@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { FormField } from './FormField';
 import { validators } from './validators';
-import { authApi } from '@/lib/login/api';
+import { register } from '@/lib/login/api';
 import { PasswordRequirements } from './PasswordRequirements';
 import { UsernameRequirements } from './UsernameRequirements';
 
@@ -173,7 +173,7 @@ export const SignUpForm = ({ onToggleView, onSignupSuccess }: SignUpFormProps) =
     setApiError('');
 
     try {
-      const data = await authApi.register(formData.email, formData.password, formData.name);
+      const data = await register(formData.email, formData.password, formData.name);
 
       if (data.code === 0 || data.code === 402) {
         // Registration successful or email not verified (both cases proceed to next step)

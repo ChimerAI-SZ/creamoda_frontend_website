@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { authApi } from '@/lib/login/api';
+import { getUserInfo } from '@/lib/api/index';
 
 export interface BasicOptionItem {
   id: number | string;
@@ -59,7 +59,7 @@ export const usePersonalInfoStore = create<ModelState>((set, get) => ({
   fetchUserInfo: async () => {
     try {
       set({ isLoading: true, error: null });
-      const userData = await authApi.getUserInfo();
+      const userData = await getUserInfo();
 
       const userInfo = {
         username: userData.username || '',

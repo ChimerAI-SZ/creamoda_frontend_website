@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { FormField } from './FormField';
 import { validators } from './validators';
-import { authApi, saveAuthToken } from '@/lib/login/api';
+import { login, saveAuthToken } from '@/lib/api/index';
 
 interface LoginFormProps {
   onToggleView: () => void;
@@ -64,7 +64,7 @@ export const LoginForm = ({ onToggleView, onSuccess }: LoginFormProps) => {
     setApiError('');
 
     try {
-      const response = await authApi.login(formData.email, formData.password);
+      const response = await login(formData.email, formData.password);
 
       if (response.code === 0) {
         // Login successful

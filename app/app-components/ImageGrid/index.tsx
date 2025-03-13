@@ -10,7 +10,7 @@ import { useInfiniteScroll } from './hooks/useInfiniteScroll';
 import { usePendingImages } from './hooks/usePendingImages';
 
 import { emitter } from '@/utils/events';
-import { localAPI } from '@/lib/axios';
+import { generate } from '@/lib/api';
 
 // 定义图片类型接口
 export interface ImageItem {
@@ -50,8 +50,7 @@ export function ImageGrid() {
   const fetchImages = useCallback(
     async (currentPage: number) => {
       try {
-        const URL = `/api/v1/img/generate/list?page=${currentPage}&pageSize=${pageSize}`;
-        const { data } = await localAPI.get(URL);
+        const data = await generate.getGenerateList(currentPage, pageSize);
 
         if (data.code === 0) {
           if (currentPage === 1) {
@@ -72,8 +71,7 @@ export function ImageGrid() {
   // 加载最近图片
   const fetchRecentImages = useCallback(async () => {
     try {
-      const URL = `/api/v1/img/generate/list?page=1&pageSize=10`;
-      const { data } = await localAPI.get(URL);
+      const data = await generate.getGenerateList(1, 10);
 
       if (data.code === 0) {
         const recentImages = data.data.list || [];

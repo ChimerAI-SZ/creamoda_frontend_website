@@ -9,7 +9,7 @@ import { VariationTypeSelect } from '@/components/Sidebar/components/VariationTy
 import { FidelitySlider } from '@/components/Sidebar/components/FidelitySlider';
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { uploadImage, changeClothesGenerate, copyStyleGenerate } from '@/lib/login/api';
+import { copyStyleGenerate, uploadImage, changeClothesGenerate } from '@/lib/api/index';
 import { emitter } from '@/utils/events';
 interface ImageUploadFormProps {
   onSubmit?: (data: ImageUploadFormData) => void;

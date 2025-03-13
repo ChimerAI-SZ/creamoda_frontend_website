@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { authApi, saveAuthToken } from '@/lib/login/api';
+import { getGoogleAuthUrl, saveAuthToken } from '@/lib/api';
 import google from '@/images/login/google.svg';
 
 interface GoogleLoginButtonProps {
@@ -18,7 +18,7 @@ export const GoogleLoginButton = ({ onError, onSuccess }: GoogleLoginButtonProps
 
     try {
       // Get Google authorization URL from backend
-      const googleAuthUrl = await authApi.getGoogleAuthUrl();
+      const googleAuthUrl = await getGoogleAuthUrl();
       console.log('Opening Google login with URL:', googleAuthUrl);
 
       // Open a new window for Google login

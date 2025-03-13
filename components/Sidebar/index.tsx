@@ -10,7 +10,7 @@ import { ImageToImageContent } from './components/ImageToImageContent';
 
 const inter = Inter({ subsets: ['latin'] });
 
-import { localAPI } from '@/lib/axios';
+import { textToImageGenerate, getModelSizeList, getVariationTypeList } from '@/lib/api';
 import { useModelStore } from '@/stores/useModelStore';
 import { emitter } from '@/utils/events';
 
@@ -30,32 +30,26 @@ export function Sidebar() {
   const { setModelSizes, setVariationTypes } = useModelStore();
 
   const handleSubmit = (data: OutfitFormData) => {
-    localAPI.post('/api/v1/img/txt_generate', data).then(res => {
-      emitter.emit('sidebar:submit-success', res);
+    textToImageGenerate(data).then(data => {
+      emitter.emit('sidebar:submit-success', { data });
     });
   };
 
   useEffect(() => {
-    Promise.allSettled([
-      localAPI.get('/api/v1/common/modelSize/list'),
-      localAPI.get('/api/v1/common/variationType/list')
-    ])
+    Promise.allSettled([getModelSizeList(), getVariationTypeList()])
       .then(results => {
         results.forEach((result, index) => {
           if (result.status === 'fulfilled') {
-            const { data } = result.value || {};
+            const data = result.value || {};
 
-            if (data?.code === 0) {
-              if (index === 0) {
-                setModelSizes(data.data.list || []);
-              } else {
-                setVariationTypes(data.data.list || []);
-              }
+            if (index === 0) {
+              setModelSizes(data || []);
             } else {
-              const errorType = index === 0 ? 'model size' : 'variation type';
-
-              showErrorDialog(`fail to get ${errorType}: ${data?.message}`);
+              setVariationTypes(data || []);
             }
+          } else {
+            const errorType = index === 0 ? 'model size' : 'variation type';
+            showErrorDialog(`fail to get ${errorType}`);
           }
         });
       })

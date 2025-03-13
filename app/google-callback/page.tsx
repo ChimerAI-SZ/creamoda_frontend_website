@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { authApi, saveAuthToken } from '@/lib/login/api';
+import { getGoogleCallback, saveAuthToken } from '@/lib/api/index';
 
 // Add dynamic import to disable pre-rendering
 export const dynamic = 'force-dynamic';
@@ -23,7 +23,7 @@ export default function GoogleCallback() {
           throw new Error('No authorization code received from Google');
         }
         // Exchange the code for a token
-        const response = await authApi.getGoogleCallback(code);
+        const response = await getGoogleCallback(code);
 
         // Check if we have a token in the response
         // The backend returns token as 'authorization' in the data object
