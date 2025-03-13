@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { Input } from '@/components/ui/input';
 import { X, Loader2 } from 'lucide-react';
 import axios from 'axios';
-import { getAuthToken } from '@/lib/login/api';
+import { getAuthToken } from '@/lib/api';
 
 interface ImageUploaderProps {
   onImageChange: (image: File | null) => void;
