@@ -24,9 +24,14 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'creamoda-test.oss-cn-beijing.aliyuncs.com',
         pathname: '/uploads/**'
+      },
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+        pathname: '/**'
       }
     ],
-    domains: ['creamoda-test.oss-cn-beijing.aliyuncs.com']
+    domains: ['creamoda-test.oss-cn-beijing.aliyuncs.com', 'lh3.googleusercontent.com']
   },
   outputFileTracingExcludes: {
     '*': ['**/*']

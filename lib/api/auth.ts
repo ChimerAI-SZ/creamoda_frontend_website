@@ -74,22 +74,6 @@ export async function resendVerificationCode(email: string) {
 }
 
 /**
- * Google 登录
- * @param googleToken Google 令牌
- */
-export async function googleLogin(googleToken: string) {
-  try {
-    const response = await api.post('/api/v1/user/google-login', {
-      token: googleToken
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Google login error:', error);
-    throw error;
-  }
-}
-
-/**
  * 获取 Google 授权 URL
  */
 export async function getGoogleAuthUrl() {
@@ -114,7 +98,7 @@ export async function getGoogleAuthUrl() {
  */
 export async function getGoogleCallback(code: string) {
   try {
-    const response = await axios.get(`${process.env.NEXT_GOOGLE_REDIRECT_URI}/api/v1/auth/callback`, {
+    const response = await axios.get(`https://google.creamoda.ai/api/v1/auth/callback`, {
       params: { code }
     });
     console.log('Google callback response:', response.data);
