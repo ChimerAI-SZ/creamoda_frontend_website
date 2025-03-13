@@ -21,15 +21,7 @@ export function LoginModal() {
   const [verificationEmail, setVerificationEmail] = useState('');
   const [googleLoginError, setGoogleLoginError] = useState('');
 
-  const [modalVisible, setModalVisible] = useState(() => {
-    // 在客户端环境中检查 localStorage 中的 token
-    if (typeof window !== 'undefined') {
-      const token = localStorage.getItem('auth_token') || '';
-      // 如果有 token，则用户已登录，不显示模态框
-      return token ? false : true;
-    }
-    return false;
-  });
+  const [modalVisible, setModalVisible] = useState(false);
 
   // Reset state when modal opens
   useEffect(() => {
@@ -42,18 +34,18 @@ export function LoginModal() {
 
   // 监听事件
   useEffect(() => {
-    const handler = (data: { isOpen: boolean }) => {
-      setModalVisible(data.isOpen);
+    const handler = (data: { isOpen?: boolean | undefined }) => {
+      if (data.isOpen !== undefined) {
+        setModalVisible(data.isOpen);
+      }
     };
-
-    emitter.on('login:handleLogin', handler);
+    emitter.on('auth:login', handler);
 
     return () => {
-      emitter.off('login:handleLogin', handler);
+      emitter.off('auth:login', handler);
     };
   }, []);
 
-  // 监听 token 变化
   useEffect(() => {
     const checkLoginStatus = () => {
       const token = localStorage.getItem('auth_token') || '';
@@ -62,19 +54,8 @@ export function LoginModal() {
         setModalVisible(false);
       }
     };
-
     // 初始检查
     checkLoginStatus();
-
-    // 监听存储变化事件
-    const handleStorageChange = () => {
-      checkLoginStatus();
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-    };
   }, []);
 
   const handleToggleView = (view: ModalView) => {
@@ -100,26 +81,17 @@ export function LoginModal() {
 
   const handleGoogleLoginSuccess = async () => {
     try {
-      // Fetch user info after successful login using the API service
-      const userData = await authApi.getUserInfo();
-
-      // Update user info in the store
-      usePersonalInfoStore.getState().updateUserInfo({
-        username: userData.username || '',
-        email: userData.email || '',
-        status: userData.status || '',
-        headPic: userData.headPic || '',
-        emailVerified: userData.emailVerified || ''
-      });
-
-      // Close modal after successful login
+      // 先关闭模态框，提高用户体验
       handleCloseModal();
+
+      // 然后再获取用户信息
+      await usePersonalInfoStore.getState().fetchUserInfo();
+
       // Optional: redirect to homepage or dashboard
       // window.location.href = '/dashboard';
     } catch (error) {
-      console.error('Failed to fetch user info:', error);
-      // Still close the modal even if fetching user info fails
-      handleCloseModal();
+      console.error('Error during login process:', error);
+      // 错误处理 - 模态框已经关闭，可以考虑添加一个toast通知
     }
   };
 

@@ -12,36 +12,14 @@ interface GenerateButtonProps {
   autoOpenLogin?: boolean;
 }
 
-export function GenerateButton({
-  onClick,
-  state = 'disabled',
-  className = '',
-  autoOpenLogin = true
-}: GenerateButtonProps) {
-  // useEffect(() => {
-  //   // 检查用户是否已登录
-  //   const checkLoginStatus = () => {
-  //     const token = localStorage.getItem('auth_token');
-  //     const isAuthenticated = !!token;
-  //     setIsLoggedIn(isAuthenticated);
-  //   };
-  //   // 监听存储变化，以便在其他标签页登录/登出时更新状态
-  //   const handleStorageChange = () => {
-  //     checkLoginStatus();
-  //   };
-  //   window.addEventListener('storage', handleStorageChange);
-  //   return () => {
-  //     window.removeEventListener('storage', handleStorageChange);
-  //   };
-  // }, []);
-
+export function GenerateButton({ onClick, state = 'disabled', className = '' }: GenerateButtonProps) {
   const handleClick = () => {
     const token = localStorage.getItem('auth_token');
     const isAuthenticated = !!token;
     if (isAuthenticated) {
       onClick();
     } else {
-      emitter.emit('login:handleLogin', { isOpen: true });
+      emitter.emit('auth:login', { isOpen: true });
     }
   };
 
