@@ -22,11 +22,10 @@ const nextConfig = {
       }
     ]
   },
-  experimental: {
-    outputFileTracingExcludes: {
-      '*': ['**/*']
-    }
-  }
+  outputFileTracingExcludes: {
+    '*': ['**/*']
+  },
+  experimental: {}
 };
 
 module.exports = nextConfig;
