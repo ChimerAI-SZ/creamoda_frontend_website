@@ -33,9 +33,14 @@ export default function Avatar() {
     localStorage.removeItem('auth_token');
 
     // 调用登出接口
-    localAPI.post('/api/v1/user/logout').catch(error => {
-      showErrorDialog('failed to logout');
-    });
+    localAPI
+      .post('/api/v1/user/logout')
+      .then(() => {
+        emitter.emit('login:handleLogin', { isOpen: true });
+      })
+      .catch(error => {
+        showErrorDialog('failed to logout');
+      });
   };
 
   return (
