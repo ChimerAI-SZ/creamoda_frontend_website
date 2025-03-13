@@ -28,13 +28,29 @@ const GetIntTouchDialog: React.FC<GetIntTouchDialogProps> = ({ trigger, genImgId
   const [email, setEmail] = useState(userEmail);
   // 添加一个状态来控制对话框的开关
   const [open, setOpen] = useState(false);
+  // 添加邮箱错误状态
+  const [emailError, setEmailError] = useState<string>('');
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
+    // 当用户输入时清除错误信息
+    setEmailError('');
+  };
+
+  // 邮箱验证函数
+  const validateEmail = (email: string): boolean => {
+    const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return EMAIL_REGEX.test(email);
   };
 
   const handleSubmit = () => {
-    // 处理提交逻辑
+    // 验证邮箱
+    if (!validateEmail(email)) {
+      setEmailError('Please enter a valid email address');
+      return;
+    }
+
+    // 邮箱验证通过，继续处理提交逻辑
     console.log('提交的邮箱:', email);
     // 这里可以添加API调用或其他处理逻辑
     localAPI
@@ -78,7 +94,7 @@ const GetIntTouchDialog: React.FC<GetIntTouchDialogProps> = ({ trigger, genImgId
         </DialogHeader>
 
         <div className="mt-6">
-          <div>
+          <div className="relative">
             <Label
               htmlFor="email"
               className="text-[#121316] font-inter text-sm font-medium leading-5 mb-[6px] inline-block"
@@ -86,7 +102,15 @@ const GetIntTouchDialog: React.FC<GetIntTouchDialogProps> = ({ trigger, genImgId
               Email address
             </Label>
             {/* 自动带入用户登陆用的邮箱 */}
-            <Input id="email" type="email" value={email} onChange={handleEmailChange} className="h-[40px] text-base" />
+            <Input
+              id="email"
+              type="email"
+              value={email}
+              onChange={handleEmailChange}
+              className={`h-[40px] text-base ${emailError ? 'border-red-500' : ''}`}
+            />
+            {/* 显示邮箱错误信息 */}
+            {emailError && <p className="text-red-500 text-xs mt-1 absolute bottom-[-18px]">{emailError}</p>}
           </div>
 
           <div className="flex justify-center items-center gap-[24px] mt-[24px]">
