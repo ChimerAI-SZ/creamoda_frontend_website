@@ -36,26 +36,22 @@ export function Sidebar() {
   };
 
   useEffect(() => {
-    Promise.allSettled([getModelSizeList(), getVariationTypeList()])
-      .then(results => {
-        results.forEach((result, index) => {
-          if (result.status === 'fulfilled') {
-            const data = result.value || {};
+    // 使用 Promise.all 并行获取数据
+    const fetchData = async () => {
+      try {
+        // 并行请求两个API
+        const [modelSizes, variationTypes] = await Promise.all([getModelSizeList(), getVariationTypeList()]);
 
-            if (index === 0) {
-              setModelSizes(data || []);
-            } else {
-              setVariationTypes(data || []);
-            }
-          } else {
-            const errorType = index === 0 ? 'model size' : 'variation type';
-            showErrorDialog(`fail to get ${errorType}`);
-          }
-        });
-      })
-      .catch(error => {
+        // 设置数据
+        setModelSizes(modelSizes || []);
+        setVariationTypes(variationTypes || []);
+      } catch (error) {
+        console.error('Error fetching data:', error);
         showErrorDialog('Something went wrong. Please try again later or contact support if the issue persists');
-      });
+      }
+    };
+
+    fetchData();
   }, [setModelSizes, setVariationTypes]);
 
   return (

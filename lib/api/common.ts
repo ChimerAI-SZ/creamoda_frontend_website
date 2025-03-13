@@ -9,12 +9,13 @@ export async function getVariationTypeList() {
     const response = await api.get('/api/v1/common/variationType/list');
     if (response.data.code === 0 && response.data.data && response.data.data.list) {
       return response.data.data.list;
-    } else {
-      throw new Error(response.data.msg || 'Failed to get variation type list');
     }
+    // 返回空数组而不是抛出错误，这样更容易处理
+    return [];
   } catch (error) {
     console.error('Error getting variation type list:', error);
-    throw error;
+    // 返回空数组而不是抛出错误
+    return [];
   }
 }
 
@@ -26,12 +27,13 @@ export async function getModelSizeList() {
     const response = await api.get('/api/v1/common/modelSize/list');
     if (response.data.code === 0 && response.data.data && response.data.data.list) {
       return response.data.data.list;
-    } else {
-      throw new Error(response.data.msg || 'Failed to get model size list');
     }
+    // 返回空数组而不是抛出错误
+    return [];
   } catch (error) {
     console.error('Error getting model size list:', error);
-    throw error;
+    // 返回空数组而不是抛出错误
+    return [];
   }
 }
 
@@ -41,22 +43,19 @@ export async function getModelSizeList() {
  */
 export async function uploadImage(file: File) {
   try {
-    const token = getAuthToken();
     const formData = new FormData();
     formData.append('file', file);
 
     const response = await api.post(`/api/v1/common/img/upload`, formData, {
       headers: {
-        'Content-Type': 'multipart/form-data',
-        Authorization: token || ''
+        'Content-Type': 'multipart/form-data'
       }
     });
 
     if (response.data.code === 0 && response.data.data && response.data.data.url) {
       return response.data.data.url;
-    } else {
-      throw new Error(response.data.msg || 'Failed to upload image');
     }
+    throw new Error(response.data.msg || 'Failed to upload image');
   } catch (error) {
     console.error('Error uploading image:', error);
     throw error;

@@ -136,12 +136,15 @@ export async function getGoogleCallback(code: string) {
 export async function getUserInfo() {
   try {
     const response = await api.get('/api/v1/user/info');
+    console.log('getUserInfo response:', response.data);
+    // More detailed error handling
     if (response.data.code === 0 && response.data.data) {
       return response.data.data;
     } else {
       throw new Error(response.data.msg || 'Failed to get user info');
     }
   } catch (error) {
+    // Check if it's an axios error with a response
     console.error('Error getting user info:', error);
     throw error;
   }

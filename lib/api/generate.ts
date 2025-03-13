@@ -74,19 +74,10 @@ export async function textToImageGenerate(data: {
  */
 export async function changeClothesGenerate(originalPicUrl: string, prompt: string) {
   try {
-    const token = getAuthToken();
-    const response = await api.post(
-      '/api/v1/img/change_clothes_generate',
-      {
-        originalPicUrl,
-        prompt
-      },
-      {
-        headers: {
-          Authorization: token || ''
-        }
-      }
-    );
+    const response = await api.post('/api/v1/img/change_clothes_generate', {
+      originalPicUrl,
+      prompt
+    });
     return response.data;
   } catch (error) {
     console.error('Error changing clothes generate:', error);
@@ -102,20 +93,11 @@ export async function changeClothesGenerate(originalPicUrl: string, prompt: stri
  */
 export async function copyStyleGenerate(originalPicUrl: string, prompt: string, fidelity: number) {
   try {
-    const token = getAuthToken();
-    const response = await api.post(
-      '/api/v1/img/copy_style_generate',
-      {
-        originalPicUrl,
-        fidelity,
-        prompt
-      },
-      {
-        headers: {
-          Authorization: token || ''
-        }
-      }
-    );
+    const response = await api.post('/api/v1/img/copy_style_generate', {
+      originalPicUrl,
+      fidelity,
+      prompt
+    });
     return response.data;
   } catch (error) {
     console.error('Error copying style generate:', error);

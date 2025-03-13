@@ -1,27 +1,54 @@
-import axios from 'axios';
+import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
 
-// 创建获取token的函数，安全地处理localStorage
-const getAuthToken = () => {
+// Create a function to get token, safely handling localStorage
+const getAuthToken = (): string | null => {
   if (typeof window !== 'undefined') {
     return localStorage.getItem('auth_token');
   }
   return null;
 };
 
+// Create a function to handle unauthorized responses
+const handleUnauthorized = (): void => {
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem('auth_token');
+    // Redirect to login page
+    window.location.href = '/';
+  }
+};
+
+// Configure response interceptor for an axios instance
+const configureResponseInterceptor = (instance: AxiosInstance): void => {
+  instance.interceptors.response.use(
+    (response: AxiosResponse) => response,
+    (error: AxiosError) => {
+      // Handle unauthorized errors (401)
+      if (error.response?.status === 401) {
+        handleUnauthorized();
+      }
+
+      return Promise.reject(error?.response?.data || error.message || 'An unknown error occurred');
+    }
+  );
+};
+
+// Configure request interceptor for an axios instance
+const configureRequestInterceptor = (instance: AxiosInstance): void => {
+  instance.interceptors.request.use(config => {
+    const token = getAuthToken();
+    if (token) {
+      config.headers.Authorization = token;
+    }
+    return config;
+  });
+};
+
+// Create and configure API instances
 export const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
   headers: {
     'Content-Type': 'application/json'
   }
-});
-
-// 添加请求拦截器动态设置token
-api.interceptors.request.use(config => {
-  const token = getAuthToken();
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
 });
 
 export const mockAPI = axios.create({
@@ -38,20 +65,13 @@ export const localAPI = axios.create({
   }
 });
 
-// 为localAPI添加请求拦截器动态设置token
-localAPI.interceptors.request.use(config => {
-  const token = getAuthToken();
-  if (token) {
-    config.headers.Authorization = `${token}`;
-  }
-  return config;
-});
+// Configure interceptors for all instances
+configureRequestInterceptor(api);
+configureRequestInterceptor(localAPI);
 
-// 修改拦截器返回类型
-api.interceptors.response.use(
-  response => response.data,
-  error => Promise.reject(error?.response?.data || error.message)
-);
+configureResponseInterceptor(api);
+configureResponseInterceptor(mockAPI);
+configureResponseInterceptor(localAPI);
 
-// 为 api 添加类型
+// Export type for API responses
 export type ApiResponse<T> = Promise<T>;
