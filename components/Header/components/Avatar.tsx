@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -10,10 +10,22 @@ import { localAPI } from '@/lib/axios';
 import usePersonalInfoStore from '@/stores/usePersonalInfoStore';
 import { showErrorDialog } from '@/utils/index';
 import { emitter } from '@/utils/events';
+
 export default function Avatar() {
   const [isOpen, setIsOpen] = useState(false);
+
   // 获取用户信息
-  const { username, email, headPic } = usePersonalInfoStore();
+  const { username, email, headPic, fetchUserInfo } = usePersonalInfoStore();
+
+  // Check if user data needs to be fetched
+  useEffect(() => {
+    const token = localStorage.getItem('auth_token');
+
+    // If we have a token but no user data, fetch the user info
+    if (token && (!username || !email)) {
+      fetchUserInfo();
+    }
+  }, [username, email, fetchUserInfo]);
 
   const handleViewDetail = () => {
     const token = localStorage.getItem('auth_token');
@@ -22,7 +34,7 @@ export default function Avatar() {
     if (token) {
       setIsOpen(true);
     } else {
-      emitter.emit('login:handleLogin', { isOpen: true });
+      emitter.emit('auth:login', { isOpen: true });
     }
   };
 
