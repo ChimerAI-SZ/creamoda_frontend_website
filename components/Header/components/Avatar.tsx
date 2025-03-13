@@ -48,7 +48,7 @@ export default function Avatar() {
     localAPI
       .post('/api/v1/user/logout')
       .then(() => {
-        emitter.emit('login:handleLogin', { isOpen: true });
+        emitter.emit('auth:login', { isOpen: true });
       })
       .catch(error => {
         showErrorDialog('failed to logout');
