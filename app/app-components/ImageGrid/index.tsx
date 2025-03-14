@@ -211,8 +211,6 @@ export function ImageGrid() {
             key={image.genImgId || index}
             image={image}
             ref={index === images.length - Math.min(9, images.length / 3) ? lastItemRef : undefined}
-            isLoaded={loadedImages.get(image.genImgId)}
-            onImageLoad={() => handleImageLoad(image.genImgId)}
             onClick={() => handleImageClick(image)}
           />
         ))}
