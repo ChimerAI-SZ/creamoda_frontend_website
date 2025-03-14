@@ -3,10 +3,10 @@
 import * as React from 'react';
 import { Textarea } from '@/components/ui/textarea';
 import { GenerateButton, GenerateButtonState } from '@/components/GenerateButton/GenerateButton';
-import { ImageUploader } from '@/components/Sidebar/components/ImageUploader';
-import { FormLabel } from '@/components/Sidebar/components/FormLabel';
-import { VariationTypeSelect } from '@/components/Sidebar/components/VariationTypeSelect';
-import { FidelitySlider } from '@/components/Sidebar/components/FidelitySlider';
+import { ImageUploader } from '@/components/Sidebar/components/ImageToImageContent/ImageUploader';
+import { FormLabel } from '@/components/Sidebar/components/ImageToImageContent/FormLabel';
+import { VariationTypeSelect } from '@/components/Sidebar/components/ImageToImageContent/VariationTypeSelect';
+import { FidelitySlider } from '@/components/Sidebar/components/ImageToImageContent/FidelitySlider';
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { copyStyleGenerate, uploadImage, changeClothesGenerate } from '@/lib/api/index';
@@ -24,7 +24,7 @@ interface ImageUploadFormData {
   fidelity: number;
 }
 
-export function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
+export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
   const { toast } = useToast();
   const [formData, setFormData] = React.useState<ImageUploadFormData>({
     image: null,

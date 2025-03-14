@@ -6,8 +6,7 @@ import { showErrorDialog } from '@/utils/index';
 
 import { ToggleTag } from './components/ToggleTag';
 import TextToImageContent from './components/TextToImageContent';
-import { ImageToImageContent } from './components/ImageToImageContent';
-
+import ImageToImageContent from './components/ImageToImageContent/index';
 const inter = Inter({ subsets: ['latin'] });
 
 import { textToImageGenerate, getModelSizeList, getVariationTypeList } from '@/lib/api';
@@ -74,6 +73,3 @@ export function Sidebar() {
     </div>
   );
 }
-
-export * from './components/ToggleTag';
-export * from './components/ImageToImageContent';
