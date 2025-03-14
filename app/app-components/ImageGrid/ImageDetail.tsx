@@ -20,7 +20,7 @@ export default function ImageDetail({ image, onClose, isOpen, imgList, onImageCh
   return (
     <Overlay onClick={onClose}>
       <div className="relative" onClick={e => e.stopPropagation()}>
-        <div className="relative w-[488px] h-[645px] bg-white rounded-[4px] overflow-hidden">
+        <div className="relative aspect-[3/4] max-h-[60vh] h-[645px] w-auto bg-white rounded-[4px] overflow-hidden">
           {/* 图片详情内容 */}
           {image && (
             <div className="relative w-full h-full border border-[rgba(182,182,182,0.5)] shadow-[0_0.11rem_0.89rem_0_rgba(0,0,0,0.07)] z-[1] transition-transform duration-500">
