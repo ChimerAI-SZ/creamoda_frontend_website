@@ -1,7 +1,10 @@
 'use client';
 
 import Image from 'next/image';
+import { useDebounceFn } from 'ahooks';
+
 import { eventBus } from '@/utils/events';
+
 export type GenerateButtonState = 'disabled' | 'ready' | 'generating';
 
 interface GenerateButtonProps {
@@ -12,15 +15,20 @@ interface GenerateButtonProps {
 }
 
 export function GenerateButton({ onClick, state = 'disabled', className = '' }: GenerateButtonProps) {
-  const handleClick = () => {
-    const token = localStorage.getItem('auth_token');
-    const isAuthenticated = !!token;
-    if (isAuthenticated) {
-      onClick();
-    } else {
-      eventBus.emit('auth:login', { isOpen: true });
+  const { run: handleClick } = useDebounceFn(
+    () => {
+      const token = localStorage.getItem('auth_token');
+      const isAuthenticated = !!token;
+      if (isAuthenticated) {
+        onClick();
+      } else {
+        eventBus.emit('auth:login', { isOpen: true });
+      }
+    },
+    {
+      wait: 500
     }
-  };
+  );
 
   // Button text based on state
   const buttonText = state === 'generating' ? 'Generating...' : 'Generate';

@@ -41,6 +41,8 @@ export function Sidebar() {
       })
       .catch(error => {
         showErrorDialog(error.message || 'Failed to generate image');
+        // 若生成失败放开拦截
+        setGenerating(false);
       });
   };
 
