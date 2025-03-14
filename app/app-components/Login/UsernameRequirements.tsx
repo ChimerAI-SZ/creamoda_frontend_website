@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { CheckCircle2, XCircle } from 'lucide-react';
 
-interface UsernameRequirementProps {
+interface UsernameRequirementsProps {
   username: string;
 }
 
-export const UsernameRequirements: React.FC<UsernameRequirementProps> = ({ username }) => {
+export const UsernameRequirements: React.FC<UsernameRequirementsProps> = ({ username }) => {
   // Add state to track if component is mounted
   const [isMounted, setIsMounted] = useState(false);
 
@@ -17,14 +17,24 @@ export const UsernameRequirements: React.FC<UsernameRequirementProps> = ({ usern
   // Define the requirements
   const requirements = [
     {
-      id: 'length',
-      label: 'Between 3 and 16 characters',
-      isMet: username.length >= 3 && username.length <= 16
+      id: 'min-length',
+      label: 'At least 3 characters',
+      isMet: username.length >= 3
     },
     {
-      id: 'characters',
-      label: 'Only letters, numbers, underscores and hyphens',
-      isMet: /^[a-zA-Z0-9_-]*$/.test(username)
+      id: 'max-length',
+      label: 'Maximum 20 characters',
+      isMet: username.length <= 20
+    },
+    {
+      id: 'allowed-chars',
+      label: 'Letters (A-Z, a-z), numbers, and special characters (_, -, .)',
+      isMet: /^[\p{L}\p{N}_\-\.]*$/u.test(username)
+    },
+    {
+      id: 'unicode',
+      label: 'Unicode characters allowed (e.g., Chinese, Japanese)',
+      isMet: true // Always met since we're using Unicode regex
     }
   ];
 
@@ -39,12 +49,13 @@ export const UsernameRequirements: React.FC<UsernameRequirementProps> = ({ usern
           className="h-1.5 rounded-full transition-all duration-300 ease-in-out"
           style={{
             width: `${progress}%`,
-            backgroundColor: progress < 50 ? '#E50000' : progress < 100 ? '#F97917' : '#10B981'
+            backgroundColor: progress < 40 ? '#E50000' : progress < 100 ? '#F97917' : '#10B981'
           }}
         ></div>
       </div>
 
-      <div className="min-h-[50px]">
+      {/* Fixed height container for requirements */}
+      <div className="min-h-[100px]">
         <ul className="space-y-1 text-xs">
           {requirements.map(requirement => (
             <li key={requirement.id} className="flex items-center gap-2">

@@ -22,6 +22,11 @@ export const PasswordRequirements: React.FC<PasswordRequirementProps> = ({ passw
       isMet: password.length >= 8
     },
     {
+      id: 'max-length',
+      label: 'Maximum 50 characters',
+      isMet: password.length <= 50
+    },
+    {
       id: 'uppercase',
       label: 'At least one uppercase letter',
       isMet: /[A-Z]/.test(password)
