@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { FormField } from './FormField';
-import { validators } from './validators';
+import { validators } from '../validators';
 import { login, saveAuthToken } from '@/lib/api/index';
 
 interface LoginFormProps {

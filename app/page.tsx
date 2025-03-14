@@ -1,6 +1,6 @@
 'use client';
 
-import { LoginModal } from '@/app/app-components/LoginModal';
+import { LoginModal } from '@/app/app-components/Login';
 
 import { Header } from '@/components/Header';
 import { MenuBar } from '@/components/MenuBar/menu-bar';

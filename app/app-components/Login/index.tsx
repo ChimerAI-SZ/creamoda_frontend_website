@@ -3,11 +3,11 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import x from '@/images/login/x.svg';
-import { LoginForm } from './Login/LoginForm';
-import { SignUpForm } from './Login/SignUpForm';
-import { EmailVerification } from './Login/EmailVerification';
-import { GoogleLoginButton } from './Login/GoogleLoginButton';
-import { VerificationSuccess } from './Login/VerificationSuccess';
+import { LoginForm } from './components/LoginForm';
+import { SignUpForm } from './components/SignUpForm';
+import { EmailVerification } from './components/EmailVerification';
+import { GoogleLoginButton } from './components/GoogleLoginButton';
+import { VerificationSuccess } from './components/VerificationSuccess';
 import { usePersonalInfoStore } from '@/stores/usePersonalInfoStore';
 
 import { emitter } from '@/utils/events';
