@@ -64,6 +64,7 @@ const GetIntTouchDialog: React.FC<GetIntTouchDialogProps> = ({ trigger, genImgId
         console.log(res);
         // API调用成功后关闭对话框
         setOpen(false);
+        setConfirmDialogVisible(true);
       })
       .catch(err => {
         console.error('提交失败:', err);
