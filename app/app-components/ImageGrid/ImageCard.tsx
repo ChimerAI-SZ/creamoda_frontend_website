@@ -82,23 +82,30 @@ export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(
 
         {/* 正常状态的悬浮效果 (仅在成功生成时显示) */}
         {!showLoading && !isFailed && (
-          <div
-            className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center rounded-[4px]"
-            style={{
-              background: 'linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.5) 100%)'
-            }}
-            onClick={e => e.stopPropagation()}
-          >
-            <GetIntTouchDialog
-              source="3d_making"
-              genImgId={image.genImgId}
-              trigger={
-                <Button size="sm" className="w-[104px] h-[28px] absolute bottom-8">
-                  3D making
-                </Button>
-              }
-            />
-          </div>
+          <>
+            <div className="relative w-full h-full z-1">
+              <div
+                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center rounded-[4px]"
+                style={{
+                  background: 'linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.5) 100%)'
+                }}
+              />
+            </div>
+            <div className="absolute inset-0 w-full h-full z-1" onClick={e => e.stopPropagation()}>
+              <GetIntTouchDialog
+                source="3d_making"
+                genImgId={image.genImgId}
+                trigger={
+                  <Button
+                    size="sm"
+                    className="w-[104px] h-[28px] absolute bottom-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  >
+                    3D making
+                  </Button>
+                }
+              />
+            </div>
+          </>
         )}
       </div>
     );
