@@ -41,8 +41,8 @@ export function MenuBar() {
   return (
     <div
       className={cn(
-        'group bg-white border-r border-gray-200 h-[calc(100vh-64px)] flex flex-col px-2 transition-all duration-200 ',
-        'hover:w-[128px] '
+        'group bg-white border-r border-gray-200 h-[calc(100vh-64px)] flex flex-col px-2 transition-all duration-500 ease-in w-[48px]',
+        'hover:w-[128px]'
       )}
     >
       <MenuItem icon={<Image src={home.src} alt="home" width={16} height={16} />} title="Home" isActive />
