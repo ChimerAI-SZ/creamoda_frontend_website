@@ -115,7 +115,7 @@ const GetIntTouchDialog: React.FC<GetIntTouchDialogProps> = ({ trigger, genImgId
                 className={`h-[40px] text-base ${emailError ? 'border-red-500' : ''}`}
               />
               {/* 显示邮箱错误信息 */}
-              {emailError && <p className="text-red-500 text-xs mt-1 absolute bottom-[-18px]">{emailError}</p>}
+              {emailError && <div className="text-red-500 text-xs mt-1 absolute bottom-[-18px]">{emailError}</div>}
             </div>
 
             <div className="flex justify-center items-center gap-[24px] mt-[24px]">
