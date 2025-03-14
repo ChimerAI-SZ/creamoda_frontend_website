@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
-import { emitter } from '@/utils/events';
+import { eventBus } from '@/utils/events';
 // Create a function to get token, safely handling localStorage
 const getAuthToken = (): string | null => {
   if (typeof window !== 'undefined') {
@@ -12,7 +12,7 @@ const getAuthToken = (): string | null => {
 const handleUnauthorized = (): void => {
   if (typeof window !== 'undefined') {
     localStorage.removeItem('auth_token');
-    emitter.emit('auth:login', { isOpen: true });
+    eventBus.emit('auth:login', { isOpen: true });
   }
 };
 

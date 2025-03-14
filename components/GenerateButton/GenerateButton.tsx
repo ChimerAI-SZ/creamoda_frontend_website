@@ -1,8 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { emitter } from '@/utils/events';
+import { eventBus } from '@/utils/events';
 export type GenerateButtonState = 'disabled' | 'ready' | 'generating';
 
 interface GenerateButtonProps {
@@ -19,7 +18,7 @@ export function GenerateButton({ onClick, state = 'disabled', className = '' }: 
     if (isAuthenticated) {
       onClick();
     } else {
-      emitter.emit('auth:login', { isOpen: true });
+      eventBus.emit('auth:login', { isOpen: true });
     }
   };
 

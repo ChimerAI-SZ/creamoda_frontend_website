@@ -1,5 +1,6 @@
 import { useRef, useCallback } from 'react';
 import { localAPI } from '@/lib/axios';
+import { useGenerationStore } from '@/stores/useGenerationStore';
 
 interface UsePendingImagesProps {
   onImageUpdate: (updatedImage: any) => void;
@@ -9,6 +10,8 @@ interface UsePendingImagesProps {
 export function usePendingImages({ onImageUpdate, pollInterval = 3000 }: UsePendingImagesProps) {
   const pendingIdsRef = useRef<Set<string>>(new Set());
   const pollTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const { setGenerating } = useGenerationStore();
 
   const checkPendingImages = useCallback(async () => {
     if (pendingIdsRef.current.size === 0) {
@@ -41,13 +44,19 @@ export function usePendingImages({ onImageUpdate, pollInterval = 3000 }: UsePend
         if (completedIds.size > 0) {
           const newSet = new Set(pendingIdsRef.current);
           completedIds.forEach(id => newSet.delete(id));
+
+          // 所有图片都已经生成完成，关闭isGenerating状态
+          if (newSet.size === 0) {
+            setGenerating(false);
+          }
+
           pendingIdsRef.current = newSet;
         }
       }
     } catch (error) {
       console.error('检查待生成图片状态失败:', error);
     }
-  }, [onImageUpdate]);
+  }, [onImageUpdate, setGenerating]);
 
   const startPolling = useCallback(() => {
     if (!pollTimerRef.current && pendingIdsRef.current.size > 0) {
