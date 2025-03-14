@@ -42,5 +42,9 @@
   }
   body {
     @apply bg-background text-foreground;
+
+    /* 让 mac 系统上的字体看起来更细一些，使呈现效果更贴近 figma */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
