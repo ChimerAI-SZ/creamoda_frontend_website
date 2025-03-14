@@ -179,7 +179,7 @@ export default function OutfitForm({ onSubmit }: OutfitFormProps) {
             </div>
           </div>
         </form>
-        <div className="sticky bottom-0 left-0 right-0 px-6 pb-4 bg-white">
+        <div className="sticky bottom-0 left-0 right-0 pb-4 bg-white">
           <GenerateButton onClick={handleSubmit} state={btnState} />
         </div>
       </div>

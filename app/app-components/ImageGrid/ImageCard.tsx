@@ -106,14 +106,17 @@ export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(({ image, on
               }}
             />
           </div>
-          <div className="absolute inset-0 w-full h-full z-1" onClick={e => e.stopPropagation()}>
+          <div
+            className="absolute w-[104px] h-[28px] z-1 bottom-8 left-1/2 -translate-x-1/2 "
+            onClick={e => e.stopPropagation()}
+          >
             <GetIntTouchDialog
               source="3d_making"
               genImgId={image.genImgId}
               trigger={
                 <Button
                   size="sm"
-                  className="w-[104px] h-[28px] absolute bottom-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  className="w-[104px] h-[28px] absolute opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                 >
                   3D making
                 </Button>
