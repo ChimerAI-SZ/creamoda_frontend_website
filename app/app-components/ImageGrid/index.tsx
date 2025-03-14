@@ -10,6 +10,7 @@ import { useImageLoader } from './hooks/useImageLoader';
 import { useInfiniteScroll } from './hooks/useInfiniteScroll';
 import { usePendingImages } from './hooks/usePendingImages';
 
+import { useGenerationStore } from '@/stores/useGenerationStore';
 import { eventBus } from '@/utils/events';
 import { generate } from '@/lib/api';
 
@@ -33,6 +34,8 @@ export function ImageGrid() {
   // 是否还有更多数据
   const [hasMore, setHasMore] = useState(true);
 
+  const { setGenerating } = useGenerationStore();
+
   // 查看图片详情相关state
   const [selectedImage, setSelectedImage] = useState<ImageItem | null>(null);
   const [detailVisible, setDetailVisible] = useState<boolean>(false);
@@ -54,10 +57,17 @@ export function ImageGrid() {
         const data = await generate.getGenerateList(currentPage, pageSize);
 
         if (data.code === 0) {
+          const imageList = data.data.list;
+
+          // 如果有正在生成中的图片，标记全局的generating状态
+          if (imageList.some((item: ImageItem) => [1, 2].includes(item.status))) {
+            setGenerating(true);
+          }
+
           if (currentPage === 1) {
-            setImages(data.data.list);
+            setImages(imageList);
           } else {
-            setImages(prev => [...prev, ...data.data.list]);
+            setImages(prev => [...prev, ...imageList]);
           }
 
           setHasMore(currentPage * pageSize < (data.data.total || 1000));
@@ -66,7 +76,7 @@ export function ImageGrid() {
         showErrorDialog('Something went wrong. Please try again later or contact support if the issue persists');
       }
     },
-    [pageSize]
+    [pageSize, setGenerating]
   );
 
   // 监听图片列表生成事件
@@ -77,10 +87,9 @@ export function ImageGrid() {
       fetchImages(page);
     };
 
-    // 订阅 imageList:generate-list 事件
+    // 订阅和卸载 imageList:generate-list 事件
     eventBus.on('imageList:generate-list', handler);
 
-    // 组件卸载时清理事件监听，防止内存泄漏
     return () => {
       eventBus.off('imageList:generate-list', handler);
     };
@@ -121,7 +130,9 @@ export function ImageGrid() {
   // 加载更多图片
   const loadMoreImages = useCallback(() => {
     if (!hasMore) return;
+
     const nextPage = page + 1;
+
     setPage(nextPage);
     fetchImages(nextPage);
   }, [hasMore, page, fetchImages]);
@@ -133,12 +144,13 @@ export function ImageGrid() {
     rootMargin: '300px'
   });
 
+  // 图片点击事件，标记当前点击的图片，然后打开详情
   const handleImageClick = useCallback((image: ImageItem) => {
-    console.log(image);
     setSelectedImage(image);
     setDetailVisible(true);
   }, []);
 
+  // 详情里支持切换图片，会更新在 selectedImage 上
   const handleImageChange = useCallback((image: ImageItem | null) => {
     setSelectedImage(image);
   }, []);
@@ -148,7 +160,7 @@ export function ImageGrid() {
     fetchImages(1);
   }, [fetchImages]);
 
-  // 监听事件
+  // 监听提交成功事件，加载最近图片
   useEffect(() => {
     const handleSubmitSuccess = () => {
       fetchRecentImages();
