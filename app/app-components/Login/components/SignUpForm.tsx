@@ -227,7 +227,7 @@ export const SignUpForm = ({ onToggleView, onSignupSuccess }: SignUpFormProps) =
     !errors.confirmPassword;
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="overflow-y-visible">
       {apiError && (
         <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
           <p className="text-[#E50000] text-sm font-inter">{apiError}</p>
