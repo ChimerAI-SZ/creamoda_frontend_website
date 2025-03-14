@@ -59,9 +59,19 @@ export function ImageGrid() {
         if (data.code === 0) {
           const imageList = data.data.list;
 
+          // 检查是否有正在生成中的图片
+          const pendingImages = imageList.filter((item: ImageItem) => [1, 2].includes(item.status));
+
           // 如果有正在生成中的图片，标记全局的generating状态
-          if (imageList.some((item: ImageItem) => [1, 2].includes(item.status))) {
+          if (pendingImages.length > 0) {
             setGenerating(true);
+
+            // 添加待生成图片到轮询集合中
+            const pendingIds = pendingImages.map((img: ImageItem) => img.genImgId);
+            pendingIdsRef.current = new Set([...pendingIdsRef.current, ...pendingIds]);
+
+            // 开始轮询检查图片状态
+            startPolling();
           }
 
           if (currentPage === 1) {
@@ -76,7 +86,7 @@ export function ImageGrid() {
         showErrorDialog('Something went wrong. Please try again later or contact support if the issue persists');
       }
     },
-    [pageSize, setGenerating]
+    [pageSize, setGenerating, pendingIdsRef, startPolling]
   );
 
   // 监听图片列表生成事件
@@ -158,7 +168,7 @@ export function ImageGrid() {
   // 初始加载
   useEffect(() => {
     fetchImages(1);
-  }, [fetchImages]);
+  }, []);
 
   // 监听提交成功事件，加载最近图片
   useEffect(() => {
