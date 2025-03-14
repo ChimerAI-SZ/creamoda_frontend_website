@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { Textarea } from '@/components/ui/textarea';
 import { GenerateButton, GenerateButtonState } from '@/components/GenerateButton/GenerateButton';
-import { ImageUploader } from '@/components/Sidebar/components/ImageToImageContent/ImageUploader';
+import { MemoizedImageUploader as ImageUploader } from '@/components/Sidebar/components/ImageToImageContent/ImageUploader';
 import { FormLabel } from '@/components/Sidebar/components/ImageToImageContent/FormLabel';
 import { VariationTypeSelect } from '@/components/Sidebar/components/ImageToImageContent/VariationTypeSelect';
 import { FidelitySlider } from '@/components/Sidebar/components/ImageToImageContent/FidelitySlider';
@@ -12,6 +12,8 @@ import { useToast } from '@/hooks/use-toast';
 import { copyStyleGenerate, uploadImage, changeClothesGenerate } from '@/lib/api/index';
 import { eventBus } from '@/utils/events';
 import { showErrorDialog } from '@/utils/index';
+import { isValidImageUrl } from '@/utils/validation';
+
 interface ImageUploadFormProps {
   onSubmit?: (data: ImageUploadFormData) => void;
 }
@@ -25,15 +27,48 @@ interface ImageUploadFormData {
 }
 
 export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
-  const [formData, setFormData] = React.useState<ImageUploadFormData>({
-    image: null,
-    imageUrl: '',
+  // 将图片相关状态提取到单独的状态对象中
+  const [imageState, setImageState] = React.useState({
+    image: null as File | null,
+    imageUrl: ''
+  });
+
+  // 其他表单状态
+  const [formState, setFormState] = React.useState({
     variationType: '',
     description: '',
     fidelity: 50
   });
 
   const [isLoading, setIsLoading] = useState(false);
+
+  // 合并状态以便于处理
+  const formData = {
+    ...imageState,
+    ...formState
+  };
+
+  // 图片处理函数
+  const handleImageChange = React.useCallback((image: File | null) => {
+    setImageState(prev => ({ ...prev, image }));
+  }, []);
+
+  const handleImageUrlChange = React.useCallback((imageUrl: string) => {
+    setImageState(prev => ({ ...prev, imageUrl }));
+  }, []);
+
+  // 其他表单字段处理函数
+  const handleDescriptionChange = React.useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setFormState(prev => ({ ...prev, description: e.target.value }));
+  }, []);
+
+  const handleVariationTypeChange = React.useCallback((value: string) => {
+    setFormState(prev => ({ ...prev, variationType: value }));
+  }, []);
+
+  const handleFidelityChange = React.useCallback((value: number) => {
+    setFormState(prev => ({ ...prev, fidelity: value }));
+  }, []);
 
   const handleSubmit = async () => {
     // if (onSubmit) {
@@ -51,6 +86,15 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
         return;
       }
 
+      // 验证图片URL的有效性
+      if (formData.imageUrl && !formData.image) {
+        if (!isValidImageUrl(formData.imageUrl)) {
+          showErrorDialog('Please provide a valid image URL before generating');
+          setIsLoading(false);
+          return;
+        }
+      }
+
       if (!formData.description.trim()) {
         showErrorDialog('Please provide a description');
         return;
@@ -62,12 +106,19 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
         try {
           finalImageUrl = await uploadImage(formData.image);
           // 更新表单数据中的图片URL
-          setFormData(prev => ({ ...prev, imageUrl: finalImageUrl }));
+          setImageState(prev => ({ ...prev, imageUrl: finalImageUrl }));
         } catch (error) {
           console.error('Error uploading image:', error);
           showErrorDialog('Something went wrong. Please try again later or contact support if the issue persists');
           return;
         }
+      }
+
+      // 最后再次验证finalImageUrl是否有效
+      if (!isValidImageUrl(finalImageUrl)) {
+        showErrorDialog('The image URL is invalid. Please upload a valid image.');
+        setIsLoading(false);
+        return;
       }
 
       // 根据不同的变化类型调用不同的API
@@ -100,14 +151,6 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
     handleSubmit();
   };
 
-  const handleImageChange = (image: File | null) => {
-    setFormData(prev => ({ ...prev, image }));
-  };
-
-  const handleImageUrlChange = (imageUrl: string) => {
-    setFormData(prev => ({ ...prev, imageUrl }));
-  };
-
   // 确定按钮状态
   const buttonState =
     !formData.description.trim() || (!formData.image && !formData.imageUrl)
@@ -124,15 +167,12 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
           <ImageUploader
             onImageChange={handleImageChange}
             onImageUrlChange={handleImageUrlChange}
-            imageUrl={formData.imageUrl}
-            currentImage={formData.image}
+            imageUrl={imageState.imageUrl}
+            currentImage={imageState.image}
           />
         </div>
 
-        <VariationTypeSelect
-          value={formData.variationType}
-          onChange={value => setFormData(prev => ({ ...prev, variationType: value }))}
-        />
+        <VariationTypeSelect value={formState.variationType} onChange={handleVariationTypeChange} />
 
         <div className="space-y-2">
           <FormLabel htmlFor="description">Describe the final design</FormLabel>
@@ -140,16 +180,13 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
             id="description"
             placeholder="Please describe the category you would like to change."
             className="min-h-[200px] resize-none"
-            value={formData.description}
-            onChange={e => setFormData(prev => ({ ...prev, description: e.target.value }))}
+            value={formState.description}
+            onChange={handleDescriptionChange}
           />
         </div>
 
-        {formData.variationType === '1' && (
-          <FidelitySlider
-            value={formData.fidelity}
-            onChange={value => setFormData(prev => ({ ...prev, fidelity: value }))}
-          />
+        {formState.variationType === '1' && (
+          <FidelitySlider value={formState.fidelity} onChange={handleFidelityChange} />
         )}
       </form>
       <div className="sticky bottom-0 left-0 right-0 pb-4 bg-white">

@@ -7,6 +7,8 @@ import { X, Loader2 } from 'lucide-react';
 import axios from 'axios';
 import { uploadImage } from '@/lib/api';
 import { showErrorDialog } from '@/utils/index';
+import { isValidImageUrl } from '@/utils/validation';
+
 interface ImageUploaderProps {
   onImageChange: (image: File | null) => void;
   onImageUrlChange: (url: string) => void;
@@ -20,19 +22,33 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
   const [isUploading, setIsUploading] = React.useState(false);
   const [isUrlLoading, setIsUrlLoading] = React.useState(false);
   const [lastUrlLength, setLastUrlLength] = React.useState(0);
+  const [isProcessingUrl, setIsProcessingUrl] = React.useState(false);
+
+  // 使用useRef来存储上一次有效的预览URL，避免频繁更新
+  const lastValidPreviewRef = React.useRef<string | null>(null);
 
   React.useEffect(() => {
     // Create preview URL for the current image
     if (currentImage) {
       const url = URL.createObjectURL(currentImage);
       setPreviewUrl(url);
+      lastValidPreviewRef.current = url;
       return () => URL.revokeObjectURL(url);
-    } else if (imageUrl) {
-      setPreviewUrl(imageUrl);
-    } else {
+    } else if (imageUrl && isValidImageUrl(imageUrl) && !isProcessingUrl) {
+      // 只有当imageUrl是有效的URL且与上一次不同时才更新预览
+      // 且不在处理URL时才显示预览
+      if (imageUrl !== lastValidPreviewRef.current) {
+        setPreviewUrl(imageUrl);
+        lastValidPreviewRef.current = imageUrl;
+      }
+    } else if (!imageUrl && previewUrl !== null) {
+      // 只有当imageUrl为空且当前有预览时才清除预览
       setPreviewUrl(null);
+      lastValidPreviewRef.current = null;
     }
-  }, [currentImage, imageUrl]);
+    // 不要在依赖项中包含previewUrl，避免循环更新
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentImage, imageUrl, isProcessingUrl]);
 
   const uploadImageToServer = async (file: File) => {
     setIsUploading(true);
@@ -55,35 +71,70 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
   const uploadExternalImage = async (url: string) => {
     if (!url) return;
 
+    // 先验证URL格式
+    if (!isValidImageUrl(url)) {
+      showErrorDialog('Please enter a valid image URL. The URL must start with http:// or https://');
+      return;
+    }
+
+    // 设置处理状态，阻止显示原始URL的预览
+    setIsProcessingUrl(true);
     setIsUrlLoading(true);
 
     try {
-      // Fetch the image from the external URL
-      const response = await fetch(url);
+      // 使用我们的代理接口获取图片
+      const proxyUrl = `/api/proxy-image?url=${encodeURIComponent(url)}`;
+
+      // 从我们的代理获取图片
+      const response = await fetch(proxyUrl);
       if (!response.ok) {
         throw new Error('Failed to fetch image from URL');
       }
 
-      // Convert the image to a blob
+      // 转换为blob
       const blob = await response.blob();
 
-      // Create a File object from the blob
+      // 验证是否真的是图片
+      if (!blob.type.startsWith('image/')) {
+        throw new Error('The URL does not point to a valid image');
+      }
+
+      // 创建File对象
       const filename = url.split('/').pop() || 'image.jpg';
       const fileType = blob.type || 'image/jpeg';
       const file = new File([blob], filename, { type: fileType });
 
-      // Upload the file to our server
+      // 上传到我们的服务器
       const uploadedUrl = await uploadImage(file);
 
-      // Update with the new URL from our server
+      // 更新URL
       onImageUrlChange(uploadedUrl);
     } catch (error) {
       console.error('External image processing error:', error);
-      showErrorDialog(error instanceof Error ? error.message : 'Failed to process external image');
-      // Keep the original URL if there was an error
-      onImageUrlChange(url);
+
+      // 提供更具体的错误消息
+      let errorMessage = 'Failed to process external image';
+
+      if (error instanceof Error) {
+        const errorText = error.message;
+
+        if (errorText.includes('parse src') || errorText.includes('relative image')) {
+          errorMessage = 'Invalid image URL. The URL must be an absolute URL starting with http:// or https://';
+        } else if (errorText.includes('Failed to fetch')) {
+          errorMessage = 'Could not access the image. The URL might be invalid or the server is not responding.';
+        } else if (errorText.includes('valid image')) {
+          errorMessage = 'The URL does not point to a valid image file.';
+        }
+      }
+
+      showErrorDialog(errorMessage);
+
+      // 清空无效URL
+      onImageUrlChange('');
     } finally {
       setIsUrlLoading(false);
+      // 处理完成后，允许显示预览
+      setIsProcessingUrl(false);
     }
   };
 
@@ -127,41 +178,86 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
     }
   };
 
+  // 修改URL输入处理，减少不必要的状态更新
   const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newUrl = e.target.value;
-    onImageUrlChange(newUrl);
 
-    // Clear file when URL is entered
-    if (newUrl) {
-      onImageChange(null);
+    // 只有当URL真正改变时才更新状态
+    if (newUrl !== imageUrl) {
+      onImageUrlChange(newUrl);
+
+      // Clear file when URL is entered
+      if (newUrl && currentImage) {
+        onImageChange(null);
+      }
 
       // 检测是否是粘贴操作 - 如果URL长度突然增加很多，很可能是粘贴操作
-      if (newUrl.length > 10 && lastUrlLength < 5 && newUrl.trim().startsWith('http')) {
-        // 延迟一点执行上传，确保UI已更新
-        setTimeout(() => {
-          uploadExternalImage(newUrl);
-        }, 100);
+      if (newUrl.length > 10 && lastUrlLength < 5) {
+        const trimmedUrl = newUrl.trim();
+        if (isValidImageUrl(trimmedUrl)) {
+          // 设置处理状态，阻止显示原始URL的预览
+          setIsProcessingUrl(true);
+
+          // 延迟一点执行上传，确保UI已更新
+          setTimeout(() => {
+            uploadExternalImage(trimmedUrl);
+          }, 100);
+        } else if (trimmedUrl.startsWith('http')) {
+          // 如果是URL但不是有效的图片URL，显示错误
+          showErrorDialog(
+            'This URL does not appear to be a valid image link. Please ensure it points to an image file.'
+          );
+        }
+      }
+
+      setLastUrlLength(newUrl.length);
+    }
+  };
+
+  // 改进onBlur处理函数
+  const handleUrlBlur = async () => {
+    // 只有当有URL且不是空字符串，且不在加载状态时才检查
+    if (imageUrl && imageUrl.trim() !== '' && !isUrlLoading && !isProcessingUrl) {
+      const trimmedUrl = imageUrl.trim();
+
+      // 如果URL看起来像是一个网址（以http开头）但不是有效的图片URL
+      if (trimmedUrl.startsWith('http') && !isValidImageUrl(trimmedUrl)) {
+        // 显示错误提示
+        showErrorDialog('This URL does not appear to be a valid image link. Please ensure it points to an image file.');
+        // 可选：清空无效URL
+        // onImageUrlChange('');
+        return;
+      }
+
+      // 如果是有效的图片URL且尚未处理，则上传
+      if (isValidImageUrl(trimmedUrl) && trimmedUrl !== lastValidPreviewRef.current) {
+        await uploadExternalImage(trimmedUrl);
       }
     }
-
-    setLastUrlLength(newUrl.length);
   };
 
-  // 保留onBlur处理，以防用户手动输入URL
-  const handleUrlBlur = async () => {
-    if (imageUrl && !isUrlLoading) {
-      await uploadExternalImage(imageUrl);
-    }
-  };
-
-  // 处理粘贴事件
+  // 修改粘贴处理函数
   const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
     const pastedText = e.clipboardData.getData('text');
-    if (pastedText && pastedText.trim().startsWith('http')) {
-      // 延迟一点执行上传，确保UI已更新
-      setTimeout(() => {
-        uploadExternalImage(pastedText.trim());
-      }, 100);
+    if (pastedText) {
+      const trimmedUrl = pastedText.trim();
+      if (isValidImageUrl(trimmedUrl)) {
+        // 设置处理状态，阻止显示原始URL的预览
+        setIsProcessingUrl(true);
+
+        // 更新输入框中的URL
+        onImageUrlChange(trimmedUrl);
+
+        // 延迟一点执行上传，确保UI已更新
+        setTimeout(() => {
+          uploadExternalImage(trimmedUrl);
+        }, 100);
+      } else if (trimmedUrl.startsWith('http')) {
+        // 如果是URL但不是有效的图片URL，显示错误
+        showErrorDialog(
+          'The pasted URL does not appear to be a valid image link. Please ensure it points to an image file.'
+        );
+      }
     }
   };
 
@@ -191,7 +287,20 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
           // Image preview mode
           <div className="relative w-full h-full">
             <div className="absolute inset-0 flex items-center justify-center p-4">
-              <Image src={previewUrl} alt="Uploaded image" fill className="object-contain" />
+              <Image
+                src={previewUrl}
+                alt="Uploaded image"
+                fill
+                className="object-contain"
+                onError={() => {
+                  // 图片加载失败时清除预览
+                  setPreviewUrl(null);
+                  onImageUrlChange('');
+                  showErrorDialog(
+                    'Failed to load image. The URL might be invalid or the image format is not supported.'
+                  );
+                }}
+              />
             </div>
             <button
               onClick={handleRemoveImage}
@@ -238,3 +347,6 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
     </div>
   );
 }
+
+// 在文件末尾，使用React.memo包装组件
+export const MemoizedImageUploader = React.memo(ImageUploader);
