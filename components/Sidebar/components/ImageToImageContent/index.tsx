@@ -11,7 +11,7 @@ import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { copyStyleGenerate, uploadImage, changeClothesGenerate } from '@/lib/api/index';
 import { eventBus } from '@/utils/events';
-
+import { showErrorDialog } from '@/utils/index';
 interface ImageUploadFormProps {
   onSubmit?: (data: ImageUploadFormData) => void;
 }
@@ -25,7 +25,6 @@ interface ImageUploadFormData {
 }
 
 export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
-  const { toast } = useToast();
   const [formData, setFormData] = React.useState<ImageUploadFormData>({
     image: null,
     imageUrl: '',
@@ -48,20 +47,12 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
 
       // 确保有图片URL和描述
       if (!formData.imageUrl && !formData.image) {
-        toast({
-          title: 'Error',
-          description: 'Please upload an image or provide an image URL',
-          variant: 'destructive'
-        });
+        showErrorDialog('Please upload an image or provide an image URL');
         return;
       }
 
       if (!formData.description.trim()) {
-        toast({
-          title: 'Error',
-          description: 'Please provide a description',
-          variant: 'destructive'
-        });
+        showErrorDialog('Please provide a description');
         return;
       }
 
@@ -74,11 +65,7 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
           setFormData(prev => ({ ...prev, imageUrl: finalImageUrl }));
         } catch (error) {
           console.error('Error uploading image:', error);
-          toast({
-            title: 'Error',
-            description: error instanceof Error ? error.message : 'Failed to upload image',
-            variant: 'destructive'
-          });
+          showErrorDialog('Something went wrong. Please try again later or contact support if the issue persists');
           return;
         }
       }
@@ -89,32 +76,20 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
       if (formData.variationType === '2') {
         // 调用复制风格API
         response = await copyStyleGenerate(finalImageUrl, formData.description, formData.fidelity);
-        eventBus.emit('sidebar:submit-success', void 0);
       } else {
         // 默认调用换衣服API
         response = await changeClothesGenerate(finalImageUrl, formData.description);
-        eventBus.emit('sidebar:submit-success', void 0);
       }
 
       if (response.code === 0) {
-        toast({
-          title: 'Success',
-          description: 'Image generation request submitted successfully'
-        });
+        eventBus.emit('sidebar:submit-success', void 0);
+        console.log('response', response);
       } else {
-        toast({
-          title: 'Error',
-          description: response.msg || 'Failed to generate image',
-          variant: 'destructive'
-        });
+        showErrorDialog(response.msg || 'Failed to generate image');
       }
     } catch (error) {
       console.error('Error generating image:', error);
-      toast({
-        title: 'Error',
-        description: 'An unexpected error occurred',
-        variant: 'destructive'
-      });
+      showErrorDialog('An unexpected error occurred');
     } finally {
       setIsLoading(false);
     }

@@ -32,12 +32,16 @@ export function Sidebar() {
 
   // 文生图 / 图生图 提交事件
   const handleSubmit = (data: OutfitFormData) => {
-    textToImageGenerate(data).then(data => {
-      // 触发 iamgeGrid 里的提交回调时间（刷新生图历史图片）
-      eventBus.emit('sidebar:submit-success', void 0);
-      // 修改getnerating状态
-      setGenerating(true);
-    });
+    textToImageGenerate(data)
+      .then(data => {
+        // 触发 iamgeGrid 里的提交回调时间（刷新生图历史图片）
+        eventBus.emit('sidebar:submit-success', void 0);
+        // 修改getnerating状态
+        setGenerating(true);
+      })
+      .catch(error => {
+        showErrorDialog(error.message || 'Failed to generate image');
+      });
   };
 
   useEffect(() => {
@@ -68,7 +72,12 @@ export function Sidebar() {
         <ToggleTag label="Image to image" isActive={activeTag === 'image'} onClick={() => setActiveTag('image')} />
       </div>
       <div className="flex-1 overflow-hidden pt-4 px-4">
-        {activeTag === 'text' ? <TextToImageContent onSubmit={handleSubmit} /> : <ImageToImageContent />}
+        <div className={activeTag === 'text' ? 'block h-full' : 'hidden '}>
+          <TextToImageContent onSubmit={handleSubmit} />
+        </div>
+        <div className={activeTag === 'image' ? 'block  h-full' : 'hidden'}>
+          <ImageToImageContent />
+        </div>
       </div>
     </div>
   );

@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { X, Loader2 } from 'lucide-react';
 import axios from 'axios';
 import { uploadImage } from '@/lib/api';
-
+import { showErrorDialog } from '@/utils/index';
 interface ImageUploaderProps {
   onImageChange: (image: File | null) => void;
   onImageUrlChange: (url: string) => void;
@@ -18,7 +18,8 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
   const [dragActive, setDragActive] = React.useState(false);
   const [previewUrl, setPreviewUrl] = React.useState<string | null>(null);
   const [isUploading, setIsUploading] = React.useState(false);
-  const [uploadError, setUploadError] = React.useState<string | null>(null);
+  const [isUrlLoading, setIsUrlLoading] = React.useState(false);
+  const [lastUrlLength, setLastUrlLength] = React.useState(0);
 
   React.useEffect(() => {
     // Create preview URL for the current image
@@ -35,11 +36,8 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
 
   const uploadImageToServer = async (file: File) => {
     setIsUploading(true);
-    setUploadError(null);
 
     try {
-      const formData = new FormData();
-      formData.append('file', file);
       const url = await uploadImage(file);
       // Success - update with the URL from the server
       onImageUrlChange(url);
@@ -47,9 +45,45 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
       onImageChange(null);
     } catch (error) {
       console.error('Image upload error:', error);
-      setUploadError(error instanceof Error ? error.message : 'Failed to upload image');
+      showErrorDialog(error instanceof Error ? error.message : 'Failed to upload image');
     } finally {
       setIsUploading(false);
+    }
+  };
+
+  // New function to fetch and upload external images
+  const uploadExternalImage = async (url: string) => {
+    if (!url) return;
+
+    setIsUrlLoading(true);
+
+    try {
+      // Fetch the image from the external URL
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error('Failed to fetch image from URL');
+      }
+
+      // Convert the image to a blob
+      const blob = await response.blob();
+
+      // Create a File object from the blob
+      const filename = url.split('/').pop() || 'image.jpg';
+      const fileType = blob.type || 'image/jpeg';
+      const file = new File([blob], filename, { type: fileType });
+
+      // Upload the file to our server
+      const uploadedUrl = await uploadImage(file);
+
+      // Update with the new URL from our server
+      onImageUrlChange(uploadedUrl);
+    } catch (error) {
+      console.error('External image processing error:', error);
+      showErrorDialog(error instanceof Error ? error.message : 'Failed to process external image');
+      // Keep the original URL if there was an error
+      onImageUrlChange(url);
+    } finally {
+      setIsUrlLoading(false);
     }
   };
 
@@ -94,17 +128,46 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
   };
 
   const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onImageUrlChange(e.target.value);
+    const newUrl = e.target.value;
+    onImageUrlChange(newUrl);
+
     // Clear file when URL is entered
-    if (e.target.value) {
+    if (newUrl) {
       onImageChange(null);
+
+      // 检测是否是粘贴操作 - 如果URL长度突然增加很多，很可能是粘贴操作
+      if (newUrl.length > 10 && lastUrlLength < 5 && newUrl.trim().startsWith('http')) {
+        // 延迟一点执行上传，确保UI已更新
+        setTimeout(() => {
+          uploadExternalImage(newUrl);
+        }, 100);
+      }
+    }
+
+    setLastUrlLength(newUrl.length);
+  };
+
+  // 保留onBlur处理，以防用户手动输入URL
+  const handleUrlBlur = async () => {
+    if (imageUrl && !isUrlLoading) {
+      await uploadExternalImage(imageUrl);
+    }
+  };
+
+  // 处理粘贴事件
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    const pastedText = e.clipboardData.getData('text');
+    if (pastedText && pastedText.trim().startsWith('http')) {
+      // 延迟一点执行上传，确保UI已更新
+      setTimeout(() => {
+        uploadExternalImage(pastedText.trim());
+      }, 100);
     }
   };
 
   const handleRemoveImage = () => {
     onImageChange(null);
     onImageUrlChange('');
-    setUploadError(null);
   };
 
   return (
@@ -118,11 +181,11 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
         onDragOver={handleDrag}
         onDrop={handleDrop}
       >
-        {isUploading ? (
+        {isUploading || isUrlLoading ? (
           // Loading state
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <Loader2 className="h-8 w-8 text-[#FF7B0D] animate-spin mb-2" />
-            <span className="text-sm text-gray-600">Uploading image...</span>
+            <span className="text-sm text-gray-600">{isUploading ? 'Uploading image...' : 'Processing image...'}</span>
           </div>
         ) : previewUrl ? (
           // Image preview mode
@@ -165,16 +228,12 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
               placeholder="Or paste image address"
               value={imageUrl}
               onChange={handleUrlChange}
+              onBlur={handleUrlBlur}
+              onPaste={handlePaste}
               className="absolute left-[50%] translate-x-[-50%] bottom-[12px] w-[270px] h-[36px] px-[12px] text-[14px] font-normal leading-5 placeholder:text-[#D5D5D5]"
             />
           </>
         )}
-
-        {/* {uploadError && (
-          <div className="absolute bottom-[50px] left-0 right-0 text-center">
-            <span className="text-xs text-red-500">{uploadError}</span>
-          </div>
-        )} */}
       </div>
     </div>
   );
