@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { Slider } from '@/components/ui/slider';
-import { FormLabel } from '@/components/Sidebar/components/FormLabel';
+import { FormLabel } from '@/components/Sidebar/components/ImageToImageContent/FormLabel';
 import { cn } from '@/lib/utils';
 
 interface FidelitySliderProps {

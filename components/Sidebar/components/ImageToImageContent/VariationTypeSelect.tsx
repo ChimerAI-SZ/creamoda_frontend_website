@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { FormLabel } from '@/components/Sidebar/components/FormLabel';
+import { FormLabel } from '@/components/Sidebar/components/ImageToImageContent/FormLabel';
 import { cn } from '@/lib/utils';
 import { useModelStore } from '@/stores/useModelStore';
 
