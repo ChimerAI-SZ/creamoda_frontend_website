@@ -28,7 +28,7 @@ const AGE_OPTIONS = Array.from({ length: 83 }, (_, i) => i + 18);
 
 export default function OutfitForm({ onSubmit }: OutfitFormProps) {
   const { modelSizes } = useModelStore();
-  const { isGenerating } = useGenerationStore();
+  const { isGenerating, setGenerating } = useGenerationStore();
 
   const defaultModelSize = Number(modelSizes.find(size => size.name === 'Mid-size')?.code) || 2;
 
@@ -45,8 +45,11 @@ export default function OutfitForm({ onSubmit }: OutfitFormProps) {
 
   // 使用useCallback优化事件处理函数
   const handleSubmit = useCallback(() => {
+    // 提前控制生成状态，如果生成失败再取消拦截
+    setGenerating(true);
+
     onSubmit?.(formData);
-  }, [onSubmit, formData]);
+  }, [onSubmit, formData, setGenerating]);
 
   const handlePromptChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setFormData(prev => ({ ...prev, prompt: e.target.value }));
