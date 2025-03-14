@@ -12,7 +12,7 @@ const inter = Inter({ subsets: ['latin'] });
 
 import { textToImageGenerate, getModelSizeList, getVariationTypeList } from '@/lib/api';
 import { useModelStore } from '@/stores/useModelStore';
-import { emitter } from '@/utils/events';
+import { eventBus } from '@/utils/events';
 
 export interface OutfitFormData {
   prompt: string;
@@ -31,7 +31,7 @@ export function Sidebar() {
 
   const handleSubmit = (data: OutfitFormData) => {
     textToImageGenerate(data).then(data => {
-      emitter.emit('sidebar:submit-success', { data });
+      eventBus.emit('sidebar:submit-success', { data });
     });
   };
 

@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { localAPI } from '@/lib/axios';
 import usePersonalInfoStore from '@/stores/usePersonalInfoStore';
 import { showErrorDialog } from '@/utils/index';
-import { emitter } from '@/utils/events';
+import { eventBus } from '@/utils/events';
 
 export default function Avatar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -34,7 +34,7 @@ export default function Avatar() {
     if (token) {
       setIsOpen(true);
     } else {
-      emitter.emit('auth:login', { isOpen: true });
+      eventBus.emit('auth:login', { isOpen: true });
     }
   };
 
@@ -45,7 +45,7 @@ export default function Avatar() {
     localAPI
       .post('/api/v1/user/logout')
       .then(() => {
-        emitter.emit('auth:login', { isOpen: true });
+        eventBus.emit('auth:login', { isOpen: true });
       })
       .catch(error => {
         showErrorDialog('failed to logout');

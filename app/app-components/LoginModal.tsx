@@ -10,7 +10,7 @@ import { GoogleLoginButton } from './Login/GoogleLoginButton';
 import { VerificationSuccess } from './Login/VerificationSuccess';
 import { usePersonalInfoStore } from '@/stores/usePersonalInfoStore';
 
-import { emitter } from '@/utils/events';
+import { eventBus } from '@/utils/events';
 
 // Define possible modal view states
 type ModalView = 'login' | 'signup' | 'email-verification' | 'verification-success';
@@ -38,10 +38,10 @@ export function LoginModal() {
         setModalVisible(data.isOpen);
       }
     };
-    emitter.on('auth:login', handler);
+    eventBus.on('auth:login', handler);
 
     return () => {
-      emitter.off('auth:login', handler);
+      eventBus.off('auth:login', handler);
     };
   }, []);
 
@@ -83,7 +83,7 @@ export function LoginModal() {
       // 先关闭模态框，提高用户体验
       handleCloseModal();
 
-      emitter.emit('imageList:generate-list', { data: {} });
+      eventBus.emit('imageList:generate-list', { data: {} });
       // 然后再获取用户信息
       await usePersonalInfoStore.getState().fetchUserInfo();
 

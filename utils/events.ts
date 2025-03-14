@@ -58,6 +58,3 @@ export const eventBus = {
     emitter.all.clear();
   }
 };
-
-// 为了向后兼容，保留原始 emitter 导出
-export { emitter };

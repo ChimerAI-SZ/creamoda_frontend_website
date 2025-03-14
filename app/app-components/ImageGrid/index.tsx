@@ -9,7 +9,7 @@ import { useImageLoader } from './hooks/useImageLoader';
 import { useInfiniteScroll } from './hooks/useInfiniteScroll';
 import { usePendingImages } from './hooks/usePendingImages';
 
-import { emitter, eventBus } from '@/utils/events';
+import { eventBus } from '@/utils/events';
 import { generate } from '@/lib/api';
 
 // 定义图片类型接口
@@ -154,9 +154,9 @@ export function ImageGrid() {
       fetchRecentImages();
     };
 
-    emitter.on('sidebar:submit-success', handler);
+    eventBus.on('sidebar:submit-success', handler);
     return () => {
-      emitter.off('sidebar:submit-success', handler);
+      eventBus.off('sidebar:submit-success', handler);
     };
   }, [fetchRecentImages]);
 
