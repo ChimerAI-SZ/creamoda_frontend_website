@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, memo } from 'react';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -16,50 +16,63 @@ interface OutfitFormProps {
   onSubmit?: (data: OutfitFormData) => void;
 }
 
-const StyledLabel = ({ content, htmlFor }: { content: string; htmlFor?: string }) => {
-  return (
-    <Label htmlFor={htmlFor} className="text-[#1A1A1A] font-inter text-[14px] font-medium leading-[20px] py-[6px]">
-      {content}
-    </Label>
-  );
-};
+const StyledLabel = memo(({ content, htmlFor }: { content: string; htmlFor?: string }) => (
+  <Label htmlFor={htmlFor} className="text-[#1A1A1A] font-inter text-[14px] font-medium leading-[20px] py-[6px]">
+    {content}
+  </Label>
+));
+StyledLabel.displayName = 'StyledLabel';
+
+// 年龄选项列表预先计算
+const AGE_OPTIONS = Array.from({ length: 83 }, (_, i) => i + 18);
 
 export default function OutfitForm({ onSubmit }: OutfitFormProps) {
-  // 从 store 中获取模特尺寸枚举
   const { modelSizes } = useModelStore();
   const { isGenerating } = useGenerationStore();
+
+  const defaultModelSize = Number(modelSizes.find(size => size.name === 'Mid-size')?.code) || 2;
 
   const [formData, setFormData] = useState<OutfitFormData>({
     prompt: '',
     gender: 2,
     age: '25',
     country: 'usa',
-    modelSize: Number(modelSizes.find(size => size.name === 'Mid-size')?.code) || 2,
+    modelSize: defaultModelSize,
     withHumanModel: 1
-  }); // 表单数据
-  const [btnState, setBtnState] = useState<'disabled' | 'ready' | 'generating'>('disabled'); // 按钮状态
+  });
 
-  // 提交事件
-  const handleSubmit = () => {
+  const [btnState, setBtnState] = useState<'disabled' | 'ready' | 'generating'>('disabled');
+
+  // 使用useCallback优化事件处理函数
+  const handleSubmit = useCallback(() => {
     onSubmit?.(formData);
-  };
+  }, [onSubmit, formData]);
 
+  const handlePromptChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setFormData(prev => ({ ...prev, prompt: e.target.value }));
+  }, []);
+
+  const handleGenderChange = useCallback((value: string) => {
+    setFormData(prev => ({ ...prev, gender: parseInt(value) as 1 | 2 }));
+  }, []);
+
+  const handleAgeChange = useCallback((value: string) => {
+    setFormData(prev => ({ ...prev, age: value }));
+  }, []);
+
+  const handleCountryChange = useCallback((value: string) => {
+    setFormData(prev => ({ ...prev, country: value }));
+  }, []);
+
+  const handleModelSizeChange = useCallback((value: string) => {
+    setFormData(prev => ({ ...prev, modelSize: Number(value) }));
+  }, []);
+
+  // 验证表单并更新按钮状态
   useEffect(() => {
     const isFormValid = Boolean(formData.prompt.length > 0 && formData.age && formData.country && formData.modelSize);
-
-    setBtnState(isFormValid ? 'ready' : 'disabled');
-  }, [formData]);
-
-  // 添加生成中的按钮状态干预
-  useEffect(() => {
-    if (isGenerating) {
-      setBtnState('generating');
-    } else {
-      setBtnState(
-        formData.prompt.length > 0 && formData.age && formData.country && formData.modelSize ? 'ready' : 'disabled'
-      );
-    }
-  }, [isGenerating, formData]);
+    setBtnState(isGenerating ? 'generating' : isFormValid ? 'ready' : 'disabled');
+  }, [formData, isGenerating]);
 
   return (
     <div className="h-full overflow-y-auto">
@@ -73,7 +86,7 @@ export default function OutfitForm({ onSubmit }: OutfitFormProps) {
                 placeholder="You can describe the clothing type, fit, color, print, etc."
                 className="min-h-[288px] mt-[10px] resize-none p-4 placeholder:text-[#D5D5D5] placeholder:font-inter placeholder:text-[14px] placeholder:font-normal placeholder:leading-[20px] rounded-sm"
                 value={formData.prompt}
-                onChange={e => setFormData({ ...formData, prompt: e.target.value })}
+                onChange={handlePromptChange}
               />
             </div>
 
@@ -87,12 +100,7 @@ export default function OutfitForm({ onSubmit }: OutfitFormProps) {
                   <RadioGroup
                     id="text_to_img_gender"
                     defaultValue="2"
-                    onValueChange={value =>
-                      setFormData({
-                        ...formData,
-                        gender: parseInt(value) as 1 | 2 // 将字符串转换为数字
-                      })
-                    }
+                    onValueChange={handleGenderChange}
                     className="flex gap-4 w-[155px]"
                   >
                     <div className="flex items-center space-x-2">
@@ -120,12 +128,12 @@ export default function OutfitForm({ onSubmit }: OutfitFormProps) {
                 <div className="flex items-center justify-between mt-2">
                   <StyledLabel content="Age" />
 
-                  <Select value={formData.age} onValueChange={value => setFormData({ ...formData, age: value })}>
+                  <Select value={formData.age} onValueChange={handleAgeChange}>
                     <SelectTrigger className="w-[155px] rounded-sm">
                       <SelectValue placeholder="Select age" />
                     </SelectTrigger>
                     <SelectContent>
-                      {Array.from({ length: 83 }, (_, i) => i + 18).map(age => (
+                      {AGE_OPTIONS.map(age => (
                         <SelectItem key={age} value={age.toString()}>
                           {age}
                         </SelectItem>
@@ -137,10 +145,7 @@ export default function OutfitForm({ onSubmit }: OutfitFormProps) {
                 <div className="flex items-center justify-between mt-2">
                   <StyledLabel content="Country" />
 
-                  <Select
-                    value={formData.country}
-                    onValueChange={value => setFormData({ ...formData, country: value })}
-                  >
+                  <Select value={formData.country} onValueChange={handleCountryChange}>
                     <SelectTrigger className="w-[155px] rounded-sm">
                       <SelectValue placeholder="Select country" />
                     </SelectTrigger>
@@ -157,10 +162,7 @@ export default function OutfitForm({ onSubmit }: OutfitFormProps) {
                 <div className="flex items-center justify-between mt-2">
                   <StyledLabel content="Type" />
 
-                  <Select
-                    value={formData.modelSize.toString()}
-                    onValueChange={value => setFormData({ ...formData, modelSize: Number(value) })}
-                  >
+                  <Select value={formData.modelSize.toString()} onValueChange={handleModelSizeChange}>
                     <SelectTrigger className="w-[155px] rounded-sm">
                       <SelectValue placeholder="Select type" />
                     </SelectTrigger>
@@ -177,7 +179,7 @@ export default function OutfitForm({ onSubmit }: OutfitFormProps) {
             </div>
           </div>
         </form>
-        <div className="sticky bottom-0 left-0 right-0 px-6 pb-4 bg-white">
+        <div className="sticky bottom-0 left-0 right-0 pb-4 bg-white">
           <GenerateButton onClick={handleSubmit} state={btnState} />
         </div>
       </div>

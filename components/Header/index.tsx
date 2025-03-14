@@ -2,6 +2,9 @@
 import Logo from './components/Logo';
 import Avatar from './components/Avatar';
 import ComingSoonDialog from '@/components/ComingSoonDialog';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import clsx from 'clsx';
 
 // 定义导航项类型
 type NavItem = {
@@ -13,7 +16,7 @@ type NavItem = {
 export function Header() {
   // 将导航项抽取为配置数组
   const navItems: NavItem[] = [
-    { text: 'Design', href: '/design' },
+    { text: 'Design', href: '/' },
     { text: 'Production', isComingSoon: true },
     { text: 'Online shop', isComingSoon: true }
   ];
@@ -35,10 +38,19 @@ export function Header() {
   );
 }
 
-// 抽取导航项为独立组件
 function NavItem({ text, href, isComingSoon }: NavItem) {
-  const navLinkClasses =
-    'text-[#999] font-inter text-[14px] font-semibold leading-[20px] text-center cursor-pointer hover:text-[#FF7B0D] transition-colors inline-block py-[6px] px-[10px]';
+  const pathname = usePathname();
+  const isActive = href && pathname === href;
+
+  const navLinkClasses = clsx(
+    'text-[#999] font-inter text-[14px] font-semibold leading-[20px]',
+    'text-center cursor-pointer transition-colors',
+    'inline-block py-[6px] px-[10px]',
+    {
+      'text-[#FF7B0D]': isActive,
+      'hover:text-[#FF7B0D]': !isActive
+    }
+  );
 
   const content = <span className={navLinkClasses}>{text}</span>;
 
@@ -47,9 +59,9 @@ function NavItem({ text, href, isComingSoon }: NavItem) {
   }
 
   return href ? (
-    <a href={href} className={navLinkClasses}>
+    <Link href={href} className={navLinkClasses}>
       {text}
-    </a>
+    </Link>
   ) : (
     content
   );

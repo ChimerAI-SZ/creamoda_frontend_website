@@ -167,7 +167,12 @@ export function ImageGrid() {
 
   // 初始加载
   useEffect(() => {
-    fetchImages(1);
+    const token = localStorage.getItem('auth_token');
+
+    // 如果用户已登录，则加载图片
+    if (token) {
+      fetchImages(1);
+    }
   }, []);
 
   // 监听提交成功事件，加载最近图片
@@ -211,8 +216,6 @@ export function ImageGrid() {
             key={image.genImgId || index}
             image={image}
             ref={index === images.length - Math.min(9, images.length / 3) ? lastItemRef : undefined}
-            isLoaded={loadedImages.get(image.genImgId)}
-            onImageLoad={() => handleImageLoad(image.genImgId)}
             onClick={() => handleImageClick(image)}
           />
         ))}
