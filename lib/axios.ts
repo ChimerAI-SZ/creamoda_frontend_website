@@ -23,7 +23,7 @@ const configureResponseInterceptor = (instance: AxiosInstance): void => {
       // Handle cases where API returns 200 but the response body contains code: 401
       if (response.data?.code === 401) {
         handleUnauthorized();
-        return Promise.reject(response.data);
+        return Promise.resolve(response);
       }
       return response;
     },
