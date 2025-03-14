@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { GenerateButton } from '@/components/GenerateButton/GenerateButton';
 
 import { useModelStore } from '@/stores/useModelStore';
-
+import { useGenerationStore } from '@/stores/useGenerationStore';
 import { OutfitFormData } from '../../index';
 import { COUNTRIES_LIST } from './constant';
 
@@ -27,6 +27,7 @@ const StyledLabel = ({ content, htmlFor }: { content: string; htmlFor?: string }
 export default function OutfitForm({ onSubmit }: OutfitFormProps) {
   // 从 store 中获取模特尺寸枚举
   const { modelSizes } = useModelStore();
+  const { isGenerating } = useGenerationStore();
 
   const [formData, setFormData] = useState<OutfitFormData>({
     prompt: '',
@@ -35,20 +36,30 @@ export default function OutfitForm({ onSubmit }: OutfitFormProps) {
     country: 'usa',
     modelSize: Number(modelSizes.find(size => size.name === 'Mid-size')?.code) || 2,
     withHumanModel: 1
-  });
-  const [btnState, setBtnState] = useState<'disabled' | 'ready' | 'generating'>('disabled');
+  }); // 表单数据
+  const [btnState, setBtnState] = useState<'disabled' | 'ready' | 'generating'>('disabled'); // 按钮状态
 
+  // 提交事件
   const handleSubmit = () => {
     onSubmit?.(formData);
   };
 
   useEffect(() => {
-    if (formData.prompt.length > 0 && formData.gender && formData.age && formData.country && formData.modelSize) {
-      setBtnState('ready');
-    } else {
-      setBtnState('disabled');
-    }
+    const isFormValid = Boolean(formData.prompt.length > 0 && formData.age && formData.country && formData.modelSize);
+
+    setBtnState(isFormValid ? 'ready' : 'disabled');
   }, [formData]);
+
+  // 添加生成中的按钮状态干预
+  useEffect(() => {
+    if (isGenerating) {
+      setBtnState('generating');
+    } else {
+      setBtnState(
+        formData.prompt.length > 0 && formData.age && formData.country && formData.modelSize ? 'ready' : 'disabled'
+      );
+    }
+  }, [isGenerating, formData]);
 
   return (
     <div className="h-full overflow-y-auto">

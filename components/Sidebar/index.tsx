@@ -12,6 +12,7 @@ const inter = Inter({ subsets: ['latin'] });
 
 import { textToImageGenerate, getModelSizeList, getVariationTypeList } from '@/lib/api';
 import { useModelStore } from '@/stores/useModelStore';
+import { useGenerationStore } from '@/stores/useGenerationStore';
 import { eventBus } from '@/utils/events';
 
 export interface OutfitFormData {
@@ -28,10 +29,15 @@ export interface OutfitFormData {
 export function Sidebar() {
   const [activeTag, setActiveTag] = useState<'text' | 'image'>('text');
   const { setModelSizes, setVariationTypes } = useModelStore();
+  const { setGenerating } = useGenerationStore();
 
+  // 文生图 / 图生图 提交事件
   const handleSubmit = (data: OutfitFormData) => {
     textToImageGenerate(data).then(data => {
-      eventBus.emit('sidebar:submit-success', { data });
+      // 触发 iamgeGrid 里的提交回调时间（刷新生图历史图片）
+      eventBus.emit('sidebar:submit-success', void 0);
+      // 修改getnerating状态
+      setGenerating(true);
     });
   };
 

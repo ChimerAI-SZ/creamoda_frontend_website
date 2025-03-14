@@ -6,7 +6,7 @@ import mitt from 'mitt';
  */
 export type AppEvents = {
   // 侧边栏相关事件
-  'sidebar:submit-success': { data: any };
+  'sidebar:submit-success': void;
   // 侧边栏相关事件
   'imageList:generate-list': { data: any };
   // 用户认证相关事件

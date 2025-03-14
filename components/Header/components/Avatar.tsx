@@ -48,7 +48,7 @@ export default function Avatar() {
         eventBus.emit('auth:login', { isOpen: true });
       })
       .catch(error => {
-        showErrorDialog('failed to logout');
+        showErrorDialog('Something went wrong. Please try again later or contact support if the issue persists');
       })
       .finally(() => {
         localStorage.removeItem('auth_token');

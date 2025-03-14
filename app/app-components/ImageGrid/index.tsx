@@ -5,6 +5,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { ImageCard } from './ImageCard';
 import ImageDetail from './ImageDetail';
 
+import { showErrorDialog } from '@/utils/index';
 import { useImageLoader } from './hooks/useImageLoader';
 import { useInfiniteScroll } from './hooks/useInfiniteScroll';
 import { usePendingImages } from './hooks/usePendingImages';
@@ -62,7 +63,7 @@ export function ImageGrid() {
           setHasMore(currentPage * pageSize < (data.data.total || 1000));
         }
       } catch (error) {
-        console.error('加载图片失败:', error);
+        showErrorDialog('Something went wrong. Please try again later or contact support if the issue persists');
       }
     },
     [pageSize]
@@ -149,14 +150,14 @@ export function ImageGrid() {
 
   // 监听事件
   useEffect(() => {
-    const handler = (data: { data: any }) => {
-      console.log('收到 Sidebar 提交成功事件', data);
+    const handleSubmitSuccess = () => {
       fetchRecentImages();
     };
 
-    eventBus.on('sidebar:submit-success', handler);
+    eventBus.on('sidebar:submit-success', handleSubmitSuccess);
+
     return () => {
-      eventBus.off('sidebar:submit-success', handler);
+      eventBus.off('sidebar:submit-success', handleSubmitSuccess);
     };
   }, [fetchRecentImages]);
 

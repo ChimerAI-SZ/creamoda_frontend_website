@@ -89,11 +89,11 @@ export function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
       if (formData.variationType === '2') {
         // 调用复制风格API
         response = await copyStyleGenerate(finalImageUrl, formData.description, formData.fidelity);
-        eventBus.emit('sidebar:submit-success', response);
+        eventBus.emit('sidebar:submit-success', void 0);
       } else {
         // 默认调用换衣服API
         response = await changeClothesGenerate(finalImageUrl, formData.description);
-        eventBus.emit('sidebar:submit-success', response);
+        eventBus.emit('sidebar:submit-success', void 0);
       }
 
       if (response.code === 0) {
