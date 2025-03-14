@@ -86,9 +86,9 @@ export const LoginForm = ({ onToggleView, onSuccess }: LoginFormProps) => {
         // API returned an error
         setApiError(response.msg || 'Login failed. Please try again.');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Login error:', error);
-      setApiError('An error occurred during login. Please try again.');
+      setApiError(error?.msg || 'An error occurred during login. Please try again.');
     } finally {
       setIsLoading(false);
     }

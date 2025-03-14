@@ -93,6 +93,20 @@ export const SignUpForm = ({ onToggleView, onSignupSuccess }: SignUpFormProps) =
       const value = e.target.value;
       setFormData(prev => ({ ...prev, [field]: value }));
 
+      // 立即验证密码长度
+      if (field === 'password') {
+        if (value.length > 50) {
+          setErrors(prev => ({ ...prev, password: 'Password must be less than 50 characters' }));
+        } else if (errors.password === 'Password must be less than 50 characters' && value.length <= 50) {
+          // 如果之前有长度错误且现在长度合适，清除错误
+          setErrors(prev => ({ ...prev, password: '' }));
+          // 然后触发完整验证
+          setTimeout(() => {
+            setErrors(prev => ({ ...prev, password: validators.password(value) }));
+          }, 0);
+        }
+      }
+
       // Don't clear errors immediately, let the keyUp handler do validation
 
       // Special handling for password fields
@@ -113,7 +127,7 @@ export const SignUpForm = ({ onToggleView, onSignupSuccess }: SignUpFormProps) =
       // Clear API error when user types
       if (apiError) setApiError('');
     },
-    [formData.password, formData.confirmPassword, apiError]
+    [formData.password, formData.confirmPassword, apiError, errors.password]
   );
 
   const handleKeyUp = useCallback(
