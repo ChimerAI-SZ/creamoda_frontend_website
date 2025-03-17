@@ -13,17 +13,11 @@ import { copyStyleGenerate, uploadImage, changeClothesGenerate } from '@/lib/api
 import { eventBus } from '@/utils/events';
 import { showErrorDialog } from '@/utils/index';
 import { isValidImageUrl } from '@/utils/validation';
+import { ImageUploadFormData } from '@/components/Sidebar';
+import { useGenerationStore } from '@/stores/useGenerationStore';
 
 interface ImageUploadFormProps {
   onSubmit?: (data: ImageUploadFormData) => void;
-}
-
-interface ImageUploadFormData {
-  image: File | null;
-  imageUrl: string;
-  variationType: string;
-  description: string;
-  fidelity: number;
 }
 
 export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
@@ -40,7 +34,7 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
     fidelity: 50
   });
 
-  const [isLoading, setIsLoading] = useState(false);
+  const { isGenerating, setGenerating } = useGenerationStore();
 
   // 合并状态以便于处理
   const formData = {
@@ -71,81 +65,15 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
   }, []);
 
   const handleSubmit = async () => {
-    try {
-      setIsLoading(true);
-
-      await new Promise(resolve => setTimeout(resolve, 0));
-
-      // 确保有图片URL和描述
-      if (!formData.imageUrl && !formData.image) {
-        showErrorDialog('Please upload an image or provide an image URL');
-        setIsLoading(false);
-        return;
+    if (onSubmit) {
+      setGenerating(true);
+      try {
+        // Call the parent's onSubmit function with the combined form data
+        await onSubmit(formData);
+      } catch (error) {
+        console.error('Error submitting form:', error);
+        setGenerating(false);
       }
-
-      // 验证图片URL的有效性
-      if (formData.imageUrl && !formData.image) {
-        if (!isValidImageUrl(formData.imageUrl)) {
-          showErrorDialog('Please provide a valid image URL before generating');
-          setIsLoading(false);
-          return;
-        }
-      }
-
-      if (!formData.description.trim()) {
-        showErrorDialog('Please provide a description');
-        setIsLoading(false);
-        return;
-      }
-
-      // 如果有本地图片但没有URL，需要先上传图片获取URL
-      let finalImageUrl = formData.imageUrl;
-      if (formData.image && !formData.imageUrl) {
-        try {
-          finalImageUrl = await uploadImage(formData.image);
-          // 更新表单数据中的图片URL
-          setImageState(prev => ({ ...prev, imageUrl: finalImageUrl }));
-        } catch (error) {
-          console.error('Error uploading image:', error);
-          showErrorDialog('Something went wrong. Please try again later or contact support if the issue persists');
-          return;
-        }
-      }
-
-      // 最后再次验证finalImageUrl是否有效
-      if (!isValidImageUrl(finalImageUrl)) {
-        showErrorDialog('The image URL is invalid. Please upload a valid image.');
-        setIsLoading(false);
-        return;
-      }
-
-      // 根据不同的变化类型调用不同的API
-      let response;
-
-      if (formData.variationType === '1') {
-        // 将fidelity从百分比转换为小数 (0-100 -> 0.0-1.0)
-        const fidelityDecimal = formData.fidelity / 100;
-        // 调用复制风格API
-        response = await copyStyleGenerate(finalImageUrl, formData.description, fidelityDecimal);
-      } else if (formData.variationType === '2') {
-        // 调用换衣服API
-        response = await changeClothesGenerate(finalImageUrl, formData.description);
-      } else {
-        // 默认调用换衣服API，以防没有选择类型
-        response = await changeClothesGenerate(finalImageUrl, formData.description);
-      }
-
-      if (response.code === 0) {
-        eventBus.emit('sidebar:submit-success', void 0);
-        console.log('response', response);
-      } else {
-        showErrorDialog(response.msg || 'Failed to generate image');
-      }
-    } catch (error) {
-      console.error('Error generating image:', error);
-      showErrorDialog('An unexpected error occurred');
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -154,9 +82,9 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
     handleSubmit();
   };
 
-  // 确定按钮状态
+  // Determine button state
   const buttonState: GenerateButtonState = React.useMemo(() => {
-    if (isLoading) {
+    if (isGenerating) {
       return 'generating';
     }
 
@@ -165,7 +93,7 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
     }
 
     return 'ready';
-  }, [formData.description, formData.image, formData.imageUrl, isLoading]);
+  }, [formData.description, formData.image, formData.imageUrl, isGenerating]);
 
   return (
     <div className="flex flex-col h-full">
