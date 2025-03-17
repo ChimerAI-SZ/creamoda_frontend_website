@@ -187,7 +187,7 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
           <Textarea
             id="description"
             placeholder="Please describe the category you would like to change."
-            className="min-h-[200px] resize-none placeholder:text-[#D5D5D5] font-inter text-sm font-normal leading-5"
+            className="min-h-[200px] resize-none placeholder:text-[#D5D5D5] font-inter text-sm font-normal leading-5 rounded-[4px] border border-[#DCDCDC]"
             value={formState.description}
             onChange={handleDescriptionChange}
           />
