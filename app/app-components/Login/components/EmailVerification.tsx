@@ -139,10 +139,10 @@ export const EmailVerification = ({
                 type="button"
                 onClick={handleResendEmail}
                 disabled={resendCountdown > 0 || isResending}
-                className={`absolute right-3 top-1/2 -translate-y-1/2 text-sm ${
+                className={`absolute right-3 top-1/2 -translate-y-1/2 text-sm font-normal leading-[20px] font-inter ${
                   resendCountdown > 0 || isResending
                     ? 'text-gray-400 cursor-not-allowed'
-                    : 'text-[#F97917] hover:underline'
+                    : 'text-[rgba(249,121,23)] hover:text-[rgba(249,121,23,0.7)]'
                 }`}
               >
                 {isResending ? 'Sending...' : resendCountdown > 0 ? `Resend(${resendCountdown}s)` : 'Resend'}
@@ -157,9 +157,9 @@ export const EmailVerification = ({
             disabled={isVerifying || !verificationCode.trim()}
             className={`h-[52px] w-full py-[10px] px-4 flex justify-center items-center gap-[6px] rounded-[4px] ${
               !isVerifying && verificationCode.trim()
-                ? 'bg-[#F97917] hover:bg-[#F97917]/90'
+                ? 'bg-[#F97917] hover:bg-gradient-to-r hover:from-[#F9BE60] hover:to-[#F97917] hover:shadow-[0px_4px_4px_0px_rgba(252,182,61,0.25)]'
                 : 'bg-[rgba(249,121,23,0.5)] cursor-not-allowed'
-            } text-white font-medium leading-5`}
+            } text-white font-medium leading-5 transition-all`}
           >
             {isVerifying ? 'Verifying...' : 'Verify Email'}
           </Button>

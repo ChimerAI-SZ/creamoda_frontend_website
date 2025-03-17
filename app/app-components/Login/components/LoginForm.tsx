@@ -98,7 +98,7 @@ export const LoginForm = ({ onToggleView, onSuccess }: LoginFormProps) => {
     formData.email.trim() !== '' && formData.password.trim() !== '' && !errors.email && !errors.password;
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="mt-[6px]">
       {apiError && (
         <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
           <p className="text-[#E50000] text-sm font-inter">{apiError}</p>
@@ -132,9 +132,9 @@ export const LoginForm = ({ onToggleView, onSuccess }: LoginFormProps) => {
         disabled={!isFormValid || isLoading}
         className={`h-[52px] w-full py-[10px] px-4 flex justify-center items-center gap-[6px] rounded-[4px] ${
           isFormValid && !isLoading
-            ? 'bg-[#F97917] hover:bg-[#F97917]/90'
+            ? 'bg-[#F97917] hover:bg-gradient-to-r hover:from-[#F9BE60] hover:to-[#F97917] hover:shadow-[0px_4px_4px_0px_rgba(252,182,61,0.25)]'
             : 'bg-[rgba(249,121,23,0.5)] cursor-not-allowed'
-        } text-white font-inter text-sm font-medium leading-5`}
+        } text-white font-inter text-sm font-medium leading-5 transition-all`}
       >
         {isLoading ? 'Logging in...' : 'Login'}
       </Button>
