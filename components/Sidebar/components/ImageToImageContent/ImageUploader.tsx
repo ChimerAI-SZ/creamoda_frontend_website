@@ -335,7 +335,7 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
   return (
     <div className="space-y-2">
       <div
-        className={`relative w-[302px] h-[288px] rounded-lg border border-[#DCDCDC] bg-[#FAFAFA] transition-colors ${
+        className={`relative w-[302px] h-[288px] rounded-[4px] border border-[#DCDCDC] bg-[#FAFAFA] transition-colors ${
           dragActive ? 'border-[#FF7B0D] bg-[#FFE4D2]' : 'hover:bg-gray-50'
         }`}
         onDragEnter={handleDrag}

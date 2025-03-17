@@ -136,7 +136,7 @@ export function LoginModal() {
         className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[99999] overflow-y-auto py-12"
         style={{ isolation: 'isolate' }}
       >
-        <div className="bg-white rounded-lg p-6 w-[480px] flex flex-col items-start relative z-[100000] my-auto mx-auto mt-8 md:mt-16 lg:mt-24 xl:mt-32">
+        <div className="bg-white rounded-lg p-6 w-[480px] flex flex-col items-start relative z-[100000] my-auto mx-auto mt-8 md:mt-8 lg:mt-16 xl:mt-24">
           {currentView !== 'email-verification' && currentView !== 'verification-success' && (
             <>
               <div className="w-full flex justify-between items-center relative mb-2">
@@ -150,7 +150,9 @@ export function LoginModal() {
                   onClick={handleCloseModal}
                 />
               </div>
-              {getSubtitle() && <p className="text-gray-500 text-sm mb-6">{getSubtitle()}</p>}
+              {getSubtitle() && (
+                <p className="text-[#999] text-sm font-medium font-inter leading-[20px] mb-6">{getSubtitle()}</p>
+              )}
             </>
           )}
 
@@ -167,7 +169,9 @@ export function LoginModal() {
                   onClick={handleCloseModal}
                 />
               </div>
-              {getSubtitle() && <p className="text-gray-500 text-sm mb-6">{getSubtitle()}</p>}
+              {getSubtitle() && (
+                <p className="text-[#999] text-sm font-medium font-inter leading-[20px] mb-6">{getSubtitle()}</p>
+              )}
               <EmailVerification
                 email={verificationEmail}
                 onBackToLogin={() => handleToggleView('login')}
@@ -209,7 +213,7 @@ export function LoginModal() {
                   <p className="text-sm text-gray-600">
                     Don&apos;t have an account?{' '}
                     <span
-                      className="text-black font-medium cursor-pointer hover:underline"
+                      className="text-black font-medium cursor-pointer border-b border-black"
                       onClick={() => handleToggleView('signup')}
                     >
                       Sign up here
@@ -219,7 +223,7 @@ export function LoginModal() {
                   <p className="text-sm text-gray-600">
                     Already have an account?{' '}
                     <span
-                      className="text-black font-medium cursor-pointer hover:underline"
+                      className="text-black font-medium cursor-pointer border-b border-black"
                       onClick={() => handleToggleView('login')}
                     >
                       Log in here
