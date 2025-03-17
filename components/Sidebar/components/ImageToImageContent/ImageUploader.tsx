@@ -23,6 +23,7 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
   const [isUrlLoading, setIsUrlLoading] = React.useState(false);
   const [lastUrlLength, setLastUrlLength] = React.useState(0);
   const [isProcessingUrl, setIsProcessingUrl] = React.useState(false);
+  const [isPasteProcessing, setIsPasteProcessing] = React.useState(false);
 
   // 使用useRef来存储上一次有效的预览URL，避免频繁更新
   const lastValidPreviewRef = React.useRef<string | null>(null);
@@ -92,7 +93,28 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
         processedUrl = encodeURI(processedUrl);
       }
 
-      // 我们已经确认直接获取容易出问题，直接使用代理服务器获取
+      // 检查是否是我们自己的OSS资源
+      const urlObj = new URL(processedUrl);
+
+      // 如果是我们自己的OSS资源，直接使用它而不是通过代理
+      if (
+        urlObj.hostname.includes('creamoda-test.oss-cn-beijing.aliyuncs.com') ||
+        urlObj.hostname.includes('creamoda.oss-cn-beijing.aliyuncs.com')
+      ) {
+        console.log('检测到OSS URL，直接使用:', processedUrl);
+
+        // 验证图片格式（通过URL后缀）
+        const fileExt = processedUrl.split('.').pop()?.toLowerCase();
+        if (!fileExt || !['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(fileExt)) {
+          throw new Error('Unsupported image format. Only jpg, jpeg, png, gif and webp are supported.');
+        }
+
+        // 对于OSS图片，我们可以直接使用URL而不需要再上传
+        onImageUrlChange(processedUrl);
+        return; // 直接返回，不进行后续代理和上传步骤
+      }
+
+      // 对非OSS资源，使用代理服务器获取
       console.log('通过代理获取图片:', processedUrl);
       const proxyUrl = `/api/proxy-image?url=${encodeURIComponent(processedUrl)}`;
 
@@ -240,18 +262,22 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
         onImageChange(null);
       }
 
-      // 检测是否是粘贴操作 - 如果URL长度突然增加很多，很可能是粘贴操作
-      if (newUrl.length > 10 && lastUrlLength < 5) {
-        const trimmedUrl = newUrl.trim();
-        // 简化URL验证 - 只要以http开头就尝试处理
-        if (trimmedUrl.startsWith('http')) {
-          // 设置处理状态，阻止显示原始URL的预览
-          setIsProcessingUrl(true);
+      // 跳过因粘贴事件导致的onChange调用的处理
+      // 由onPaste事件处理程序负责处理
+      if (!isPasteProcessing) {
+        // 检测是否是输入操作 - 如果URL长度突然增加很多，很可能是粘贴操作
+        if (newUrl.length > 10 && lastUrlLength < 5) {
+          const trimmedUrl = newUrl.trim();
+          // 简化URL验证 - 只要以http开头就尝试处理
+          if (trimmedUrl.startsWith('http')) {
+            // 设置处理状态，阻止显示原始URL的预览
+            setIsProcessingUrl(true);
 
-          // 延迟一点执行上传，确保UI已更新
-          setTimeout(() => {
-            uploadExternalImage(trimmedUrl);
-          }, 100);
+            // 延迟一点执行上传，确保UI已更新
+            setTimeout(() => {
+              uploadExternalImage(trimmedUrl);
+            }, 100);
+          }
         }
       }
 
@@ -262,7 +288,7 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
   // 改进onBlur处理函数
   const handleUrlBlur = async () => {
     // 只有当有URL且不是空字符串，且不在加载状态时才检查
-    if (imageUrl && imageUrl.trim() !== '' && !isUrlLoading && !isProcessingUrl) {
+    if (imageUrl && imageUrl.trim() !== '' && !isUrlLoading && !isProcessingUrl && !isPasteProcessing) {
       const trimmedUrl = imageUrl.trim();
 
       // 简化验证 - 只要是http开头的URL就尝试处理
@@ -276,6 +302,9 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
   const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
     const pastedText = e.clipboardData.getData('text');
     if (pastedText) {
+      // 设置标记，防止onChange事件重复处理
+      setIsPasteProcessing(true);
+
       const trimmedUrl = pastedText.trim();
       // 简化验证 - 只要是http开头的URL就尝试处理
       if (trimmedUrl.startsWith('http')) {
@@ -287,7 +316,17 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
 
         // 延迟一点执行上传，确保UI已更新
         setTimeout(() => {
-          uploadExternalImage(trimmedUrl);
+          uploadExternalImage(trimmedUrl).finally(() => {
+            // 处理完成后重置标记
+            setTimeout(() => {
+              setIsPasteProcessing(false);
+            }, 100);
+          });
+        }, 100);
+      } else {
+        // 如果不是URL，立即重置标记
+        setTimeout(() => {
+          setIsPasteProcessing(false);
         }, 100);
       }
     }
