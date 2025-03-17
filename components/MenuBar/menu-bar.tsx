@@ -18,8 +18,8 @@ function MenuItem({ icon, title, isActive, onClick }: MenuItemProps) {
     <button
       onClick={onClick}
       className={cn(
-        'relative flex items-center rounded-lg transition-all duration-200  group mt-[12px] h-[30px]',
-        isActive ? 'bg-[#FF7B0D] text-[#fff] flex-shrink-0' : 'text-[#999] hover:bg-gray-100 hover:text-gray-700 w-full'
+        'relative flex items-center rounded-lg transition-all duration-200 group mb-[12px] h-[30px] mx-auto',
+        isActive ? 'bg-[#FF7B0D] text-[#fff] flex-shrink-0' : 'text-[#999] hover:bg-gray-100 hover:text-gray-700'
       )}
     >
       <div
@@ -41,7 +41,7 @@ export function MenuBar() {
   return (
     <div
       className={cn(
-        'group bg-white border-r border-gray-200 h-[calc(100vh-64px)] flex flex-col px-2 transition-all duration-500 ease-in w-[48px]',
+        'group bg-white border-r border-gray-200 h-[calc(100vh-64px)] flex flex-col px-2 py-3 transition-all duration-500 ease-in w-[56px]',
         'hover:w-[128px]'
       )}
     >

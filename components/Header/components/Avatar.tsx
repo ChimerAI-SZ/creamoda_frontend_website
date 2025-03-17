@@ -73,7 +73,7 @@ export default function Avatar() {
       {isOpen && (
         <div className="fixed top-[48px] right-6 bg-white z-50 flex flex-col items-center p-6 w-[480px] rounded-[6px] shadow-[-2px_4px_10px_0px_rgba(0,0,0,0.05)]">
           <button onClick={() => setIsOpen(false)} className="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
-            <X className="w-6 h-6" />
+            <Image src={'/images/menu/closeBtn.svg'} alt="close btn" width={20} height={20} className="object-cover" />
           </button>
 
           <div className="mt-[12px] mb-8">
@@ -92,14 +92,14 @@ export default function Avatar() {
             <div>
               <div className="mb-[24px]">
                 <h3 className="text-[#121316] font-inter text-sm font-medium leading-5 mb-[6px]">Username</h3>
-                <div className="p-[10px] w-full border rounded-lg">
+                <div className="p-[10px] w-full border rounded-sm">
                   <p className="text-[#141414] font-inter text-sm font-normal leading-5 h-[20px]">{username}</p>
                 </div>
               </div>
 
               <div>
                 <h3 className="text-[#121316] font-inter text-sm font-medium leading-5 mb-[6px]">Email</h3>
-                <div className="mt-1 p-[10px] w-full border rounded-lg">
+                <div className="mt-1 p-[10px] w-full border rounded-sm">
                   <p className="text-[#141414] font-inter text-sm font-normal leading-5 h-[20px]">{email}</p>
                 </div>
               </div>
@@ -107,10 +107,10 @@ export default function Avatar() {
 
             <Button
               variant="outline"
-              className="mt-6 w-full sm:w-auto px-[16px] py-[12px] border border-[#FF7B0D] text-[#FF7B0D] rounded-lg hover:bg-orange-50 transition-colors"
+              className="mt-6 w-full sm:w-auto px-[16px] py-[12px] border border-[#DCDCDC] text-[#FF7B0D] rounded-sm hover:bg-orange-50 transition-colors"
               onClick={handleLogout}
             >
-              <span className="text-[#121316] font-inter text-sm font-medium leading-5">Log out</span>
+              <span className="text-[#F97917] font-inter text-sm font-medium leading-5">Log out</span>
             </Button>
           </div>
         </div>
