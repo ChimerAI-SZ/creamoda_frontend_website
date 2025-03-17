@@ -7,6 +7,18 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'URL parameter is required' }, { status: 400 });
   }
 
+  // 验证URL是否有效
+  try {
+    new URL(url);
+  } catch (e) {
+    return NextResponse.json({ error: 'Invalid URL format' }, { status: 400 });
+  }
+
+  // 确保URL是http或https
+  if (!url.startsWith('http://') && !url.startsWith('https://')) {
+    return NextResponse.json({ error: 'URL must start with http:// or https://' }, { status: 400 });
+  }
+
   console.log(`[proxy-image] Attempting to fetch: ${url}`);
 
   try {
@@ -33,6 +45,11 @@ export async function GET(request: NextRequest) {
 
     console.log(`[proxy-image] Response status for ${url}: ${response.status} ${response.statusText}`);
 
+    // 如果遇到重定向（像302等），等待浏览器自动处理完所有重定向
+    if (response.redirected) {
+      console.log(`[proxy-image] URL was redirected to: ${response.url}`);
+    }
+
     if (!response.ok) {
       throw new Error(`Failed to fetch image: ${response.status} ${response.statusText}`);
     }
@@ -40,6 +57,11 @@ export async function GET(request: NextRequest) {
     // 获取图片数据
     const imageBuffer = await response.arrayBuffer();
     console.log(`[proxy-image] Successfully fetched image data: ${imageBuffer.byteLength} bytes`);
+
+    // 如果获取到的数据太小，可能不是图片
+    if (imageBuffer.byteLength < 100) {
+      console.log(`[proxy-image] Warning: Very small response (${imageBuffer.byteLength} bytes)`);
+    }
 
     // 确保我们有正确的内容类型 - 某些服务器可能不返回正确的类型
     let contentType = response.headers.get('content-type');
@@ -109,7 +131,12 @@ export async function GET(request: NextRequest) {
         url: url,
         timestamp: new Date().toISOString()
       },
-      { status: statusCode }
+      {
+        status: statusCode,
+        headers: {
+          'Access-Control-Allow-Origin': '*'
+        }
+      }
     );
   }
 }

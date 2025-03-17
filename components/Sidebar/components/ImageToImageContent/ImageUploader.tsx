@@ -99,19 +99,33 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
       // 尝试方法1: 直接使用fetch尝试获取图片（CORS可能阻止）
       try {
         console.log('尝试直接获取图片:', processedUrl);
-        const response = await fetch(processedUrl, {
-          mode: 'cors',
-          headers: {
-            Accept: 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8'
+
+        // 首先尝试使用cors模式
+        try {
+          const response = await fetch(processedUrl, {
+            mode: 'cors',
+            headers: {
+              Accept: 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8'
+            }
+          });
+
+          if (!response.ok) {
+            throw new Error('Direct fetch with cors mode failed');
           }
-        });
 
-        if (!response.ok) {
-          throw new Error('Direct fetch failed');
+          blob = await response.blob();
+          console.log('直接获取图片成功 (cors模式)');
+        } catch (corsError) {
+          console.log('cors模式获取失败，尝试no-cors模式...');
+
+          // 尝试使用no-cors模式（返回opaque响应，无法读取内容但可用于img标签）
+          // 注意：这种模式下，我们无法读取响应内容，但可以检测是否能获取资源
+          const checkResponse = await fetch(processedUrl, { mode: 'no-cors' });
+
+          // 如果能到达这一步，说明no-cors请求没有被网络层拦截
+          // 但因为是opaque响应，无法直接使用，所以还是需要通过代理
+          throw new Error('Direct access blocked by CORS, need to use proxy');
         }
-
-        blob = await response.blob();
-        console.log('直接获取图片成功');
       } catch (error) {
         console.log('直接获取图片失败:', error);
         fetchError = error instanceof Error ? error : new Error(String(error));

@@ -8,6 +8,30 @@ const nextConfig = {
       }
     ];
   },
+
+  // 添加允许CORS的headers配置
+  async headers() {
+    return [
+      {
+        // 针对图片优化API添加CORS头
+        source: '/_next/image/:path*',
+        headers: [
+          { key: 'Access-Control-Allow-Origin', value: '*' },
+          { key: 'Access-Control-Allow-Methods', value: 'GET,OPTIONS' }
+        ]
+      },
+      {
+        // 所有API路由允许CORS
+        source: '/api/:path*',
+        headers: [
+          { key: 'Access-Control-Allow-Origin', value: '*' },
+          { key: 'Access-Control-Allow-Methods', value: 'GET,OPTIONS,POST,PUT,DELETE' },
+          { key: 'Access-Control-Allow-Headers', value: 'Content-Type, Authorization' }
+        ]
+      }
+    ];
+  },
+
   images: {
     remotePatterns: [
       {
