@@ -71,18 +71,15 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
   }, []);
 
   const handleSubmit = async () => {
-    // if (onSubmit) {
-    //   onSubmit(formData);
-    //   return;
-    // }
-
-    // 如果没有提供 onSubmit 回调，则直接调用 API
     try {
       setIsLoading(true);
+
+      await new Promise(resolve => setTimeout(resolve, 0));
 
       // 确保有图片URL和描述
       if (!formData.imageUrl && !formData.image) {
         showErrorDialog('Please upload an image or provide an image URL');
+        setIsLoading(false);
         return;
       }
 
@@ -97,6 +94,7 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
 
       if (!formData.description.trim()) {
         showErrorDialog('Please provide a description');
+        setIsLoading(false);
         return;
       }
 
@@ -155,12 +153,17 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
   };
 
   // 确定按钮状态
-  const buttonState =
-    !formData.description.trim() || (!formData.image && !formData.imageUrl)
-      ? 'disabled'
-      : isLoading
-      ? 'ready'
-      : 'ready';
+  const buttonState: GenerateButtonState = React.useMemo(() => {
+    if (isLoading) {
+      return 'generating';
+    }
+
+    if (!formData.description.trim() || (!formData.image && !formData.imageUrl)) {
+      return 'disabled';
+    }
+
+    return 'ready';
+  }, [formData.description, formData.image, formData.imageUrl, isLoading]);
 
   return (
     <div className="flex flex-col h-full">
