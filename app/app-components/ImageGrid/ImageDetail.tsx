@@ -37,6 +37,13 @@ export default function ImageDetail({ image, onClose, isOpen, imgList, onImageCh
                   className="max-w-full max-h-full object-contain"
                   width={488}
                   height={645}
+                  unoptimized={true}
+                  // 添加 referrerPolicy 以优化跨域缓存
+                  referrerPolicy="no-referrer"
+                  // 使用 crossOrigin 属性以确保正确缓存
+                  crossOrigin="anonymous"
+                  // 添加与 ImageCard 相同的 key
+                  key={image.genImgId || image.resultPic}
                 />
               </div>
             </div>
