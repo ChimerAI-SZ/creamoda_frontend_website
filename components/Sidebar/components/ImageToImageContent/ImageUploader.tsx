@@ -71,9 +71,9 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
   const uploadExternalImage = async (url: string) => {
     if (!url) return;
 
-    // 先验证URL格式
-    if (!isValidImageUrl(url)) {
-      showErrorDialog('Please enter a valid image URL. The URL must start with http:// or https://');
+    // 先验证URL格式 - 确保是HTTP或HTTPS链接
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      showErrorDialog('Please enter a valid image URL. The URL must start with http:// or https://.');
       return;
     }
 
@@ -82,8 +82,18 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
     setIsUrlLoading(true);
 
     try {
+      // 处理URL以确保编码正确 - 仅编码尚未编码的部分
+      let processedUrl = url;
+      try {
+        // 尝试解析URL，确保它是有效的
+        new URL(processedUrl);
+      } catch (e) {
+        // 如果URL无效，尝试进行基本的编码修复
+        processedUrl = encodeURI(processedUrl);
+      }
+
       // 使用我们的代理接口获取图片
-      const proxyUrl = `/api/proxy-image?url=${encodeURIComponent(url)}`;
+      const proxyUrl = `/api/proxy-image?url=${encodeURIComponent(processedUrl)}`;
 
       // 从我们的代理获取图片
       const response = await fetch(proxyUrl);
@@ -94,13 +104,15 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
       // 转换为blob
       const blob = await response.blob();
 
-      // 验证是否真的是图片
-      if (!blob.type.startsWith('image/')) {
+      // 验证是否真的是图片 - 放宽检查条件
+      // 某些有效图片的blob.type可能不正确，因为我们已经在代理中处理了内容类型
+      if (!blob.type.startsWith('image/') && blob.size < 100) {
+        // 如果内容类型不是图片且数据很小，可能不是有效图片
         throw new Error('The URL does not point to a valid image');
       }
 
       // 创建File对象
-      const filename = url.split('/').pop() || 'image.jpg';
+      const filename = url.split('/').pop()?.split('?')[0] || 'image.jpg'; // 移除可能的查询参数
       const fileType = blob.type || 'image/jpeg';
       const file = new File([blob], filename, { type: fileType });
 
@@ -121,9 +133,9 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
         if (errorText.includes('parse src') || errorText.includes('relative image')) {
           errorMessage = 'Invalid image URL. The URL must be an absolute URL starting with http:// or https://';
         } else if (errorText.includes('Failed to fetch')) {
-          errorMessage = 'Could not access the image. The URL might be invalid or the server is not responding.';
+          errorMessage = 'Could not access the image. The URL might be incorrect or the server is not responding.';
         } else if (errorText.includes('valid image')) {
-          errorMessage = 'The URL does not point to a valid image file.';
+          errorMessage = 'The provided URL does not contain a valid image. Please try a different URL.';
         }
       }
 
@@ -194,7 +206,8 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
       // 检测是否是粘贴操作 - 如果URL长度突然增加很多，很可能是粘贴操作
       if (newUrl.length > 10 && lastUrlLength < 5) {
         const trimmedUrl = newUrl.trim();
-        if (isValidImageUrl(trimmedUrl)) {
+        // 简化URL验证 - 只要以http开头就尝试处理
+        if (trimmedUrl.startsWith('http')) {
           // 设置处理状态，阻止显示原始URL的预览
           setIsProcessingUrl(true);
 
@@ -202,11 +215,6 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
           setTimeout(() => {
             uploadExternalImage(trimmedUrl);
           }, 100);
-        } else if (trimmedUrl.startsWith('http')) {
-          // 如果是URL但不是有效的图片URL，显示错误
-          showErrorDialog(
-            'This URL does not appear to be a valid image link. Please ensure it points to an image file.'
-          );
         }
       }
 
@@ -220,17 +228,8 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
     if (imageUrl && imageUrl.trim() !== '' && !isUrlLoading && !isProcessingUrl) {
       const trimmedUrl = imageUrl.trim();
 
-      // 如果URL看起来像是一个网址（以http开头）但不是有效的图片URL
-      if (trimmedUrl.startsWith('http') && !isValidImageUrl(trimmedUrl)) {
-        // 显示错误提示
-        showErrorDialog('This URL does not appear to be a valid image link. Please ensure it points to an image file.');
-        // 可选：清空无效URL
-        // onImageUrlChange('');
-        return;
-      }
-
-      // 如果是有效的图片URL且尚未处理，则上传
-      if (isValidImageUrl(trimmedUrl) && trimmedUrl !== lastValidPreviewRef.current) {
+      // 简化验证 - 只要是http开头的URL就尝试处理
+      if (trimmedUrl.startsWith('http') && trimmedUrl !== lastValidPreviewRef.current) {
         await uploadExternalImage(trimmedUrl);
       }
     }
@@ -241,7 +240,8 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
     const pastedText = e.clipboardData.getData('text');
     if (pastedText) {
       const trimmedUrl = pastedText.trim();
-      if (isValidImageUrl(trimmedUrl)) {
+      // 简化验证 - 只要是http开头的URL就尝试处理
+      if (trimmedUrl.startsWith('http')) {
         // 设置处理状态，阻止显示原始URL的预览
         setIsProcessingUrl(true);
 
@@ -252,11 +252,6 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
         setTimeout(() => {
           uploadExternalImage(trimmedUrl);
         }, 100);
-      } else if (trimmedUrl.startsWith('http')) {
-        // 如果是URL但不是有效的图片URL，显示错误
-        showErrorDialog(
-          'The pasted URL does not appear to be a valid image link. Please ensure it points to an image file.'
-        );
       }
     }
   };
