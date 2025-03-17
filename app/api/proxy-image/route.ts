@@ -88,11 +88,40 @@ export async function GET(request: NextRequest) {
       else if (uint8Arr[0] === 0x52 && uint8Arr[1] === 0x49 && uint8Arr[2] === 0x46 && uint8Arr[3] === 0x46) {
         contentType = 'image/webp';
       }
-      // 默认假设为JPEG
+      // 如果没有检测到有效的图片格式，返回错误
       else {
-        contentType = 'image/jpeg';
+        console.log(`[proxy-image] Could not detect image format from binary data`);
+        return NextResponse.json(
+          {
+            error: 'The resource does not appear to be a valid image',
+            url: url,
+            timestamp: new Date().toISOString()
+          },
+          {
+            status: 415, // Unsupported Media Type
+            headers: {
+              'Access-Control-Allow-Origin': '*'
+            }
+          }
+        );
       }
       console.log(`[proxy-image] Detected content type: ${contentType}`);
+    } else if (contentType === 'image' || contentType === 'binary/octet-stream') {
+      // 有些服务器返回不完整的内容类型，尝试基于数据检测
+      const uint8Arr = new Uint8Array(imageBuffer);
+      // JPEG 检测
+      if (uint8Arr[0] === 0xff && uint8Arr[1] === 0xd8 && uint8Arr[2] === 0xff) {
+        contentType = 'image/jpeg';
+      }
+      // PNG 检测
+      else if (uint8Arr[0] === 0x89 && uint8Arr[1] === 0x50 && uint8Arr[2] === 0x4e && uint8Arr[3] === 0x47) {
+        contentType = 'image/png';
+      }
+      // 其他格式检测...
+      else {
+        contentType = 'image/jpeg'; // 默认
+      }
+      console.log(`[proxy-image] Corrected incomplete content type to: ${contentType}`);
     }
 
     // 返回图片数据

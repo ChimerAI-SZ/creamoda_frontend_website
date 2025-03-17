@@ -92,85 +92,25 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
         processedUrl = encodeURI(processedUrl);
       }
 
-      // 尝试多种方式获取图片
-      let blob: Blob | null = null;
-      let fetchError: Error | null = null;
+      // 我们已经确认直接获取容易出问题，直接使用代理服务器获取
+      console.log('通过代理获取图片:', processedUrl);
+      const proxyUrl = `/api/proxy-image?url=${encodeURIComponent(processedUrl)}`;
 
-      // 尝试方法1: 直接使用fetch尝试获取图片（CORS可能阻止）
-      try {
-        console.log('尝试直接获取图片:', processedUrl);
-
-        // 首先尝试使用cors模式
+      const response = await fetch(proxyUrl);
+      if (!response.ok) {
+        // 尝试解析错误响应
+        let errorInfo: any = null;
         try {
-          const response = await fetch(processedUrl, {
-            mode: 'cors',
-            headers: {
-              Accept: 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8'
-            }
-          });
+          errorInfo = await response.json();
+        } catch (e) {}
 
-          if (!response.ok) {
-            throw new Error('Direct fetch with cors mode failed');
-          }
-
-          blob = await response.blob();
-          console.log('直接获取图片成功 (cors模式)');
-        } catch (corsError) {
-          console.log('cors模式获取失败，尝试no-cors模式...');
-
-          // 尝试使用no-cors模式（返回opaque响应，无法读取内容但可用于img标签）
-          // 注意：这种模式下，我们无法读取响应内容，但可以检测是否能获取资源
-          const checkResponse = await fetch(processedUrl, { mode: 'no-cors' });
-
-          // 如果能到达这一步，说明no-cors请求没有被网络层拦截
-          // 但因为是opaque响应，无法直接使用，所以还是需要通过代理
-          throw new Error('Direct access blocked by CORS, need to use proxy');
-        }
-      } catch (error) {
-        console.log('直接获取图片失败:', error);
-        fetchError = error instanceof Error ? error : new Error(String(error));
+        throw new Error(
+          errorInfo?.error || `Proxy fetch failed with status: ${response.status} ${response.statusText}`
+        );
       }
 
-      // 如果直接获取失败，尝试使用代理
-      if (!blob) {
-        try {
-          console.log('通过代理获取图片:', processedUrl);
-          const proxyUrl = `/api/proxy-image?url=${encodeURIComponent(processedUrl)}`;
-          const response = await fetch(proxyUrl);
-
-          if (!response.ok) {
-            // 尝试解析错误响应
-            let errorInfo: any = null;
-            try {
-              errorInfo = await response.json();
-            } catch (e) {}
-
-            throw new Error(
-              errorInfo?.error || `Proxy fetch failed with status: ${response.status} ${response.statusText}`
-            );
-          }
-
-          blob = await response.blob();
-          console.log('代理获取图片成功');
-        } catch (error) {
-          console.log('代理获取图片失败:', error);
-          // 如果代理获取也失败，保留原始错误
-          if (fetchError) {
-            console.error('所有获取方法均失败');
-            throw new Error(
-              `无法获取图片。直接获取错误: ${fetchError.message}, 代理获取错误: ${
-                error instanceof Error ? error.message : String(error)
-              }`
-            );
-          }
-          throw error;
-        }
-      }
-
-      // 如果所有获取方法都失败
-      if (!blob) {
-        throw new Error('所有获取图片的尝试都失败了');
-      }
+      const blob = await response.blob();
+      console.log('代理获取图片成功, 内容类型:', blob.type);
 
       // 验证是否真的是图片 - 放宽检查条件
       if (!blob.type.startsWith('image/') && blob.size < 100) {
@@ -178,13 +118,37 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
         throw new Error('The URL does not point to a valid image');
       }
 
-      // 创建File对象
+      // 确保我们有正确的图片MIME类型 - 根据文件扩展名确定或使用通用类型
       const filename = url.split('/').pop()?.split('?')[0] || 'image.jpg'; // 移除可能的查询参数
-      const fileType = blob.type || 'image/jpeg';
-      const file = new File([blob], filename, { type: fileType });
+      let mimeType = blob.type;
+
+      // 如果MIME类型为空或不是图片类型，根据文件名后缀确定
+      if (!mimeType || !mimeType.startsWith('image/')) {
+        const ext = filename.split('.').pop()?.toLowerCase();
+        if (ext === 'jpg' || ext === 'jpeg') {
+          mimeType = 'image/jpeg';
+        } else if (ext === 'png') {
+          mimeType = 'image/png';
+        } else if (ext === 'gif') {
+          mimeType = 'image/gif';
+        } else if (ext === 'webp') {
+          mimeType = 'image/webp';
+        } else {
+          // 默认为JPEG
+          mimeType = 'image/jpeg';
+        }
+        console.log('MIME类型空或无效，使用扩展名推断:', mimeType);
+      }
+
+      // 创建新的blob和File对象，确保类型正确
+      const fileBlob = new Blob([await blob.arrayBuffer()], { type: mimeType });
+      const file = new File([fileBlob], filename, { type: mimeType });
+
+      console.log('创建File对象:', file.name, file.type, file.size);
 
       // 上传到我们的服务器
       const uploadedUrl = await uploadImage(file);
+      console.log('上传成功，获取到URL:', uploadedUrl);
 
       // 更新URL
       onImageUrlChange(uploadedUrl);
@@ -202,8 +166,9 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
         } else if (errorText.includes('Failed to fetch') || errorText.includes('无法获取图片')) {
           errorMessage =
             'Could not access the image. This might be due to CORS restrictions or the server blocking our requests. Try downloading and uploading the image directly.';
-        } else if (errorText.includes('valid image')) {
-          errorMessage = 'The provided URL does not contain a valid image. Please try a different URL.';
+        } else if (errorText.includes('valid image') || errorText.includes('Invalid file type')) {
+          errorMessage =
+            'The provided URL does not contain a valid image format we can process. Please try downloading the image and uploading it manually.';
         } else if (errorText.includes('cors') || errorText.toLowerCase().includes('cross-origin')) {
           errorMessage = 'Cross-origin request blocked. Please try downloading the image and uploading it manually.';
         } else if (errorText.includes('timeout') || errorText.includes('ETIMEDOUT')) {
