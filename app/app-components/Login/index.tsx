@@ -136,7 +136,7 @@ export function LoginModal() {
         className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[99999] overflow-y-auto py-12"
         style={{ isolation: 'isolate' }}
       >
-        <div className="bg-white rounded-lg p-6 w-[480px] flex flex-col items-start relative z-[100000] my-auto mx-auto mt-8">
+        <div className="bg-white rounded-lg p-6 w-[480px] flex flex-col items-start relative z-[100000] my-auto mx-auto mt-8 md:mt-16 lg:mt-24 xl:mt-32">
           {currentView !== 'email-verification' && currentView !== 'verification-success' && (
             <>
               <div className="w-full flex justify-between items-center relative mb-2">
