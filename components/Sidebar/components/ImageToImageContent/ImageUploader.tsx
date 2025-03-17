@@ -92,20 +92,73 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
         processedUrl = encodeURI(processedUrl);
       }
 
-      // 使用我们的代理接口获取图片
-      const proxyUrl = `/api/proxy-image?url=${encodeURIComponent(processedUrl)}`;
+      // 尝试多种方式获取图片
+      let blob: Blob | null = null;
+      let fetchError: Error | null = null;
 
-      // 从我们的代理获取图片
-      const response = await fetch(proxyUrl);
-      if (!response.ok) {
-        throw new Error('Failed to fetch image from URL');
+      // 尝试方法1: 直接使用fetch尝试获取图片（CORS可能阻止）
+      try {
+        console.log('尝试直接获取图片:', processedUrl);
+        const response = await fetch(processedUrl, {
+          mode: 'cors',
+          headers: {
+            Accept: 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8'
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Direct fetch failed');
+        }
+
+        blob = await response.blob();
+        console.log('直接获取图片成功');
+      } catch (error) {
+        console.log('直接获取图片失败:', error);
+        fetchError = error instanceof Error ? error : new Error(String(error));
       }
 
-      // 转换为blob
-      const blob = await response.blob();
+      // 如果直接获取失败，尝试使用代理
+      if (!blob) {
+        try {
+          console.log('通过代理获取图片:', processedUrl);
+          const proxyUrl = `/api/proxy-image?url=${encodeURIComponent(processedUrl)}`;
+          const response = await fetch(proxyUrl);
+
+          if (!response.ok) {
+            // 尝试解析错误响应
+            let errorInfo: any = null;
+            try {
+              errorInfo = await response.json();
+            } catch (e) {}
+
+            throw new Error(
+              errorInfo?.error || `Proxy fetch failed with status: ${response.status} ${response.statusText}`
+            );
+          }
+
+          blob = await response.blob();
+          console.log('代理获取图片成功');
+        } catch (error) {
+          console.log('代理获取图片失败:', error);
+          // 如果代理获取也失败，保留原始错误
+          if (fetchError) {
+            console.error('所有获取方法均失败');
+            throw new Error(
+              `无法获取图片。直接获取错误: ${fetchError.message}, 代理获取错误: ${
+                error instanceof Error ? error.message : String(error)
+              }`
+            );
+          }
+          throw error;
+        }
+      }
+
+      // 如果所有获取方法都失败
+      if (!blob) {
+        throw new Error('所有获取图片的尝试都失败了');
+      }
 
       // 验证是否真的是图片 - 放宽检查条件
-      // 某些有效图片的blob.type可能不正确，因为我们已经在代理中处理了内容类型
       if (!blob.type.startsWith('image/') && blob.size < 100) {
         // 如果内容类型不是图片且数据很小，可能不是有效图片
         throw new Error('The URL does not point to a valid image');
@@ -132,10 +185,15 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
 
         if (errorText.includes('parse src') || errorText.includes('relative image')) {
           errorMessage = 'Invalid image URL. The URL must be an absolute URL starting with http:// or https://';
-        } else if (errorText.includes('Failed to fetch')) {
-          errorMessage = 'Could not access the image. The URL might be incorrect or the server is not responding.';
+        } else if (errorText.includes('Failed to fetch') || errorText.includes('无法获取图片')) {
+          errorMessage =
+            'Could not access the image. This might be due to CORS restrictions or the server blocking our requests. Try downloading and uploading the image directly.';
         } else if (errorText.includes('valid image')) {
           errorMessage = 'The provided URL does not contain a valid image. Please try a different URL.';
+        } else if (errorText.includes('cors') || errorText.toLowerCase().includes('cross-origin')) {
+          errorMessage = 'Cross-origin request blocked. Please try downloading the image and uploading it manually.';
+        } else if (errorText.includes('timeout') || errorText.includes('ETIMEDOUT')) {
+          errorMessage = 'Request timed out when fetching the image. The server might be slow or unreachable.';
         }
       }
 
