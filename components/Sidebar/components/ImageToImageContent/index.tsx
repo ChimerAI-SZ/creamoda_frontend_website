@@ -124,11 +124,14 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
       // 根据不同的变化类型调用不同的API
       let response;
 
-      if (formData.variationType === '2') {
+      if (formData.variationType === '1') {
         // 调用复制风格API
         response = await copyStyleGenerate(finalImageUrl, formData.description, formData.fidelity);
+      } else if (formData.variationType === '2') {
+        // 调用换衣服API
+        response = await changeClothesGenerate(finalImageUrl, formData.description);
       } else {
-        // 默认调用换衣服API
+        // 默认调用换衣服API，以防没有选择类型
         response = await changeClothesGenerate(finalImageUrl, formData.description);
       }
 
