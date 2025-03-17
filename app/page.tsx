@@ -15,7 +15,7 @@ export default function Page() {
       <div className="flex">
         <MenuBar />
         <Sidebar />
-        <main className="flex-1 z-0 p-[16px]  h-[calc(100vh-64px)] overflow-y-auto bg-[#FFFDFA]">
+        <main className="flex-1 z-0 p-[16px] pr-[26px]  h-[calc(100vh-64px)] overflow-y-auto bg-[#FFFDFA]">
           <ImageGrid />
           <LoginModal />
         </main>
