@@ -37,6 +37,7 @@ export default function ImageDetail({ image, onClose, isOpen, imgList, onImageCh
                   className="max-w-full max-h-full object-contain"
                   width={488}
                   height={645}
+                  unoptimized
                 />
               </div>
             </div>

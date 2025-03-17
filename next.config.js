@@ -55,7 +55,8 @@ const nextConfig = {
         pathname: '/**'
       }
     ],
-    domains: ['creamoda-test.oss-cn-beijing.aliyuncs.com', 'lh3.googleusercontent.com']
+    domains: ['creamoda-test.oss-cn-beijing.aliyuncs.com', 'lh3.googleusercontent.com'],
+    minimumCacheTTL: 3600
   },
   outputFileTracingExcludes: {
     '*': ['**/*']

@@ -91,6 +91,7 @@ export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(({ image, on
             className="object-cover"
             loading="lazy"
             onLoadingComplete={onImageLoad}
+            unoptimized
           />
         </div>
       )}
