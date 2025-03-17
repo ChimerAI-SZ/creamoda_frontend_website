@@ -73,7 +73,7 @@ export function Sidebar() {
         <ToggleTag label="Text to image" isActive={activeTag === 'text'} onClick={() => setActiveTag('text')} />
         <ToggleTag label="Image to image" isActive={activeTag === 'image'} onClick={() => setActiveTag('image')} />
       </div>
-      <div className="flex-1 overflow-hidden pt-4 px-4">
+      <div className="flex-1 overflow-hidden pt-4 ">
         <div className={activeTag === 'text' ? 'block h-full' : 'hidden '}>
           <TextToImageContent onSubmit={handleSubmit} />
         </div>

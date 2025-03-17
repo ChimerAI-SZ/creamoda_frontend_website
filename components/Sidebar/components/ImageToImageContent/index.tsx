@@ -123,8 +123,10 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
       let response;
 
       if (formData.variationType === '1') {
+        // 将fidelity从百分比转换为小数 (0-100 -> 0.0-1.0)
+        const fidelityDecimal = formData.fidelity / 100;
         // 调用复制风格API
-        response = await copyStyleGenerate(finalImageUrl, formData.description, formData.fidelity);
+        response = await copyStyleGenerate(finalImageUrl, formData.description, fidelityDecimal);
       } else if (formData.variationType === '2') {
         // 调用换衣服API
         response = await changeClothesGenerate(finalImageUrl, formData.description);
@@ -167,7 +169,7 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
 
   return (
     <div className="flex flex-col h-full">
-      <form onSubmit={handleFormSubmit} className="flex-1 overflow-y-auto space-y-6 pb-20">
+      <form onSubmit={handleFormSubmit} className="flex-1 overflow-y-auto space-y-4 pb-20 px-4">
         <div className="space-y-2">
           <FormLabel htmlFor="image-upload">Upload image</FormLabel>
           <ImageUploader
@@ -185,7 +187,7 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
           <Textarea
             id="description"
             placeholder="Please describe the category you would like to change."
-            className="min-h-[200px] resize-none"
+            className="min-h-[200px] resize-none placeholder:text-[#D5D5D5] font-inter text-sm font-normal leading-5"
             value={formState.description}
             onChange={handleDescriptionChange}
           />

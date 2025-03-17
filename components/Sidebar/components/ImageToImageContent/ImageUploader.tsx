@@ -390,7 +390,7 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
               htmlFor="image-upload"
               className="absolute left-[50%] translate-x-[-50%] h-[calc(100%-48px)] w-full cursor-pointer"
             >
-              <div className="rounded-lg flex items-center justify-center mt-[82px]">
+              <div className="flex items-center justify-center mt-[82px] h-[48px] shrink-0">
                 <Image src="/images/operation/up.svg" alt="Upload" width={48} height={48} />
               </div>
               <div className="flex flex-col items-center justify-center mt-2">
@@ -405,7 +405,7 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
               onChange={handleUrlChange}
               onBlur={handleUrlBlur}
               onPaste={handlePaste}
-              className="absolute left-[50%] translate-x-[-50%] bottom-[12px] w-[270px] h-[36px] px-[12px] text-[14px] font-normal leading-5 placeholder:text-[#D5D5D5]"
+              className="bg-white absolute left-[50%] translate-x-[-50%] bottom-[12px] w-[270px] h-[36px] px-[12px] text-[14px] font-normal leading-5 placeholder:text-[#D5D5D5]"
             />
           </>
         )}
