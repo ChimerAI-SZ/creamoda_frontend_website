@@ -114,25 +114,20 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
         return; // 直接返回，不进行后续代理和上传步骤
       }
 
-      // 对非OSS资源，使用代理服务器获取
-      console.log('通过代理获取图片:', processedUrl);
-      const proxyUrl = `/api/proxy-image?url=${encodeURIComponent(processedUrl)}`;
+      // 直接从URL获取图片，不使用代理
+      console.log('直接获取图片:', processedUrl);
 
-      const response = await fetch(proxyUrl);
+      const response = await fetch(processedUrl, {
+        mode: 'cors', // 使用CORS模式
+        credentials: 'omit' // 不发送cookies
+      });
+
       if (!response.ok) {
-        // 尝试解析错误响应
-        let errorInfo: any = null;
-        try {
-          errorInfo = await response.json();
-        } catch (e) {}
-
-        throw new Error(
-          errorInfo?.error || `Proxy fetch failed with status: ${response.status} ${response.statusText}`
-        );
+        throw new Error(`Failed to fetch image: ${response.status} ${response.statusText}`);
       }
 
       const blob = await response.blob();
-      console.log('代理获取图片成功, 内容类型:', blob.type);
+      console.log('图片获取成功, 内容类型:', blob.type);
 
       // 验证是否真的是图片 - 放宽检查条件
       if (!blob.type.startsWith('image/') && blob.size < 100) {
