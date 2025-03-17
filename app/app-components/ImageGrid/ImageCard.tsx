@@ -91,7 +91,13 @@ export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(({ image, on
             className="object-cover"
             loading="lazy"
             onLoadingComplete={onImageLoad}
-            unoptimized
+            unoptimized={true}
+            // 添加 referrerPolicy 以优化跨域缓存
+            referrerPolicy="no-referrer"
+            // 使用 crossOrigin 属性以确保正确缓存
+            crossOrigin="anonymous"
+            // 添加唯一的 key 属性
+            key={image.genImgId || image.resultPic}
           />
         </div>
       )}
