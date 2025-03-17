@@ -3,7 +3,7 @@
 import { LoginModal } from '@/app/app-components/Login';
 
 import { Header } from '@/components/Header';
-import { MenuBar } from '@/components/MenuBar/menu-bar';
+import { MenuBar } from '@/components/MenuBar';
 
 import { Sidebar } from '@/components/Sidebar';
 import { ImageGrid } from './app-components/ImageGrid/index';
