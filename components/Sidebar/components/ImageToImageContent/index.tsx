@@ -96,8 +96,8 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
   }, [formData.description, formData.image, formData.imageUrl, isGenerating]);
 
   return (
-    <div className="flex flex-col h-full">
-      <form onSubmit={handleFormSubmit} className="flex-1 overflow-y-auto space-y-4 pb-20 px-4">
+    <div className="flex flex-col h-full overflow-x-hidden">
+      <form onSubmit={handleFormSubmit} className="flex-1 overflow-y-auto overflow-x-hidden space-y-4 pb-20 px-4">
         <div className="space-y-2">
           <FormLabel htmlFor="image-upload">Upload image</FormLabel>
           <ImageUploader
