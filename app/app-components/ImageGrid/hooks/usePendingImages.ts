@@ -1,6 +1,7 @@
 import { useRef, useCallback } from 'react';
 import { localAPI } from '@/lib/axios';
 import { useGenerationStore } from '@/stores/useGenerationStore';
+import { showErrorDialog } from '@/utils/index';
 
 interface UsePendingImagesProps {
   onImageUpdate: (updatedImage: any) => void;
@@ -54,7 +55,7 @@ export function usePendingImages({ onImageUpdate, pollInterval = 3000 }: UsePend
         }
       }
     } catch (error) {
-      console.error('检查待生成图片状态失败:', error);
+      showErrorDialog('Failed to check image status');
     }
   }, [onImageUpdate, setGenerating]);
 

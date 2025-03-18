@@ -67,7 +67,7 @@ export default function ImageDetail({ image, onClose, isOpen, imgList, onImageCh
               <GetIntTouchDialog
                 source="human_tuning"
                 genImgId={image.genImgId}
-                trigger={<span className="underline cursor-pointer">Countact us</span>}
+                trigger={<span className="underline cursor-pointer">Contact us</span>}
               />
             </div>
           </div>
