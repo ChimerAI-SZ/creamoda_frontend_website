@@ -20,36 +20,24 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
   const [dragActive, setDragActive] = React.useState(false);
   const [previewUrl, setPreviewUrl] = React.useState<string | null>(null);
   const [isUploading, setIsUploading] = React.useState(false);
-  const [isUrlLoading, setIsUrlLoading] = React.useState(false);
-  const [lastUrlLength, setLastUrlLength] = React.useState(0);
-  const [isProcessingUrl, setIsProcessingUrl] = React.useState(false);
-  const [isPasteProcessing, setIsPasteProcessing] = React.useState(false);
+  const [newImageUrl, setNewImageUrl] = React.useState<string | null>(null);
+  const [isLoadingImageUrl, setIsLoadingImageUrl] = React.useState(false);
 
-  // 使用useRef来存储上一次有效的预览URL，避免频繁更新
-  const lastValidPreviewRef = React.useRef<string | null>(null);
+  // Define prefix for backend API - remove the @ character
+  const apiPrefix = 'https://imgproxy.creamoda.ai/sig';
 
+  // Effect to update the preview URL whenever imageUrl changes
   React.useEffect(() => {
-    // Create preview URL for the current image
-    if (currentImage) {
-      const url = URL.createObjectURL(currentImage);
-      setPreviewUrl(url);
-      lastValidPreviewRef.current = url;
-      return () => URL.revokeObjectURL(url);
-    } else if (imageUrl && isValidImageUrl(imageUrl) && !isProcessingUrl) {
-      // 只有当imageUrl是有效的URL且与上一次不同时才更新预览
-      // 且不在处理URL时才显示预览
-      if (imageUrl !== lastValidPreviewRef.current) {
-        setPreviewUrl(imageUrl);
-        lastValidPreviewRef.current = imageUrl;
-      }
-    } else if (!imageUrl && previewUrl !== null) {
-      // 只有当imageUrl为空且当前有预览时才清除预览
+    if (imageUrl) {
+      setPreviewUrl(imageUrl);
+    } else if (currentImage) {
+      const objectUrl = URL.createObjectURL(currentImage);
+      setPreviewUrl(objectUrl);
+      return () => URL.revokeObjectURL(objectUrl);
+    } else {
       setPreviewUrl(null);
-      lastValidPreviewRef.current = null;
     }
-    // 不要在依赖项中包含previewUrl，避免循环更新
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentImage, imageUrl, isProcessingUrl]);
+  }, [imageUrl, currentImage]);
 
   const uploadImageToServer = async (file: File) => {
     setIsUploading(true);
@@ -65,142 +53,6 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
       showErrorDialog(error instanceof Error ? error.message : 'Failed to upload image');
     } finally {
       setIsUploading(false);
-    }
-  };
-
-  // New function to fetch and upload external images
-  const uploadExternalImage = async (url: string) => {
-    if (!url) return;
-
-    // 先验证URL格式 - 确保是HTTP或HTTPS链接
-    if (!url.startsWith('http://') && !url.startsWith('https://')) {
-      showErrorDialog('Please enter a valid image URL. The URL must start with http:// or https://.');
-      return;
-    }
-
-    // 设置处理状态，阻止显示原始URL的预览
-    setIsProcessingUrl(true);
-    setIsUrlLoading(true);
-
-    try {
-      // 处理URL以确保编码正确 - 仅编码尚未编码的部分
-      let processedUrl = url;
-      try {
-        // 尝试解析URL，确保它是有效的
-        new URL(processedUrl);
-      } catch (e) {
-        // 如果URL无效，尝试进行基本的编码修复
-        processedUrl = encodeURI(processedUrl);
-      }
-
-      // 检查是否是我们自己的OSS资源
-      const urlObj = new URL(processedUrl);
-
-      // 如果是我们自己的OSS资源，直接使用它而不是通过代理
-      if (
-        urlObj.hostname.includes('creamoda-test.oss-cn-beijing.aliyuncs.com') ||
-        urlObj.hostname.includes('creamoda.oss-cn-beijing.aliyuncs.com')
-      ) {
-        console.log('检测到OSS URL，直接使用:', processedUrl);
-
-        // 验证图片格式（通过URL后缀）
-        const fileExt = processedUrl.split('.').pop()?.toLowerCase();
-        if (!fileExt || !['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(fileExt)) {
-          throw new Error('Unsupported image format. Only jpg, jpeg, png, gif and webp are supported.');
-        }
-
-        // 对于OSS图片，我们可以直接使用URL而不需要再上传
-        onImageUrlChange(processedUrl);
-        return; // 直接返回，不进行后续代理和上传步骤
-      }
-
-      // 直接从URL获取图片，不使用代理
-      console.log('直接获取图片:', processedUrl);
-
-      const response = await fetch(processedUrl, {
-        mode: 'cors', // 使用CORS模式
-        credentials: 'omit' // 不发送cookies
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch image: ${response.status} ${response.statusText}`);
-      }
-
-      const blob = await response.blob();
-      console.log('图片获取成功, 内容类型:', blob.type);
-
-      // 验证是否真的是图片 - 放宽检查条件
-      if (!blob.type.startsWith('image/') && blob.size < 100) {
-        // 如果内容类型不是图片且数据很小，可能不是有效图片
-        throw new Error('The URL does not point to a valid image');
-      }
-
-      // 确保我们有正确的图片MIME类型 - 根据文件扩展名确定或使用通用类型
-      const filename = url.split('/').pop()?.split('?')[0] || 'image.jpg'; // 移除可能的查询参数
-      let mimeType = blob.type;
-
-      // 如果MIME类型为空或不是图片类型，根据文件名后缀确定
-      if (!mimeType || !mimeType.startsWith('image/')) {
-        const ext = filename.split('.').pop()?.toLowerCase();
-        if (ext === 'jpg' || ext === 'jpeg') {
-          mimeType = 'image/jpeg';
-        } else if (ext === 'png') {
-          mimeType = 'image/png';
-        } else if (ext === 'gif') {
-          mimeType = 'image/gif';
-        } else if (ext === 'webp') {
-          mimeType = 'image/webp';
-        } else {
-          // 默认为JPEG
-          mimeType = 'image/jpeg';
-        }
-        console.log('MIME类型空或无效，使用扩展名推断:', mimeType);
-      }
-
-      // 创建新的blob和File对象，确保类型正确
-      const fileBlob = new Blob([await blob.arrayBuffer()], { type: mimeType });
-      const file = new File([fileBlob], filename, { type: mimeType });
-
-      console.log('创建File对象:', file.name, file.type, file.size);
-
-      // 上传到我们的服务器
-      const uploadedUrl = await uploadImage(file);
-      console.log('上传成功，获取到URL:', uploadedUrl);
-
-      // 更新URL
-      onImageUrlChange(uploadedUrl);
-    } catch (error) {
-      console.error('External image processing error:', error);
-
-      // 提供更具体的错误消息
-      let errorMessage = 'Failed to process external image';
-
-      if (error instanceof Error) {
-        const errorText = error.message;
-
-        if (errorText.includes('parse src') || errorText.includes('relative image')) {
-          errorMessage = 'Invalid image URL. The URL must be an absolute URL starting with http:// or https://';
-        } else if (errorText.includes('Failed to fetch') || errorText.includes('无法获取图片')) {
-          errorMessage =
-            'Could not access the image. This might be due to CORS restrictions or the server blocking our requests. Try downloading and uploading the image directly.';
-        } else if (errorText.includes('valid image') || errorText.includes('Invalid file type')) {
-          errorMessage =
-            'The provided URL does not contain a valid image format we can process. Please try downloading the image and uploading it manually.';
-        } else if (errorText.includes('cors') || errorText.toLowerCase().includes('cross-origin')) {
-          errorMessage = 'Cross-origin request blocked. Please try downloading the image and uploading it manually.';
-        } else if (errorText.includes('timeout') || errorText.includes('ETIMEDOUT')) {
-          errorMessage = 'Request timed out when fetching the image. The server might be slow or unreachable.';
-        }
-      }
-
-      showErrorDialog(errorMessage);
-
-      // 清空无效URL
-      onImageUrlChange('');
-    } finally {
-      setIsUrlLoading(false);
-      // 处理完成后，允许显示预览
-      setIsProcessingUrl(false);
     }
   };
 
@@ -244,86 +96,63 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
     }
   };
 
-  // 修改URL输入处理，减少不必要的状态更新
+  // Handle URL input
   const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newUrl = e.target.value;
+    const rawUrl = e.target.value;
+    setNewImageUrl(rawUrl);
 
-    // 只有当URL真正改变时才更新状态
-    if (newUrl !== imageUrl) {
-      onImageUrlChange(newUrl);
+    if (rawUrl.trim()) {
+      if (isValidImageUrl(rawUrl)) {
+        try {
+          setIsLoadingImageUrl(true);
 
-      // Clear file when URL is entered
-      if (newUrl && currentImage) {
-        onImageChange(null);
-      }
+          // 使用UTF-8编码并转换为Base64
+          // 使用TextEncoder将字符串转换为UTF-8编码的字节数组
+          const encoder = new TextEncoder();
+          const bytes = encoder.encode(rawUrl);
 
-      // 跳过因粘贴事件导致的onChange调用的处理
-      // 由onPaste事件处理程序负责处理
-      if (!isPasteProcessing) {
-        // 检测是否是输入操作 - 如果URL长度突然增加很多，很可能是粘贴操作
-        if (newUrl.length > 10 && lastUrlLength < 5) {
-          const trimmedUrl = newUrl.trim();
-          // 简化URL验证 - 只要以http开头就尝试处理
-          if (trimmedUrl.startsWith('http')) {
-            // 设置处理状态，阻止显示原始URL的预览
-            setIsProcessingUrl(true);
-
-            // 延迟一点执行上传，确保UI已更新
-            setTimeout(() => {
-              uploadExternalImage(trimmedUrl);
-            }, 100);
-          }
-        }
-      }
-
-      setLastUrlLength(newUrl.length);
-    }
-  };
-
-  // 改进onBlur处理函数
-  const handleUrlBlur = async () => {
-    // 只有当有URL且不是空字符串，且不在加载状态时才检查
-    if (imageUrl && imageUrl.trim() !== '' && !isUrlLoading && !isProcessingUrl && !isPasteProcessing) {
-      const trimmedUrl = imageUrl.trim();
-
-      // 简化验证 - 只要是http开头的URL就尝试处理
-      if (trimmedUrl.startsWith('http') && trimmedUrl !== lastValidPreviewRef.current) {
-        await uploadExternalImage(trimmedUrl);
-      }
-    }
-  };
-
-  // 修改粘贴处理函数
-  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
-    const pastedText = e.clipboardData.getData('text');
-    if (pastedText) {
-      // 设置标记，防止onChange事件重复处理
-      setIsPasteProcessing(true);
-
-      const trimmedUrl = pastedText.trim();
-      // 简化验证 - 只要是http开头的URL就尝试处理
-      if (trimmedUrl.startsWith('http')) {
-        // 设置处理状态，阻止显示原始URL的预览
-        setIsProcessingUrl(true);
-
-        // 更新输入框中的URL
-        onImageUrlChange(trimmedUrl);
-
-        // 延迟一点执行上传，确保UI已更新
-        setTimeout(() => {
-          uploadExternalImage(trimmedUrl).finally(() => {
-            // 处理完成后重置标记
-            setTimeout(() => {
-              setIsPasteProcessing(false);
-            }, 100);
+          // 将UTF-8字节数组转换为Base64字符串
+          // 这里我们需要通过一个临时字符串来处理
+          let binaryString = '';
+          bytes.forEach(byte => {
+            binaryString += String.fromCharCode(byte);
           });
-        }, 100);
+
+          // 将二进制字符串转换为Base64
+          const base64Url = btoa(binaryString);
+
+          // Prepend the API prefix and set as the image URL
+          const processedUrl = `${apiPrefix}/${base64Url}`;
+          console.log('processedUrl', processedUrl);
+          onImageUrlChange(processedUrl);
+
+          // Test if the image loads properly
+          const img = new (window.Image as any)();
+          img.onload = () => {
+            setIsLoadingImageUrl(false);
+          };
+          img.onerror = () => {
+            setIsLoadingImageUrl(false);
+            showErrorDialog('Unable to load the image from this URL. Please try another image URL.');
+            onImageUrlChange('');
+          };
+          img.src = processedUrl;
+        } catch (error) {
+          console.error('Error converting URL to base64:', error);
+          showErrorDialog('Failed to process the image URL. Please try a different URL.');
+          setIsLoadingImageUrl(false);
+          onImageUrlChange('');
+        }
       } else {
-        // 如果不是URL，立即重置标记
-        setTimeout(() => {
-          setIsPasteProcessing(false);
-        }, 100);
+        // URL doesn't look valid
+        showErrorDialog(
+          'Please enter a valid image URL (must start with http:// or https:// and end with .jpg, .jpeg, .png, etc.)'
+        );
+        onImageUrlChange('');
       }
+    } else {
+      // Clear the image URL if input is empty
+      onImageUrlChange('');
     }
   };
 
@@ -343,11 +172,17 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
         onDragOver={handleDrag}
         onDrop={handleDrop}
       >
-        {isUploading || isUrlLoading ? (
+        {isUploading || isLoadingImageUrl ? (
           // Loading state
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <Loader2 className="h-8 w-8 text-[#FF7B0D] animate-spin mb-2" />
-            <span className="text-sm text-gray-600">{isUploading ? 'Uploading image...' : 'Processing image...'}</span>
+            <span className="text-sm text-gray-600">
+              {isUploading
+                ? 'Uploading image...'
+                : isLoadingImageUrl
+                ? 'Loading image from URL...'
+                : 'Processing image...'}
+            </span>
           </div>
         ) : previewUrl ? (
           // Image preview mode
@@ -359,7 +194,7 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
                 fill
                 className="object-contain"
                 onError={() => {
-                  // 图片加载失败时清除预览
+                  // Clear preview on image load error
                   setPreviewUrl(null);
                   onImageUrlChange('');
                   showErrorDialog(
@@ -401,10 +236,8 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
             <Input
               type="text"
               placeholder="Or paste image address"
-              value={imageUrl}
+              value={newImageUrl || ''}
               onChange={handleUrlChange}
-              onBlur={handleUrlBlur}
-              onPaste={handlePaste}
               className="bg-white absolute left-[50%] translate-x-[-50%] bottom-[12px] w-[270px] h-[36px] px-[12px] text-[14px] font-normal leading-5 placeholder:text-[#D5D5D5]"
             />
           </>

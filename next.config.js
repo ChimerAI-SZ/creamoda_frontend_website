@@ -34,28 +34,23 @@ const nextConfig = {
 
   images: {
     remotePatterns: [
+      // Wildcard pattern to allow all domains
       {
         protocol: 'https',
-        hostname: '40e507dd0272b7bb46d376a326e6cb3c.cdn.bubble.io',
-        port: '',
+        hostname: '**',
         pathname: '/**'
       },
       {
-        protocol: 'https',
-        hostname: 'loremflickr.com'
-      },
-      {
-        protocol: 'https',
-        hostname: 'creamoda-test.oss-cn-beijing.aliyuncs.com',
-        pathname: '/uploads/**'
-      },
-      {
-        protocol: 'https',
-        hostname: 'lh3.googleusercontent.com',
+        protocol: 'http',
+        hostname: '**',
         pathname: '/**'
       }
     ],
-    domains: ['creamoda-test.oss-cn-beijing.aliyuncs.com', 'lh3.googleusercontent.com'],
+    // Allow all domains without restriction
+    domains: ['*'],
+    // Disable domain verification (alternative approach)
+    // Set to true only if the above doesn't work with some images
+    unoptimized: false,
     minimumCacheTTL: 3600,
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
