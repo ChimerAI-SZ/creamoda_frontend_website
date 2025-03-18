@@ -6,8 +6,6 @@ import { ImageCard } from './ImageCard';
 import ImageDetail from './ImageDetail';
 
 import { showErrorDialog } from '@/utils/index';
-import { useImageLoader } from './hooks/useImageLoader';
-import { useInfiniteScroll } from './hooks/useInfiniteScroll';
 import { usePendingImages } from './hooks/usePendingImages';
 
 import { useGenerationStore } from '@/stores/useGenerationStore';
@@ -25,23 +23,19 @@ export interface ImageItem {
   createTime: string;
 }
 
+const PAGE_SIZE = 10000; // 请求的图片数量
+
 export function ImageGrid() {
   // 图片列表
   const [images, setImages] = useState<ImageItem[]>([]);
   // 分页参数
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(50);
-  // 是否还有更多数据
-  const [hasMore, setHasMore] = useState(true);
 
   const { setGenerating } = useGenerationStore();
 
   // 查看图片详情相关state
   const [selectedImage, setSelectedImage] = useState<ImageItem | null>(null);
   const [detailVisible, setDetailVisible] = useState<boolean>(false);
-
-  // 自定义钩子处理图片加载状态
-  const { loadedImages, handleImageLoad } = useImageLoader();
 
   // 自定义钩子处理待生成图片
   const { pendingIdsRef, startPolling, stopPolling } = usePendingImages({
@@ -50,11 +44,14 @@ export function ImageGrid() {
     }
   });
 
+  // 加载状态
+  const [isLoading, setIsLoading] = useState(false);
+
   // 加载图片数据
   const fetchImages = useCallback(
     async (currentPage: number) => {
       try {
-        const data = await generate.getGenerateList(currentPage, pageSize);
+        const data = await generate.getGenerateList(currentPage, PAGE_SIZE);
 
         if (data.code === 0) {
           const imageList = data.data.list;
@@ -79,14 +76,12 @@ export function ImageGrid() {
           } else {
             setImages(prev => [...prev, ...imageList]);
           }
-
-          setHasMore(currentPage * pageSize < (data.data.total || 1000));
         }
       } catch (error) {
         showErrorDialog('Something went wrong. Please try again later or contact support if the issue persists');
       }
     },
-    [pageSize, setGenerating, pendingIdsRef, startPolling]
+    [setGenerating, pendingIdsRef, startPolling]
   );
 
   // 监听图片列表生成事件
@@ -135,30 +130,11 @@ export function ImageGrid() {
           }
           return prevImages;
         });
-
-        setHasMore(pageSize < (data.data.total || 1000));
       }
     } catch (error) {
       console.error('加载最近图片失败:', error);
     }
-  }, [pageSize, pendingIdsRef, startPolling]);
-
-  // 加载更多图片
-  const loadMoreImages = useCallback(() => {
-    if (!hasMore) return;
-
-    const nextPage = page + 1;
-
-    setPage(nextPage);
-    fetchImages(nextPage);
-  }, [hasMore, page, fetchImages]);
-
-  // 使用自定义钩子处理无限滚动
-  const { containerRef, lastItemRef } = useInfiniteScroll({
-    hasMore,
-    loadMore: loadMoreImages,
-    rootMargin: '300px'
-  });
+  }, [pendingIdsRef, startPolling]);
 
   // 图片点击事件，标记当前点击的图片，然后打开详情
   const handleImageClick = useCallback((image: ImageItem) => {
@@ -204,7 +180,6 @@ export function ImageGrid() {
   return (
     <>
       <div
-        ref={containerRef}
         className="image-grid-container grid gap-4 z-20 bg-[#FFFDFA]
       grid-cols-1
       sm:grid-cols-2 
@@ -218,12 +193,7 @@ export function ImageGrid() {
       min-[3840px]:grid-cols-9"
       >
         {images.map((image, index) => (
-          <ImageCard
-            key={image.genImgId || index}
-            image={image}
-            ref={index === images.length - Math.min(9, images.length / 3) ? lastItemRef : undefined}
-            onClick={() => handleImageClick(image)}
-          />
+          <ImageCard key={image.genImgId || index} image={image} onClick={() => handleImageClick(image)} />
         ))}
       </div>
       <ImageDetail
