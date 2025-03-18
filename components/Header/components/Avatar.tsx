@@ -2,11 +2,10 @@
 
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 
-import { localAPI } from '@/lib/axios';
+import { logout } from '@/lib/api';
 import usePersonalInfoStore from '@/stores/usePersonalInfoStore';
 import { showErrorDialog } from '@/utils/index';
 import { eventBus } from '@/utils/events';
@@ -42,8 +41,7 @@ export default function Avatar() {
     setIsOpen(false);
 
     // 调用登出接口
-    localAPI
-      .post('/api/v1/user/logout')
+    logout()
       .then(() => {
         eventBus.emit('auth:login', { isOpen: true });
       })

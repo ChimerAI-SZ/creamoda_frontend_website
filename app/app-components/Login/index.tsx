@@ -208,9 +208,9 @@ export function LoginModal() {
 
               <GoogleLoginButton onSuccess={handleLoginSuccess} onError={handleGoogleLoginError} />
 
-              <div className="text-center mt-4">
+              <div className="text-center">
                 {currentView === 'login' ? (
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-gray-600 mt-[40px]">
                     Don&apos;t have an account?{' '}
                     <span
                       className="text-black font-medium cursor-pointer border-b border-black"
@@ -220,7 +220,7 @@ export function LoginModal() {
                     </span>
                   </p>
                 ) : (
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-gray-600 mt-[40px]">
                     Already have an account?{' '}
                     <span
                       className="text-black font-medium cursor-pointer border-b border-black"

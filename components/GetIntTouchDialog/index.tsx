@@ -2,7 +2,6 @@ import React, { ReactNode, useState } from 'react';
 
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
@@ -14,12 +13,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
 import usePersonalInfoStore from '@/stores/usePersonalInfoStore';
-import { localAPI } from '@/lib/axios';
-
+import { contactUs } from '@/lib/api';
 interface GetIntTouchDialogProps {
   trigger: ReactNode;
   genImgId: number;
-  source: string;
+  source: '3d_making' | 'human_tuning';
 }
 
 const GetIntTouchDialog: React.FC<GetIntTouchDialogProps> = ({ trigger, genImgId, source }) => {
@@ -54,14 +52,8 @@ const GetIntTouchDialog: React.FC<GetIntTouchDialogProps> = ({ trigger, genImgId
     }
 
     // 这里可以添加API调用或其他处理逻辑
-    localAPI
-      .post('/api/v1/common/contact', {
-        contactEmail: email,
-        genImgId,
-        source
-      })
-      .then(res => {
-        console.log(res);
+    contactUs(email, genImgId, source)
+      .then(() => {
         // API调用成功后关闭对话框
         setOpen(false);
         setConfirmDialogVisible(true);

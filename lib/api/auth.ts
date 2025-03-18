@@ -1,4 +1,4 @@
-import { localAPI as api } from '@/lib/axios';
+import { api } from '@/lib/axios';
 import axios from 'axios';
 
 /**
@@ -98,7 +98,7 @@ export async function getGoogleAuthUrl() {
  */
 export async function getGoogleCallback(code: string) {
   try {
-    const response = await axios.get(`https://google.creamoda.ai/api/v1/auth/callback`, {
+    const response = await axios.get(`/api/v1/auth/callback`, {
       params: { code }
     });
     console.log('Google callback response:', response.data);

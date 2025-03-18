@@ -98,7 +98,7 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
   return (
     <div className="flex flex-col h-full overflow-x-hidden">
       <form onSubmit={handleFormSubmit} className="flex-1 overflow-y-auto overflow-x-hidden space-y-4 pb-20 px-4">
-        <div className="space-y-2">
+        <div className="space-y-[10px]">
           <FormLabel htmlFor="image-upload">Upload image</FormLabel>
           <ImageUploader
             onImageChange={handleImageChange}
@@ -110,7 +110,7 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
 
         <VariationTypeSelect value={formState.variationType} onChange={handleVariationTypeChange} />
 
-        <div className="space-y-2">
+        <div className="space-y-[10px]">
           <FormLabel htmlFor="description">Describe the final design</FormLabel>
           <Textarea
             id="description"

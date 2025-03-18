@@ -8,15 +8,16 @@ import './globals.css';
 export const metadata: Metadata = {
   title: 'CREAMODA',
   description: 'Fashion design platform',
-  generator: 'v0.dev'
+  generator: 'v0.dev',
+  icons: {
+    icon: [{ url: '/favicon.ico' }, { url: '/icon.png', type: 'image/png' }],
+    apple: [{ url: '/apple-icon.png' }]
+  }
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <head>
-        <link rel="icon" href="/icon.ico" sizes="256x256" type="image/x-icon" />
-      </head>
       <body className="min-h-screen bg-background">
         {children}
         <ErrorDialog />

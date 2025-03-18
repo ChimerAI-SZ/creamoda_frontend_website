@@ -1,4 +1,4 @@
-import { localAPI as api } from '@/lib/axios';
+import { api } from '@/lib/axios';
 import { getAuthToken } from './token';
 
 /**
@@ -34,6 +34,35 @@ export async function getModelSizeList() {
     console.error('Error getting model size list:', error);
     // 返回空数组而不是抛出错误
     return [];
+  }
+}
+
+/**
+ * 登出接口
+ */
+export async function logout() {
+  try {
+    const response = await api.post('/api/v1/user/logout');
+    return response.data;
+  } catch (error) {
+    console.error('Error logging out:', error);
+    throw error;
+  }
+}
+
+/**
+ * 联系我们
+ * @param email 邮箱
+ * @param genImgId 图片ID
+ * @param source 来源 目前只支持'3d_making' | 'human_tuning';
+ */
+export async function contactUs(email: string, genImgId: number, source: '3d_making' | 'human_tuning') {
+  try {
+    const response = await api.post('/api/v1/common/contact', { contactEmail: email, genImgId, source });
+    return response.data;
+  } catch (error) {
+    console.error('Error contacting us:', error);
+    throw error;
   }
 }
 
