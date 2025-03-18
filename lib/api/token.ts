@@ -1,4 +1,4 @@
-import { localAPI as api } from '@/lib/axios';
+import { api } from '@/lib/axios';
 
 /**
  * 保存认证令牌

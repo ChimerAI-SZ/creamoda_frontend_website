@@ -1,5 +1,6 @@
 import { useRef, useCallback } from 'react';
-import { localAPI } from '@/lib/axios';
+
+import { refreshGenerateStatus } from '@/lib/api';
 import { useGenerationStore } from '@/stores/useGenerationStore';
 import { showErrorDialog } from '@/utils/index';
 
@@ -25,7 +26,7 @@ export function usePendingImages({ onImageUpdate, pollInterval = 3000 }: UsePend
 
     try {
       const pendingIds = Array.from(pendingIdsRef.current).join(',');
-      const { data } = await localAPI.get(`/api/v1/img/generate/refresh_status?genImgIdList=${pendingIds}`);
+      const data = await refreshGenerateStatus(pendingIds);
 
       if (data.code === 0) {
         const updatedImages = data.data?.list || [];
