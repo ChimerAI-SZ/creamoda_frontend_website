@@ -9,10 +9,11 @@ import { showErrorDialog } from '@/utils/index';
 import { usePendingImages } from './hooks/usePendingImages';
 
 import { useGenerationStore } from '@/stores/useGenerationStore';
+import usePersonalInfoStore from '@/stores/usePersonalInfoStore';
 import { eventBus } from '@/utils/events';
 import { generate } from '@/lib/api';
 
-// 定义图片类型接口
+// 图片类型接口
 export interface ImageItem {
   genImgId: number;
   genId: number;
@@ -32,7 +33,7 @@ export function ImageGrid() {
   const [page, setPage] = useState(1);
 
   const { setGenerating } = useGenerationStore();
-
+  const { clearUserInfo } = usePersonalInfoStore();
   // 查看图片详情相关state
   const [selectedImage, setSelectedImage] = useState<ImageItem | null>(null);
   const [detailVisible, setDetailVisible] = useState<boolean>(false);
@@ -43,9 +44,6 @@ export function ImageGrid() {
       setImages(prev => prev.map(img => (img.genImgId === updatedImage.genImgId ? updatedImage : img)));
     }
   });
-
-  // 加载状态
-  const [isLoading, setIsLoading] = useState(false);
 
   // 加载图片数据
   const fetchImages = useCallback(
@@ -163,7 +161,14 @@ export function ImageGrid() {
       fetchRecentImages();
     };
 
+    // 登出清空图片历史
+    const handleLogout = () => {
+      setImages([]);
+      clearUserInfo();
+    };
+
     eventBus.on('sidebar:submit-success', handleSubmitSuccess);
+    eventBus.on('auth:logout', handleLogout);
 
     return () => {
       eventBus.off('sidebar:submit-success', handleSubmitSuccess);

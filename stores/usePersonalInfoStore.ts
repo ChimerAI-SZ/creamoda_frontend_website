@@ -28,6 +28,7 @@ interface ModelState extends UserInfo {
 
   // Method for updating multiple fields at once
   updateUserInfo: (userInfo: Partial<UserInfo>) => void;
+  clearUserInfo: () => void;
 
   // New method for fetching user info from API
   fetchUserInfo: () => Promise<UserInfo | null>;
@@ -54,6 +55,7 @@ export const usePersonalInfoStore = create<ModelState>((set, get) => ({
 
   // Update multiple fields at once
   updateUserInfo: userInfo => set(state => ({ ...state, ...userInfo })),
+  clearUserInfo: () => set({ username: '', email: '', status: '', headPic: '', emailVerified: '' }),
 
   // Fetch user info from API
   fetchUserInfo: async () => {
