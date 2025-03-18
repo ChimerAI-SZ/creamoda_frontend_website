@@ -17,6 +17,19 @@ export async function getGenerateList(page: number, pageSize: number) {
 }
 
 /**
+ * 刷新生成图片状态
+ * @param pendingIds 待生成图片ID
+ */
+export async function refreshGenerateStatus(pendingIds: string) {
+  try {
+    const response = await api.get(`/api/v1/img/generate/refresh_status?genImgIdList=${pendingIds}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error refreshing generate status:', error);
+    throw error;
+  }
+}
+/**
  * 获取单个生成图片详情
  * @param genImgId 生成图片ID
  */
