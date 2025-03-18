@@ -92,9 +92,11 @@ export function ImageGrid() {
   // 监听图片列表生成事件
   // 当用户登录成功或提交生成请求后，会触发此事件来刷新图片列表
   useEffect(() => {
-    const handler = (data: any) => {
-      // 收到事件后重新获取当前页的图片数据
-      fetchImages(page);
+    const handler = () => {
+      // 收到事件后重新获取第一页的图片数据，而不是当前页
+      fetchImages(1);
+      // 重置页码
+      setPage(1);
     };
 
     // 订阅和卸载 imageList:generate-list 事件
@@ -103,7 +105,7 @@ export function ImageGrid() {
     return () => {
       eventBus.off('imageList:generate-list', handler);
     };
-  }, [fetchImages, page]);
+  }, [fetchImages]);
 
   // 加载最近图片
   const fetchRecentImages = useCallback(async () => {
@@ -112,30 +114,34 @@ export function ImageGrid() {
 
       if (data.code === 0) {
         const recentImages = data.data.list || [];
-        const existingGenImgIds = new Set(images.map(img => img.genImgId));
-        const newImages = recentImages.filter((img: ImageItem) => !existingGenImgIds.has(img.genImgId));
+        // 使用函数式更新，避免依赖 images
+        setImages(prevImages => {
+          const existingGenImgIds = new Set(prevImages.map(img => img.genImgId));
+          const newImages = recentImages.filter((img: ImageItem) => !existingGenImgIds.has(img.genImgId));
 
-        if (newImages.length > 0) {
-          // 添加新的待生成图片到跟踪集合
-          const newPendingIds = newImages
-            .filter((img: ImageItem) => img.status === 1 || img.status === 2)
-            .map((img: ImageItem) => img.genImgId);
+          if (newImages.length > 0) {
+            // 添加新的待生成图片到跟踪集合
+            const newPendingIds = newImages
+              .filter((img: ImageItem) => img.status === 1 || img.status === 2)
+              .map((img: ImageItem) => img.genImgId);
 
-          if (newPendingIds.length > 0) {
-            // 更新待处理图片并开始轮询
-            pendingIdsRef.current = new Set([...pendingIdsRef.current, ...newPendingIds]);
-            startPolling();
+            if (newPendingIds.length > 0) {
+              // 更新待处理图片并开始轮询
+              pendingIdsRef.current = new Set([...pendingIdsRef.current, ...newPendingIds]);
+              startPolling();
+            }
+
+            return [...newImages, ...prevImages];
           }
-
-          setImages(prevImages => [...newImages, ...prevImages]);
-        }
+          return prevImages;
+        });
 
         setHasMore(pageSize < (data.data.total || 1000));
       }
     } catch (error) {
       console.error('加载最近图片失败:', error);
     }
-  }, [pageSize, images, pendingIdsRef, startPolling]);
+  }, [pageSize, pendingIdsRef, startPolling]);
 
   // 加载更多图片
   const loadMoreImages = useCallback(() => {

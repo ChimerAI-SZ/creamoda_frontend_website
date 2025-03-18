@@ -14,9 +14,6 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <head>
-        <link rel="icon" href="/icon.ico" sizes="256x256" type="image/x-icon" />
-      </head>
       <body className="min-h-screen bg-background">
         {children}
         <ErrorDialog />
