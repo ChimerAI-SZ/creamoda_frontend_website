@@ -43,7 +43,10 @@ export default function Avatar() {
     // 调用登出接口
     logout()
       .then(() => {
+        // 登出触发登陆弹窗
         eventBus.emit('auth:login', { isOpen: true });
+        // 登出登出
+        eventBus.emit('auth:logout', void 0);
       })
       .catch(error => {
         showErrorDialog('Something went wrong. Please try again later or contact support if the issue persists');
