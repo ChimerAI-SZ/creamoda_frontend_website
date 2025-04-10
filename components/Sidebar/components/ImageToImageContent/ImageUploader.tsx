@@ -9,6 +9,14 @@ import { uploadImage } from '@/lib/api';
 import { showErrorDialog } from '@/utils/index';
 import { isValidImageUrl } from '@/utils/validation';
 
+/**
+ * ImageUploader组件的属性接口
+ * @interface ImageUploaderProps
+ * @property {Function} onImageChange - 当图片文件变化时的回调函数
+ * @property {Function} onImageUrlChange - 当图片URL变化时的回调函数
+ * @property {string} imageUrl - 当前图片的URL
+ * @property {File | null} currentImage - 当前选择的图片文件
+ */
 interface ImageUploaderProps {
   onImageChange: (image: File | null) => void;
   onImageUrlChange: (url: string) => void;
@@ -16,17 +24,31 @@ interface ImageUploaderProps {
   currentImage: File | null;
 }
 
+/**
+ * 图片上传组件
+ * 支持拖拽上传、文件选择上传和URL输入三种方式
+ * 包含图片预览、加载状态和错误处理功能
+ *
+ * @param {ImageUploaderProps} props - 组件属性
+ * @returns {JSX.Element} 图片上传组件
+ */
 export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, currentImage }: ImageUploaderProps) {
-  const [dragActive, setDragActive] = React.useState(false);
-  const [previewUrl, setPreviewUrl] = React.useState<string | null>(null);
-  const [isUploading, setIsUploading] = React.useState(false);
-  const [newImageUrl, setNewImageUrl] = React.useState<string | null>(null);
-  const [isLoadingImageUrl, setIsLoadingImageUrl] = React.useState(false);
+  // 状态管理
+  const [dragActive, setDragActive] = React.useState(false); // 是否处于拖拽状态
+  const [previewUrl, setPreviewUrl] = React.useState<string | null>(null); // 预览图片URL
+  const [isUploading, setIsUploading] = React.useState(false); // 是否正在上传
+  const [newImageUrl, setNewImageUrl] = React.useState<string | null>(null); // 新输入的图片URL
+  const [isLoadingImageUrl, setIsLoadingImageUrl] = React.useState(false); // 是否正在加载URL图片
 
-  // Define prefix for backend API - remove the @ character
+  // 后端API前缀 - 移除@字符
   const apiPrefix = 'https://imgproxy.creamoda.ai/sig';
 
-  // Effect to update the preview URL whenever imageUrl changes
+  /**
+   * 当imageUrl或currentImage变化时更新预览URL
+   * 如果提供了imageUrl，则使用它
+   * 如果提供了currentImage，则创建本地对象URL
+   * 否则清除预览
+   */
   React.useEffect(() => {
     if (imageUrl) {
       setPreviewUrl(imageUrl);
@@ -39,14 +61,18 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
     }
   }, [imageUrl, currentImage]);
 
+  /**
+   * 将图片上传到服务器
+   * @param {File} file - 要上传的图片文件
+   */
   const uploadImageToServer = async (file: File) => {
     setIsUploading(true);
 
     try {
       const url = await uploadImage(file);
-      // Success - update with the URL from the server
+      // 上传成功 - 使用服务器返回的URL更新
       onImageUrlChange(url);
-      // Clear the file reference since we're now using the URL
+      // 清除文件引用，因为我们现在使用URL
       onImageChange(null);
     } catch (error) {
       console.error('Image upload error:', error);
@@ -56,6 +82,10 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
     }
   };
 
+  /**
+   * 处理拖拽事件
+   * @param {React.DragEvent} e - 拖拽事件对象
+   */
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -66,6 +96,10 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
     }
   };
 
+  /**
+   * 处理文件拖放
+   * @param {React.DragEvent} e - 拖放事件对象
+   */
   const handleDrop = async (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -74,29 +108,37 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const file = e.dataTransfer.files[0];
       if (file.type.includes('image/')) {
-        // First update local state to show preview immediately
+        // 首先更新本地状态以立即显示预览
         onImageChange(file);
-        // Clear any previous image URL
+        // 清除之前的图片URL
         onImageUrlChange('');
-        // Then upload to server
+        // 然后上传到服务器
         await uploadImageToServer(file);
       }
     }
   };
 
+  /**
+   * 处理文件选择
+   * @param {React.ChangeEvent<HTMLInputElement>} e - 文件选择事件对象
+   */
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      // First update local state to show preview immediately
+      // 首先更新本地状态以立即显示预览
       onImageChange(file);
-      // Clear any previous image URL
+      // 清除之前的图片URL
       onImageUrlChange('');
-      // Then upload to server
+      // 然后上传到服务器
       await uploadImageToServer(file);
     }
   };
 
-  // Handle URL input
+  /**
+   * 处理URL输入变化
+   * 验证URL格式，转换为Base64，并测试图片是否可加载
+   * @param {React.ChangeEvent<HTMLInputElement>} e - 输入变化事件对象
+   */
   const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawUrl = e.target.value;
     setNewImageUrl(rawUrl);
@@ -121,12 +163,12 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
           // 将二进制字符串转换为Base64
           const base64Url = btoa(binaryString);
 
-          // Prepend the API prefix and set as the image URL
+          // 添加API前缀并设置为图片URL
           const processedUrl = `${apiPrefix}/${base64Url}`;
           console.log('processedUrl', processedUrl);
           onImageUrlChange(processedUrl);
 
-          // Test if the image loads properly
+          // 测试图片是否能正确加载
           const img = new (window.Image as any)();
           img.onload = () => {
             setIsLoadingImageUrl(false);
@@ -144,18 +186,21 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
           onImageUrlChange('');
         }
       } else {
-        // URL doesn't look valid
+        // URL格式无效
         showErrorDialog(
           'Please enter a valid image URL (must start with http:// or https:// and end with .jpg, .jpeg, .png, etc.)'
         );
         onImageUrlChange('');
       }
     } else {
-      // Clear the image URL if input is empty
+      // 如果输入为空，清除图片URL
       onImageUrlChange('');
     }
   };
 
+  /**
+   * 移除当前图片
+   */
   const handleRemoveImage = () => {
     onImageChange(null);
     onImageUrlChange('');
@@ -173,7 +218,7 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
         onDrop={handleDrop}
       >
         {isUploading || isLoadingImageUrl ? (
-          // Loading state
+          // 加载状态
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <Loader2 className="h-8 w-8 text-[#FF7B0D] animate-spin mb-2" />
             <span className="text-sm text-gray-600">
@@ -185,7 +230,7 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
             </span>
           </div>
         ) : previewUrl ? (
-          // Image preview mode
+          // 图片预览模式
           <div className="relative w-full h-full">
             <div className="absolute inset-0 flex items-center justify-center p-4">
               <Image
@@ -194,7 +239,7 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
                 fill
                 className="object-contain"
                 onError={() => {
-                  // Clear preview on image load error
+                  // 图片加载错误时清除预览
                   setPreviewUrl(null);
                   onImageUrlChange('');
                   showErrorDialog(
@@ -212,7 +257,7 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
             </button>
           </div>
         ) : (
-          // Upload mode
+          // 上传模式
           <>
             <input
               id="image-upload"
@@ -247,5 +292,5 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
   );
 }
 
-// 在文件末尾，使用React.memo包装组件
+// 使用React.memo包装组件以优化性能，避免不必要的重渲染
 export const MemoizedImageUploader = React.memo(ImageUploader);

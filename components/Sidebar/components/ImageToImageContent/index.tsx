@@ -7,12 +7,6 @@ import { MemoizedImageUploader as ImageUploader } from '@/components/Sidebar/com
 import { FormLabel } from '@/components/Sidebar/components/ImageToImageContent/FormLabel';
 import { VariationTypeSelect } from '@/components/Sidebar/components/ImageToImageContent/VariationTypeSelect';
 import { FidelitySlider } from '@/components/Sidebar/components/ImageToImageContent/FidelitySlider';
-import { useState } from 'react';
-import { useToast } from '@/hooks/use-toast';
-import { copyStyleGenerate, uploadImage, changeClothesGenerate } from '@/lib/api/index';
-import { eventBus } from '@/utils/events';
-import { showErrorDialog } from '@/utils/index';
-import { isValidImageUrl } from '@/utils/validation';
 import { ImageUploadFormData } from '@/components/Sidebar';
 import { useGenerationStore } from '@/stores/useGenerationStore';
 

@@ -43,3 +43,6 @@ next-env.d.ts
 # cursorrules
 fe.mdc
 
+# lock files
+yarn.lock
+package-lock.json
