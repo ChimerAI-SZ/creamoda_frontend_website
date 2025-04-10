@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { uploadImage } from '@/lib/api';
 import { showErrorDialog } from '@/utils/index';
 import { isValidImageUrl } from '@/utils/validation';
+import { cn } from '@/lib/utils';
 
 /**
  * ImageUploader组件的属性接口
@@ -17,12 +18,17 @@ import { isValidImageUrl } from '@/utils/validation';
  * @property {Function} onImageUrlChange - 当图片URL变化时的回调函数
  * @property {string} imageUrl - 当前图片的URL
  * @property {File | null} currentImage - 当前选择的图片文件
+ * @property {string} styleType - 样式类型，支持'default'和'newStyle'
  */
 interface ImageUploaderProps {
   onImageChange: (image: File | null) => void;
   onImageUrlChange: (url: string) => void;
   imageUrl: string;
   currentImage: File | null;
+  /**
+   * 样式类型，支持'default'和'newStyle'
+   */
+  styleType?: 'default' | 'newStyle';
 }
 
 // 后端API前缀 - 移除@字符
@@ -36,7 +42,13 @@ const apiPrefix = 'https://imgproxy.creamoda.ai/sig';
  * @param {ImageUploaderProps} props - 组件属性
  * @returns {JSX.Element} 图片上传组件
  */
-export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, currentImage }: ImageUploaderProps) {
+export function ImageUploader({
+  onImageChange,
+  onImageUrlChange,
+  imageUrl,
+  currentImage,
+  styleType = 'default'
+}: ImageUploaderProps) {
   // 状态管理
   const [dragActive, setDragActive] = useState(false); // 是否处于拖拽状态
   const [previewUrl, setPreviewUrl] = useState<string | null>(null); // 预览图片URL
@@ -208,11 +220,13 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
   };
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 flex items-center justify-center">
       <div
-        className={`relative w-[302px] h-[288px] rounded-[4px] border border-[#DCDCDC] bg-[#FAFAFA] transition-colors ${
-          dragActive ? 'border-[#FF7B0D] bg-[#FFE4D2]' : 'hover:bg-gray-50'
-        }`}
+        className={cn(
+          'relative w-[302px] h-[288px] rounded-[4px] border border-[#DCDCDC] transition-colors',
+          dragActive ? 'border-[#FF7B0D] bg-[#FFE4D2]' : 'hover:bg-gray-50',
+          styleType === 'default' && 'bg-[#FAFAFA]'
+        )}
         onDragEnter={handleDrag}
         onDragLeave={handleDrag}
         onDragOver={handleDrag}
@@ -284,8 +298,16 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
               placeholder="Or paste image address"
               value={newImageUrl || ''}
               onChange={handleUrlChange}
-              className="bg-white absolute left-[50%] translate-x-[-50%] bottom-[12px] w-[270px] h-[36px] px-[12px] text-[14px] font-normal leading-5 placeholder:text-[#D5D5D5]"
+              className={cn(
+                'bg-white absolute left-[50%] translate-x-[-50%]  w-[270px] h-[36px] px-[12px] text-[14px] font-normal leading-5 placeholder:text-[#d5d5d5] rounded-sm',
+                styleType === 'newStyle' ? 'bottom-[36px]' : 'bottom-[12px]'
+              )}
             />
+            {styleType === 'newStyle' && (
+              <div className="absolute bottom-[12px] w-full h-[12px] flex items-center justify-center">
+                <span className="text-[#999] text-[10px] font-thin">Use a good resolution image for best results</span>
+              </div>
+            )}
           </>
         )}
       </div>

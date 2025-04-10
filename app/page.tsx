@@ -6,7 +6,7 @@ import { Header } from '@/components/Header';
 import { MenuBar } from '@/components/MenuBar';
 
 import { Sidebar } from '@/components/Sidebar';
-import { ImageGrid } from './app-components/ImageGrid/index';
+import { ImageGrid } from '../components/ImageGrid/index';
 
 export default function Page() {
   return (

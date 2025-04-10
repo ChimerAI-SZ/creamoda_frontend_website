@@ -29,8 +29,6 @@ const PAGE_SIZE = 10000; // 请求的图片数量
 export function ImageGrid() {
   // 图片列表
   const [images, setImages] = useState<ImageItem[]>([]);
-  // 分页参数
-  const [page, setPage] = useState(1);
 
   const { setGenerating } = useGenerationStore();
   const { clearUserInfo } = usePersonalInfoStore();
@@ -88,8 +86,6 @@ export function ImageGrid() {
     const handler = () => {
       // 收到事件后重新获取第一页的图片数据，而不是当前页
       fetchImages(1);
-      // 重置页码
-      setPage(1);
     };
 
     // 订阅和卸载 imageList:generate-list 事件
