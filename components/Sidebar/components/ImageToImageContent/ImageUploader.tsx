@@ -205,7 +205,7 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
             </div>
             <button
               onClick={handleRemoveImage}
-              className="absolute top-3 right-[13.14px] bg-white rounded-[4px] p-1 border-[0.875px] border-[#DCDCDC] hover:bg-gray-100"
+              className="absolute top-3 right-[13.14px] bg-white rounded-[4px] p-[2px] border-[0.875px] border-[#DCDCDC] hover:bg-gray-100"
               type="button"
             >
               <X className="h-4 w-4 text-[#E4E4E7]" />

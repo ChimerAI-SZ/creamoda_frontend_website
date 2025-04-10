@@ -29,13 +29,38 @@ export const FormField = ({
   error
 }: FormFieldProps) => {
   const [showPassword, setShowPassword] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
+  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    setIsFocused(true);
+    if (onFocus) onFocus();
+  };
+
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    setIsFocused(false);
+    if (onBlur) onBlur();
+  };
+
   const isPassword = type === 'password';
   const inputType = isPassword ? (showPassword ? 'text' : 'password') : type;
+
+  // Determine the border color based on state - error takes priority
+  const getBorderColorClass = () => {
+    if (error) return 'border-[#E50000] focus:border-[#E50000] focus-visible:border-[#E50000]';
+    if (isFocused) return 'border-[#4D4D4D] focus:border-[#4D4D4D]';
+    return 'border-[#D9D9D9] focus:border-[#4D4D4D]';
+  };
+
+  // Determine border color for inline style - error takes priority
+  const getBorderColor = () => {
+    if (error) return '#E50000';
+    if (isFocused) return '#4D4D4D';
+    return '#D9D9D9';
+  };
 
   return (
     <div className="mb-4">
@@ -53,11 +78,16 @@ export const FormField = ({
           value={value}
           onChange={onChange}
           onKeyUp={onKeyUp}
-          onFocus={onFocus}
-          onBlur={onBlur}
-          className={`h-[52px] py-[10px] px-4 rounded-[4px] border ${
-            error ? 'border-[#E50000]' : 'border-[#D9D9D9]'
-          } bg-white font-inter text-sm font-normal leading-5 ${isPassword ? 'pr-10' : ''}`}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          className={`h-[52px] py-[10px] px-4 rounded-[4px] border ${getBorderColorClass()} !ring-0 !ring-offset-0 !outline-none focus:!ring-0 focus:!ring-offset-0 focus-visible:!ring-0 focus-visible:!ring-offset-0 bg-white font-inter text-sm font-normal leading-5 ${
+            isPassword ? 'pr-10' : ''
+          }`}
+          style={{
+            borderColor: getBorderColor(),
+            outline: 'none',
+            boxShadow: 'none'
+          }}
         />
         {isPassword && (
           <button
