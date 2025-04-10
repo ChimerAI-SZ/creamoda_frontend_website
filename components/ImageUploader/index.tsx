@@ -1,10 +1,11 @@
 'use client';
 
-import * as React from 'react';
+import { useEffect, useState, memo } from 'react';
 import Image from 'next/image';
-import { Input } from '@/components/ui/input';
 import { X, Loader2 } from 'lucide-react';
-import axios from 'axios';
+
+import { Input } from '@/components/ui/input';
+
 import { uploadImage } from '@/lib/api';
 import { showErrorDialog } from '@/utils/index';
 import { isValidImageUrl } from '@/utils/validation';
@@ -24,6 +25,9 @@ interface ImageUploaderProps {
   currentImage: File | null;
 }
 
+// 后端API前缀 - 移除@字符
+const apiPrefix = 'https://imgproxy.creamoda.ai/sig';
+
 /**
  * 图片上传组件
  * 支持拖拽上传、文件选择上传和URL输入三种方式
@@ -34,14 +38,11 @@ interface ImageUploaderProps {
  */
 export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, currentImage }: ImageUploaderProps) {
   // 状态管理
-  const [dragActive, setDragActive] = React.useState(false); // 是否处于拖拽状态
-  const [previewUrl, setPreviewUrl] = React.useState<string | null>(null); // 预览图片URL
-  const [isUploading, setIsUploading] = React.useState(false); // 是否正在上传
-  const [newImageUrl, setNewImageUrl] = React.useState<string | null>(null); // 新输入的图片URL
-  const [isLoadingImageUrl, setIsLoadingImageUrl] = React.useState(false); // 是否正在加载URL图片
-
-  // 后端API前缀 - 移除@字符
-  const apiPrefix = 'https://imgproxy.creamoda.ai/sig';
+  const [dragActive, setDragActive] = useState(false); // 是否处于拖拽状态
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null); // 预览图片URL
+  const [isUploading, setIsUploading] = useState(false); // 是否正在上传
+  const [newImageUrl, setNewImageUrl] = useState<string | null>(null); // 新输入的图片URL
+  const [isLoadingImageUrl, setIsLoadingImageUrl] = useState(false); // 是否正在加载URL图片
 
   /**
    * 当imageUrl或currentImage变化时更新预览URL
@@ -49,7 +50,7 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
    * 如果提供了currentImage，则创建本地对象URL
    * 否则清除预览
    */
-  React.useEffect(() => {
+  useEffect(() => {
     if (imageUrl) {
       setPreviewUrl(imageUrl);
     } else if (currentImage) {
@@ -293,4 +294,4 @@ export function ImageUploader({ onImageChange, onImageUrlChange, imageUrl, curre
 }
 
 // 使用React.memo包装组件以优化性能，避免不必要的重渲染
-export const MemoizedImageUploader = React.memo(ImageUploader);
+export const MemoizedImageUploader = memo(ImageUploader);

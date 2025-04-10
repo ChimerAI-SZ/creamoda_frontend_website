@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { Textarea } from '@/components/ui/textarea';
 import { GenerateButton, GenerateButtonState } from '@/components/GenerateButton/GenerateButton';
-import { MemoizedImageUploader as ImageUploader } from '@/components/Sidebar/components/ImageToImageContent/ImageUploader';
+import { MemoizedImageUploader as ImageUploader } from '@/components/ImageUploader';
 import { FormLabel } from '@/components/Sidebar/components/ImageToImageContent/FormLabel';
 import { VariationTypeSelect } from '@/components/Sidebar/components/ImageToImageContent/VariationTypeSelect';
 import { FidelitySlider } from '@/components/Sidebar/components/ImageToImageContent/FidelitySlider';
