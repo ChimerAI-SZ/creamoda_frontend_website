@@ -129,6 +129,7 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
             onImageUrlChange={handleImageUrlChange}
             imageUrl={imageState.imageUrl}
             currentImage={imageState.image}
+            imageType={`${formState.variationType === '3' ? 'fabric image' : 'image'}`}
           />
         </div>
 

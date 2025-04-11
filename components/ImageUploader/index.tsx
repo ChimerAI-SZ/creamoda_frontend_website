@@ -19,6 +19,7 @@ import { cn } from '@/lib/utils';
  * @property {string} imageUrl - 当前图片的URL
  * @property {File | null} currentImage - 当前选择的图片文件
  * @property {string} styleType - 样式类型，支持'default'和'newStyle'
+ * @property {string} imageType - 图片类型
  */
 interface ImageUploaderProps {
   onImageChange: (image: File | null) => void;
@@ -29,6 +30,7 @@ interface ImageUploaderProps {
    * 样式类型，支持'default'和'newStyle'
    */
   styleType?: 'default' | 'newStyle';
+  imageType?: string;
 }
 
 // 后端API前缀 - 移除@字符
@@ -47,7 +49,8 @@ export function ImageUploader({
   onImageUrlChange,
   imageUrl,
   currentImage,
-  styleType = 'default'
+  styleType = 'default',
+  imageType = 'image'
 }: ImageUploaderProps) {
   // 状态管理
   const [dragActive, setDragActive] = useState(false); // 是否处于拖拽状态
@@ -289,7 +292,7 @@ export function ImageUploader({
                 <Image src="/images/operation/up.svg" alt="Upload" width={48} height={48} />
               </div>
               <div className="flex flex-col items-center justify-center mt-2">
-                <span className="text-sm font-normal text-[#121316] font-inter leading-5">Upload image</span>
+                <span className="text-sm font-normal text-[#121316] font-inter leading-5">Upload {imageType}</span>
                 <span className="text-xs font-normal text-[#999] font-inter leading-[15px]">Format: .jpeg, .png</span>
               </div>
             </label>
