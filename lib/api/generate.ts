@@ -117,3 +117,63 @@ export async function copyStyleGenerate(originalPicUrl: string, prompt: string, 
     throw error;
   }
 }
+
+/**
+ * 人物模型生成
+ * @param originalPicUrl 原始图片URL
+ * @param prompt 提示词
+ * @param gender 性别 (1: 男, 2: 女)
+ * @param age 年龄
+ * @param country 国家
+ */
+export async function humanModelGenerate(
+  originalPicUrl: string,
+  prompt: string,
+  gender: string,
+  age: string,
+  country: string
+) {
+  try {
+    const response = await api.post('/api/v1/img/human_model_generate', {
+      originalPicUrl,
+      prompt,
+      gender,
+      age,
+      country
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error generating with human model:', error);
+    throw error;
+  }
+}
+
+/**
+ * 复制面料生成
+ * @param originalPicUrl 原始图片URL
+ * @param prompt 提示词
+ * @param gender 性别 (1: 男, 2: 女)
+ * @param age 年龄
+ * @param country 国家
+ */
+export async function copyFabricGenerate(
+  originalPicUrl: string,
+  prompt: string,
+  gender: number,
+  age: number,
+  country: string
+) {
+  try {
+    const response = await api.post('/api/v1/img/copy_fabric', {
+      originalPicUrl,
+      prompt,
+      gender,
+      age,
+      country
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error generating with fabric copy:', error);
+    throw error;
+  }
+}

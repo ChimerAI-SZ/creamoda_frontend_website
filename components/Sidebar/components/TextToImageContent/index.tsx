@@ -3,14 +3,12 @@
 import { useState, useEffect, useCallback, memo } from 'react';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { GenerateButton } from '@/components/GenerateButton/GenerateButton';
 
 import { useModelStore } from '@/stores/useModelStore';
 import { useGenerationStore } from '@/stores/useGenerationStore';
 import { OutfitFormData } from '../../index';
-import { COUNTRIES_LIST } from './constant';
+import { GenderAgeCountryFields } from '@/components/Sidebar/components/shared/GenderAgeCountryFields';
 
 interface OutfitFormProps {
   onSubmit?: (data: OutfitFormData) => void;
@@ -93,93 +91,19 @@ export default function OutfitForm({ onSubmit }: OutfitFormProps) {
               />
             </div>
 
-            <div className="mt-4">
-              <h3 className="text-[#121316] font-inter text-sm font-medium leading-5 py-[6px]">With human model</h3>
-
-              <div className="mt-3">
-                <div className="flex items-center justify-between mt-2">
-                  <StyledLabel htmlFor="text_to_img_gender" content="Gender" />
-
-                  <RadioGroup
-                    id="text_to_img_gender"
-                    defaultValue="2"
-                    onValueChange={handleGenderChange}
-                    className="flex gap-4 w-[155px]"
-                  >
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="2" id="female" />
-
-                      <Label
-                        className="text-[#121316] font-inter text-[14px] font-normal leading-5 py-[6px]"
-                        htmlFor="female"
-                      >
-                        Female
-                      </Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="1" id="male" />
-                      <Label
-                        className="text-[#121316] font-inter text-[14px] font-normal leading-5 py-[6px]"
-                        htmlFor="male"
-                      >
-                        Male
-                      </Label>
-                    </div>
-                  </RadioGroup>
-                </div>
-
-                <div className="flex items-center justify-between mt-2">
-                  <StyledLabel content="Age" />
-
-                  <Select value={formData.age} onValueChange={handleAgeChange}>
-                    <SelectTrigger className="w-[155px] rounded-sm">
-                      <SelectValue placeholder="Select age" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {AGE_OPTIONS.map(age => (
-                        <SelectItem key={age} value={age.toString()}>
-                          {age}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="flex items-center justify-between mt-2">
-                  <StyledLabel content="Country" />
-
-                  <Select value={formData.country} onValueChange={handleCountryChange}>
-                    <SelectTrigger className="w-[155px] rounded-sm">
-                      <SelectValue placeholder="Select country" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {COUNTRIES_LIST.map(country => (
-                        <SelectItem key={country.value} value={country.value}>
-                          {country.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="flex items-center justify-between mt-2">
-                  <StyledLabel content="Type" />
-
-                  <Select value={formData.modelSize.toString()} onValueChange={handleModelSizeChange}>
-                    <SelectTrigger className="w-[155px] rounded-sm">
-                      <SelectValue placeholder="Select type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {modelSizes.map(type => (
-                        <SelectItem key={type.code} value={type.code}>
-                          {type.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            </div>
+            <GenderAgeCountryFields
+              gender={formData.gender.toString()}
+              age={formData.age}
+              country={formData.country}
+              onGenderChange={handleGenderChange}
+              onAgeChange={handleAgeChange}
+              onCountryChange={handleCountryChange}
+              showModelSizeField={true}
+              modelSize={formData.modelSize}
+              modelSizes={modelSizes.map(size => ({ code: size.code, name: size.name }))}
+              onModelSizeChange={handleModelSizeChange}
+              title="With human model"
+            />
           </div>
         </form>
         <div className="sticky bottom-0 left-0 right-0 pb-4 bg-white">

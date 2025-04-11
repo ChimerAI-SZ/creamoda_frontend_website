@@ -9,6 +9,7 @@ import { VariationTypeSelect } from '@/components/Sidebar/components/ImageToImag
 import { FidelitySlider } from '@/components/Sidebar/components/ImageToImageContent/FidelitySlider';
 import { ImageUploadFormData } from '@/components/Sidebar';
 import { useGenerationStore } from '@/stores/useGenerationStore';
+import { GenderAgeCountryFields } from '@/components/Sidebar/components/shared/GenderAgeCountryFields';
 
 interface ImageUploadFormProps {
   onSubmit?: (data: ImageUploadFormData) => void;
@@ -25,7 +26,10 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
   const [formState, setFormState] = React.useState({
     variationType: '',
     description: '',
-    fidelity: 50
+    fidelity: 50,
+    gender: '2', // Default female
+    age: '25', // Default age
+    country: 'usa' // Default country
   });
 
   const { isGenerating, setGenerating } = useGenerationStore();
@@ -54,8 +58,34 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
     setFormState(prev => ({ ...prev, variationType: value }));
   }, []);
 
+  // Function to get the appropriate placeholder text based on variation type
+  const getPlaceholderText = () => {
+    switch (formState.variationType) {
+      case '1':
+        return 'Please describe the new variation.';
+      case '2':
+        return 'Please describe the category you would like to change.';
+      case '3':
+        return 'You can describe the clothing type, fit, color, print, etc.';
+      default:
+        return 'Please describe the changes you want to make.';
+    }
+  };
+
   const handleFidelityChange = React.useCallback((value: number) => {
     setFormState(prev => ({ ...prev, fidelity: value }));
+  }, []);
+
+  const handleGenderChange = React.useCallback((value: string) => {
+    setFormState(prev => ({ ...prev, gender: value }));
+  }, []);
+
+  const handleAgeChange = React.useCallback((value: string) => {
+    setFormState(prev => ({ ...prev, age: value }));
+  }, []);
+
+  const handleCountryChange = React.useCallback((value: string) => {
+    setFormState(prev => ({ ...prev, country: value }));
   }, []);
 
   const handleSubmit = async () => {
@@ -108,7 +138,7 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
           <FormLabel htmlFor="description">Describe the final design</FormLabel>
           <Textarea
             id="description"
-            placeholder="Please describe the category you would like to change."
+            placeholder={getPlaceholderText()}
             className="min-h-[200px] resize-none placeholder:text-[#D5D5D5] font-inter text-sm font-normal leading-5 rounded-[4px] border border-[#DCDCDC]"
             value={formState.description}
             onChange={handleDescriptionChange}
@@ -117,6 +147,17 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
 
         {formState.variationType === '1' && (
           <FidelitySlider value={formState.fidelity} onChange={handleFidelityChange} />
+        )}
+
+        {formState.variationType === '3' && (
+          <GenderAgeCountryFields
+            gender={formState.gender}
+            age={formState.age}
+            country={formState.country}
+            onGenderChange={handleGenderChange}
+            onAgeChange={handleAgeChange}
+            onCountryChange={handleCountryChange}
+          />
         )}
       </form>
       <div className="sticky bottom-0 left-0 right-0 pb-4 bg-white">

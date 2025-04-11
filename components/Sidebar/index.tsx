@@ -15,7 +15,9 @@ import {
   getVariationTypeList,
   copyStyleGenerate,
   changeClothesGenerate,
-  uploadImage
+  uploadImage,
+  humanModelGenerate,
+  copyFabricGenerate
 } from '@/lib/api';
 import { useModelStore } from '@/stores/useModelStore';
 import { useGenerationStore } from '@/stores/useGenerationStore';
@@ -38,6 +40,9 @@ export interface ImageUploadFormData {
   variationType: string;
   description: string;
   fidelity: number;
+  gender?: string;
+  age?: string;
+  country?: string;
 }
 
 export function Sidebar() {
@@ -117,6 +122,15 @@ export function Sidebar() {
       } else if (data.variationType === '2') {
         // Call change clothes API
         response = await changeClothesGenerate(finalImageUrl, data.description);
+      } else if (data.variationType === '3') {
+        // Call copy fabric API
+        response = await copyFabricGenerate(
+          finalImageUrl,
+          data.description,
+          parseInt(data.gender || '2'), // Convert string to number, default to female
+          parseInt(data.age || '25'), // Convert string to number, default to 25
+          data.country || 'usa' // Default to USA if not provided
+        );
       } else {
         // Default to change clothes API if no type selected
         response = await changeClothesGenerate(finalImageUrl, data.description);
