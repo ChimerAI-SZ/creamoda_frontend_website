@@ -10,7 +10,7 @@ import { FidelitySlider } from '@/components/Sidebar/components/ImageToImageCont
 import { ImageUploadFormData } from '@/components/Sidebar';
 import { useGenerationStore } from '@/stores/useGenerationStore';
 import { GenderAgeCountryFields } from '@/components/Sidebar/components/shared/GenderAgeCountryFields';
-
+import { Format } from '@/components/Sidebar/components/ImageToImageContent/Format';
 interface ImageUploadFormProps {
   onSubmit?: (data: ImageUploadFormData) => void;
 }
@@ -22,31 +22,48 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
     imageUrl: ''
   });
 
+  // 将参考图片相关状态提取到单独的状态对象中
+  const [referenceImageState, setReferenceImageState] = React.useState({
+    referenceImage: null as File | null,
+    referenceImageUrl: ''
+  });
+
   // 其他表单状态
   const [formState, setFormState] = React.useState({
     variationType: '',
     description: '',
-    fidelity: 50,
-    gender: '2', // Default female
-    age: '25', // Default age
-    country: 'usa' // Default country
+    referLevel: 1
   });
 
   const { isGenerating, setGenerating } = useGenerationStore();
 
   // 合并状态以便于处理
-  const formData = {
-    ...imageState,
-    ...formState
+  const formData: ImageUploadFormData = {
+    image: imageState.image,
+    imageUrl: imageState.imageUrl,
+    variationType: formState.variationType,
+    description: formState.description,
+    referLevel: formState.referLevel,
+    referenceImage: referenceImageState.referenceImage,
+    referenceImageUrl: referenceImageState.referenceImageUrl
   };
 
-  // 图片处理函数
+  // 主图片处理函数
   const handleImageChange = React.useCallback((image: File | null) => {
     setImageState(prev => ({ ...prev, image }));
   }, []);
 
   const handleImageUrlChange = React.useCallback((imageUrl: string) => {
     setImageState(prev => ({ ...prev, imageUrl }));
+  }, []);
+
+  // 参考图片处理函数
+  const handleReferenceImageChange = React.useCallback((image: File | null) => {
+    setReferenceImageState(prev => ({ ...prev, referenceImage: image }));
+  }, []);
+
+  const handleReferenceImageUrlChange = React.useCallback((imageUrl: string) => {
+    setReferenceImageState(prev => ({ ...prev, referenceImageUrl: imageUrl }));
   }, []);
 
   // 其他表单字段处理函数
@@ -66,7 +83,7 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
       case '2':
         return 'Please describe the category you would like to change.';
       case '3':
-        return 'You can describe the clothing type, fit, color, print, etc.';
+        return 'Please describe the clothing type, fit, color, print, etc.';
       default:
         return 'Please describe the changes you want to make.';
     }
@@ -86,6 +103,14 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
 
   const handleCountryChange = React.useCallback((value: string) => {
     setFormState(prev => ({ ...prev, country: value }));
+  }, []);
+
+  const handleFormatChange = React.useCallback((value: string) => {
+    setFormState(prev => ({ ...prev, format: value }));
+  }, []);
+
+  const handleReferLevelChange = React.useCallback((value: number) => {
+    setFormState(prev => ({ ...prev, referLevel: value }));
   }, []);
 
   const handleSubmit = async () => {
@@ -122,43 +147,143 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
   return (
     <div className="flex flex-col h-full overflow-x-hidden">
       <form onSubmit={handleFormSubmit} className="flex-1 overflow-y-auto overflow-x-hidden space-y-4 pb-20 px-4">
-        <div className="space-y-[10px]">
-          <FormLabel htmlFor="image-upload">Upload image</FormLabel>
-          <ImageUploader
-            onImageChange={handleImageChange}
-            onImageUrlChange={handleImageUrlChange}
-            imageUrl={imageState.imageUrl}
-            currentImage={imageState.image}
-            imageType={`${formState.variationType === '3' ? 'Fabric Image' : 'Image'}`}
-          />
-        </div>
-
         <VariationTypeSelect value={formState.variationType} onChange={handleVariationTypeChange} />
-
-        <div className="space-y-[10px]">
-          <FormLabel htmlFor="description">Describe the final design</FormLabel>
-          <Textarea
-            id="description"
-            placeholder={getPlaceholderText()}
-            className="min-h-[200px] resize-none placeholder:text-[#D5D5D5] font-inter text-sm font-normal leading-5 rounded-[4px] border border-[#DCDCDC]"
-            value={formState.description}
-            onChange={handleDescriptionChange}
-          />
-        </div>
-
         {formState.variationType === '1' && (
-          <FidelitySlider value={formState.fidelity} onChange={handleFidelityChange} />
+          <div className="space-y-4">
+            <div className="space-y-[10px]">
+              <FormLabel>Upload image</FormLabel>
+              <ImageUploader
+                onImageChange={handleImageChange}
+                onImageUrlChange={handleImageUrlChange}
+                imageUrl={imageState.imageUrl}
+                currentImage={imageState.image}
+                imageType={`${formState.variationType === '1' ? 'Fabric Image' : 'Image'}`}
+              />
+            </div>
+            <FidelitySlider value={formState.referLevel} onChange={handleReferLevelChange} />
+            <div className="space-y-[10px]">
+              <FormLabel>Describe the final design</FormLabel>
+              <Textarea
+                id="description"
+                placeholder={getPlaceholderText()}
+                className="min-h-[200px] resize-none placeholder:text-[#D5D5D5] font-inter text-sm font-normal leading-5 rounded-[4px] border border-[#DCDCDC]"
+                value={formState.description}
+                onChange={handleDescriptionChange}
+              />
+            </div>
+          </div>
+        )}
+
+        {formState.variationType === '2' && (
+          <div className="space-y-4">
+            <div className="space-y-[10px]">
+              <FormLabel>Upload image</FormLabel>
+              <ImageUploader
+                onImageChange={handleImageChange}
+                onImageUrlChange={handleImageUrlChange}
+                imageUrl={imageState.imageUrl}
+                currentImage={imageState.image}
+                imageType={`${formState.variationType === '2' ? 'Fabric Image' : 'Image'}`}
+              />
+            </div>
+            <div className="space-y-[10px]">
+              <FormLabel>Describe the final design</FormLabel>
+              <Textarea
+                id="description"
+                placeholder={getPlaceholderText()}
+                className="min-h-[200px] resize-none placeholder:text-[#D5D5D5] font-inter text-sm font-normal leading-5 rounded-[4px] border border-[#DCDCDC]"
+                value={formState.description}
+                onChange={handleDescriptionChange}
+              />
+            </div>
+          </div>
         )}
 
         {formState.variationType === '3' && (
-          <GenderAgeCountryFields
-            gender={formState.gender}
-            age={formState.age}
-            country={formState.country}
-            onGenderChange={handleGenderChange}
-            onAgeChange={handleAgeChange}
-            onCountryChange={handleCountryChange}
-          />
+          <div className="space-y-4">
+            <div className="space-y-[10px]">
+              <FormLabel>Upload image</FormLabel>
+              <ImageUploader
+                onImageChange={handleImageChange}
+                onImageUrlChange={handleImageUrlChange}
+                imageUrl={imageState.imageUrl}
+                currentImage={imageState.image}
+                imageType={`${formState.variationType === '3' ? 'Fabric Image' : 'Image'}`}
+              />
+            </div>
+            <div className="space-y-[10px]">
+              <FormLabel>Describe the final design</FormLabel>
+              <Textarea
+                id="description"
+                placeholder={getPlaceholderText()}
+                className="min-h-[200px] resize-none placeholder:text-[#D5D5D5] font-inter text-sm font-normal leading-5 rounded-[4px] border border-[#DCDCDC]"
+                value={formState.description}
+                onChange={handleDescriptionChange}
+              />
+            </div>
+          </div>
+        )}
+
+        {formState.variationType === '4' && (
+          <div className="space-y-4">
+            <div className="space-y-[10px]">
+              <FormLabel>Upload image</FormLabel>
+              <ImageUploader
+                onImageChange={handleImageChange}
+                onImageUrlChange={handleImageUrlChange}
+                imageUrl={imageState.imageUrl}
+                currentImage={imageState.image}
+                imageType={`${formState.variationType === '4' ? 'Fabric Image' : 'Image'}`}
+              />
+            </div>
+            <div className="space-y-[10px]">
+              <FormLabel>Describe the final design</FormLabel>
+              <Textarea
+                id="description"
+                placeholder={getPlaceholderText()}
+                className="min-h-[200px] resize-none placeholder:text-[#D5D5D5] font-inter text-sm font-normal leading-5 rounded-[4px] border border-[#DCDCDC]"
+                value={formState.description}
+                onChange={handleDescriptionChange}
+              />
+            </div>
+          </div>
+        )}
+
+        {formState.variationType === '5' && (
+          <div className="space-y-4">
+            <div className="space-y-[10px]">
+              <FormLabel>Upload image</FormLabel>
+              <ImageUploader
+                onImageChange={handleImageChange}
+                onImageUrlChange={handleImageUrlChange}
+                imageUrl={imageState.imageUrl}
+                currentImage={imageState.image}
+                imageType={`${formState.variationType === '5' ? 'Fabric Image' : 'Image'}`}
+              />
+            </div>
+            <div className="space-y-[10px]">
+              <FormLabel>Upload reference image</FormLabel>
+              <ImageUploader
+                onImageChange={handleReferenceImageChange}
+                onImageUrlChange={handleReferenceImageUrlChange}
+                imageUrl={referenceImageState.referenceImageUrl}
+                currentImage={referenceImageState.referenceImage}
+                imageType={`${formState.variationType === '5' ? 'Fabric Image' : 'Image'}`}
+              />
+            </div>
+            <FidelitySlider value={formState.referLevel} onChange={handleReferLevelChange} />
+
+            <div className="space-y-[10px]">
+              <FormLabel>Describe the final design</FormLabel>
+              <Textarea
+                id="description"
+                placeholder={getPlaceholderText()}
+                className="min-h-[200px] resize-none placeholder:text-[#D5D5D5] font-inter text-sm font-normal leading-5 rounded-[4px] border border-[#DCDCDC]"
+                value={formState.description}
+                onChange={handleDescriptionChange}
+              />
+            </div>
+          </div>
         )}
       </form>
       <div className="sticky bottom-0 left-0 right-0 pb-4 bg-white">

@@ -24,7 +24,7 @@ export function VariationTypeSelect({
   const { variationTypes } = useModelStore();
   return (
     <div className={`space-y-[6px] ${className}`}>
-      {label && <FormLabel htmlFor="variation-type">{label}</FormLabel>}
+      {label && <FormLabel>{label}</FormLabel>}
       <Select value={value} onValueChange={onChange}>
         <SelectTrigger
           className={cn(

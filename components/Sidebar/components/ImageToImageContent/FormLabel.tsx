@@ -6,9 +6,9 @@ interface FormLabelProps extends React.ComponentPropsWithoutRef<typeof Label> {
   children: React.ReactNode;
 }
 
-export function FormLabel({ children, className, ...props }: FormLabelProps) {
+export function FormLabel({ children, ...props }: FormLabelProps) {
   return (
-    <Label className={cn('text-[#121316] text-sm font-medium leading-5 font-inter', className)} {...props}>
+    <Label className={cn('text-[#262626] text-sm font-medium leading-5 font-inter')} {...props}>
       {children}
     </Label>
   );
