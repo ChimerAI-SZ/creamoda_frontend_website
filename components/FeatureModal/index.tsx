@@ -187,13 +187,11 @@ export default function FeatureModal({
             <Button
               variant="outline"
               className="flex w-[142px] h-[40px] px-0 py-[10px] justify-center items-center rounded-1"
+              onClick={() => {
+                handleConfirm(activeFeature);
+              }}
             >
-              <span
-                className="text-[#F97917] font-inter text-sm font-medium leading-5"
-                onClick={() => {
-                  handleConfirm(activeFeature);
-                }}
-              >
+              <span className="text-[#F97917] font-inter text-sm font-medium leading-5">
                 <span>OK</span>
                 {activeFeature.length > 0 && <span className="text-[#F97917]"> ({activeFeature.length})</span>}
               </span>
