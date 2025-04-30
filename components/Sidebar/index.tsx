@@ -16,7 +16,6 @@ import {
   copyStyleGenerate,
   changeClothesGenerate,
   uploadImage,
-  humanModelGenerate,
   copyFabricGenerate
 } from '@/lib/api';
 import { useModelStore } from '@/stores/useModelStore';
@@ -31,6 +30,7 @@ export interface OutfitFormData {
   country: string;
   modelSize: number;
   withHumanModel: 1 | 0;
+  format: '1:1' | '2:3' | '3:4' | '9:16';
 }
 
 // Image to Image form data interface

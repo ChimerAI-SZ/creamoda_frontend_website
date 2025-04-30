@@ -79,17 +79,17 @@ export default function FeatureModal({
         </DialogHeader>
 
         <div className="flex justify-between items-center mb-[16px]">
-          <div className="flex justify-start items-center h-[32px]">
-            <span>Selected Features:</span>
-            <div className="flex justify-start items-center space-x-[12px] px-[12px]">
+          <div className="flex justify-start items-start gap-2">
+            <span className="shrink-0">Selected Features:</span>
+            <div className="flex justify-start items-center flex-wrap px-[12px] max-h-[76px] overflow-y-auto">
               {activeFeature.map(feature => (
                 <div
                   key={feature}
-                  className="px-[8px] py-[2px] border border-border rounded-sm flex items-center justify-start gap-1"
+                  className="px-[8px] py-[2px] mb-[4px] mr-[8px] border border-border rounded-sm flex items-center justify-start gap-1 shrink-0"
                 >
                   {feature}
                   <X
-                    className="w-[12px] h-[12px] text-gray-400 hover:text-black cursor-pointer"
+                    className="w-[12px] h-[12px] text-gray-400 hover:text-black cursor-pointer shrink-0"
                     onClick={() => toggleFeature(feature)}
                   />
                 </div>
