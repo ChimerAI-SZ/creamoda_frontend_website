@@ -47,7 +47,6 @@ export function GenerateButton({ onClick, state = 'disabled', className = '' }: 
         className={`w-full px-4 py-2.5 flex items-center justify-center gap-1.5 rounded text-sm font-medium font-inter leading-5 ${buttonStyles[state]} ${className}`}
         disabled={state === 'disabled' || state === 'generating'}
         onClick={() => {
-          debugger;
           handleClick();
         }}
       >

@@ -9,8 +9,7 @@ import { VariationTypeSelect } from '@/components/Sidebar/components/ImageToImag
 import { FidelitySlider } from '@/components/Sidebar/components/ImageToImageContent/FidelitySlider';
 import { ImageUploadFormData } from '@/components/Sidebar';
 import { useGenerationStore } from '@/stores/useGenerationStore';
-import { GenderAgeCountryFields } from '@/components/Sidebar/components/shared/GenderAgeCountryFields';
-import { Format } from '@/components/Sidebar/components/ImageToImageContent/Format';
+import FeatureModal from '@/components/FeatureModal';
 interface ImageUploadFormProps {
   onSubmit?: (data: ImageUploadFormData) => void;
 }
@@ -30,7 +29,7 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
 
   // 其他表单状态
   const [formState, setFormState] = React.useState({
-    variationType: '',
+    variationType: '1',
     description: '',
     referLevel: 1
   });
@@ -89,28 +88,17 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
     }
   };
 
-  const handleFidelityChange = React.useCallback((value: number) => {
-    setFormState(prev => ({ ...prev, fidelity: value }));
-  }, []);
-
-  const handleGenderChange = React.useCallback((value: string) => {
-    setFormState(prev => ({ ...prev, gender: value }));
-  }, []);
-
-  const handleAgeChange = React.useCallback((value: string) => {
-    setFormState(prev => ({ ...prev, age: value }));
-  }, []);
-
-  const handleCountryChange = React.useCallback((value: string) => {
-    setFormState(prev => ({ ...prev, country: value }));
-  }, []);
-
-  const handleFormatChange = React.useCallback((value: string) => {
-    setFormState(prev => ({ ...prev, format: value }));
-  }, []);
-
   const handleReferLevelChange = React.useCallback((value: number) => {
     setFormState(prev => ({ ...prev, referLevel: value }));
+  }, []);
+
+  // Add a new handler for feature selection
+  const handleFeatureSelection = React.useCallback((features: string[]) => {
+    if (features.length === 0) return;
+
+    // Simply replace the description with the joined features
+    const newValue = features.join(', ');
+    setFormState(prev => ({ ...prev, description: newValue }));
   }, []);
 
   const handleSubmit = async () => {
@@ -162,7 +150,10 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
             </div>
             <FidelitySlider value={formState.referLevel} onChange={handleReferLevelChange} />
             <div className="space-y-[10px]">
-              <FormLabel>Describe the final design</FormLabel>
+              <div className="flex items-center justify-between">
+                <FormLabel>Describe the final design</FormLabel>
+                <FeatureModal handleConfirm={handleFeatureSelection} />
+              </div>
               <Textarea
                 id="description"
                 placeholder={getPlaceholderText()}
@@ -187,7 +178,10 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
               />
             </div>
             <div className="space-y-[10px]">
-              <FormLabel>Describe the final design</FormLabel>
+              <div className="flex items-center justify-between">
+                <FormLabel>Describe the final design</FormLabel>
+                <FeatureModal handleConfirm={handleFeatureSelection} />
+              </div>
               <Textarea
                 id="description"
                 placeholder={getPlaceholderText()}
@@ -212,7 +206,10 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
               />
             </div>
             <div className="space-y-[10px]">
-              <FormLabel>Describe the final design</FormLabel>
+              <div className="flex items-center justify-between">
+                <FormLabel>Describe the final design</FormLabel>
+                <FeatureModal handleConfirm={handleFeatureSelection} />
+              </div>
               <Textarea
                 id="description"
                 placeholder={getPlaceholderText()}
@@ -237,7 +234,10 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
               />
             </div>
             <div className="space-y-[10px]">
-              <FormLabel>Describe the final design</FormLabel>
+              <div className="flex items-center justify-between">
+                <FormLabel>Describe the final design</FormLabel>
+                <FeatureModal handleConfirm={handleFeatureSelection} />
+              </div>
               <Textarea
                 id="description"
                 placeholder={getPlaceholderText()}
@@ -274,7 +274,10 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
             <FidelitySlider value={formState.referLevel} onChange={handleReferLevelChange} />
 
             <div className="space-y-[10px]">
-              <FormLabel>Describe the final design</FormLabel>
+              <div className="flex items-center justify-between">
+                <FormLabel>Describe the final design</FormLabel>
+                <FeatureModal handleConfirm={handleFeatureSelection} />
+              </div>
               <Textarea
                 id="description"
                 placeholder={getPlaceholderText()}

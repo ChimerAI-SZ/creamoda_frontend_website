@@ -117,7 +117,7 @@ export function Sidebar() {
       let response;
       if (data.variationType === '1') {
         // Call copy style API
-        response = await copyStyleGenerate(finalImageUrl, data.description);
+        response = await copyStyleGenerate(finalImageUrl, data.description, data.referLevel);
       } else if (data.variationType === '2') {
         // Call change clothes API
         response = await changeClothesGenerate(finalImageUrl, data.description);

@@ -104,11 +104,12 @@ export async function changeClothesGenerate(originalPicUrl: string, prompt: stri
  * @param prompt 提示词
  * @param fidelity 保真度
  */
-export async function copyStyleGenerate(originalPicUrl: string, prompt: string) {
+export async function copyStyleGenerate(originalPicUrl: string, prompt: string, referLevel: number) {
   try {
     const response = await api.post('/api/v1/img/copy_style_generate', {
       originalPicUrl,
-      prompt
+      prompt,
+      referLevel
     });
     return response.data;
   } catch (error) {
@@ -140,10 +141,10 @@ export async function humanModelGenerate(originalPicUrl: string, prompt: string)
  * @param originalPicUrl 原始图片URL
  * @param prompt 提示词
  */
-export async function copyFabricGenerate(originalPicUrl: string, prompt: string) {
+export async function copyFabricGenerate(fabricPicUrl: string, prompt: string) {
   try {
-    const response = await api.post('/api/v1/img/copy_fabric', {
-      originalPicUrl,
+    const response = await api.post('/api/v1/img/fabric_to_design', {
+      fabricPicUrl,
       prompt
     });
     return response.data;

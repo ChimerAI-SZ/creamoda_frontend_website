@@ -14,6 +14,15 @@ interface VariationTypeSelectProps {
   className?: string;
 }
 
+// Default options to use when API data is still loading
+const defaultOptions = [
+  { id: '1', code: '1', name: 'Copy Style' },
+  { id: '2', code: '2', name: 'Category Switcher' },
+  { id: '3', code: '3', name: 'Fabric to Clothes' },
+  { id: '4', code: '4', name: 'Sketch to Design' },
+  { id: '5', code: '5', name: 'Mix Images' }
+];
+
 export function VariationTypeSelect({
   value,
   onChange,
@@ -22,6 +31,17 @@ export function VariationTypeSelect({
   className = ''
 }: VariationTypeSelectProps) {
   const { variationTypes } = useModelStore();
+
+  // Use default options if the API hasn't returned any data yet
+  const options = variationTypes.length > 0 ? variationTypes : defaultOptions;
+
+  // Ensure a value is selected
+  React.useEffect(() => {
+    if (options.length > 0 && !value) {
+      onChange(options[0].code);
+    }
+  }, [options, value, onChange]);
+
   return (
     <div className={`space-y-[6px] ${className}`}>
       {label && <FormLabel>{label}</FormLabel>}
@@ -36,7 +56,7 @@ export function VariationTypeSelect({
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent>
-          {variationTypes.map(type => (
+          {options.map(type => (
             <SelectItem key={type.code} value={type.code}>
               {type.name}
             </SelectItem>
