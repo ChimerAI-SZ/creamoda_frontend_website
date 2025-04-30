@@ -56,7 +56,7 @@ export const GenderAgeCountryFields: React.FC<GenderAgeCountryFieldsProps> = ({
 
   return (
     <div className="space-y-4 mt-4">
-      {title && <h3 className="text-[#121316] font-inter text-sm font-medium leading-5 py-[6px]">{title}</h3>}
+      {title && <h3 className="text-[#121316] font-inter text-[14px] font-bold leading-5 py-[6px]">{title}</h3>}
 
       <div className={title ? 'mt-3' : ''}>
         <div className="flex items-center justify-between mt-2">
@@ -130,6 +130,24 @@ export const GenderAgeCountryFields: React.FC<GenderAgeCountryFieldsProps> = ({
             </Select>
           </div>
         )}
+
+        <h3 className="text-[#121316] font-inter text-[14px] font-bold leading-5 pt-[24px]">Format</h3>
+        <div className="flex items-center justify-between mt-2">
+          <StyledLabel content="Aspect Ratio" />
+
+          <Select value={modelSizeValue} onValueChange={onModelSizeChange}>
+            <SelectTrigger className="w-[155px] rounded-sm">
+              <SelectValue placeholder="Select type" />
+            </SelectTrigger>
+            <SelectContent>
+              {modelSizes.map(type => (
+                <SelectItem key={type.code} value={type.code}>
+                  {type.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
     </div>
   );
