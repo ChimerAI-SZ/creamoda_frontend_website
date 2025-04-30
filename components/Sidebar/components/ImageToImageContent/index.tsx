@@ -194,6 +194,7 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
                 value={formState.description}
                 onChange={handleDescriptionChange}
               />
+              <RandomPrompt handleQueryRandomPrompt={handleQueryRandomPrompt} />
             </div>
           </div>
         )}
@@ -222,6 +223,7 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
                 value={formState.description}
                 onChange={handleDescriptionChange}
               />
+              <RandomPrompt handleQueryRandomPrompt={handleQueryRandomPrompt} />
             </div>
           </div>
         )}
@@ -250,6 +252,7 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
                 value={formState.description}
                 onChange={handleDescriptionChange}
               />
+              <RandomPrompt handleQueryRandomPrompt={handleQueryRandomPrompt} />
             </div>
           </div>
         )}
@@ -290,6 +293,7 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
                 value={formState.description}
                 onChange={handleDescriptionChange}
               />
+              <RandomPrompt handleQueryRandomPrompt={handleQueryRandomPrompt} />
             </div>
           </div>
         )}
