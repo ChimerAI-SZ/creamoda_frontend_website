@@ -32,7 +32,7 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
   const [formState, setFormState] = React.useState({
     variationType: '',
     description: '',
-    referLevel: 1
+    referLevel: 2
   });
 
   const { isGenerating, setGenerating } = useGenerationStore();
