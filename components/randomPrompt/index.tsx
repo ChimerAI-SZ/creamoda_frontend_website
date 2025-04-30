@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import Image from 'next/image';
 import { RotateCcw } from 'lucide-react';
 
@@ -21,14 +21,46 @@ export default function RandomPrompt({
   handleQueryRandomPrompt: (prompt: string) => void;
 }) {
   const [isRotating, setIsRotating] = useState(false); // refresh icon rotating
+  const [displayedPrompt, setDisplayedPrompt] = useState('');
+  const [currentFullPrompt, setCurrentFullPrompt] = useState('');
+
+  const getRandomPrompt = useCallback(() => {
+    const randomIndex = Math.floor(Math.random() * randomPrompt.length);
+    return randomPrompt[randomIndex];
+  }, []);
+
+  // Approximately 45-50 characters per line, 3 lines = ~150 characters
+  const formatPromptForDisplay = useCallback((prompt: string) => {
+    const maxChars = 100;
+
+    if (prompt.length <= maxChars) {
+      return prompt;
+    }
+
+    // Find the last space before the character limit to avoid cutting words
+    let cutoffIndex = prompt.lastIndexOf(' ', maxChars);
+    if (cutoffIndex === -1) cutoffIndex = maxChars; // Fallback if no space found
+
+    return prompt.substring(0, cutoffIndex) + '...';
+  }, []);
+
+  useEffect(() => {
+    const initialPrompt = getRandomPrompt();
+    setCurrentFullPrompt(initialPrompt);
+    setDisplayedPrompt(formatPromptForDisplay(initialPrompt));
+  }, [formatPromptForDisplay, getRandomPrompt]);
 
   const handleRefresh = useCallback(() => {
-    setIsRotating(!isRotating);
+    setIsRotating(true);
 
-    const randomIndex = Math.floor(Math.random() * randomPrompt.length);
+    const newPrompt = getRandomPrompt();
+    setCurrentFullPrompt(newPrompt);
+    setDisplayedPrompt(formatPromptForDisplay(newPrompt));
+  }, [getRandomPrompt, formatPromptForDisplay]);
 
-    handleQueryRandomPrompt(randomPrompt[randomIndex]);
-  }, [isRotating]);
+  const handleTextClick = useCallback(() => {
+    handleQueryRandomPrompt(currentFullPrompt);
+  }, [currentFullPrompt, handleQueryRandomPrompt]);
 
   const handleAnimationEnd = () => {
     setIsRotating(false);
@@ -48,10 +80,11 @@ export default function RandomPrompt({
             fontWeight: 400,
             lineHeight: '20px'
           }}
+          onClick={handleTextClick}
+          className="cursor-pointer"
         >
-          <span className="text-[#000] font-inter text-[14px] font-normal leading-[20px] ml-[6px]">Surprise me：</span>A
-          fashionable Chinese model in a flowing long dress, neo-Chinese style, low-saturation clothing, prints in the
-          ...
+          <span className="text-[#000] font-inter text-[14px] font-normal leading-[20px] ml-[6px]">Surprise me：</span>
+          {displayedPrompt}
         </span>
         <span className="w-[16px] h-[16px] shrink-0">
           <RotateCcw
