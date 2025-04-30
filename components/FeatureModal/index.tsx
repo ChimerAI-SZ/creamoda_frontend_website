@@ -107,7 +107,7 @@ export default function FeatureModal({
         </div>
         <div
           className={cn(
-            'relative overflow-hidden flex gap-2 items-start justify-start',
+            'relative overflow-hidden flex gap-2 items-start justify-start mb-4',
             showBefore &&
               'before:absolute before:inset-y-0 before:left-0 before:w-[20px] before:shadow-[inset_10px_0_8px_-8px_rgba(0,0,0,0.12)]',
             showAfter &&
@@ -140,7 +140,7 @@ export default function FeatureModal({
         </div>
 
         <div className="w-full grid grid-cols-12 gap-x-2.5 h-[500px]">
-          <div className="col-span-3 overflow-y-auto h-full">
+          <div className="col-span-3 overflow-y-auto h-full ">
             {Object.keys((designFeatures as DesignFeaturesType)[activeCategory]).map(subcategory => (
               <div
                 key={subcategory}
@@ -161,17 +161,17 @@ export default function FeatureModal({
             ))}
           </div>
           <div className="col-span-9 overflow-y-auto h-full">
-            <div className="grid grid-cols-4 gap-2.5">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2.5">
               {(designFeatures as DesignFeaturesType)[activeCategory][activeSubcategory]?.map((feature, index) => (
                 <div
-                  key={feature + new Date().getTime()}
+                  key={feature + new Date().getTime() + index}
                   className={cn(
                     'flex justify-start items-center border border-border rounded-sm cursor-pointer',
                     activeFeature.includes(feature) && 'bg-primary/50 text-white'
                   )}
                   onClick={() => toggleFeature(feature)}
                 >
-                  <div className="px-[12px] py-[6px]">{feature}</div>
+                  <div className="px-[12px] py-[6px] break-all">{feature}</div>
                 </div>
               ))}
             </div>
