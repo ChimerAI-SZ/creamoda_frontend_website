@@ -35,6 +35,9 @@ interface GenderAgeCountryFieldsProps {
   onModelSizeChange?: (value: string) => void;
   // Optional title prop
   title?: string;
+  ratioList?: string[];
+  onRatioChange?: (value: string) => void;
+  selectedRatio?: string;
 }
 
 export const GenderAgeCountryFields: React.FC<GenderAgeCountryFieldsProps> = ({
@@ -49,7 +52,10 @@ export const GenderAgeCountryFields: React.FC<GenderAgeCountryFieldsProps> = ({
   modelSize,
   modelSizes = [],
   onModelSizeChange,
-  title
+  title,
+  ratioList,
+  onRatioChange,
+  selectedRatio
 }) => {
   // Convert modelSize to string for Select component
   const modelSizeValue = modelSize?.toString() || '';
@@ -135,14 +141,14 @@ export const GenderAgeCountryFields: React.FC<GenderAgeCountryFieldsProps> = ({
         <div className="flex items-center justify-between mt-2">
           <StyledLabel content="Aspect Ratio" />
 
-          <Select value={modelSizeValue} onValueChange={onModelSizeChange}>
+          <Select value={selectedRatio} onValueChange={onRatioChange}>
             <SelectTrigger className="w-[155px] rounded-sm">
               <SelectValue placeholder="Select type" />
             </SelectTrigger>
             <SelectContent>
-              {modelSizes.map(type => (
-                <SelectItem key={type.code} value={type.code}>
-                  {type.name}
+              {ratioList?.map(ratio => (
+                <SelectItem key={ratio} value={ratio}>
+                  {ratio}
                 </SelectItem>
               ))}
             </SelectContent>

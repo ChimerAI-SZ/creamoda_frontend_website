@@ -1,8 +1,6 @@
 'use client';
 
 import { useState, useEffect, useCallback, memo } from 'react';
-import { RotateCcw } from 'lucide-react';
-import Image from 'next/image';
 
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -14,6 +12,9 @@ import RandomPrompt from '@/components/randomPrompt';
 import { useModelStore } from '@/stores/useModelStore';
 import { useGenerationStore } from '@/stores/useGenerationStore';
 import { OutfitFormData } from '../../index';
+
+const RatioList = ['1:1', '2:3', '3:4', '9:16'];
+
 interface OutfitFormProps {
   onSubmit?: (data: OutfitFormData) => void;
 }
@@ -28,7 +29,6 @@ StyledLabel.displayName = 'StyledLabel';
 export default function OutfitForm({ onSubmit }: OutfitFormProps) {
   const { modelSizes } = useModelStore();
   const { isGenerating, setGenerating } = useGenerationStore();
-  const [isFeatureModalOpen, setIsFeatureModalOpen] = useState(false); // features model visible
 
   const defaultModelSize = Number(modelSizes.find(size => size.name === 'Mid-size')?.code) || 2;
 
@@ -38,7 +38,8 @@ export default function OutfitForm({ onSubmit }: OutfitFormProps) {
     age: '25',
     country: 'usa',
     modelSize: defaultModelSize,
-    withHumanModel: 1
+    withHumanModel: 1,
+    format: '3:4'
   });
 
   const [btnState, setBtnState] = useState<'disabled' | 'ready' | 'generating'>('disabled');
@@ -71,14 +72,17 @@ export default function OutfitForm({ onSubmit }: OutfitFormProps) {
     setFormData(prev => ({ ...prev, modelSize: Number(value) }));
   }, []);
 
-  const handleConfirm = useCallback((features: string[]) => {
-    // setFormData(prev => ({ ...prev, features }));
-    console.log(features);
+  const handleRatioChange = useCallback((value: string) => {
+    setFormData(prev => ({ ...prev, format: value as '1:1' | '2:3' | '3:4' | '9:16' }));
   }, []);
 
+  // reset prompt after confirm design features
+  const handleConfirm = useCallback((features: string[]) => {
+    setFormData(prev => ({ ...prev, prompt: features.join(', ') }));
+  }, []);
+  // reset prompt after get random prompt
   const handleQueryRandomPrompt = useCallback((prompt: string) => {
-    // setFormData(prev => ({ ...prev, prompt }));
-    console.log('new prompt', prompt);
+    setFormData(prev => ({ ...prev, prompt }));
   }, []);
 
   // 验证表单并更新按钮状态
@@ -124,6 +128,9 @@ export default function OutfitForm({ onSubmit }: OutfitFormProps) {
               showModelSizeField={true}
               modelSize={formData.modelSize}
               modelSizes={modelSizes.map(size => ({ code: size.code, name: size.name }))}
+              ratioList={RatioList}
+              onRatioChange={handleRatioChange}
+              selectedRatio={formData.format}
               onModelSizeChange={handleModelSizeChange}
               title="With human model"
             />
