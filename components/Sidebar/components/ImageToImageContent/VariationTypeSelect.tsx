@@ -14,15 +14,6 @@ interface VariationTypeSelectProps {
   className?: string;
 }
 
-// Default options to use when API data is still loading
-const defaultOptions = [
-  { id: '1', code: '1', name: 'Copy Style' },
-  { id: '2', code: '2', name: 'Category Switcher' },
-  { id: '3', code: '3', name: 'Fabric to Clothes' },
-  { id: '4', code: '4', name: 'Sketch to Design' },
-  { id: '5', code: '5', name: 'Mix Images' }
-];
-
 export function VariationTypeSelect({
   value,
   onChange,
@@ -31,21 +22,22 @@ export function VariationTypeSelect({
   className = ''
 }: VariationTypeSelectProps) {
   const { variationTypes } = useModelStore();
+  const [isLoading, setIsLoading] = React.useState(true);
 
-  // Use default options if the API hasn't returned any data yet
-  const options = variationTypes.length > 0 ? variationTypes : defaultOptions;
-
-  // Ensure a value is selected
+  // Set initial value when variations are loaded
   React.useEffect(() => {
-    if (options.length > 0 && !value) {
-      onChange(options[0].code);
+    if (variationTypes.length > 0) {
+      setIsLoading(false);
+      if (!value && variationTypes.length > 0) {
+        onChange(variationTypes[0].code);
+      }
     }
-  }, [options, value, onChange]);
+  }, [variationTypes, value, onChange]);
 
   return (
     <div className={`space-y-[6px] ${className}`}>
       {label && <FormLabel>{label}</FormLabel>}
-      <Select value={value} onValueChange={onChange}>
+      <Select value={value} onValueChange={onChange} disabled={isLoading}>
         <SelectTrigger
           className={cn(
             'rounded-sm border border-[rgba(249,121,23,0.4)]',
@@ -53,10 +45,10 @@ export function VariationTypeSelect({
             'focus:ring-[rgba(249,121,23,0.4)] focus:border-[rgba(249,121,23,0.6)]'
           )}
         >
-          <SelectValue placeholder={placeholder} />
+          <SelectValue placeholder={isLoading ? 'Loading...' : placeholder} />
         </SelectTrigger>
         <SelectContent>
-          {options.map(type => (
+          {variationTypes.map(type => (
             <SelectItem key={type.code} value={type.code}>
               {type.name}
             </SelectItem>

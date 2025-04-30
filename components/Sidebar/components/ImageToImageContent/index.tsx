@@ -29,7 +29,7 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
 
   // 其他表单状态
   const [formState, setFormState] = React.useState({
-    variationType: '1',
+    variationType: '',
     description: '',
     referLevel: 1
   });
@@ -94,8 +94,7 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
 
   // Add a new handler for feature selection
   const handleFeatureSelection = React.useCallback((features: string[]) => {
-    if (features.length === 0) return;
-
+    console.log(features);
     // Simply replace the description with the joined features
     const newValue = features.join(', ');
     setFormState(prev => ({ ...prev, description: newValue }));
