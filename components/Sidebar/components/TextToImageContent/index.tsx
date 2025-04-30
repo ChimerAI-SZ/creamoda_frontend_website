@@ -1,15 +1,18 @@
 'use client';
 
 import { useState, useEffect, useCallback, memo } from 'react';
+import { RotateCcw } from 'lucide-react';
+import Image from 'next/image';
+
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { GenerateButton } from '@/components/GenerateButton/GenerateButton';
+import { GenderAgeCountryFields } from '@/components/Sidebar/components/shared/GenderAgeCountryFields';
+import FeatureModal from '@/components/FeatureModal';
 
 import { useModelStore } from '@/stores/useModelStore';
 import { useGenerationStore } from '@/stores/useGenerationStore';
 import { OutfitFormData } from '../../index';
-import { GenderAgeCountryFields } from '@/components/Sidebar/components/shared/GenderAgeCountryFields';
-
 interface OutfitFormProps {
   onSubmit?: (data: OutfitFormData) => void;
 }
@@ -21,12 +24,11 @@ const StyledLabel = memo(({ content, htmlFor }: { content: string; htmlFor?: str
 ));
 StyledLabel.displayName = 'StyledLabel';
 
-// 年龄选项列表预先计算
-const AGE_OPTIONS = Array.from({ length: 83 }, (_, i) => i + 18);
-
 export default function OutfitForm({ onSubmit }: OutfitFormProps) {
   const { modelSizes } = useModelStore();
   const { isGenerating, setGenerating } = useGenerationStore();
+  const [isFeatureModalOpen, setIsFeatureModalOpen] = useState(false); // features model visible
+  const [isRotating, setIsRotating] = useState(false); // refresh icon rotating
 
   const defaultModelSize = Number(modelSizes.find(size => size.name === 'Mid-size')?.code) || 2;
 
@@ -69,6 +71,23 @@ export default function OutfitForm({ onSubmit }: OutfitFormProps) {
     setFormData(prev => ({ ...prev, modelSize: Number(value) }));
   }, []);
 
+  const handleOpenFeatureModal = useCallback(() => {
+    setIsFeatureModalOpen(true);
+  }, []);
+
+  const handleRefresh = useCallback(() => {
+    setIsRotating(!isRotating);
+  }, [isRotating]);
+
+  const handleAnimationEnd = () => {
+    setIsRotating(false);
+  };
+
+  const handleConfirm = useCallback((features: string[]) => {
+    // setFormData(prev => ({ ...prev, features }));
+    console.log(features);
+  }, []);
+
   // 验证表单并更新按钮状态
   useEffect(() => {
     const isFormValid = Boolean(formData.prompt.length > 0 && formData.age && formData.country && formData.modelSize);
@@ -77,11 +96,21 @@ export default function OutfitForm({ onSubmit }: OutfitFormProps) {
 
   return (
     <div className="h-full overflow-y-auto">
-      <div className="relative h-full flex flex-col ">
+      <div className="relative h-full flex flex-col">
         <form className="flex-1 overflow-y-auto space-y-6 px-4">
           <div className="space-y-6">
             <div className="space-y-2">
-              <StyledLabel htmlFor="text_to_img_description" content="Describe your outfit" />
+              <div className="flex items-center justify-between">
+                <StyledLabel htmlFor="text_to_img_description" content="Describe your outfit" />
+
+                <FeatureModal handleConfirm={handleConfirm}>
+                  <div className="flex items-center gap-2">
+                    <div className="cursor-pointer flex h-[20px] px-[8px] justify-center items-center content-center flex-shrink-0 flex-wrap text-[#F97917] font-inter text-[12px] font-semibold leading-[20px] border border-[#F97917] bg-[#FFF] rounded-[20px] text-center">
+                      Design Features
+                    </div>
+                  </div>
+                </FeatureModal>
+              </div>
               <Textarea
                 id="text_to_img_description"
                 placeholder="You can describe the clothing type, fit, color, print, etc."
@@ -89,6 +118,39 @@ export default function OutfitForm({ onSubmit }: OutfitFormProps) {
                 value={formData.prompt}
                 onChange={handlePromptChange}
               />
+              <div className="">
+                <div className="flex items-start justify-start">
+                  <Image
+                    src="/images/generate/surprise_me.svg"
+                    alt="Surprise me"
+                    width={16}
+                    height={16}
+                    className="absolute left-[16px]"
+                  />
+                  <span
+                    style={{
+                      textIndent: '20px',
+                      color: '#999',
+                      fontFamily: 'Inter',
+                      fontSize: '14px',
+                      fontStyle: 'normal',
+                      fontWeight: 400,
+                      lineHeight: '20px'
+                    }}
+                  >
+                    <span className="text-[#000] font-inter text-[14px] font-normal leading-[20px]">Surprise me：</span>
+                    A fashionable Chinese model in a flowing long dress, neo-Chinese style, low-saturation clothing,
+                    prints in the ...
+                  </span>
+                  <span className="w-[16px] h-[16px] shrink-0">
+                    <RotateCcw
+                      className={`w-full fas fa-sync-alt cursor-pointer ${isRotating ? 'animate-rotateOneCircle' : ''}`}
+                      onAnimationEnd={handleAnimationEnd}
+                      onClick={handleRefresh}
+                    />
+                  </span>
+                </div>
+              </div>
             </div>
 
             <GenderAgeCountryFields
