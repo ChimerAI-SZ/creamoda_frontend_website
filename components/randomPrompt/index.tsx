@@ -35,15 +35,9 @@ export default function RandomPrompt({
   };
 
   return (
-    <div>
+    <div className="relative">
       <div className="flex items-start justify-start">
-        <Image
-          src="/images/generate/surprise_me.svg"
-          alt="Surprise me"
-          width={16}
-          height={16}
-          className="absolute left-[16px]"
-        />
+        <Image src="/images/generate/surprise_me.svg" alt="Surprise me" width={16} height={16} className="absolute" />
         <span
           style={{
             textIndent: '20px',
@@ -55,7 +49,7 @@ export default function RandomPrompt({
             lineHeight: '20px'
           }}
         >
-          <span className="text-[#000] font-inter text-[14px] font-normal leading-[20px]">Surprise me：</span>A
+          <span className="text-[#000] font-inter text-[14px] font-normal leading-[20px] ml-[6px]">Surprise me：</span>A
           fashionable Chinese model in a flowing long dress, neo-Chinese style, low-saturation clothing, prints in the
           ...
         </span>

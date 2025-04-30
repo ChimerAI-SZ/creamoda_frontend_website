@@ -10,6 +10,7 @@ import { FidelitySlider } from '@/components/Sidebar/components/ImageToImageCont
 import { ImageUploadFormData } from '@/components/Sidebar';
 import { useGenerationStore } from '@/stores/useGenerationStore';
 import FeatureModal from '@/components/FeatureModal';
+import RandomPrompt from '@/components/randomPrompt';
 interface ImageUploadFormProps {
   onSubmit?: (data: ImageUploadFormData) => void;
 }
@@ -100,6 +101,10 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
     setFormState(prev => ({ ...prev, description: newValue }));
   }, []);
 
+  const handleQueryRandomPrompt = React.useCallback((prompt: string) => {
+    setFormState(prev => ({ ...prev, description: prompt }));
+  }, []);
+
   const handleSubmit = async () => {
     if (onSubmit) {
       setGenerating(true);
@@ -160,6 +165,7 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
                 value={formState.description}
                 onChange={handleDescriptionChange}
               />
+              <RandomPrompt handleQueryRandomPrompt={handleQueryRandomPrompt} />
             </div>
           </div>
         )}
