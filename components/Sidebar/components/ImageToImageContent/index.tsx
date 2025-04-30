@@ -149,7 +149,6 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
                 onImageUrlChange={handleImageUrlChange}
                 imageUrl={imageState.imageUrl}
                 currentImage={imageState.image}
-                imageType={`${formState.variationType === '1' ? 'Fabric Image' : 'Image'}`}
               />
             </div>
             <FidelitySlider value={formState.referLevel} onChange={handleReferLevelChange} />
@@ -179,7 +178,6 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
                 onImageUrlChange={handleImageUrlChange}
                 imageUrl={imageState.imageUrl}
                 currentImage={imageState.image}
-                imageType={`${formState.variationType === '2' ? 'Fabric Image' : 'Image'}`}
               />
             </div>
             <div className="space-y-[10px]">
@@ -208,7 +206,6 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
                 onImageUrlChange={handleImageUrlChange}
                 imageUrl={imageState.imageUrl}
                 currentImage={imageState.image}
-                imageType={`${formState.variationType === '3' ? 'Fabric Image' : 'Image'}`}
               />
             </div>
             <div className="space-y-[10px]">
@@ -237,7 +234,6 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
                 onImageUrlChange={handleImageUrlChange}
                 imageUrl={imageState.imageUrl}
                 currentImage={imageState.image}
-                imageType={`${formState.variationType === '4' ? 'Fabric Image' : 'Image'}`}
               />
             </div>
             <div className="space-y-[10px]">
@@ -266,7 +262,6 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
                 onImageUrlChange={handleImageUrlChange}
                 imageUrl={imageState.imageUrl}
                 currentImage={imageState.image}
-                imageType={`${formState.variationType === '5' ? 'Fabric Image' : 'Image'}`}
               />
             </div>
             <div className="space-y-[10px]">
@@ -276,7 +271,6 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
                 onImageUrlChange={handleReferenceImageUrlChange}
                 imageUrl={referenceImageState.referenceImageUrl}
                 currentImage={referenceImageState.referenceImage}
-                imageType={`${formState.variationType === '5' ? 'Fabric Image' : 'Image'}`}
               />
             </div>
             <FidelitySlider value={formState.referLevel} onChange={handleReferLevelChange} />

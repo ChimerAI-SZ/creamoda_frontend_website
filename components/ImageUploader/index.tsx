@@ -50,7 +50,7 @@ export function ImageUploader({
   imageUrl,
   currentImage,
   styleType = 'default',
-  imageType = 'image'
+  imageType = 'Click or drag to upload'
 }: ImageUploaderProps) {
   // 状态管理
   const [dragActive, setDragActive] = useState(false); // 是否处于拖拽状态
@@ -292,7 +292,7 @@ export function ImageUploader({
                 <Image src="/images/operation/up.svg" alt="Upload" width={48} height={48} />
               </div>
               <div className="flex flex-col items-center justify-center mt-2">
-                <span className="text-sm font-normal text-[#121316] font-inter leading-5">Upload {imageType}</span>
+                <span className="text-sm font-normal text-[#121316] font-inter leading-5">{imageType}</span>
                 <span className="text-xs font-normal text-[#999] font-inter leading-[15px]">Format: .jpeg, .png</span>
               </div>
             </label>
