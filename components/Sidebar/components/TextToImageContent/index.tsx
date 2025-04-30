@@ -9,6 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { GenerateButton } from '@/components/GenerateButton/GenerateButton';
 import { GenderAgeCountryFields } from '@/components/Sidebar/components/shared/GenderAgeCountryFields';
 import FeatureModal from '@/components/FeatureModal';
+import RandomPrompt from '@/components/randomPrompt';
 
 import { useModelStore } from '@/stores/useModelStore';
 import { useGenerationStore } from '@/stores/useGenerationStore';
@@ -28,7 +29,6 @@ export default function OutfitForm({ onSubmit }: OutfitFormProps) {
   const { modelSizes } = useModelStore();
   const { isGenerating, setGenerating } = useGenerationStore();
   const [isFeatureModalOpen, setIsFeatureModalOpen] = useState(false); // features model visible
-  const [isRotating, setIsRotating] = useState(false); // refresh icon rotating
 
   const defaultModelSize = Number(modelSizes.find(size => size.name === 'Mid-size')?.code) || 2;
 
@@ -71,21 +71,14 @@ export default function OutfitForm({ onSubmit }: OutfitFormProps) {
     setFormData(prev => ({ ...prev, modelSize: Number(value) }));
   }, []);
 
-  const handleOpenFeatureModal = useCallback(() => {
-    setIsFeatureModalOpen(true);
-  }, []);
-
-  const handleRefresh = useCallback(() => {
-    setIsRotating(!isRotating);
-  }, [isRotating]);
-
-  const handleAnimationEnd = () => {
-    setIsRotating(false);
-  };
-
   const handleConfirm = useCallback((features: string[]) => {
     // setFormData(prev => ({ ...prev, features }));
     console.log(features);
+  }, []);
+
+  const handleQueryRandomPrompt = useCallback((prompt: string) => {
+    // setFormData(prev => ({ ...prev, prompt }));
+    console.log('new prompt', prompt);
   }, []);
 
   // 验证表单并更新按钮状态
@@ -118,39 +111,7 @@ export default function OutfitForm({ onSubmit }: OutfitFormProps) {
                 value={formData.prompt}
                 onChange={handlePromptChange}
               />
-              <div className="">
-                <div className="flex items-start justify-start">
-                  <Image
-                    src="/images/generate/surprise_me.svg"
-                    alt="Surprise me"
-                    width={16}
-                    height={16}
-                    className="absolute left-[16px]"
-                  />
-                  <span
-                    style={{
-                      textIndent: '20px',
-                      color: '#999',
-                      fontFamily: 'Inter',
-                      fontSize: '14px',
-                      fontStyle: 'normal',
-                      fontWeight: 400,
-                      lineHeight: '20px'
-                    }}
-                  >
-                    <span className="text-[#000] font-inter text-[14px] font-normal leading-[20px]">Surprise me：</span>
-                    A fashionable Chinese model in a flowing long dress, neo-Chinese style, low-saturation clothing,
-                    prints in the ...
-                  </span>
-                  <span className="w-[16px] h-[16px] shrink-0">
-                    <RotateCcw
-                      className={`w-full fas fa-sync-alt cursor-pointer ${isRotating ? 'animate-rotateOneCircle' : ''}`}
-                      onAnimationEnd={handleAnimationEnd}
-                      onClick={handleRefresh}
-                    />
-                  </span>
-                </div>
-              </div>
+              <RandomPrompt handleQueryRandomPrompt={handleQueryRandomPrompt} />
             </div>
 
             <GenderAgeCountryFields
