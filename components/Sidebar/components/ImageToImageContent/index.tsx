@@ -11,73 +11,116 @@ import { ImageUploadFormData } from '@/components/Sidebar';
 import { useGenerationStore } from '@/stores/useGenerationStore';
 import FeatureModal from '@/components/FeatureModal';
 import RandomPrompt from '@/components/randomPrompt';
+import { useVariationFormStore } from '@/stores/useVariationFormStore';
+
 interface ImageUploadFormProps {
   onSubmit?: (data: ImageUploadFormData) => void;
 }
 
 export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
-  // 将图片相关状态提取到单独的状态对象中
-  const [imageState, setImageState] = React.useState({
-    image: null as File | null,
-    imageUrl: ''
-  });
-
-  // 将参考图片相关状态提取到单独的状态对象中
-  const [referenceImageState, setReferenceImageState] = React.useState({
-    referenceImage: null as File | null,
-    referenceImageUrl: ''
-  });
-
-  // 其他表单状态
-  const [formState, setFormState] = React.useState({
-    variationType: '',
-    description: '',
-    referLevel: 2
-  });
+  const {
+    currentVariationType,
+    variationData,
+    setCurrentVariationType,
+    updateImage,
+    updateImageUrl,
+    updateDescription,
+    updateReferLevel,
+    updateReferenceImage,
+    updateReferenceImageUrl
+  } = useVariationFormStore();
 
   const { isGenerating, setGenerating } = useGenerationStore();
 
-  // 合并状态以便于处理
-  const formData: ImageUploadFormData = {
-    image: imageState.image,
-    imageUrl: imageState.imageUrl,
-    variationType: formState.variationType,
-    description: formState.description,
-    referLevel: formState.referLevel,
-    referenceImage: referenceImageState.referenceImage,
-    referenceImageUrl: referenceImageState.referenceImageUrl
-  };
+  // Get the current variation data based on the selected variation type
+  const currentData = React.useMemo(() => {
+    if (!currentVariationType || !variationData[currentVariationType]) {
+      return {
+        image: null,
+        imageUrl: '',
+        description: '',
+        referLevel: 2,
+        referenceImage: null,
+        referenceImageUrl: ''
+      };
+    }
+    return variationData[currentVariationType];
+  }, [currentVariationType, variationData]);
 
-  // 主图片处理函数
-  const handleImageChange = React.useCallback((image: File | null) => {
-    setImageState(prev => ({ ...prev, image }));
-  }, []);
+  // Main image handlers
+  const handleImageChange = React.useCallback(
+    (image: File | null) => {
+      updateImage(image);
+    },
+    [updateImage]
+  );
 
-  const handleImageUrlChange = React.useCallback((imageUrl: string) => {
-    setImageState(prev => ({ ...prev, imageUrl }));
-  }, []);
+  const handleImageUrlChange = React.useCallback(
+    (imageUrl: string) => {
+      updateImageUrl(imageUrl);
+    },
+    [updateImageUrl]
+  );
 
-  // 参考图片处理函数
-  const handleReferenceImageChange = React.useCallback((image: File | null) => {
-    setReferenceImageState(prev => ({ ...prev, referenceImage: image }));
-  }, []);
+  // Reference image handlers
+  const handleReferenceImageChange = React.useCallback(
+    (image: File | null) => {
+      updateReferenceImage(image);
+    },
+    [updateReferenceImage]
+  );
 
-  const handleReferenceImageUrlChange = React.useCallback((imageUrl: string) => {
-    setReferenceImageState(prev => ({ ...prev, referenceImageUrl: imageUrl }));
-  }, []);
+  const handleReferenceImageUrlChange = React.useCallback(
+    (imageUrl: string) => {
+      updateReferenceImageUrl(imageUrl);
+    },
+    [updateReferenceImageUrl]
+  );
 
-  // 其他表单字段处理函数
-  const handleDescriptionChange = React.useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setFormState(prev => ({ ...prev, description: e.target.value }));
-  }, []);
+  // Description change handler
+  const handleDescriptionChange = React.useCallback(
+    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      updateDescription(e.target.value);
+    },
+    [updateDescription]
+  );
 
-  const handleVariationTypeChange = React.useCallback((value: string) => {
-    setFormState(prev => ({ ...prev, variationType: value }));
-  }, []);
+  // Variation type change handler
+  const handleVariationTypeChange = React.useCallback(
+    (value: string) => {
+      setCurrentVariationType(value);
+    },
+    [setCurrentVariationType]
+  );
+
+  // Reference level change handler
+  const handleReferLevelChange = React.useCallback(
+    (value: number) => {
+      updateReferLevel(value);
+    },
+    [updateReferLevel]
+  );
+
+  // Feature selection handler
+  const handleFeatureSelection = React.useCallback(
+    (features: string[]) => {
+      const newValue = features.join(', ');
+      updateDescription(newValue);
+    },
+    [updateDescription]
+  );
+
+  // Random prompt handler
+  const handleQueryRandomPrompt = React.useCallback(
+    (prompt: string) => {
+      updateDescription(prompt);
+    },
+    [updateDescription]
+  );
 
   // Function to get the appropriate placeholder text based on variation type
   const getPlaceholderText = () => {
-    switch (formState.variationType) {
+    switch (currentVariationType) {
       case '1':
         return 'Please describe the new variation.';
       case '2':
@@ -89,27 +132,22 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
     }
   };
 
-  const handleReferLevelChange = React.useCallback((value: number) => {
-    setFormState(prev => ({ ...prev, referLevel: value }));
-  }, []);
-
-  // Add a new handler for feature selection
-  const handleFeatureSelection = React.useCallback((features: string[]) => {
-    console.log(features);
-    // Simply replace the description with the joined features
-    const newValue = features.join(', ');
-    setFormState(prev => ({ ...prev, description: newValue }));
-  }, []);
-
-  const handleQueryRandomPrompt = React.useCallback((prompt: string) => {
-    setFormState(prev => ({ ...prev, description: prompt }));
-  }, []);
-
   const handleSubmit = async () => {
     if (onSubmit) {
       setGenerating(true);
       try {
-        // Call the parent's onSubmit function with the combined form data
+        // Create the form data object from the current variation data
+        const formData: ImageUploadFormData = {
+          image: currentData.image,
+          imageUrl: currentData.imageUrl,
+          variationType: currentVariationType,
+          description: currentData.description,
+          referLevel: currentData.referLevel,
+          referenceImage: currentData.referenceImage,
+          referenceImageUrl: currentData.referenceImageUrl
+        };
+
+        // Call the parent's onSubmit function with the form data
         await onSubmit(formData);
       } catch (error) {
         console.error('Error submitting form:', error);
@@ -129,29 +167,29 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
       return 'generating';
     }
 
-    if (!formData.description.trim() || (!formData.image && !formData.imageUrl)) {
+    if (!currentData.description.trim() || (!currentData.image && !currentData.imageUrl)) {
       return 'disabled';
     }
 
     return 'ready';
-  }, [formData.description, formData.image, formData.imageUrl, isGenerating]);
+  }, [currentData.description, currentData.image, currentData.imageUrl, isGenerating]);
 
   return (
     <div className="flex flex-col h-full overflow-x-hidden">
       <form onSubmit={handleFormSubmit} className="flex-1 overflow-y-auto overflow-x-hidden space-y-4 pb-20 px-4">
-        <VariationTypeSelect value={formState.variationType} onChange={handleVariationTypeChange} />
-        {formState.variationType === '1' && (
+        <VariationTypeSelect value={currentVariationType} onChange={handleVariationTypeChange} />
+        {currentVariationType === '1' && (
           <div className="space-y-4">
             <div className="space-y-[10px]">
               <FormLabel>Upload image</FormLabel>
               <ImageUploader
                 onImageChange={handleImageChange}
                 onImageUrlChange={handleImageUrlChange}
-                imageUrl={imageState.imageUrl}
-                currentImage={imageState.image}
+                imageUrl={currentData.imageUrl}
+                currentImage={currentData.image}
               />
             </div>
-            <FidelitySlider value={formState.referLevel} onChange={handleReferLevelChange} />
+            <FidelitySlider value={currentData.referLevel} onChange={handleReferLevelChange} />
             <div className="space-y-[10px]">
               <div className="flex items-center justify-between">
                 <FormLabel>Describe the final design</FormLabel>
@@ -161,7 +199,7 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
                 id="description"
                 placeholder={getPlaceholderText()}
                 className="min-h-[200px] resize-none placeholder:text-[#D5D5D5] font-inter text-sm font-normal leading-5 rounded-[4px] border border-[#DCDCDC]"
-                value={formState.description}
+                value={currentData.description}
                 onChange={handleDescriptionChange}
               />
               <RandomPrompt handleQueryRandomPrompt={handleQueryRandomPrompt} />
@@ -169,43 +207,15 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
           </div>
         )}
 
-        {formState.variationType === '2' && (
+        {currentVariationType === '2' && (
           <div className="space-y-4">
             <div className="space-y-[10px]">
               <FormLabel>Upload image</FormLabel>
               <ImageUploader
                 onImageChange={handleImageChange}
                 onImageUrlChange={handleImageUrlChange}
-                imageUrl={imageState.imageUrl}
-                currentImage={imageState.image}
-              />
-            </div>
-            <div className="space-y-[10px]">
-              <div className="flex items-center justify-between">
-                <FormLabel>Describe the final design</FormLabel>
-                <FeatureModal handleConfirm={handleFeatureSelection} />
-              </div>
-              <Textarea
-                id="description"
-                placeholder={getPlaceholderText()}
-                className="min-h-[200px] resize-none placeholder:text-[#D5D5D5] font-inter text-sm font-normal leading-5 rounded-[4px] border border-[#DCDCDC]"
-                value={formState.description}
-                onChange={handleDescriptionChange}
-              />
-              <RandomPrompt handleQueryRandomPrompt={handleQueryRandomPrompt} />
-            </div>
-          </div>
-        )}
-
-        {formState.variationType === '3' && (
-          <div className="space-y-4">
-            <div className="space-y-[10px]">
-              <FormLabel>Upload image</FormLabel>
-              <ImageUploader
-                onImageChange={handleImageChange}
-                onImageUrlChange={handleImageUrlChange}
-                imageUrl={imageState.imageUrl}
-                currentImage={imageState.image}
+                imageUrl={currentData.imageUrl}
+                currentImage={currentData.image}
               />
             </div>
             <div className="space-y-[10px]">
@@ -217,7 +227,7 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
                 id="description"
                 placeholder={getPlaceholderText()}
                 className="min-h-[200px] resize-none placeholder:text-[#D5D5D5] font-inter text-sm font-normal leading-5 rounded-[4px] border border-[#DCDCDC]"
-                value={formState.description}
+                value={currentData.description}
                 onChange={handleDescriptionChange}
               />
               <RandomPrompt handleQueryRandomPrompt={handleQueryRandomPrompt} />
@@ -225,15 +235,15 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
           </div>
         )}
 
-        {formState.variationType === '4' && (
+        {currentVariationType === '3' && (
           <div className="space-y-4">
             <div className="space-y-[10px]">
               <FormLabel>Upload image</FormLabel>
               <ImageUploader
                 onImageChange={handleImageChange}
                 onImageUrlChange={handleImageUrlChange}
-                imageUrl={imageState.imageUrl}
-                currentImage={imageState.image}
+                imageUrl={currentData.imageUrl}
+                currentImage={currentData.image}
               />
             </div>
             <div className="space-y-[10px]">
@@ -245,7 +255,7 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
                 id="description"
                 placeholder={getPlaceholderText()}
                 className="min-h-[200px] resize-none placeholder:text-[#D5D5D5] font-inter text-sm font-normal leading-5 rounded-[4px] border border-[#DCDCDC]"
-                value={formState.description}
+                value={currentData.description}
                 onChange={handleDescriptionChange}
               />
               <RandomPrompt handleQueryRandomPrompt={handleQueryRandomPrompt} />
@@ -253,15 +263,43 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
           </div>
         )}
 
-        {formState.variationType === '5' && (
+        {currentVariationType === '4' && (
           <div className="space-y-4">
             <div className="space-y-[10px]">
               <FormLabel>Upload image</FormLabel>
               <ImageUploader
                 onImageChange={handleImageChange}
                 onImageUrlChange={handleImageUrlChange}
-                imageUrl={imageState.imageUrl}
-                currentImage={imageState.image}
+                imageUrl={currentData.imageUrl}
+                currentImage={currentData.image}
+              />
+            </div>
+            <div className="space-y-[10px]">
+              <div className="flex items-center justify-between">
+                <FormLabel>Describe the final design</FormLabel>
+                <FeatureModal handleConfirm={handleFeatureSelection} />
+              </div>
+              <Textarea
+                id="description"
+                placeholder={getPlaceholderText()}
+                className="min-h-[200px] resize-none placeholder:text-[#D5D5D5] font-inter text-sm font-normal leading-5 rounded-[4px] border border-[#DCDCDC]"
+                value={currentData.description}
+                onChange={handleDescriptionChange}
+              />
+              <RandomPrompt handleQueryRandomPrompt={handleQueryRandomPrompt} />
+            </div>
+          </div>
+        )}
+
+        {currentVariationType === '5' && (
+          <div className="space-y-4">
+            <div className="space-y-[10px]">
+              <FormLabel>Upload image</FormLabel>
+              <ImageUploader
+                onImageChange={handleImageChange}
+                onImageUrlChange={handleImageUrlChange}
+                imageUrl={currentData.imageUrl}
+                currentImage={currentData.image}
               />
             </div>
             <div className="space-y-[10px]">
@@ -269,11 +307,11 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
               <ImageUploader
                 onImageChange={handleReferenceImageChange}
                 onImageUrlChange={handleReferenceImageUrlChange}
-                imageUrl={referenceImageState.referenceImageUrl}
-                currentImage={referenceImageState.referenceImage}
+                imageUrl={currentData.referenceImageUrl}
+                currentImage={currentData.referenceImage}
               />
             </div>
-            <FidelitySlider value={formState.referLevel} onChange={handleReferLevelChange} />
+            <FidelitySlider value={currentData.referLevel} onChange={handleReferLevelChange} />
 
             <div className="space-y-[10px]">
               <div className="flex items-center justify-between">
@@ -284,7 +322,7 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
                 id="description"
                 placeholder={getPlaceholderText()}
                 className="min-h-[200px] resize-none placeholder:text-[#D5D5D5] font-inter text-sm font-normal leading-5 rounded-[4px] border border-[#DCDCDC]"
-                value={formState.description}
+                value={currentData.description}
                 onChange={handleDescriptionChange}
               />
               <RandomPrompt handleQueryRandomPrompt={handleQueryRandomPrompt} />
