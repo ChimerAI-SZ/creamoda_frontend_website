@@ -9,8 +9,7 @@ import { VariationTypeSelect } from '@/components/VariationTypeSelect/VariationT
 import { FidelitySlider } from '@/components/Sidebar/components/ImageToImageContent/FidelitySlider';
 import { ImageUploadFormData } from '@/components/Sidebar';
 import { useGenerationStore } from '@/stores/useGenerationStore';
-import FeatureModal from '@/components/FeatureModal';
-import RandomPrompt from '@/components/randomPrompt';
+import DescribeDesign from '@/components/DescribeDesign';
 import { useVariationFormStore } from '@/stores/useVariationFormStore';
 
 interface ImageUploadFormProps {
@@ -190,20 +189,13 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
               />
             </div>
             <FidelitySlider value={currentData.referLevel} onChange={handleReferLevelChange} />
-            <div className="space-y-[10px]">
-              <div className="flex items-center justify-between">
-                <FormLabel>Describe the final design</FormLabel>
-                <FeatureModal handleConfirm={handleFeatureSelection} />
-              </div>
-              <Textarea
-                id="description"
-                placeholder={getPlaceholderText()}
-                className="min-h-[200px] resize-none placeholder:text-[#D5D5D5] font-inter text-sm font-normal leading-5 rounded-[4px] border border-[#DCDCDC]"
-                value={currentData.description}
-                onChange={handleDescriptionChange}
-              />
-              <RandomPrompt handleQueryRandomPrompt={handleQueryRandomPrompt} />
-            </div>
+            <DescribeDesign
+              description={currentData.description}
+              onDescriptionChange={handleDescriptionChange}
+              onFeatureSelection={handleFeatureSelection}
+              onRandomPrompt={handleQueryRandomPrompt}
+              placeholderText={getPlaceholderText()}
+            />
           </div>
         )}
 
@@ -218,20 +210,13 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
                 currentImage={currentData.image}
               />
             </div>
-            <div className="space-y-[10px]">
-              <div className="flex items-center justify-between">
-                <FormLabel>Describe the final design</FormLabel>
-                <FeatureModal handleConfirm={handleFeatureSelection} />
-              </div>
-              <Textarea
-                id="description"
-                placeholder={getPlaceholderText()}
-                className="min-h-[200px] resize-none placeholder:text-[#D5D5D5] font-inter text-sm font-normal leading-5 rounded-[4px] border border-[#DCDCDC]"
-                value={currentData.description}
-                onChange={handleDescriptionChange}
-              />
-              <RandomPrompt handleQueryRandomPrompt={handleQueryRandomPrompt} />
-            </div>
+            <DescribeDesign
+              description={currentData.description}
+              onDescriptionChange={handleDescriptionChange}
+              onFeatureSelection={handleFeatureSelection}
+              onRandomPrompt={handleQueryRandomPrompt}
+              placeholderText={getPlaceholderText()}
+            />
           </div>
         )}
 
@@ -246,20 +231,13 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
                 currentImage={currentData.image}
               />
             </div>
-            <div className="space-y-[10px]">
-              <div className="flex items-center justify-between">
-                <FormLabel>Describe the final design</FormLabel>
-                <FeatureModal handleConfirm={handleFeatureSelection} />
-              </div>
-              <Textarea
-                id="description"
-                placeholder={getPlaceholderText()}
-                className="min-h-[200px] resize-none placeholder:text-[#D5D5D5] font-inter text-sm font-normal leading-5 rounded-[4px] border border-[#DCDCDC]"
-                value={currentData.description}
-                onChange={handleDescriptionChange}
-              />
-              <RandomPrompt handleQueryRandomPrompt={handleQueryRandomPrompt} />
-            </div>
+            <DescribeDesign
+              description={currentData.description}
+              onDescriptionChange={handleDescriptionChange}
+              onFeatureSelection={handleFeatureSelection}
+              onRandomPrompt={handleQueryRandomPrompt}
+              placeholderText={getPlaceholderText()}
+            />
           </div>
         )}
 
@@ -274,20 +252,13 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
                 currentImage={currentData.image}
               />
             </div>
-            <div className="space-y-[10px]">
-              <div className="flex items-center justify-between">
-                <FormLabel>Describe the final design</FormLabel>
-                <FeatureModal handleConfirm={handleFeatureSelection} />
-              </div>
-              <Textarea
-                id="description"
-                placeholder={getPlaceholderText()}
-                className="min-h-[200px] resize-none placeholder:text-[#D5D5D5] font-inter text-sm font-normal leading-5 rounded-[4px] border border-[#DCDCDC]"
-                value={currentData.description}
-                onChange={handleDescriptionChange}
-              />
-              <RandomPrompt handleQueryRandomPrompt={handleQueryRandomPrompt} />
-            </div>
+            <DescribeDesign
+              description={currentData.description}
+              onDescriptionChange={handleDescriptionChange}
+              onFeatureSelection={handleFeatureSelection}
+              onRandomPrompt={handleQueryRandomPrompt}
+              placeholderText={getPlaceholderText()}
+            />
           </div>
         )}
 
@@ -312,21 +283,13 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
               />
             </div>
             <FidelitySlider value={currentData.referLevel} onChange={handleReferLevelChange} />
-
-            <div className="space-y-[10px]">
-              <div className="flex items-center justify-between">
-                <FormLabel>Describe the final design</FormLabel>
-                <FeatureModal handleConfirm={handleFeatureSelection} />
-              </div>
-              <Textarea
-                id="description"
-                placeholder={getPlaceholderText()}
-                className="min-h-[200px] resize-none placeholder:text-[#D5D5D5] font-inter text-sm font-normal leading-5 rounded-[4px] border border-[#DCDCDC]"
-                value={currentData.description}
-                onChange={handleDescriptionChange}
-              />
-              <RandomPrompt handleQueryRandomPrompt={handleQueryRandomPrompt} />
-            </div>
+            <DescribeDesign
+              description={currentData.description}
+              onDescriptionChange={handleDescriptionChange}
+              onFeatureSelection={handleFeatureSelection}
+              onRandomPrompt={handleQueryRandomPrompt}
+              placeholderText={getPlaceholderText()}
+            />
           </div>
         )}
       </form>
