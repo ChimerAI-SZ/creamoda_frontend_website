@@ -18,6 +18,7 @@ export function Header() {
   const navItems: NavItem[] = [
     { text: 'Design', href: '/' },
     { text: 'Virtual Try-on', href: '/virtual-try-on' },
+    { text: 'Magic Kit', href: '/magic-kit' },
     { text: 'Production', isComingSoon: true },
     { text: 'Online shop', isComingSoon: true }
   ];
