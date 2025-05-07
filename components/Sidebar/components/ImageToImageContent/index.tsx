@@ -5,7 +5,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { GenerateButton, GenerateButtonState } from '@/components/GenerateButton/GenerateButton';
 import { MemoizedImageUploader as ImageUploader } from '@/components/ImageUploader';
 import { FormLabel } from '@/components/Sidebar/components/ImageToImageContent/FormLabel';
-import { VariationTypeSelect } from '@/components/Sidebar/components/ImageToImageContent/VariationTypeSelect';
+import { VariationTypeSelect } from '@/components/VariationTypeSelect/VariationTypeSelect';
 import { FidelitySlider } from '@/components/Sidebar/components/ImageToImageContent/FidelitySlider';
 import { ImageUploadFormData } from '@/components/Sidebar';
 import { useGenerationStore } from '@/stores/useGenerationStore';
