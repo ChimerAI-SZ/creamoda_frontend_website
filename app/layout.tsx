@@ -3,6 +3,10 @@ import type { Metadata } from 'next';
 
 import { ErrorDialog } from '@/components/ErrorDialog';
 import { Analytics } from '@vercel/analytics/react';
+import GlobalAlert from '@/components/GlobalAlert';
+import { Album as AlbumDrawer } from '@/components/Album';
+
+import '@/utils/modal';
 
 export const metadata: Metadata = {
   title: 'CREAMODA',
@@ -21,6 +25,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {children}
         <ErrorDialog />
         <Analytics />
+        <GlobalAlert />
+        <AlbumDrawer />
       </body>
     </html>
   );
