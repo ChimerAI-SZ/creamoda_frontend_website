@@ -4,7 +4,7 @@ import * as React from 'react';
 import { Textarea } from '@/components/ui/textarea';
 import FeatureModal from '@/components/FeatureModal';
 import RandomPrompt from '@/components/randomPrompt';
-import { FormLabel } from '@/components/Sidebar/components/ImageToImageContent/FormLabel';
+import { FormLabel } from '@/components/FormLabel/FormLabel';
 
 interface DescribeDesignProps {
   description: string;
@@ -14,7 +14,7 @@ interface DescribeDesignProps {
   placeholderText?: string;
 }
 
-export default function DescribeDesign({
+export function DescribeDesign({
   description,
   onDescriptionChange,
   onFeatureSelection,

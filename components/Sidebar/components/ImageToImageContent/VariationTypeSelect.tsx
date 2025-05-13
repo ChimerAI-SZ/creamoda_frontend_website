@@ -4,16 +4,11 @@ import * as React from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { FormLabel } from '@/components/FormLabel/FormLabel';
 import { cn } from '@/lib/utils';
-
-export interface VariationType {
-  code: string;
-  name: string;
-}
+import { useModelStore } from '@/stores/useModelStore';
 
 interface VariationTypeSelectProps {
   value: string;
   onChange: (value: string) => void;
-  variationTypes: VariationType[];
   label?: string;
   placeholder?: string;
   className?: string;
@@ -22,11 +17,11 @@ interface VariationTypeSelectProps {
 export function VariationTypeSelect({
   value,
   onChange,
-  variationTypes,
   label = 'Variation Type',
   placeholder = 'Category Switcher',
   className = ''
 }: VariationTypeSelectProps) {
+  const { variationTypes } = useModelStore();
   const [isLoading, setIsLoading] = React.useState(true);
 
   // Set initial value when variations are loaded

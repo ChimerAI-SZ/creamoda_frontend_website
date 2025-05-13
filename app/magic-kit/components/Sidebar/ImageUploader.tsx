@@ -10,6 +10,7 @@ import { uploadImage } from '@/lib/api';
 import { showErrorDialog } from '@/utils/index';
 import { isValidImageUrl } from '@/utils/validation';
 import { cn } from '@/lib/utils';
+import { ImageSlot } from '../ImageSlot';
 
 /**
  * ImageUploader组件的属性接口
@@ -26,7 +27,7 @@ import { cn } from '@/lib/utils';
 interface ImageUploaderProps {
   onImageChange: (image: File | null) => void;
   onImageUrlChange: (url: string) => void;
-  onMaskImageUrlChange?: (url: string) => void;
+  onMaskImageUrlChange: (url: string) => void;
   imageUrl: string;
   maskImageUrl?: string;
   currentImage: File | null;
@@ -53,14 +54,16 @@ export function ImageUploader({
   onImageUrlChange,
   onMaskImageUrlChange,
   imageUrl,
-  maskImageUrl,
+  maskImageUrl = '',
   currentImage,
   styleType = 'default',
   imageType = 'Click or drag to upload'
 }: ImageUploaderProps) {
+  console.log('imageUrl1111', imageUrl);
   // 状态管理
   const [dragActive, setDragActive] = useState(false); // 是否处于拖拽状态
   const [previewUrl, setPreviewUrl] = useState<string | null>(null); // 预览图片URL
+  const [originalUrl, setOriginalUrl] = useState<string | null>(null); // 原始图片URL
   const [isUploading, setIsUploading] = useState(false); // 是否正在上传
   const [newImageUrl, setNewImageUrl] = useState<string | null>(null); // 新输入的图片URL
   const [isLoadingImageUrl, setIsLoadingImageUrl] = useState(false); // 是否正在加载URL图片
@@ -92,6 +95,7 @@ export function ImageUploader({
 
     try {
       const url = await uploadImage(file);
+      setOriginalUrl(url);
       // 上传成功 - 使用服务器返回的URL更新
       onImageUrlChange(url);
       // 清除文件引用，因为我们现在使用URL
@@ -226,9 +230,7 @@ export function ImageUploader({
   const handleRemoveImage = () => {
     onImageChange(null);
     onImageUrlChange('');
-    if (onMaskImageUrlChange) {
-      onMaskImageUrlChange('');
-    }
+    onMaskImageUrlChange('');
   };
 
   return (
@@ -256,17 +258,17 @@ export function ImageUploader({
                 : 'Processing image...'}
             </span>
           </div>
-        ) : previewUrl ? (
-          // 图片预览模式
-          <div className="relative w-full h-full">
-            <div className="absolute inset-0 flex items-center justify-center p-4">
+        ) : originalUrl ? (
+          // 上传后分为上下两部分，各占50%
+          <div className="flex flex-col w-full h-[288px]">
+            {/* 上面：图片预览（50%） */}
+            <div className="relative flex-1 min-h-0 flex items-center justify-center border-b border-[#DCDCDC]">
               <Image
-                src={previewUrl}
+                src={originalUrl}
                 alt="Uploaded image"
                 fill
-                className="object-contain"
+                style={{ objectFit: 'contain' }}
                 onError={() => {
-                  // 图片加载错误时清除预览
                   setPreviewUrl(null);
                   onImageUrlChange('');
                   showErrorDialog(
@@ -274,14 +276,26 @@ export function ImageUploader({
                   );
                 }}
               />
+              {/* 删除按钮，点击后删除图片并恢复上传区域 */}
+              <button
+                onClick={handleRemoveImage}
+                className="absolute top-3 right-3 bg-white rounded-[4px] p-[2px] border-[0.875px] border-[#DCDCDC] hover:bg-gray-100 z-10"
+                type="button"
+              >
+                <X className="h-4 w-4 text-[#E4E4E7]" />
+              </button>
             </div>
-            <button
-              onClick={handleRemoveImage}
-              className="absolute top-3 right-[13.14px] bg-white rounded-[4px] p-[2px] border-[0.875px] border-[#DCDCDC] hover:bg-gray-100"
-              type="button"
-            >
-              <X className="h-4 w-4 text-[#E4E4E7]" />
-            </button>
+            {/* 下面：ImageSlot 组件（50%） */}
+            <div className="flex-1 min-h-0 flex items-center justify-center">
+              <ImageSlot
+                imageUrl={previewUrl || ''}
+                maskImageUrl={maskImageUrl}
+                onImageSave={dataUrl => {
+                  // 当涂鸦保存后，将涂鸦结果作为mask图片
+                  onMaskImageUrlChange(dataUrl);
+                }}
+              />
+            </div>
           </div>
         ) : (
           // 上传模式

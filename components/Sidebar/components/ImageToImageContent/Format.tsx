@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormLabel } from './FormLabel';
+import { FormLabel } from '../../../FormLabel/FormLabel';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface FormatProps {
