@@ -5,7 +5,7 @@ import { Star, ImageDown, Trash2 } from 'lucide-react';
 import type { ImageItem } from '@/components/ImageGrid';
 
 import { cn } from '@/lib/utils';
-import { Modal } from '@/utils/modal';
+import { downloadImage } from '@/utils';
 
 export default function ImageCard({ image }: { image: ImageItem }) {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -57,18 +57,13 @@ export default function ImageCard({ image }: { image: ImageItem }) {
               onClick={e => e.stopPropagation()}
             >
               <div className="flex items-center justify-center gap-4 w-full h-[28px] absolute opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <div className="w-[26px] h-[26px] bg-[#fff] flex items-center justify-center text-white rounded-[50%] cursor-pointer">
-                  <Star className="w-[18px] h-[18px] text-[#000]" />
+                <div className="w-[26px] h-[26px] bg-[#F97917] flex items-center justify-center text-white rounded-[50%] cursor-pointer">
+                  <Star className="w-[18px] h-[18px]" />
                 </div>
                 <div
                   className="w-[26px] h-[26px] bg-[#fff] flex items-center justify-center text-white rounded-[50%] cursor-pointer"
                   onClick={() => {
-                    const link = document.createElement('a');
-                    link.href = image.resultPic || '/placeholder.svg';
-                    link.download = 'image.jpg';
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
+                    downloadImage(image.resultPic, 'image.jpg');
                   }}
                 >
                   <ImageDown className="w-[18px] h-[18px] text-[#000]" />

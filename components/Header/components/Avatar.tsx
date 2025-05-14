@@ -72,47 +72,61 @@ export default function Avatar() {
       </div>
 
       {isOpen && (
-        <div className="fixed top-[48px] right-6 bg-white z-50 flex flex-col items-center p-6 w-[480px] rounded-[6px] shadow-[-2px_4px_10px_0px_rgba(0,0,0,0.05)]">
-          <button onClick={() => setIsOpen(false)} className="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
-            <Image src={'/images/menu/closeBtn.svg'} alt="close btn" width={20} height={20} className="object-cover" />
-          </button>
-
-          <div className="mt-[12px] mb-8">
-            <div className="w-[60px] h-[60px] mx-auto overflow-hidden rounded-[50%] border-[#666] border-[1px]">
-              <Image
-                src={headPic || '/images/defaultAvatar.svg'}
-                alt="用户头像"
-                width={60}
-                height={60}
-                className="w-full h-full object-cover"
-              />
-            </div>
-          </div>
-
-          <div className="w-full max-w-md space-y-8">
-            <div>
-              <div className="mb-[24px]">
-                <h3 className="text-[#121316] font-inter text-sm font-medium leading-5 mb-[6px]">Username</h3>
-                <div className="p-[10px] w-full border rounded-sm">
-                  <p className="text-[#141414] font-inter text-sm font-normal leading-5 h-[20px]">{username}</p>
-                </div>
-              </div>
-
-              <div>
-                <h3 className="text-[#121316] font-inter text-sm font-medium leading-5 mb-[6px]">Email</h3>
-                <div className="mt-1 p-[10px] w-full border rounded-sm">
-                  <p className="text-[#141414] font-inter text-sm font-normal leading-5 h-[20px]">{email}</p>
-                </div>
-              </div>
-            </div>
-
-            <Button
-              variant="outline"
-              className="mt-6 w-full sm:w-auto px-[16px] py-[12px] border border-[#DCDCDC] text-[#FF7B0D] rounded-sm hover:bg-orange-50 transition-colors"
-              onClick={handleLogout}
+        <div className="fixed inset-0 bg-black/30 z-40" onClick={() => setIsOpen(false)}>
+          <div
+            className="fixed top-[70px] right-3 bg-white z-50 flex flex-col items-center p-6 w-[480px] rounded-[6px] shadow-[-2px_4px_10px_0px_rgba(0,0,0,0.05)]"
+            onClick={e => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setIsOpen(false)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
             >
-              <span className="text-[#F97917] font-inter text-sm font-medium leading-5">Log out</span>
-            </Button>
+              <Image
+                src={'/images/menu/closeBtn.svg'}
+                alt="close btn"
+                width={20}
+                height={20}
+                className="object-cover"
+              />
+            </button>
+
+            <div className="mt-[12px] mb-8">
+              <div className="w-[60px] h-[60px] mx-auto overflow-hidden rounded-[50%] border-[#666] border-[1px]">
+                <Image
+                  src={headPic || '/images/defaultAvatar.svg'}
+                  alt="用户头像"
+                  width={60}
+                  height={60}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </div>
+
+            <div className="w-full max-w-md space-y-8">
+              <div>
+                <div className="mb-[24px]">
+                  <h3 className="text-[#121316] font-inter text-sm font-medium leading-5 mb-[6px]">Username</h3>
+                  <div className="p-[10px] w-full border rounded-sm">
+                    <p className="text-[#141414] font-inter text-sm font-normal leading-5 h-[20px]">{username}</p>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-[#121316] font-inter text-sm font-medium leading-5 mb-[6px]">Email</h3>
+                  <div className="mt-1 p-[10px] w-full border rounded-sm">
+                    <p className="text-[#141414] font-inter text-sm font-normal leading-5 h-[20px]">{email}</p>
+                  </div>
+                </div>
+              </div>
+
+              <Button
+                variant="outline"
+                className="mt-6 w-full sm:w-auto px-[16px] py-[12px] border border-[#DCDCDC] text-[#FF7B0D] rounded-sm hover:bg-orange-50 transition-colors"
+                onClick={handleLogout}
+              >
+                <span className="text-[#F97917] font-inter text-sm font-medium leading-5">Log out</span>
+              </Button>
+            </div>
           </div>
         </div>
       )}
