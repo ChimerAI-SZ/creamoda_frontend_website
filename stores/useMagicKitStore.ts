@@ -1,18 +1,16 @@
 import { create } from 'zustand';
 
 export interface VariationFormState {
-  // Map of variation type to form data
-  variationData: {
-    [variationType: string]: {
-      image: File | null;
-      imageUrl: string;
-      imageUrlMask: string; // Mask for the main image
-      description: string;
-      colorSelection: string;
-      referenceImage: File | null;
-      referenceImageUrl: string;
-      referenceImageUrlMask: string; // Mask for the reference image
-    };
+  // Shared form data for all variation types (no longer separated by type)
+  formData: {
+    image: File | null;
+    imageUrl: string;
+    imageUrlMask: string; // Mask for the main image
+    description: string;
+    colorSelection: string;
+    referenceImage: File | null;
+    referenceImageUrl: string;
+    referenceImageUrlMask: string; // Mask for the reference image
   };
   // Current selected variation type
   currentVariationType: string;
@@ -28,215 +26,109 @@ interface VariationFormActions {
   updateReferenceImage: (image: File | null) => void;
   updateReferenceImageUrl: (imageUrl: string) => void;
   updateReferenceImageUrlMask: (maskImageUrl: string) => void;
-  resetFormData: (variationType: string) => void;
+  resetFormData: () => void;
 }
 
-const initialState: VariationFormState = {
-  variationData: {},
-  currentVariationType: ''
+const initialFormData = {
+  image: null,
+  imageUrl: '',
+  imageUrlMask: '',
+  description: '',
+  colorSelection: '',
+  referenceImage: null,
+  referenceImageUrl: '',
+  referenceImageUrlMask: ''
 };
 
-// Helper to ensure variation type data is initialized
-const ensureVariationTypeExists = (variationData: VariationFormState['variationData'], variationType: string): void => {
-  if (!variationData[variationType]) {
-    variationData[variationType] = {
-      image: null,
-      imageUrl: '',
-      imageUrlMask: '',
-      description: '',
-      colorSelection: '',
-      referenceImage: null,
-      referenceImageUrl: '',
-      referenceImageUrlMask: ''
-    };
-  }
+const initialState: VariationFormState = {
+  formData: initialFormData,
+  currentVariationType: ''
 };
 
 export const useVariationFormStore = create<VariationFormState & VariationFormActions>(set => ({
   ...initialState,
 
   setCurrentVariationType: (variationType: string) =>
-    set(state => {
-      const newVariationData = { ...state.variationData };
-      ensureVariationTypeExists(newVariationData, variationType);
-
-      return {
-        ...state,
-        currentVariationType: variationType,
-        variationData: newVariationData
-      };
-    }),
+    set(state => ({
+      ...state,
+      currentVariationType: variationType
+    })),
 
   updateImage: (image: File | null) =>
-    set(state => {
-      const { currentVariationType, variationData } = state;
-      if (!currentVariationType) return state;
-
-      const newVariationData = { ...variationData };
-      ensureVariationTypeExists(newVariationData, currentVariationType);
-
-      newVariationData[currentVariationType] = {
-        ...newVariationData[currentVariationType],
+    set(state => ({
+      ...state,
+      formData: {
+        ...state.formData,
         image
-      };
-
-      return {
-        ...state,
-        variationData: newVariationData
-      };
-    }),
+      }
+    })),
 
   updateImageUrl: (imageUrl: string) =>
-    set(state => {
-      const { currentVariationType, variationData } = state;
-      if (!currentVariationType) return state;
-
-      const newVariationData = { ...variationData };
-      ensureVariationTypeExists(newVariationData, currentVariationType);
-
-      newVariationData[currentVariationType] = {
-        ...newVariationData[currentVariationType],
+    set(state => ({
+      ...state,
+      formData: {
+        ...state.formData,
         imageUrl
-      };
-
-      return {
-        ...state,
-        variationData: newVariationData
-      };
-    }),
+      }
+    })),
 
   updateImageUrlMask: (imageUrlMask: string) =>
-    set(state => {
-      const { currentVariationType, variationData } = state;
-      if (!currentVariationType) return state;
-
-      const newVariationData = { ...variationData };
-      ensureVariationTypeExists(newVariationData, currentVariationType);
-
-      newVariationData[currentVariationType] = {
-        ...newVariationData[currentVariationType],
+    set(state => ({
+      ...state,
+      formData: {
+        ...state.formData,
         imageUrlMask
-      };
-
-      return {
-        ...state,
-        variationData: newVariationData
-      };
-    }),
+      }
+    })),
 
   updateDescription: (description: string) =>
-    set(state => {
-      const { currentVariationType, variationData } = state;
-      if (!currentVariationType) return state;
-
-      const newVariationData = { ...variationData };
-      ensureVariationTypeExists(newVariationData, currentVariationType);
-
-      newVariationData[currentVariationType] = {
-        ...newVariationData[currentVariationType],
+    set(state => ({
+      ...state,
+      formData: {
+        ...state.formData,
         description
-      };
-
-      return {
-        ...state,
-        variationData: newVariationData
-      };
-    }),
+      }
+    })),
 
   updateColorSelection: (colorSelection: string) =>
-    set(state => {
-      const { currentVariationType, variationData } = state;
-      if (!currentVariationType) return state;
-
-      const newVariationData = { ...variationData };
-      ensureVariationTypeExists(newVariationData, currentVariationType);
-
-      newVariationData[currentVariationType] = {
-        ...newVariationData[currentVariationType],
+    set(state => ({
+      ...state,
+      formData: {
+        ...state.formData,
         colorSelection
-      };
-
-      return {
-        ...state,
-        variationData: newVariationData
-      };
-    }),
+      }
+    })),
 
   updateReferenceImage: (image: File | null) =>
-    set(state => {
-      const { currentVariationType, variationData } = state;
-      if (!currentVariationType) return state;
-
-      const newVariationData = { ...variationData };
-      ensureVariationTypeExists(newVariationData, currentVariationType);
-
-      newVariationData[currentVariationType] = {
-        ...newVariationData[currentVariationType],
+    set(state => ({
+      ...state,
+      formData: {
+        ...state.formData,
         referenceImage: image
-      };
-
-      return {
-        ...state,
-        variationData: newVariationData
-      };
-    }),
+      }
+    })),
 
   updateReferenceImageUrl: (imageUrl: string) =>
-    set(state => {
-      const { currentVariationType, variationData } = state;
-      if (!currentVariationType) return state;
-
-      const newVariationData = { ...variationData };
-      ensureVariationTypeExists(newVariationData, currentVariationType);
-
-      newVariationData[currentVariationType] = {
-        ...newVariationData[currentVariationType],
+    set(state => ({
+      ...state,
+      formData: {
+        ...state.formData,
         referenceImageUrl: imageUrl
-      };
-
-      return {
-        ...state,
-        variationData: newVariationData
-      };
-    }),
+      }
+    })),
 
   updateReferenceImageUrlMask: (imageUrlMask: string) =>
-    set(state => {
-      const { currentVariationType, variationData } = state;
-      if (!currentVariationType) return state;
-
-      const newVariationData = { ...variationData };
-      ensureVariationTypeExists(newVariationData, currentVariationType);
-
-      newVariationData[currentVariationType] = {
-        ...newVariationData[currentVariationType],
+    set(state => ({
+      ...state,
+      formData: {
+        ...state.formData,
         referenceImageUrlMask: imageUrlMask
-      };
+      }
+    })),
 
-      return {
-        ...state,
-        variationData: newVariationData
-      };
-    }),
-
-  resetFormData: (variationType: string) =>
-    set(state => {
-      const newVariationData = { ...state.variationData };
-
-      newVariationData[variationType] = {
-        image: null,
-        imageUrl: '',
-        imageUrlMask: '',
-        description: '',
-        colorSelection: '',
-        referenceImage: null,
-        referenceImageUrl: '',
-        referenceImageUrlMask: ''
-      };
-
-      return {
-        ...state,
-        variationData: newVariationData
-      };
-    })
+  resetFormData: () =>
+    set(state => ({
+      ...state,
+      formData: initialFormData
+    }))
 }));

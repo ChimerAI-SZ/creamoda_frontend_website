@@ -12,12 +12,19 @@ import { FormLabel } from '@/components/FormLabel/FormLabel';
 import { DescribeDesign } from '@/components/DescribeDesign/index';
 import { ColorPicker } from './ColorPicker';
 import { ImageUploader as SecondImageUploader } from './ImageUploader';
+import {
+  changeClothesColor,
+  changeBackground,
+  removeBackground,
+  particialModification,
+  upscale
+} from '@/lib/api/magicKit';
 
 export function Sidebar() {
   const { isGenerating, setGenerating } = useGenerationStore();
   const {
     currentVariationType,
-    variationData,
+    formData,
     setCurrentVariationType,
     updateImage,
     updateImageUrl,
@@ -32,16 +39,99 @@ export function Sidebar() {
   const [btnState, setBtnState] = useState<'disabled' | 'ready' | 'generating'>('disabled');
 
   // 提交事件
-  const handleSubmit = () => {
-    console.log(variationData);
+  const handleSubmit = async () => {
+    console.log(formData);
     if (btnState === 'ready') {
-      setGenerating(true);
-      // Add your actual generation logic here
+      try {
+        // Set generating state to indicate processing
+        setGenerating(true);
+
+        if (!currentVariationType) {
+          console.error('No variation type selected');
+          setGenerating(false);
+          return;
+        }
+
+        // Validate image input (either URL or uploaded image)
+        if (!formData.imageUrl && !formData.image) {
+          console.error('Please upload an image or provide an image URL');
+          setGenerating(false);
+          return;
+        }
+
+        // Validate required data based on variation type
+        switch (currentVariationType) {
+          case '1': // Change Color
+            if (!formData.colorSelection) {
+              console.error('Please select a color');
+              setGenerating(false);
+              return;
+            }
+            break;
+          case '2': // Change Background
+            if (!formData.referenceImageUrl) {
+              console.error('Please provide a reference image');
+              setGenerating(false);
+              return;
+            }
+            break;
+          case '4': // Partial modification
+            if (!formData.description) {
+              console.error('Please provide a description');
+              setGenerating(false);
+              return;
+            }
+            break;
+        }
+
+        // Call appropriate API based on variation type
+        let response;
+        switch (currentVariationType) {
+          case '1': // Change Color
+            response = await changeClothesColor(
+              formData.imageUrl!,
+              formData.description || '',
+              formData.colorSelection!
+            );
+            break;
+          case '2': // Change Background
+            response = await changeBackground(
+              formData.imageUrl!,
+              formData.referenceImageUrl!,
+              formData.description || ''
+            );
+            break;
+          case '3': // Remove background
+            response = await removeBackground(formData.imageUrl!);
+            break;
+          case '4': // Partial modification
+            response = await particialModification(
+              formData.imageUrl!,
+              formData.imageUrlMask || '',
+              formData.description!
+            );
+            break;
+          case '5': // Upscale
+            response = await upscale(formData.imageUrl!);
+            break;
+          default:
+            console.error('Unknown variation type');
+            setGenerating(false);
+            return;
+        }
+
+        // Process response
+        console.log('Generation response:', response);
+
+        // Here you would handle the response, like updating the UI or showing results
+        // Example: if (response && response.success) { ... }
+      } catch (error) {
+        console.error('Error in image generation:', error);
+      } finally {
+        setGenerating(false);
+      }
     }
   };
-
-  // Current variation type data
-  const currentData = currentVariationType ? variationData[currentVariationType] : null;
 
   const handleMainImageUpload = useCallback(
     (image: File | null) => {
@@ -59,22 +149,22 @@ export function Sidebar() {
   useEffect(() => {
     let isFormValid = false;
 
-    if (currentVariationType && currentData) {
+    if (currentVariationType) {
       // Base requirement for all types - main image
-      const hasMainImage = Boolean(currentData.imageUrl);
+      const hasMainImage = Boolean(formData.imageUrl);
 
       switch (currentVariationType) {
         case '1': // Change Color
-          isFormValid = hasMainImage && Boolean(currentData.colorSelection);
+          isFormValid = hasMainImage && Boolean(formData.colorSelection);
           break;
         case '2': // Change Background
-          isFormValid = hasMainImage && Boolean(currentData.referenceImageUrl);
+          isFormValid = hasMainImage && Boolean(formData.referenceImageUrl);
           break;
         case '3': // Remove background
           isFormValid = hasMainImage;
           break;
         case '4': // Partial modification
-          isFormValid = hasMainImage && Boolean(currentData.description);
+          isFormValid = hasMainImage && Boolean(formData.description);
           break;
         case '5': // Upscale
           isFormValid = hasMainImage;
@@ -85,7 +175,7 @@ export function Sidebar() {
     }
 
     setBtnState(isGenerating ? 'generating' : isFormValid ? 'ready' : 'disabled');
-  }, [isGenerating, currentData, currentVariationType]);
+  }, [isGenerating, formData, currentVariationType]);
 
   const handleFeatureSelection = useCallback(
     (features: string[]) => {
@@ -103,7 +193,7 @@ export function Sidebar() {
   );
   // Render specific content based on variation type
   const renderVariationContent = () => {
-    if (!currentVariationType || !currentData) return null;
+    if (!currentVariationType) return null;
 
     switch (currentVariationType) {
       case '1': // Change Color
@@ -112,20 +202,20 @@ export function Sidebar() {
             <div className="space-y-2">
               <FormLabel>Upload original image</FormLabel>
               <SecondImageUploader
-                imageUrl={currentData.imageUrl || ''}
+                imageUrl={formData.imageUrl || ''}
                 onImageChange={handleMainImageUpload}
                 onImageUrlChange={updateImageUrl}
                 onMaskImageUrlChange={updateImageUrlMask}
-                maskImageUrl={currentData.imageUrlMask || ''}
-                currentImage={currentData.image || null}
+                maskImageUrl={formData.imageUrlMask || ''}
+                currentImage={formData.image || null}
               />
             </div>
             <div className="space-y-2">
               <FormLabel>Color selection</FormLabel>
-              <ColorPicker value={currentData.colorSelection || '#ffffff'} onChange={updateColorSelection} />
+              <ColorPicker value={formData.colorSelection || '#ffffff'} onChange={updateColorSelection} />
             </div>
             <DescribeDesign
-              description={currentData.description || ''}
+              description={formData.description || ''}
               onDescriptionChange={e => updateDescription(e.target.value)}
               onFeatureSelection={handleFeatureSelection}
               onRandomPrompt={handleQueryRandomPrompt}
@@ -139,27 +229,27 @@ export function Sidebar() {
             <div className="space-y-2">
               <FormLabel>Upload original image</FormLabel>
               <ImageUploader
-                imageUrl={currentData.imageUrl || ''}
+                imageUrl={formData.imageUrl || ''}
                 onImageChange={handleMainImageUpload}
                 onImageUrlChange={updateImageUrl}
                 onMaskImageUrlChange={updateImageUrlMask}
-                maskImageUrl={currentData.imageUrlMask || ''}
-                currentImage={currentData.image || null}
+                maskImageUrl={formData.imageUrlMask || ''}
+                currentImage={formData.image || null}
               />
             </div>
             <div className="space-y-2">
               <FormLabel>Upload original image</FormLabel>
               <ImageUploader
-                imageUrl={currentData.referenceImageUrl || ''}
+                imageUrl={formData.referenceImageUrl || ''}
                 onImageChange={handleReferenceImageUpload}
                 onImageUrlChange={updateReferenceImageUrl}
                 onMaskImageUrlChange={updateReferenceImageUrlMask}
-                maskImageUrl={currentData.referenceImageUrlMask || ''}
-                currentImage={currentData.referenceImage || null}
+                maskImageUrl={formData.referenceImageUrlMask || ''}
+                currentImage={formData.referenceImage || null}
               />
             </div>
             <DescribeDesign
-              description={currentData.description || ''}
+              description={formData.description || ''}
               onDescriptionChange={e => updateDescription(e.target.value)}
               onFeatureSelection={handleFeatureSelection}
               onRandomPrompt={handleQueryRandomPrompt}
@@ -173,12 +263,12 @@ export function Sidebar() {
             <div className="space-y-2">
               <FormLabel>Upload original image</FormLabel>
               <ImageUploader
-                imageUrl={currentData.imageUrl || ''}
+                imageUrl={formData.imageUrl || ''}
                 onImageChange={handleMainImageUpload}
                 onImageUrlChange={updateImageUrl}
                 onMaskImageUrlChange={updateImageUrlMask}
-                maskImageUrl={currentData.imageUrlMask || ''}
-                currentImage={currentData.image || null}
+                maskImageUrl={formData.imageUrlMask || ''}
+                currentImage={formData.image || null}
               />
             </div>
           </div>
@@ -190,16 +280,16 @@ export function Sidebar() {
             <div className="space-y-2">
               <FormLabel>Upload original image</FormLabel>
               <ImageUploader
-                imageUrl={currentData.imageUrl || ''}
+                imageUrl={formData.imageUrl || ''}
                 onImageChange={handleMainImageUpload}
                 onImageUrlChange={updateImageUrl}
                 onMaskImageUrlChange={updateImageUrlMask}
-                maskImageUrl={currentData.imageUrlMask || ''}
-                currentImage={currentData.image || null}
+                maskImageUrl={formData.imageUrlMask || ''}
+                currentImage={formData.image || null}
               />
             </div>
             <DescribeDesign
-              description={currentData.description || ''}
+              description={formData.description || ''}
               onDescriptionChange={e => updateDescription(e.target.value)}
               onFeatureSelection={handleFeatureSelection}
               onRandomPrompt={handleQueryRandomPrompt}
@@ -213,12 +303,12 @@ export function Sidebar() {
             <div className="space-y-2">
               <FormLabel>Upload original image</FormLabel>
               <ImageUploader
-                imageUrl={currentData.imageUrl || ''}
+                imageUrl={formData.imageUrl || ''}
                 onImageChange={handleMainImageUpload}
                 onImageUrlChange={updateImageUrl}
                 onMaskImageUrlChange={updateImageUrlMask}
-                maskImageUrl={currentData.imageUrlMask || ''}
-                currentImage={currentData.image || null}
+                maskImageUrl={formData.imageUrlMask || ''}
+                currentImage={formData.image || null}
               />
             </div>
           </div>
@@ -230,12 +320,12 @@ export function Sidebar() {
             <div>
               <FormLabel>Upload Image</FormLabel>
               <ImageUploader
-                imageUrl={currentData.imageUrl || ''}
+                imageUrl={formData.imageUrl || ''}
                 onImageChange={handleMainImageUpload}
                 onImageUrlChange={updateImageUrl}
                 onMaskImageUrlChange={updateImageUrlMask}
-                maskImageUrl={currentData.imageUrlMask || ''}
-                currentImage={currentData.image || null}
+                maskImageUrl={formData.imageUrlMask || ''}
+                currentImage={formData.image || null}
               />
             </div>
           </div>

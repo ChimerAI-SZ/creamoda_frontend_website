@@ -8,12 +8,10 @@ import { api } from '@/lib/axios';
  */
 export async function changeClothesColor(imageUrl: string, clothingText: string, hexColor: string) {
   try {
-    const response = await api.get('/api/v1/img/change_color', {
-      params: {
-        imageUrl,
-        clothingText,
-        hexColor
-      }
+    const response = await api.post('/api/v1/img/change_color', {
+      imageUrl,
+      clothingText,
+      hexColor
     });
     return response.data;
   } catch (error) {
@@ -30,12 +28,10 @@ export async function changeClothesColor(imageUrl: string, clothingText: string,
  */
 export async function changeBackground(originalPicUrl: string, referencePicUrl: string, backgroundPrompt: string) {
   try {
-    const response = await api.get('/api/v1/img/change_background', {
-      params: {
-        originalPicUrl,
-        referencePicUrl,
-        backgroundPrompt
-      }
+    const response = await api.post('/api/v1/img/change_background', {
+      originalPicUrl,
+      referencePicUrl,
+      backgroundPrompt
     });
     return response.data;
   } catch (error) {
@@ -50,10 +46,8 @@ export async function changeBackground(originalPicUrl: string, referencePicUrl: 
  */
 export async function removeBackground(originalPicUrl: string) {
   try {
-    const response = await api.get('/api/v1/img/remove_background', {
-      params: {
-        originalPicUrl
-      }
+    const response = await api.post('/api/v1/img/remove_background', {
+      originalPicUrl
     });
     return response.data;
   } catch (error) {
@@ -70,12 +64,10 @@ export async function removeBackground(originalPicUrl: string) {
  */
 export async function particialModification(originalPicUrl: string, maskPicUrl: string, prompt: string) {
   try {
-    const response = await api.get('/api/v1/img/particial_modification', {
-      params: {
-        originalPicUrl,
-        maskPicUrl,
-        prompt
-      }
+    const response = await api.post('/api/v1/img/particial_modification', {
+      originalPicUrl,
+      maskPicUrl,
+      prompt
     });
     return response.data;
   } catch (error) {
@@ -90,10 +82,8 @@ export async function particialModification(originalPicUrl: string, maskPicUrl: 
  */
 export async function upscale(originalPicUrl: string) {
   try {
-    const response = await api.get('{{host}}/api/v1/img/upscale', {
-      params: {
-        originalPicUrl
-      }
+    const response = await api.post('/api/v1/img/upscale', {
+      originalPicUrl
     });
     return response.data;
   } catch (error) {
