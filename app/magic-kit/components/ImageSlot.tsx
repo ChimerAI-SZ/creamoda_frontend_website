@@ -11,6 +11,8 @@ interface ImageSlotProps {
   placeholder?: string;
   onClick?: () => void;
   onImageSave?: (dataUrl: string) => void;
+  width?: number;
+  height?: number;
 }
 
 export const ImageSlot: React.FC<ImageSlotProps> = ({
@@ -18,7 +20,9 @@ export const ImageSlot: React.FC<ImageSlotProps> = ({
   maskImageUrl,
   placeholder = '/images/operation/up.svg',
   onClick,
-  onImageSave
+  onImageSave,
+  width = 360,
+  height = 480
 }) => {
   console.log('imageUrl2222', imageUrl);
   console.log('maskImageUrl', maskImageUrl);
@@ -83,6 +87,7 @@ export const ImageSlot: React.FC<ImageSlotProps> = ({
         </button>
       </DialogTrigger>
       <DialogContent className="flex items-center justify-center max-w-[90vw] max-h-[90vh]">
+        <DialogTitle className="sr-only">图像编辑器</DialogTitle>
         {/* 直接显示涂鸦编辑器 */}
         <div className="w-full h-full">
           <ImageDoodleEditor
@@ -90,6 +95,8 @@ export const ImageSlot: React.FC<ImageSlotProps> = ({
             maskImageUrl={maskImage || undefined}
             onSave={handleSaveDoodle}
             initialStrokes={savedStrokes}
+            width={width}
+            height={height}
           />
         </div>
       </DialogContent>

@@ -12,13 +12,17 @@ interface ImageDoodleEditorProps {
   maskImageUrl?: string;
   onSave?: (doodleDataUrl: string, strokes: any[]) => void;
   initialStrokes?: any[];
+  width?: number;
+  height?: number;
 }
 
 export default function ImageDoodleEditor({
   imageUrl,
   maskImageUrl,
   onSave,
-  initialStrokes = []
+  initialStrokes = [],
+  width = 360,
+  height = 480
 }: ImageDoodleEditorProps) {
   const [color, setColor] = useState<string>('#ff0000');
   const [showColorPicker, setShowColorPicker] = useState<boolean>(false);
@@ -31,6 +35,7 @@ export default function ImageDoodleEditor({
   const [eraserWidth, setEraserWidth] = useState<number>(15);
   const [showPenSlider, setShowPenSlider] = useState<boolean>(false);
   const [showEraserSlider, setShowEraserSlider] = useState<boolean>(false);
+  const [originalImageSize, setOriginalImageSize] = useState<{ width: number; height: number } | null>(null);
 
   // Reference to the ReactSketchCanvas component
   const canvasRef = useRef<ReactSketchCanvasRef>(null);
@@ -52,6 +57,95 @@ export default function ImageDoodleEditor({
   // Timeouts for delayed hiding of sliders
   const penSliderTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const eraserSliderTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // 追踪图片的实际渲染尺寸和位置
+  const [imageRenderRect, setImageRenderRect] = useState<{ x: number; y: number; width: number; height: number }>({
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0
+  });
+
+  // 计算适合显示的容器尺寸
+  const getContainerDimensions = useCallback(() => {
+    // 默认尺寸
+    let containerWidth = width;
+    let containerHeight = height;
+
+    // 如果有原始图像尺寸信息，则根据原始图像比例设置容器尺寸
+    if (originalImageSize) {
+      const imgRatio = originalImageSize.width / originalImageSize.height;
+
+      // 保持容器总面积大致相同，但比例与图片一致
+      // 这样可以确保无论图片是横向还是纵向，显示区域都是合适的
+      const targetArea = width * height; // 原始容器面积
+
+      // 根据图片比例计算新尺寸
+      containerHeight = Math.sqrt(targetArea / imgRatio);
+      containerWidth = containerHeight * imgRatio;
+
+      // 限制最大尺寸，避免超出屏幕
+      if (containerWidth > width * 1.5) {
+        containerWidth = width;
+        containerHeight = width / imgRatio;
+      }
+
+      if (containerHeight > height * 1.5) {
+        containerHeight = height;
+        containerWidth = height * imgRatio;
+      }
+    }
+
+    return { containerWidth, containerHeight };
+  }, [width, height, originalImageSize]);
+
+  // 获取当前容器尺寸
+  const { containerWidth, containerHeight } = getContainerDimensions();
+
+  // 图片加载后计算其实际渲染尺寸和位置
+  const updateImageRenderRect = useCallback(() => {
+    if (backgroundImgRef.current) {
+      const img = backgroundImgRef.current;
+
+      // 使用图片的真实尺寸，而不是默认的width和height
+      let imgWidth = img.naturalWidth;
+      let imgHeight = img.naturalHeight;
+
+      // 使用根据图片比例计算的容器尺寸
+      const maxDisplayWidth = containerWidth;
+      const maxDisplayHeight = containerHeight;
+
+      // 计算图片保持比例适应容器的尺寸
+      const imgRatio = imgWidth / imgHeight;
+      const containerRatio = maxDisplayWidth / maxDisplayHeight;
+
+      let renderWidth: number;
+      let renderHeight: number;
+      let x: number;
+      let y: number;
+
+      if (imgRatio > containerRatio) {
+        // 图片更宽，按宽度适应
+        renderWidth = maxDisplayWidth;
+        renderHeight = maxDisplayWidth / imgRatio;
+        x = 0;
+        y = (maxDisplayHeight - renderHeight) / 2;
+      } else {
+        // 图片更高，按高度适应
+        renderHeight = maxDisplayHeight;
+        renderWidth = maxDisplayHeight * imgRatio;
+        x = (maxDisplayWidth - renderWidth) / 2;
+        y = 0;
+      }
+
+      setImageRenderRect({
+        x,
+        y,
+        width: renderWidth,
+        height: renderHeight
+      });
+    }
+  }, [containerWidth, containerHeight]);
 
   // Handle pen tool selection
   const handlePenClick = useCallback(() => {
@@ -109,9 +203,73 @@ export default function ImageDoodleEditor({
   // Handle save action
   const handleSave = useCallback(() => {
     if (maskDataUrl && onSave) {
-      onSave(maskDataUrl, strokes);
+      // 直接使用已经正确生成的mask数据
+      // 由于在generateMaskFromCanvas中我们已经正确处理了绘画区域
+      // 所以这里可以直接使用maskDataUrl
+
+      // 创建新Image对象来加载mask数据
+      const img = new Image();
+      img.onload = () => {
+        // 使用原始图像尺寸
+        const actualWidth = originalImageSize?.width || width;
+        const actualHeight = originalImageSize?.height || height;
+
+        // 创建临时canvas进行压缩
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = actualWidth;
+        tempCanvas.height = actualHeight;
+        const ctx = tempCanvas.getContext('2d');
+
+        if (ctx) {
+          // 绘制图像到临时canvas，保持原始比例
+          ctx.fillStyle = 'white';
+          ctx.fillRect(0, 0, actualWidth, actualHeight);
+
+          // 绘制时保持原图比例
+          ctx.drawImage(img, 0, 0, actualWidth, actualHeight);
+
+          // 尝试使用较低质量导出以减小文件大小
+          // 黑白图像使用较低质量也能保持清晰度
+          let quality = 0.8;
+          let compressedDataUrl = tempCanvas.toDataURL('image/png', quality);
+
+          // 估算大小 (dataUrl长度大致可以估计文件大小)
+          let estimatedSize = compressedDataUrl.length * 0.75; // 转换base64到字节大小
+
+          // 如果估计大小超过9MB (留1MB的安全边界)，进一步压缩
+          if (estimatedSize > 9 * 1024 * 1024) {
+            // 对于非常大的图像，考虑降低尺寸
+            const scaleFactor = Math.sqrt((9 * 1024 * 1024) / estimatedSize);
+            const scaledWidth = Math.floor(actualWidth * scaleFactor);
+            const scaledHeight = Math.floor(actualHeight * scaleFactor);
+
+            // 重新创建最终尺寸的canvas
+            tempCanvas.width = scaledWidth;
+            tempCanvas.height = scaledHeight;
+
+            // 重新绘制并压缩
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, scaledWidth, scaledHeight);
+            ctx.drawImage(img, 0, 0, scaledWidth, scaledHeight);
+
+            // 尝试进一步降低质量
+            quality = 0.7;
+            compressedDataUrl = tempCanvas.toDataURL('image/png', quality);
+
+            console.log(
+              `Mask image resized from ${actualWidth}x${actualHeight} to ${scaledWidth}x${scaledHeight} to stay under 10MB limit`
+            );
+          }
+
+          onSave(compressedDataUrl, strokes);
+        } else {
+          // 如果无法获取context，则使用原始数据
+          onSave(maskDataUrl, strokes);
+        }
+      };
+      img.src = maskDataUrl;
     }
-  }, [maskDataUrl, onSave, strokes]);
+  }, [maskDataUrl, onSave, strokes, width, height, originalImageSize]);
 
   // Function to continuously update preview during drawing
   const updatePreviewContinuously = useCallback(() => {
@@ -131,6 +289,7 @@ export default function ImageDoodleEditor({
     canvasRef.current
       .exportImage('png')
       .then(image => {
+        // 直接使用导出的图像进行预览
         setTransparentDoodleUrl(image);
         animationFrameId.current = requestAnimationFrame(updatePreviewContinuously);
       })
@@ -154,14 +313,22 @@ export default function ImageDoodleEditor({
 
   // Generate black and white mask image from the canvas drawing
   const generateMaskFromCanvas = useCallback(async () => {
-    if (!maskCanvasRef.current) return;
+    if (!maskCanvasRef.current || !originalImageSize) return;
 
     const canvas = maskCanvasRef.current;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Clear canvas and set black background
-    ctx.fillStyle = '#000000';
+    // 获取实际尺寸 - 使用原始图像尺寸
+    const actualWidth = originalImageSize.width;
+    const actualHeight = originalImageSize.height;
+
+    // 确保canvas尺寸与原始图像一致
+    canvas.width = actualWidth;
+    canvas.height = actualHeight;
+
+    // Clear canvas and set white background (for non-edited regions)
+    ctx.fillStyle = '#FFFFFF';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     if (canvasRef.current) {
@@ -172,48 +339,77 @@ export default function ImageDoodleEditor({
         // Create a temporary image to draw on the mask canvas
         const img = new Image();
         img.onload = () => {
-          // Draw the canvas content as white
-          ctx.globalCompositeOperation = 'source-over';
+          // 创建两个临时canvas:
+          // 1. 用于处理原始绘画
+          const tempDrawingCanvas = document.createElement('canvas');
+          tempDrawingCanvas.width = containerWidth;
+          tempDrawingCanvas.height = containerHeight;
+          const tempDrawingCtx = tempDrawingCanvas.getContext('2d');
 
-          // Create a temporary canvas to convert the colored image to black and white
-          const tempCanvas = document.createElement('canvas');
-          tempCanvas.width = canvas.width;
-          tempCanvas.height = canvas.height;
-          const tempCtx = tempCanvas.getContext('2d');
+          // 2. 用于生成最终黑白mask
+          const tempMaskCanvas = document.createElement('canvas');
+          tempMaskCanvas.width = actualWidth;
+          tempMaskCanvas.height = actualHeight;
+          const tempMaskCtx = tempMaskCanvas.getContext('2d');
 
-          if (tempCtx) {
-            // Draw the image to the temp canvas
-            tempCtx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          if (tempDrawingCtx && tempMaskCtx) {
+            // 步骤1: 绘制原始绘画到临时画布
+            tempDrawingCtx.drawImage(img, 0, 0, containerWidth, containerHeight);
 
-            // Get the image data
-            const imgData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+            // 记录调试信息
+            console.log('Canvas尺寸:', containerWidth, 'x', containerHeight);
+            console.log('图片渲染区域:', imageRenderRect);
+            console.log('原始图像尺寸:', actualWidth, 'x', actualHeight);
+
+            // 步骤2: 计算正确的映射
+            // 确保图片渲染区域有效
+            if (imageRenderRect.width <= 0 || imageRenderRect.height <= 0) {
+              console.error('图片渲染区域无效');
+              return;
+            }
+
+            // 修复绘画区域到原始图像的映射
+            tempMaskCtx.drawImage(
+              tempDrawingCanvas,
+              imageRenderRect.x,
+              imageRenderRect.y, // 源起点 - 绘画容器中图片的位置
+              imageRenderRect.width,
+              imageRenderRect.height, // 源尺寸 - 绘画容器中图片的尺寸
+              0,
+              0, // 目标起点 - 从mask的左上角开始
+              actualWidth,
+              actualHeight // 目标尺寸 - 缩放到原始图片尺寸
+            );
+
+            // 步骤3: 获取图像数据并转换为黑白
+            const imgData = tempMaskCtx.getImageData(0, 0, actualWidth, actualHeight);
             const data = imgData.data;
 
-            // Convert to black and white mask (any non-transparent pixel becomes white)
+            // Convert to black and white mask (any non-transparent pixel becomes black - regions to edit)
             for (let i = 0; i < data.length; i += 4) {
               // If pixel has any opacity (alpha > 0)
               if (data[i + 3] > 0) {
-                // Set it to white
-                data[i] = 255; // R
-                data[i + 1] = 255; // G
-                data[i + 2] = 255; // B
-                data[i + 3] = 255; // A
-              } else {
-                // Keep transparent pixels as black (background)
+                // Set it to black (regions to edit)
                 data[i] = 0; // R
                 data[i + 1] = 0; // G
                 data[i + 2] = 0; // B
+                data[i + 3] = 255; // A
+              } else {
+                // Keep transparent pixels as white (background - not to edit)
+                data[i] = 255; // R
+                data[i + 1] = 255; // G
+                data[i + 2] = 255; // B
                 data[i + 3] = 255; // A (fully opaque)
               }
             }
 
-            // Put the modified image data back to the temp canvas
-            tempCtx.putImageData(imgData, 0, 0);
+            // 步骤4: 将处理后的数据回写到临时canvas
+            tempMaskCtx.putImageData(imgData, 0, 0);
 
-            // Draw the black and white image to the mask canvas
-            ctx.drawImage(tempCanvas, 0, 0);
+            // 步骤5: 将临时canvas绘制到最终mask canvas
+            ctx.drawImage(tempMaskCanvas, 0, 0);
 
-            // Save mask image data
+            // 步骤6: 保存mask图像数据
             setMaskDataUrl(canvas.toDataURL('image/png'));
           }
         };
@@ -222,7 +418,7 @@ export default function ImageDoodleEditor({
         console.error('Failed to generate mask:', error);
       }
     }
-  }, []);
+  }, [originalImageSize, containerWidth, containerHeight, imageRenderRect]);
 
   // Handle pointer down (start drawing)
   const handlePointerDown = useCallback(() => {
@@ -291,9 +487,30 @@ export default function ImageDoodleEditor({
       img.src = imageUrl;
       img.onload = () => {
         backgroundImgRef.current = img;
+
+        // 保存原始图像尺寸以便后续处理
+        setOriginalImageSize({
+          width: img.naturalWidth,
+          height: img.naturalHeight
+        });
+
+        // 计算图片的渲染尺寸和位置
+        updateImageRenderRect();
       };
     }
-  }, [imageUrl]);
+  }, [imageUrl, updateImageRenderRect]);
+
+  // 使用原始图像尺寸创建适当大小的mask
+  useEffect(() => {
+    // 确保maskCanvasRef已创建
+    if (maskCanvasRef.current && originalImageSize) {
+      const canvas = maskCanvasRef.current;
+
+      // 调整隐藏canvas的尺寸以匹配原始图像
+      canvas.width = originalImageSize.width;
+      canvas.height = originalImageSize.height;
+    }
+  }, [originalImageSize]);
 
   // Update previews from maskImageUrl when it changes
   useEffect(() => {
@@ -498,6 +715,44 @@ export default function ImageDoodleEditor({
     ]
   );
 
+  // 窗口调整或容器尺寸变化时重新计算
+  useEffect(() => {
+    updateImageRenderRect();
+  }, [containerWidth, containerHeight, updateImageRenderRect]);
+
+  // 处理指针事件，确保绘画仅在图片区域内有效
+  const handlePointerEvent = useCallback(
+    (event: React.PointerEvent, eventType: 'down' | 'move' | 'up' | 'leave') => {
+      const rect = event.currentTarget.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+
+      // 判断指针是否在图片区域内
+      const isInImageArea =
+        x >= imageRenderRect.x &&
+        x <= imageRenderRect.x + imageRenderRect.width &&
+        y >= imageRenderRect.y &&
+        y <= imageRenderRect.y + imageRenderRect.height;
+
+      // 只有在图片区域内才处理绘画事件
+      if (isInImageArea || eventType === 'up' || eventType === 'leave') {
+        switch (eventType) {
+          case 'down':
+            handlePointerDown();
+            break;
+          case 'move':
+            handlePointerMove();
+            break;
+          case 'up':
+          case 'leave':
+            handlePointerUp();
+            break;
+        }
+      }
+    },
+    [handlePointerDown, handlePointerMove, handlePointerUp, imageRenderRect]
+  );
+
   return (
     <>
       <div className="flex justify-between items-center w-full mb-2">
@@ -508,13 +763,15 @@ export default function ImageDoodleEditor({
       <div className="flex flex-col md:flex-row gap-4 w-full">
         {/* Main editing area */}
         <div className="flex-1 flex items-center justify-between gap-4">
-          <div className="flex-1 flex  items-center justify-center">
+          <div className="flex-1 flex items-center justify-center">
+            {/* 使用根据图片比例计算的容器尺寸 */}
             <div
-              style={{ position: 'relative', width: 360, height: 480 }}
-              onPointerDown={handlePointerDown}
-              onPointerUp={handlePointerUp}
-              onPointerMove={handlePointerMove}
-              onPointerLeave={handlePointerUp} // Also handle when pointer leaves the area
+              className="relative"
+              style={{ width: containerWidth, height: containerHeight }}
+              onPointerDown={e => handlePointerEvent(e, 'down')}
+              onPointerUp={e => handlePointerEvent(e, 'up')}
+              onPointerMove={e => handlePointerEvent(e, 'move')}
+              onPointerLeave={e => handlePointerEvent(e, 'leave')}
             >
               {/* Background image */}
               {imageUrl && (
@@ -532,6 +789,19 @@ export default function ImageDoodleEditor({
                   }}
                 />
               )}
+              {/* 添加一个视觉提示，显示可绘画区域 */}
+              <div
+                style={{
+                  position: 'absolute',
+                  top: imageRenderRect.y,
+                  left: imageRenderRect.x,
+                  width: imageRenderRect.width,
+                  height: imageRenderRect.height,
+                  border: '1px dashed rgba(255, 0, 0, 0.3)',
+                  zIndex: 1,
+                  pointerEvents: 'none'
+                }}
+              />
               {/* Drawing canvas */}
               <ReactSketchCanvas
                 ref={canvasRef}
@@ -555,9 +825,12 @@ export default function ImageDoodleEditor({
             </div>
           </div>
 
-          <div className="flex-1 relative flex  items-center justify-center">
+          <div className="flex-1 relative flex items-center justify-center">
             {/* Transparent doodle preview */}
-            <div className="relative border rounded shadow overflow-hidden" style={{ width: 360, height: 480 }}>
+            <div
+              className="relative border rounded shadow overflow-hidden"
+              style={{ width: containerWidth, height: containerHeight }}
+            >
               {/* Checkerboard background to show transparency */}
               <div
                 className="absolute inset-0"
@@ -578,6 +851,20 @@ export default function ImageDoodleEditor({
                   style={{ objectFit: 'contain' }}
                 />
               )}
+
+              {/* 显示对应于预览的可编辑区域提示 */}
+              <div
+                style={{
+                  position: 'absolute',
+                  top: imageRenderRect.y,
+                  left: imageRenderRect.x,
+                  width: imageRenderRect.width,
+                  height: imageRenderRect.height,
+                  border: '1px dashed rgba(0, 0, 255, 0.3)',
+                  zIndex: 15,
+                  pointerEvents: 'none'
+                }}
+              />
             </div>
           </div>
         </div>
@@ -592,7 +879,12 @@ export default function ImageDoodleEditor({
       </div>
 
       {/* Hidden canvas for generating mask image */}
-      <canvas ref={maskCanvasRef} width={360} height={480} className="hidden" />
+      <canvas
+        ref={maskCanvasRef}
+        width={originalImageSize?.width || containerWidth}
+        height={originalImageSize?.height || containerHeight}
+        className="hidden"
+      />
     </>
   );
 }
