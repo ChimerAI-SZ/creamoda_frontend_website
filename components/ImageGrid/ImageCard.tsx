@@ -4,6 +4,7 @@ import { Star, ImageDown, Trash2 } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 import { Modal } from '@/utils/modal';
+import { downloadImage } from '@/utils';
 
 interface ImageCardProps {
   image: any;
@@ -122,7 +123,12 @@ export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(({ image, on
               <div className="w-[33px] h-[33px] bg-[#fff] flex items-center justify-center text-white rounded-[50%] cursor-pointer">
                 <Star className="w-[18px] h-[18px] text-[#000]" />
               </div>
-              <div className="w-[33px] h-[33px] bg-[#fff] flex items-center justify-center text-white rounded-[50%] cursor-pointer">
+              <div
+                className="w-[33px] h-[33px] bg-[#fff] flex items-center justify-center text-white rounded-[50%] cursor-pointer"
+                onClick={() => {
+                  downloadImage(image.resultPic, 'image.jpg');
+                }}
+              >
                 <ImageDown className="w-[18px] h-[18px] text-[#000]" />
               </div>
               <div
