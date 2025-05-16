@@ -45,7 +45,7 @@ export default function ImageDetail({ image, onClose, isOpen, imgList, onImageCh
     } else if (text === 'Magic Kit') {
       router.push('/magic-kit');
     } else if (text === 'Virtual Try-On') {
-      router.push('/');
+      router.push(`/virtual-try-on?imageUrl=${encodeURIComponent(image?.resultPic ?? '')}`);
     }
   };
 

@@ -1,4 +1,3 @@
-'use client';
 import { ImageGrid } from '@/components/ImageGrid';
 import { Sidebar } from './components/Sidebar';
 

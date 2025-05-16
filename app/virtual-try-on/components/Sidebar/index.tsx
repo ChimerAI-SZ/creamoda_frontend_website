@@ -1,9 +1,11 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
+
 import Image from 'next/image';
 
-import { GenerateButton, GenerateButtonState } from '@/components/GenerateButton/GenerateButton';
+import { GenerateButton } from '@/components/GenerateButton/GenerateButton';
 
 import { ImageUploader } from '@/components/ImageUploader';
 
@@ -22,6 +24,8 @@ export function Sidebar() {
   const { isGenerating, setGenerating } = useGenerationStore();
   const [btnState, setBtnState] = useState<'disabled' | 'ready' | 'generating'>('disabled');
 
+  const searchParams = useSearchParams();
+
   // 上传的模特图片
   const [modelImage, setModelImage] = useState({
     image: null as File | null,
@@ -30,7 +34,7 @@ export function Sidebar() {
   // 上传的服饰图片
   const [clothingImage, setClothingImage] = useState({
     image: null as File | null,
-    imageUrl: ''
+    imageUrl: searchParams.get('imageUrl') as string
   });
 
   // 文生图 / 图生图 提交事件
