@@ -26,7 +26,7 @@ import { cn } from '@/lib/utils';
 interface ImageUploaderProps {
   onImageChange: (image: File | null) => void;
   onImageUrlChange: (url: string) => void;
-  onMaskImageUrlChange?: (url: string) => void;
+  onMaskImageUrlChange?: (url: string, uploadedMaskUrl?: string) => void;
   imageUrl: string;
   maskImageUrl?: string;
   currentImage: File | null;
@@ -227,7 +227,7 @@ export function ImageUploader({
     onImageChange(null);
     onImageUrlChange('');
     if (onMaskImageUrlChange) {
-      onMaskImageUrlChange('');
+      onMaskImageUrlChange('', '');
     }
   };
 

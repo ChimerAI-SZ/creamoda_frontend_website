@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, memo } from 'react';
+import { useState, memo } from 'react';
 import Image from 'next/image';
 import { X, Loader2 } from 'lucide-react';
 
@@ -15,27 +15,28 @@ import { ImageSlot } from '../ImageSlot';
 /**
  * ImageUploader组件的属性接口
  * @interface ImageUploaderProps
- * @property {Function} onImageChange - 当图片文件变化时的回调函数
  * @property {Function} onImageUrlChange - 当图片URL变化时的回调函数
  * @property {Function} onMaskImageUrlChange - 当mask图片URL变化时的回调函数
  * @property {string} imageUrl - 当前图片的URL
  * @property {string} maskImageUrl - 当前mask图片的URL
- * @property {File | null} currentImage - 当前选择的图片文件
  * @property {string} styleType - 样式类型，支持'default'和'newStyle'
  * @property {string} imageType - 图片类型
+ * @property {boolean} showMaskEditor - 是否显示涂鸦编辑器
  */
 interface ImageUploaderProps {
-  onImageChange: (image: File | null) => void;
   onImageUrlChange: (url: string) => void;
-  onMaskImageUrlChange: (url: string) => void;
+  onMaskImageUrlChange: (url: string, uploadedMaskUrl?: string) => void;
   imageUrl: string;
   maskImageUrl?: string;
-  currentImage: File | null;
   /**
    * 样式类型，支持'default'和'newStyle'
    */
   styleType?: 'default' | 'newStyle';
   imageType?: string;
+  /**
+   * 是否显示涂鸦编辑器
+   */
+  showMaskEditor?: boolean;
 }
 
 // 后端API前缀 - 移除@字符
@@ -50,14 +51,13 @@ const apiPrefix = 'https://imgproxy.creamoda.ai/sig';
  * @returns {JSX.Element} 图片上传组件
  */
 export function ImageUploader({
-  onImageChange,
   onImageUrlChange,
   onMaskImageUrlChange,
   imageUrl,
   maskImageUrl = '',
-  currentImage,
   styleType = 'default',
-  imageType = 'Click or drag to upload'
+  imageType = 'Click or drag to upload',
+  showMaskEditor = false
 }: ImageUploaderProps) {
   console.log('imageUrl1111', imageUrl);
   // 状态管理
@@ -67,24 +67,6 @@ export function ImageUploader({
   const [isUploading, setIsUploading] = useState(false); // 是否正在上传
   const [newImageUrl, setNewImageUrl] = useState<string | null>(null); // 新输入的图片URL
   const [isLoadingImageUrl, setIsLoadingImageUrl] = useState(false); // 是否正在加载URL图片
-
-  /**
-   * 当imageUrl或currentImage变化时更新预览URL
-   * 如果提供了imageUrl，则使用它
-   * 如果提供了currentImage，则创建本地对象URL
-   * 否则清除预览
-   */
-  useEffect(() => {
-    if (imageUrl) {
-      setPreviewUrl(imageUrl);
-    } else if (currentImage) {
-      const objectUrl = URL.createObjectURL(currentImage);
-      setPreviewUrl(objectUrl);
-      return () => URL.revokeObjectURL(objectUrl);
-    } else {
-      setPreviewUrl(null);
-    }
-  }, [imageUrl, currentImage]);
 
   /**
    * 将图片上传到服务器
@@ -98,8 +80,6 @@ export function ImageUploader({
       setOriginalUrl(url);
       // 上传成功 - 使用服务器返回的URL更新
       onImageUrlChange(url);
-      // 清除文件引用，因为我们现在使用URL
-      onImageChange(null);
     } catch (error) {
       console.error('Image upload error:', error);
       showErrorDialog(error instanceof Error ? error.message : 'Failed to upload image');
@@ -134,8 +114,6 @@ export function ImageUploader({
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const file = e.dataTransfer.files[0];
       if (file.type.includes('image/')) {
-        // 首先更新本地状态以立即显示预览
-        onImageChange(file);
         // 清除之前的图片URL
         onImageUrlChange('');
         // 然后上传到服务器
@@ -151,8 +129,6 @@ export function ImageUploader({
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      // 首先更新本地状态以立即显示预览
-      onImageChange(file);
       // 清除之前的图片URL
       onImageUrlChange('');
       // 然后上传到服务器
@@ -228,9 +204,8 @@ export function ImageUploader({
    * 移除当前图片
    */
   const handleRemoveImage = () => {
-    onImageChange(null);
     onImageUrlChange('');
-    onMaskImageUrlChange('');
+    onMaskImageUrlChange('', '');
   };
 
   return (
@@ -258,45 +233,74 @@ export function ImageUploader({
                 : 'Processing image...'}
             </span>
           </div>
-        ) : originalUrl ? (
-          // 上传后分为上下两部分，各占50%
-          <div className="flex flex-col w-full h-[288px]">
-            {/* 上面：图片预览（50%） */}
-            <div className="relative flex-1 min-h-0 flex items-center justify-center border-b border-[#DCDCDC]">
-              <Image
-                src={originalUrl}
-                alt="Uploaded image"
-                fill
-                style={{ objectFit: 'contain' }}
-                onError={() => {
-                  setPreviewUrl(null);
-                  onImageUrlChange('');
-                  showErrorDialog(
-                    'Failed to load image. The URL might be invalid or the image format is not supported.'
-                  );
-                }}
-              />
-              {/* 删除按钮，点击后删除图片并恢复上传区域 */}
-              <button
-                onClick={handleRemoveImage}
-                className="absolute top-3 right-3 bg-white rounded-[4px] p-[2px] border-[0.875px] border-[#DCDCDC] hover:bg-gray-100 z-10"
-                type="button"
-              >
-                <X className="h-4 w-4 text-[#E4E4E7]" />
-              </button>
+        ) : imageUrl ? (
+          showMaskEditor ? (
+            // 上传后分为上下两部分，各占50%（用于有涂鸦功能的情况）
+            <div className="flex flex-col w-full h-[288px]">
+              {/* 上面：图片预览（50%） */}
+              <div className="relative flex-1 min-h-0 flex items-center justify-center border-b border-[#DCDCDC]">
+                <Image
+                  src={imageUrl}
+                  alt="Uploaded image"
+                  fill
+                  style={{ objectFit: 'contain' }}
+                  onError={() => {
+                    setPreviewUrl(null);
+                    onImageUrlChange('');
+                    showErrorDialog(
+                      'Failed to load image. The URL might be invalid or the image format is not supported.'
+                    );
+                  }}
+                />
+                {/* 删除按钮，点击后删除图片并恢复上传区域 */}
+                <button
+                  onClick={handleRemoveImage}
+                  className="absolute top-3 right-3 bg-white rounded-[4px] p-[2px] border-[0.875px] border-[#DCDCDC] hover:bg-gray-100 z-10"
+                  type="button"
+                >
+                  <X className="h-4 w-4 text-[#E4E4E7]" />
+                </button>
+              </div>
+              {/* 下面：ImageSlot 组件（50%） */}
+              <div className="flex-1 min-h-0 flex items-center justify-center">
+                <ImageSlot
+                  imageUrl={imageUrl || ''}
+                  maskImageUrl={maskImageUrl}
+                  onImageSave={(dataUrl, uploadedMaskUrl) => {
+                    // 当涂鸦保存后，将涂鸦结果作为mask图片
+                    onMaskImageUrlChange(dataUrl, uploadedMaskUrl);
+                  }}
+                />
+              </div>
             </div>
-            {/* 下面：ImageSlot 组件（50%） */}
-            <div className="flex-1 min-h-0 flex items-center justify-center">
-              <ImageSlot
-                imageUrl={previewUrl || ''}
-                maskImageUrl={maskImageUrl}
-                onImageSave={dataUrl => {
-                  // 当涂鸦保存后，将涂鸦结果作为mask图片
-                  onMaskImageUrlChange(dataUrl);
-                }}
-              />
+          ) : (
+            // 只显示图片（没有涂鸦功能的情况）
+            <div className="relative w-full h-full">
+              <div className="absolute inset-0 flex items-center justify-center">
+                <Image
+                  src={imageUrl}
+                  alt="Uploaded image"
+                  fill
+                  style={{ objectFit: 'contain' }}
+                  onError={() => {
+                    setPreviewUrl(null);
+                    onImageUrlChange('');
+                    showErrorDialog(
+                      'Failed to load image. The URL might be invalid or the image format is not supported.'
+                    );
+                  }}
+                />
+                {/* 删除按钮，点击后删除图片并恢复上传区域 */}
+                <button
+                  onClick={handleRemoveImage}
+                  className="absolute top-3 right-3 bg-white rounded-[4px] p-[2px] border-[0.875px] border-[#DCDCDC] hover:bg-gray-100 z-10"
+                  type="button"
+                >
+                  <X className="h-4 w-4 text-[#E4E4E7]" />
+                </button>
+              </div>
             </div>
-          </div>
+          )
         ) : (
           // 上传模式
           <>

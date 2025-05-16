@@ -1,16 +1,13 @@
 import { create } from 'zustand';
 
 export interface VariationFormState {
-  // Shared form data for all variation types (no longer separated by type)
+  // Shared form data for all variation types
   formData: {
-    image: File | null;
     imageUrl: string;
-    imageUrlMask: string; // Mask for the main image
+    maskUrl: string; // Uploaded mask URL
     description: string;
     colorSelection: string;
-    referenceImage: File | null;
     referenceImageUrl: string;
-    referenceImageUrlMask: string; // Mask for the reference image
   };
   // Current selected variation type
   currentVariationType: string;
@@ -18,26 +15,20 @@ export interface VariationFormState {
 
 interface VariationFormActions {
   setCurrentVariationType: (variationType: string) => void;
-  updateImage: (image: File | null) => void;
   updateImageUrl: (imageUrl: string) => void;
-  updateImageUrlMask: (maskImageUrl: string) => void;
+  updateMaskUrl: (maskUrl: string) => void;
   updateDescription: (description: string) => void;
   updateColorSelection: (colorSelection: string) => void;
-  updateReferenceImage: (image: File | null) => void;
   updateReferenceImageUrl: (imageUrl: string) => void;
-  updateReferenceImageUrlMask: (maskImageUrl: string) => void;
   resetFormData: () => void;
 }
 
 const initialFormData = {
-  image: null,
   imageUrl: '',
-  imageUrlMask: '',
+  maskUrl: '',
   description: '',
   colorSelection: '',
-  referenceImage: null,
-  referenceImageUrl: '',
-  referenceImageUrlMask: ''
+  referenceImageUrl: ''
 };
 
 const initialState: VariationFormState = {
@@ -54,15 +45,6 @@ export const useVariationFormStore = create<VariationFormState & VariationFormAc
       currentVariationType: variationType
     })),
 
-  updateImage: (image: File | null) =>
-    set(state => ({
-      ...state,
-      formData: {
-        ...state.formData,
-        image
-      }
-    })),
-
   updateImageUrl: (imageUrl: string) =>
     set(state => ({
       ...state,
@@ -72,12 +54,12 @@ export const useVariationFormStore = create<VariationFormState & VariationFormAc
       }
     })),
 
-  updateImageUrlMask: (imageUrlMask: string) =>
+  updateMaskUrl: (maskUrl: string) =>
     set(state => ({
       ...state,
       formData: {
         ...state.formData,
-        imageUrlMask
+        maskUrl
       }
     })),
 
@@ -99,30 +81,12 @@ export const useVariationFormStore = create<VariationFormState & VariationFormAc
       }
     })),
 
-  updateReferenceImage: (image: File | null) =>
-    set(state => ({
-      ...state,
-      formData: {
-        ...state.formData,
-        referenceImage: image
-      }
-    })),
-
   updateReferenceImageUrl: (imageUrl: string) =>
     set(state => ({
       ...state,
       formData: {
         ...state.formData,
         referenceImageUrl: imageUrl
-      }
-    })),
-
-  updateReferenceImageUrlMask: (imageUrlMask: string) =>
-    set(state => ({
-      ...state,
-      formData: {
-        ...state.formData,
-        referenceImageUrlMask: imageUrlMask
       }
     })),
 

@@ -6,7 +6,6 @@ import { GenerateButton } from '@/components/GenerateButton/GenerateButton';
 import { useGenerationStore } from '@/stores/useGenerationStore';
 import { VariationTypeSelect } from '@/components/VariationTypeSelect/VariationTypeSelect';
 import { useVariationFormStore } from '@/stores/useMagicKitStore';
-import { MemoizedImageUploader as ImageUploader } from '@/components/ImageUploader';
 import { variationTypes } from '@/app/magic-kit/const';
 import { FormLabel } from '@/components/FormLabel/FormLabel';
 import { DescribeDesign } from '@/components/DescribeDesign/index';
@@ -26,12 +25,9 @@ export function Sidebar() {
     currentVariationType,
     formData,
     setCurrentVariationType,
-    updateImage,
     updateImageUrl,
-    updateImageUrlMask,
-    updateReferenceImage,
+    updateMaskUrl,
     updateReferenceImageUrl,
-    updateReferenceImageUrlMask,
     updateDescription,
     updateColorSelection
   } = useVariationFormStore();
@@ -52,8 +48,8 @@ export function Sidebar() {
           return;
         }
 
-        // Validate image input (either URL or uploaded image)
-        if (!formData.imageUrl && !formData.image) {
+        // Validate image input (URL only)
+        if (!formData.imageUrl) {
           console.error('Please upload an image or provide an image URL');
           setGenerating(false);
           return;
@@ -105,11 +101,9 @@ export function Sidebar() {
             response = await removeBackground(formData.imageUrl!);
             break;
           case '4': // Partial modification
-            response = await particialModification(
-              formData.imageUrl!,
-              formData.imageUrlMask || '',
-              formData.description!
-            );
+            // Use the uploaded mask URL
+            const maskUrl = formData.maskUrl || '';
+            response = await particialModification(formData.imageUrl!, maskUrl, formData.description!);
             break;
           case '5': // Upscale
             response = await upscale(formData.imageUrl!);
@@ -132,19 +126,6 @@ export function Sidebar() {
       }
     }
   };
-
-  const handleMainImageUpload = useCallback(
-    (image: File | null) => {
-      updateImage(image);
-    },
-    [updateImage]
-  );
-  const handleReferenceImageUpload = useCallback(
-    (file: File | null) => {
-      updateReferenceImage(file);
-    },
-    [updateReferenceImage]
-  );
 
   useEffect(() => {
     let isFormValid = false;
@@ -203,11 +184,10 @@ export function Sidebar() {
               <FormLabel>Upload original image</FormLabel>
               <SecondImageUploader
                 imageUrl={formData.imageUrl || ''}
-                onImageChange={handleMainImageUpload}
                 onImageUrlChange={updateImageUrl}
-                onMaskImageUrlChange={updateImageUrlMask}
-                maskImageUrl={formData.imageUrlMask || ''}
-                currentImage={formData.image || null}
+                onMaskImageUrlChange={(dataUrl, uploadedUrl) => updateMaskUrl(uploadedUrl || '')}
+                maskImageUrl={formData.maskUrl || ''}
+                showMaskEditor={false}
               />
             </div>
             <div className="space-y-2">
@@ -228,24 +208,22 @@ export function Sidebar() {
           <div className="space-y-6">
             <div className="space-y-2">
               <FormLabel>Upload original image</FormLabel>
-              <ImageUploader
+              <SecondImageUploader
                 imageUrl={formData.imageUrl || ''}
-                onImageChange={handleMainImageUpload}
                 onImageUrlChange={updateImageUrl}
-                onMaskImageUrlChange={updateImageUrlMask}
-                maskImageUrl={formData.imageUrlMask || ''}
-                currentImage={formData.image || null}
+                onMaskImageUrlChange={(dataUrl, uploadedUrl) => updateMaskUrl(uploadedUrl || '')}
+                maskImageUrl={formData.maskUrl || ''}
+                showMaskEditor={false}
               />
             </div>
             <div className="space-y-2">
-              <FormLabel>Upload original image</FormLabel>
-              <ImageUploader
+              <FormLabel>Upload reference image</FormLabel>
+              <SecondImageUploader
                 imageUrl={formData.referenceImageUrl || ''}
-                onImageChange={handleReferenceImageUpload}
                 onImageUrlChange={updateReferenceImageUrl}
-                onMaskImageUrlChange={updateReferenceImageUrlMask}
-                maskImageUrl={formData.referenceImageUrlMask || ''}
-                currentImage={formData.referenceImage || null}
+                onMaskImageUrlChange={(dataUrl, uploadedUrl) => {}} // Not used for reference
+                maskImageUrl=""
+                showMaskEditor={false}
               />
             </div>
             <DescribeDesign
@@ -262,13 +240,12 @@ export function Sidebar() {
           <div className="space-y-6">
             <div className="space-y-2">
               <FormLabel>Upload original image</FormLabel>
-              <ImageUploader
+              <SecondImageUploader
                 imageUrl={formData.imageUrl || ''}
-                onImageChange={handleMainImageUpload}
                 onImageUrlChange={updateImageUrl}
-                onMaskImageUrlChange={updateImageUrlMask}
-                maskImageUrl={formData.imageUrlMask || ''}
-                currentImage={formData.image || null}
+                onMaskImageUrlChange={(dataUrl, uploadedUrl) => updateMaskUrl(uploadedUrl || '')}
+                maskImageUrl={formData.maskUrl || ''}
+                showMaskEditor={false}
               />
             </div>
           </div>
@@ -279,13 +256,12 @@ export function Sidebar() {
           <div className="space-y-6">
             <div className="space-y-2">
               <FormLabel>Upload original image</FormLabel>
-              <ImageUploader
+              <SecondImageUploader
                 imageUrl={formData.imageUrl || ''}
-                onImageChange={handleMainImageUpload}
                 onImageUrlChange={updateImageUrl}
-                onMaskImageUrlChange={updateImageUrlMask}
-                maskImageUrl={formData.imageUrlMask || ''}
-                currentImage={formData.image || null}
+                onMaskImageUrlChange={(dataUrl, uploadedUrl) => updateMaskUrl(uploadedUrl || '')}
+                maskImageUrl={formData.maskUrl || ''}
+                showMaskEditor={true}
               />
             </div>
             <DescribeDesign
@@ -302,13 +278,12 @@ export function Sidebar() {
           <div className="space-y-6">
             <div className="space-y-2">
               <FormLabel>Upload original image</FormLabel>
-              <ImageUploader
+              <SecondImageUploader
                 imageUrl={formData.imageUrl || ''}
-                onImageChange={handleMainImageUpload}
                 onImageUrlChange={updateImageUrl}
-                onMaskImageUrlChange={updateImageUrlMask}
-                maskImageUrl={formData.imageUrlMask || ''}
-                currentImage={formData.image || null}
+                onMaskImageUrlChange={(dataUrl, uploadedUrl) => updateMaskUrl(uploadedUrl || '')}
+                maskImageUrl={formData.maskUrl || ''}
+                showMaskEditor={false}
               />
             </div>
           </div>
@@ -319,13 +294,12 @@ export function Sidebar() {
           <div className="space-y-6">
             <div>
               <FormLabel>Upload Image</FormLabel>
-              <ImageUploader
+              <SecondImageUploader
                 imageUrl={formData.imageUrl || ''}
-                onImageChange={handleMainImageUpload}
                 onImageUrlChange={updateImageUrl}
-                onMaskImageUrlChange={updateImageUrlMask}
-                maskImageUrl={formData.imageUrlMask || ''}
-                currentImage={formData.image || null}
+                onMaskImageUrlChange={(dataUrl, uploadedUrl) => updateMaskUrl(uploadedUrl || '')}
+                maskImageUrl={formData.maskUrl || ''}
+                showMaskEditor={false}
               />
             </div>
           </div>

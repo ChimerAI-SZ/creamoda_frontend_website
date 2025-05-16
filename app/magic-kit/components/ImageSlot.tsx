@@ -10,7 +10,7 @@ interface ImageSlotProps {
   maskImageUrl?: string;
   placeholder?: string;
   onClick?: () => void;
-  onImageSave?: (dataUrl: string) => void;
+  onImageSave?: (dataUrl: string, uploadedMaskUrl?: string) => void;
   width?: number;
   height?: number;
 }
@@ -41,6 +41,9 @@ export const ImageSlot: React.FC<ImageSlotProps> = ({
   // 保存最终生成的涂鸦遮罩图像
   const [maskImage, setMaskImage] = React.useState<string | null>(maskImageUrl || null);
 
+  // 保存上传到服务器的遮罩图像URL
+  const [uploadedMaskUrl, setUploadedMaskUrl] = React.useState<string | undefined>(undefined);
+
   // 当imageUrl变化时更新currentImage
   React.useEffect(() => {
     setCurrentImage(imageUrl);
@@ -53,7 +56,7 @@ export const ImageSlot: React.FC<ImageSlotProps> = ({
     }
   }, [maskImageUrl]);
 
-  const handleSaveDoodle = (dataUrl: string, strokes: any[]) => {
+  const handleSaveDoodle = (dataUrl: string, strokes: any[], newUploadedMaskUrl?: string) => {
     // 更新本地图片状态
     setCurrentImage(imageUrl); // 保持原始图片不变
 
@@ -63,8 +66,13 @@ export const ImageSlot: React.FC<ImageSlotProps> = ({
     // 保存遮罩图像
     setMaskImage(dataUrl);
 
+    // 保存上传到服务器的遮罩图像URL
+    if (newUploadedMaskUrl) {
+      setUploadedMaskUrl(newUploadedMaskUrl);
+    }
+
     if (onImageSave) {
-      onImageSave(dataUrl);
+      onImageSave(dataUrl, newUploadedMaskUrl);
     }
 
     // 保存后自动关闭弹窗
