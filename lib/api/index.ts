@@ -5,8 +5,10 @@ import * as generate from './generate';
 import * as token from './token';
 import * as tryOn from './tryon';
 
+import * as album from './album';
+
 // 导出为命名空间
-export { auth, common, generate, token, tryOn };
+export { auth, common, generate, token, tryOn, album };
 
 // 也可以直接导出所有函数，但可能会导致命名冲突
 export * from './auth';
@@ -14,3 +16,4 @@ export * from './common';
 export * from './token';
 export * from './generate';
 export * from './tryon';
+export * from './album';
