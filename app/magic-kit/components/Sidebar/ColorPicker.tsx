@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Pipette } from 'lucide-react';
 
 interface ColorPickerProps {
@@ -135,8 +135,8 @@ export function ColorPicker({ value = '#ffffff', onChange }: ColorPickerProps) {
     return rgbToHsv(r, g, b);
   };
 
-  // Update positions based on current color
-  const updatePositionsFromColor = (color: string) => {
+  // Update positions based on current color - memoize this function to prevent infinite updates
+  const updatePositionsFromColor = useCallback((color: string) => {
     if (!colorPanelRef.current) return;
 
     const { h, s, v } = hexToHsv(color);
@@ -150,7 +150,7 @@ export function ColorPicker({ value = '#ffffff', onChange }: ColorPickerProps) {
     const y = (1 - v) * height;
 
     setPosition({ x, y });
-  };
+  }, []); // Empty dependency array as these functions are stable
 
   // Update color based on position in color panel
   const updateColorFromPosition = (x: number, y: number) => {
@@ -265,12 +265,12 @@ export function ColorPicker({ value = '#ffffff', onChange }: ColorPickerProps) {
     }
   }, [value, isOpen, updatePositionsFromColor]);
 
-  // Update positions when picker is opened
+  // Update positions when picker is opened - remove currentColor from dependencies to prevent loop
   useEffect(() => {
     if (isOpen) {
       updatePositionsFromColor(currentColor);
     }
-  }, [isOpen, currentColor, updatePositionsFromColor]);
+  }, [isOpen, updatePositionsFromColor]); // Removed currentColor from dependencies
 
   return (
     <div className="relative" ref={containerRef}>
