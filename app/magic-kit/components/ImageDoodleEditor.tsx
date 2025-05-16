@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { ReactSketchCanvas, type ReactSketchCanvasRef } from 'react-sketch-canvas';
-import { PencilIcon, EraserIcon, TrashIcon, UndoIcon, RedoIcon, SaveIcon } from 'lucide-react';
+import { PencilIcon, EraserIcon, TrashIcon, UndoIcon, RedoIcon, SaveIcon, Loader2 } from 'lucide-react';
 import { uploadImage } from '@/lib/api/common';
 
 interface ImageDoodleEditorProps {
@@ -36,6 +36,7 @@ export default function ImageDoodleEditor({
   const [showPenSlider, setShowPenSlider] = useState<boolean>(false);
   const [showEraserSlider, setShowEraserSlider] = useState<boolean>(false);
   const [originalImageSize, setOriginalImageSize] = useState<{ width: number; height: number } | null>(null);
+  const [isUploading, setIsUploading] = useState<boolean>(false);
 
   // Reference to the ReactSketchCanvas component
   const canvasRef = useRef<ReactSketchCanvasRef>(null);
@@ -194,6 +195,7 @@ export default function ImageDoodleEditor({
   const handleSave = useCallback(async () => {
     if (maskDataUrl && onSave) {
       try {
+        setIsUploading(true);
         // 创建新Image对象来加载mask数据
         const img = new Image();
         // Add crossOrigin attribute to prevent canvas tainting
@@ -270,34 +272,41 @@ export default function ImageDoodleEditor({
 
                 // 调用onSave回调，传入压缩后的数据URL、笔画数据和上传后的URL
                 onSave(compressedDataUrl, strokes, uploadedMaskUrl);
+                setIsUploading(false);
               } catch (error) {
                 console.error('Failed to upload mask image:', error);
                 // 如果上传失败，仍然使用本地数据URL
                 onSave(compressedDataUrl, strokes);
+                setIsUploading(false);
               }
             } catch (error) {
               console.error('Canvas tainted error:', error);
               // 当canvas被污染时，我们仍然可以使用原始maskDataUrl
               onSave(maskDataUrl, strokes);
+              setIsUploading(false);
             }
           } else {
             // 如果无法获取context，则使用原始数据
             onSave(maskDataUrl, strokes);
+            setIsUploading(false);
           }
         };
         img.onerror = () => {
           console.error('Error loading mask image');
           // 出错时使用原始数据
           onSave(maskDataUrl, strokes);
+          setIsUploading(false);
         };
         img.src = maskDataUrl;
       } catch (error) {
         console.error('Error processing mask image:', error);
         // 出错时也尝试使用原始数据
         onSave(maskDataUrl, strokes);
+        setIsUploading(false);
       }
     } else if (onSave) {
       // 即使没有涂鸦，也要调用onSave
+      setIsUploading(true);
       // 创建一个全黑的mask（表示没有区域需要编辑）
       const tempCanvas = document.createElement('canvas');
       const actualWidth = originalImageSize?.width || width;
@@ -314,9 +323,11 @@ export default function ImageDoodleEditor({
 
         // 调用onSave回调，传入全黑图像和空笔画数据
         onSave(blackDataUrl, strokes);
+        setIsUploading(false);
       } else {
         // 即使无法创建canvas，也应该调用onSave以关闭窗口
         onSave('', strokes);
+        setIsUploading(false);
       }
     }
   }, [maskDataUrl, onSave, strokes, width, height, originalImageSize]);
@@ -941,10 +952,13 @@ export default function ImageDoodleEditor({
       </div>
       <div className="flex justify-center mt-4">
         <div
-          className="w-[150px] h-[40px] bg-[#ff7315] cursor-pointer text-white rounded-md flex items-center justify-center"
+          className={`w-[150px] h-[40px] bg-[#ff7315] cursor-pointer text-white rounded-md flex items-center justify-center ${
+            isUploading ? 'opacity-70 pointer-events-none' : ''
+          }`}
           onClick={handleSave}
         >
           Confirm
+          {isUploading && <Loader2 className="w-5 h-5 animate-spin ml-2" />}
         </div>
       </div>
 
