@@ -63,6 +63,11 @@ export function Sidebar() {
               setGenerating(false);
               return;
             }
+            if (!formData.description) {
+              console.error('Please provide a description');
+              setGenerating(false);
+              return;
+            }
             break;
           case '2': // Change Background
             if (!formData.referenceImageUrl) {
@@ -70,8 +75,18 @@ export function Sidebar() {
               setGenerating(false);
               return;
             }
+            if (!formData.description) {
+              console.error('Please provide a description');
+              setGenerating(false);
+              return;
+            }
             break;
           case '4': // Partial modification
+            if (!formData.maskUrl) {
+              console.error('Please provide a mask image');
+              setGenerating(false);
+              return;
+            }
             if (!formData.description) {
               console.error('Please provide a description');
               setGenerating(false);
@@ -84,26 +99,16 @@ export function Sidebar() {
         let response;
         switch (currentVariationType) {
           case '1': // Change Color
-            response = await changeClothesColor(
-              formData.imageUrl!,
-              formData.description || '',
-              formData.colorSelection!
-            );
+            response = await changeClothesColor(formData.imageUrl!, formData.description!, formData.colorSelection!);
             break;
           case '2': // Change Background
-            response = await changeBackground(
-              formData.imageUrl!,
-              formData.referenceImageUrl!,
-              formData.description || ''
-            );
+            response = await changeBackground(formData.imageUrl!, formData.referenceImageUrl!, formData.description!);
             break;
           case '3': // Remove background
             response = await removeBackground(formData.imageUrl!);
             break;
           case '4': // Partial modification
-            // Use the uploaded mask URL
-            const maskUrl = formData.maskUrl || '';
-            response = await particialModification(formData.imageUrl!, maskUrl, formData.description!);
+            response = await particialModification(formData.imageUrl!, formData.maskUrl!, formData.description!);
             break;
           case '5': // Upscale
             response = await upscale(formData.imageUrl!);
@@ -136,16 +141,16 @@ export function Sidebar() {
 
       switch (currentVariationType) {
         case '1': // Change Color
-          isFormValid = hasMainImage && Boolean(formData.colorSelection);
+          isFormValid = hasMainImage && Boolean(formData.colorSelection) && Boolean(formData.description);
           break;
         case '2': // Change Background
-          isFormValid = hasMainImage && Boolean(formData.referenceImageUrl);
+          isFormValid = hasMainImage && Boolean(formData.referenceImageUrl) && Boolean(formData.description);
           break;
         case '3': // Remove background
           isFormValid = hasMainImage;
           break;
         case '4': // Partial modification
-          isFormValid = hasMainImage && Boolean(formData.description);
+          isFormValid = hasMainImage && Boolean(formData.maskUrl) && Boolean(formData.description);
           break;
         case '5': // Upscale
           isFormValid = hasMainImage;
