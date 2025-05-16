@@ -149,7 +149,7 @@ export function ImageGrid() {
     if (token) {
       fetchImages(1);
     }
-  }, [fetchImages]);
+  }, []);
 
   // 监听提交成功事件，加载最近图片
   useEffect(() => {
