@@ -22,6 +22,7 @@ export interface ImageItem {
   status: number;
   resultPic: string;
   createTime: string;
+  isCollected: boolean;
 }
 
 const PAGE_SIZE = 10000; // 请求的图片数量

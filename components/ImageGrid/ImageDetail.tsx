@@ -1,9 +1,13 @@
 import Image from 'next/image';
+import { usePathname, useRouter } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
 import { Overlay } from '@/components/ui/overlay';
 
-import { ImageItem } from './index';
+import { downloadImage } from '@/utils';
+import { collectImage } from '@/lib/api/album';
+
+import type { ImageItem } from './index';
 
 interface ImageDetailProps {
   image: ImageItem | null;
@@ -21,6 +25,36 @@ interface ActionButtonProps {
 
 export default function ImageDetail({ image, onClose, isOpen, imgList, onImageChange }: ImageDetailProps) {
   if (!isOpen) return null;
+
+  const pathname = usePathname();
+  const router = useRouter();
+
+  console.log(pathname, image, 'pathname');
+
+  const handleActionButtonClick = (text: string) => {
+    console.log(text, 'text');
+    if (text === 'Download') {
+      downloadImage(image?.resultPic ?? '', 'image.jpg');
+    } else if (text === 'Delete') {
+      console.log('delete');
+    } else if (text === 'Remove from album') {
+      console.log('remove from album');
+      collectImage({ genImgId: image?.genImgId ?? 0, action: 2 });
+    } else if (text === 'Add to album') {
+      collectImage({ genImgId: image?.genImgId ?? 0, action: 1 });
+    } else if (text === 'Magic Kit') {
+      router.push('/magic-kit');
+    } else if (text === 'Virtual Try-On') {
+      router.push('/');
+    }
+  };
+
+  const ActionButton: React.FC<ActionButtonProps> = ({ variant, text }) => (
+    <Button variant={variant} className="w-full mb-3 text-[#fff]" onClick={() => handleActionButtonClick(text)}>
+      <Image src="/images/sparkles.svg" alt="sparkles" width={20} height={20} className="object-cover" priority />
+      <span>{text}</span>
+    </Button>
+  );
 
   return (
     <Overlay onClick={onClose}>
@@ -59,10 +93,15 @@ export default function ImageDetail({ image, onClose, isOpen, imgList, onImageCh
           <div className="w-[252px] bg-white rounded-[4px] overflow-hidden absolute right-[-268px] bottom-0 p-4">
             <div className="text-[#121316] font-inter text-base font-medium leading-6 mb-4">Quick action</div>
             <div>
-              <ActionButton variant="default" text="Virtual Try-On" />
-              <ActionButton variant="secondary" text="Magic Kit" />
-              <ActionButton variant="secondary" text="Add to favourite" />
-              <ActionButton variant="secondary" text="Add to favourite" />
+              {['/', '/virtual-try-on', '/magic-kit'].includes(pathname) && (
+                <>
+                  {pathname !== '/magic-kit' && <ActionButton variant="default" text="Magic Kit" />}
+                  {pathname !== '/virtual-try-on' && (
+                    <ActionButton variant={pathname === '/' ? 'secondary' : 'default'} text="Virtual Try-On" />
+                  )}
+                </>
+              )}
+              <ActionButton variant="secondary" text={image?.isCollected ? 'Remove from album' : 'Add to album'} />
               <ActionButton variant="secondary" text="Download" />
               <ActionButton variant="secondary" text="Delete" />
             </div>
@@ -104,10 +143,3 @@ export default function ImageDetail({ image, onClose, isOpen, imgList, onImageCh
     </Overlay>
   );
 }
-
-const ActionButton: React.FC<ActionButtonProps> = ({ variant, text }) => (
-  <Button variant={variant} className="w-full mb-3 text-[#fff]">
-    <Image src="/images/sparkles.svg" alt="sparkles" width={20} height={20} className="object-cover" priority />
-    <span>{text}</span>
-  </Button>
-);
