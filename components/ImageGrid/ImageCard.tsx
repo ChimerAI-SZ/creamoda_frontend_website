@@ -1,8 +1,11 @@
-import { forwardRef, useState, useEffect, useRef } from 'react';
+import { forwardRef, useState, useRef } from 'react';
 import Image from 'next/image';
-import { Button } from '@/components/ui/button';
-import GetIntTouchDialog from '@/components/GetIntTouchDialog';
+import { Star, ImageDown, Trash2 } from 'lucide-react';
+
 import { cn } from '@/lib/utils';
+import { Modal } from '@/utils/modal';
+import { downloadImage } from '@/utils';
+import { collectImage } from '@/lib/api/album';
 
 interface ImageCardProps {
   image: any;
@@ -14,6 +17,8 @@ export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(({ image, on
   // 新生成的图片的标记，如果为 true 则表示图片是新生成的
   // 新生成的图片不需要进入loading状态
   const newImageRef = useRef<boolean>([1, 2].includes(image.status));
+
+  const [isCollected, setIsCollected] = useState(image.isCollected);
 
   const onImageLoad = () => {
     setIsLoaded(true);
@@ -114,21 +119,39 @@ export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(({ image, on
             />
           </div>
           <div
-            className="absolute w-[104px] h-[28px] z-1 bottom-8 left-1/2 -translate-x-1/2 "
+            className="absolute w-full h-[28px] z-1 bottom-6 left-1/2 -translate-x-1/2 "
             onClick={e => e.stopPropagation()}
           >
-            <GetIntTouchDialog
-              source="3d_making"
-              genImgId={image.genImgId}
-              trigger={
-                <Button
-                  size="sm"
-                  className="w-[104px] h-[28px] absolute opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                >
-                  3D making
-                </Button>
-              }
-            />
+            <div className="flex items-center justify-center gap-8 w-full h-[28px] absolute opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <div
+                className={cn(
+                  'w-[33px] h-[33px] flex items-center justify-center rounded-[50%] cursor-pointer',
+                  isCollected ? 'bg-[#F97917] text-white' : 'bg-[#fff] text-black'
+                )}
+                onClick={() => {
+                  collectImage({ genImgId: image.genImgId, action: isCollected ? 2 : 1 });
+                  setIsCollected(!isCollected);
+                }}
+              >
+                <Star className="w-[18px] h-[18px]" />
+              </div>
+              <div
+                className="w-[33px] h-[33px] bg-[#fff] flex items-center justify-center text-white rounded-[50%] cursor-pointer"
+                onClick={() => {
+                  downloadImage(image.resultPic, 'image.jpg');
+                }}
+              >
+                <ImageDown className="w-[18px] h-[18px] text-[#000]" />
+              </div>
+              <div
+                className="w-[33px] h-[33px] bg-[#fff] flex items-center justify-center text-white rounded-[50%] cursor-pointer"
+                onClick={() => {
+                  Modal.confirm('Are you sure you want to delete this image?');
+                }}
+              >
+                <Trash2 className="w-[18px] h-[18px] text-[#000]" />
+              </div>
+            </div>
           </div>
         </>
       )}

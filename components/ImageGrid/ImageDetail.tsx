@@ -1,10 +1,13 @@
 import Image from 'next/image';
+import { usePathname, useRouter } from 'next/navigation';
 
-import GetIntTouchDialog from '@/components/GetIntTouchDialog';
 import { Button } from '@/components/ui/button';
 import { Overlay } from '@/components/ui/overlay';
 
-import { ImageItem } from './index';
+import { downloadImage } from '@/utils';
+import { collectImage } from '@/lib/api/album';
+
+import type { ImageItem } from './index';
 
 interface ImageDetailProps {
   image: ImageItem | null;
@@ -14,8 +17,44 @@ interface ImageDetailProps {
   onImageChange: (image: ImageItem | null) => void;
 }
 
+// 提取一个通用的按钮组件
+interface ActionButtonProps {
+  variant: 'default' | 'secondary';
+  text: string;
+}
+
 export default function ImageDetail({ image, onClose, isOpen, imgList, onImageChange }: ImageDetailProps) {
+  const pathname = usePathname();
+  const router = useRouter();
+
   if (!isOpen) return null;
+
+  console.log(pathname, image, 'pathname');
+
+  const handleActionButtonClick = (text: string) => {
+    console.log(text, 'text');
+    if (text === 'Download') {
+      downloadImage(image?.resultPic ?? '', 'image.jpg');
+    } else if (text === 'Delete') {
+      console.log('delete');
+    } else if (text === 'Remove from album') {
+      console.log('remove from album');
+      collectImage({ genImgId: image?.genImgId ?? 0, action: 2 });
+    } else if (text === 'Add to album') {
+      collectImage({ genImgId: image?.genImgId ?? 0, action: 1 });
+    } else if (text === 'Magic Kit') {
+      router.push('/magic-kit');
+    } else if (text === 'Virtual Try-On') {
+      router.push('/');
+    }
+  };
+
+  const ActionButton: React.FC<ActionButtonProps> = ({ variant, text }) => (
+    <Button variant={variant} className="w-full mb-3 text-[#fff]" onClick={() => handleActionButtonClick(text)}>
+      <Image src="/images/sparkles.svg" alt="sparkles" width={20} height={20} className="object-cover" priority />
+      <span>{text}</span>
+    </Button>
+  );
 
   return (
     <Overlay onClick={onClose}>
@@ -51,24 +90,20 @@ export default function ImageDetail({ image, onClose, isOpen, imgList, onImageCh
           {/* 其他详情内容 */}
         </div>
         {image && (
-          <div className="w-[252px] h-[140px] bg-white rounded-[4px] overflow-hidden absolute right-[-268px] bottom-0 p-4">
+          <div className="w-[252px] bg-white rounded-[4px] overflow-hidden absolute right-[-268px] bottom-0 p-4">
             <div className="text-[#121316] font-inter text-base font-medium leading-6 mb-4">Quick action</div>
-            <GetIntTouchDialog
-              source="3d_making"
-              genImgId={image.genImgId}
-              trigger={
-                <Button variant="default" className="w-full mb-3">
-                  3D making
-                </Button>
-              }
-            />
-            <div className="text-[#121316] font-inter text-sm font-normal leading-5">
-              <span>Want to retouch it? </span>
-              <GetIntTouchDialog
-                source="human_tuning"
-                genImgId={image.genImgId}
-                trigger={<span className="underline cursor-pointer">Contact us</span>}
-              />
+            <div>
+              {['/', '/virtual-try-on', '/magic-kit'].includes(pathname) && (
+                <>
+                  {pathname !== '/magic-kit' && <ActionButton variant="default" text="Magic Kit" />}
+                  {pathname !== '/virtual-try-on' && (
+                    <ActionButton variant={pathname === '/' ? 'secondary' : 'default'} text="Virtual Try-On" />
+                  )}
+                </>
+              )}
+              <ActionButton variant="secondary" text={image?.isCollected ? 'Remove from album' : 'Add to album'} />
+              <ActionButton variant="secondary" text="Download" />
+              <ActionButton variant="secondary" text="Delete" />
             </div>
           </div>
         )}
