@@ -279,4 +279,5 @@ const AccountSettingsDrawer = React.memo(
   }
 );
 
+AccountSettingsDrawer.displayName = 'AccountSettingsDrawer';
 export default AccountSettingsDrawer;

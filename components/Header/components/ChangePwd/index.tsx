@@ -78,4 +78,6 @@ const ChangePwd = React.memo(
   }
 );
 
+ChangePwd.displayName = 'ChangePwd';
+
 export default ChangePwd;
