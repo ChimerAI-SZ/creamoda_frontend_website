@@ -224,7 +224,7 @@ export function ColorPicker({ value = '#ffffff', onChange }: ColorPickerProps) {
   // Handle eyedropper click
   const handleEyedropper = async () => {
     try {
-      // @ts-ignore - EyeDropper is not in the standard TypeScript types yet
+      // @ts-expect-error - EyeDropper is not in the standard TypeScript types yet
       const eyeDropper = new window.EyeDropper();
       const result = await eyeDropper.open();
       setCurrentColor(result.sRGBHex);
@@ -263,14 +263,14 @@ export function ColorPicker({ value = '#ffffff', onChange }: ColorPickerProps) {
     if (isOpen) {
       updatePositionsFromColor(value);
     }
-  }, [value, isOpen]);
+  }, [value, isOpen, updatePositionsFromColor]);
 
   // Update positions when picker is opened
   useEffect(() => {
     if (isOpen) {
       updatePositionsFromColor(currentColor);
     }
-  }, [isOpen]);
+  }, [isOpen, currentColor, updatePositionsFromColor]);
 
   return (
     <div className="relative" ref={containerRef}>

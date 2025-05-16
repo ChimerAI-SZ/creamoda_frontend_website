@@ -108,8 +108,8 @@ export default function ImageDoodleEditor({
       const img = backgroundImgRef.current;
 
       // 使用图片的真实尺寸，而不是默认的width和height
-      let imgWidth = img.naturalWidth;
-      let imgHeight = img.naturalHeight;
+      const imgWidth = img.naturalWidth;
+      const imgHeight = img.naturalHeight;
 
       // 使用根据图片比例计算的容器尺寸
       const maxDisplayWidth = containerWidth;
@@ -235,7 +235,7 @@ export default function ImageDoodleEditor({
             let compressedDataUrl = tempCanvas.toDataURL('image/png', quality);
 
             // 估算大小 (dataUrl长度大致可以估计文件大小)
-            let estimatedSize = compressedDataUrl.length * 0.75; // 转换base64到字节大小
+            const estimatedSize = compressedDataUrl.length * 0.75; // 转换base64到字节大小
 
             // 如果估计大小超过9MB (留1MB的安全边界)，进一步压缩
             if (estimatedSize > 9 * 1024 * 1024) {
@@ -740,7 +740,11 @@ export default function ImageDoodleEditor({
       strokeWidth,
       eraserWidth,
       handleStrokeWidthChange,
-      handleEraserWidthChange
+      handleEraserWidthChange,
+      handlePenSliderEnter,
+      handlePenSliderLeave,
+      handleEraserSliderEnter,
+      handleEraserSliderLeave
     ]
   );
 

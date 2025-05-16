@@ -149,7 +149,7 @@ export function ImageGrid() {
     if (token) {
       fetchImages(1);
     }
-  }, []);
+  }, [fetchImages]);
 
   // 监听提交成功事件，加载最近图片
   useEffect(() => {
@@ -168,8 +168,9 @@ export function ImageGrid() {
 
     return () => {
       eventBus.off('sidebar:submit-success', handleSubmitSuccess);
+      eventBus.off('auth:logout', handleLogout);
     };
-  }, [fetchRecentImages]);
+  }, [fetchRecentImages, clearUserInfo]);
 
   // 清理轮询定时器
   useEffect(() => {
