@@ -375,9 +375,9 @@ export function ColorPicker({ value = '#ffffff', onChange }: ColorPickerProps) {
             <button
               type="button"
               onClick={handleConfirm}
-              className="mt-3 p-2 border border-gray-300 text-black rounded font-medium text-sm hover:bg-blue-700 transition-colors"
+              className="mt-3 p-2 border border-gray-300 text-black rounded font-medium text-sm hover:bg-gray-50 transition-colors"
             >
-              确定
+              confirm
             </button>
           </div>
         </div>

@@ -24,8 +24,6 @@ export const ImageSlot: React.FC<ImageSlotProps> = ({
   width = 360,
   height = 480
 }) => {
-  console.log('imageUrl2222', imageUrl);
-  console.log('maskImageUrl', maskImageUrl);
   const [open, setOpen] = React.useState(false);
   const [currentImage, setCurrentImage] = React.useState<string | undefined>(imageUrl);
 
@@ -83,13 +81,19 @@ export const ImageSlot: React.FC<ImageSlotProps> = ({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <button
-          className="w-full h-full flex flex-col items-center justify-center border border-dashed border-gray-300 rounded cursor-pointer bg-white hover:bg-gray-50 transition"
+          className="w-full h-full flex flex-col items-center justify-center border border-dashed  bg-[#FAFAFA] border-gray-300 rounded cursor-pointer  transition"
           onClick={onClick}
           type="button"
         >
           <div className="w-full h-full flex flex-col">
             <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
-              <Image src={maskImage || placeholder} alt="Mask Image" fill className="object-contain" />
+              {maskImage ? (
+                <Image src={maskImage} alt="Mask Image" fill className="object-contain" />
+              ) : (
+                <div className="text-center p-4 text-[#121316] font-inter text-sm font-normal leading-5">
+                  Select the region to be modified
+                </div>
+              )}
             </div>
           </div>
         </button>

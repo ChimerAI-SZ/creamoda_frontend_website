@@ -10,7 +10,7 @@ import { variationTypes } from '@/app/magic-kit/const';
 import { FormLabel } from '@/components/FormLabel/FormLabel';
 import { DescribeDesign } from '@/components/DescribeDesign/index';
 import { ColorPicker } from './ColorPicker';
-import { ImageUploader as SecondImageUploader } from './ImageUploader';
+import { ImageUploader as SecondImageUploader, MemoizedImageUploader } from './ImageUploader';
 import {
   changeClothesColor,
   changeBackground,
@@ -18,6 +18,8 @@ import {
   particialModification,
   upscale
 } from '@/lib/api/magicKit';
+import { eventBus } from '@/utils/events';
+import { showErrorDialog } from '@/utils/index';
 
 export function Sidebar() {
   const { isGenerating, setGenerating } = useGenerationStore();
@@ -121,13 +123,17 @@ export function Sidebar() {
 
         // Process response
         console.log('Generation response:', response);
+        if (response.code === 0) {
+          eventBus.emit('sidebar:submit-success', void 0);
+        } else {
+          showErrorDialog(response.msg || 'Failed to generate image');
+          setGenerating(false);
+        }
 
         // Here you would handle the response, like updating the UI or showing results
         // Example: if (response && response.success) { ... }
       } catch (error) {
         console.error('Error in image generation:', error);
-      } finally {
-        setGenerating(false);
       }
     }
   };
@@ -187,7 +193,7 @@ export function Sidebar() {
           <div className="space-y-6">
             <div className="space-y-2">
               <FormLabel>Upload original image</FormLabel>
-              <SecondImageUploader
+              <MemoizedImageUploader
                 imageUrl={formData.imageUrl || ''}
                 onImageUrlChange={updateImageUrl}
                 onMaskImageUrlChange={(dataUrl, uploadedUrl) => updateMaskUrl(uploadedUrl || '')}
@@ -213,7 +219,7 @@ export function Sidebar() {
           <div className="space-y-6">
             <div className="space-y-2">
               <FormLabel>Upload original image</FormLabel>
-              <SecondImageUploader
+              <MemoizedImageUploader
                 imageUrl={formData.imageUrl || ''}
                 onImageUrlChange={updateImageUrl}
                 onMaskImageUrlChange={(dataUrl, uploadedUrl) => updateMaskUrl(uploadedUrl || '')}
@@ -223,7 +229,7 @@ export function Sidebar() {
             </div>
             <div className="space-y-2">
               <FormLabel>Upload reference image</FormLabel>
-              <SecondImageUploader
+              <MemoizedImageUploader
                 imageUrl={formData.referenceImageUrl || ''}
                 onImageUrlChange={updateReferenceImageUrl}
                 onMaskImageUrlChange={(dataUrl, uploadedUrl) => {}} // Not used for reference
@@ -245,7 +251,7 @@ export function Sidebar() {
           <div className="space-y-6">
             <div className="space-y-2">
               <FormLabel>Upload original image</FormLabel>
-              <SecondImageUploader
+              <MemoizedImageUploader
                 imageUrl={formData.imageUrl || ''}
                 onImageUrlChange={updateImageUrl}
                 onMaskImageUrlChange={(dataUrl, uploadedUrl) => updateMaskUrl(uploadedUrl || '')}
@@ -261,7 +267,7 @@ export function Sidebar() {
           <div className="space-y-6">
             <div className="space-y-2">
               <FormLabel>Upload original image</FormLabel>
-              <SecondImageUploader
+              <MemoizedImageUploader
                 imageUrl={formData.imageUrl || ''}
                 onImageUrlChange={updateImageUrl}
                 onMaskImageUrlChange={(dataUrl, uploadedUrl) => updateMaskUrl(uploadedUrl || '')}
@@ -283,7 +289,7 @@ export function Sidebar() {
           <div className="space-y-6">
             <div className="space-y-2">
               <FormLabel>Upload original image</FormLabel>
-              <SecondImageUploader
+              <MemoizedImageUploader
                 imageUrl={formData.imageUrl || ''}
                 onImageUrlChange={updateImageUrl}
                 onMaskImageUrlChange={(dataUrl, uploadedUrl) => updateMaskUrl(uploadedUrl || '')}
@@ -299,7 +305,7 @@ export function Sidebar() {
           <div className="space-y-6">
             <div>
               <FormLabel>Upload Image</FormLabel>
-              <SecondImageUploader
+              <MemoizedImageUploader
                 imageUrl={formData.imageUrl || ''}
                 onImageUrlChange={updateImageUrl}
                 onMaskImageUrlChange={(dataUrl, uploadedUrl) => updateMaskUrl(uploadedUrl || '')}

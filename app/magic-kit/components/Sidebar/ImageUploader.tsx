@@ -59,11 +59,9 @@ export function ImageUploader({
   imageType = 'Click or drag to upload',
   showMaskEditor = false
 }: ImageUploaderProps) {
-  console.log('imageUrl1111', imageUrl);
   // 状态管理
   const [dragActive, setDragActive] = useState(false); // 是否处于拖拽状态
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null); // 预览图片URL
-  const [originalUrl, setOriginalUrl] = useState<string | null>(null); // 原始图片URL
+
   const [isUploading, setIsUploading] = useState(false); // 是否正在上传
   const [newImageUrl, setNewImageUrl] = useState<string | null>(null); // 新输入的图片URL
   const [isLoadingImageUrl, setIsLoadingImageUrl] = useState(false); // 是否正在加载URL图片
@@ -77,7 +75,6 @@ export function ImageUploader({
 
     try {
       const url = await uploadImage(file);
-      setOriginalUrl(url);
       // 上传成功 - 使用服务器返回的URL更新
       onImageUrlChange(url);
     } catch (error) {
@@ -167,7 +164,6 @@ export function ImageUploader({
 
           // 添加API前缀并设置为图片URL
           const processedUrl = `${apiPrefix}/${base64Url}`;
-          console.log('processedUrl', processedUrl);
           onImageUrlChange(processedUrl);
 
           // 测试图片是否能正确加载
@@ -209,12 +205,17 @@ export function ImageUploader({
   };
 
   return (
-    <div className="space-y-2 flex items-center justify-center">
+    <div
+      className={cn(
+        'space-y-2 flex items-center justify-center gap-[7px]',
+        imageUrl && showMaskEditor ? '' : 'bg-[#FAFAFA] border border-[#DCDCDC] rounded-[4px] '
+      )}
+    >
       <div
         className={cn(
-          'relative w-[302px] h-[288px] rounded-[4px] border border-[#DCDCDC] transition-colors',
-          dragActive ? 'border-[#FF7B0D] bg-[#FFE4D2]' : 'hover:bg-gray-50',
-          styleType === 'default' && 'bg-[#FAFAFA]'
+          'relative w-[302px] h-[288px] rounded-[4px] transition-colors',
+          dragActive ? 'border-[#FF7B0D] bg-[#FFE4D2]' : '',
+          styleType === 'default' && ''
         )}
         onDragEnter={handleDrag}
         onDragLeave={handleDrag}
@@ -236,16 +237,15 @@ export function ImageUploader({
         ) : imageUrl ? (
           showMaskEditor ? (
             // 上传后分为上下两部分，各占50%（用于有涂鸦功能的情况）
-            <div className="flex flex-col w-full h-[288px]">
+            <div className="flex flex-col w-full h-[288px] gap-[7px]">
               {/* 上面：图片预览（50%） */}
-              <div className="relative flex-1 min-h-0 flex items-center justify-center border-b border-[#DCDCDC]">
+              <div className="relative flex-1 min-h-0 flex items-center justify-center border  border-[#DCDCDC] bg-[#FAFAFA]">
                 <Image
                   src={imageUrl}
                   alt="Uploaded image"
                   fill
                   style={{ objectFit: 'contain' }}
                   onError={() => {
-                    setPreviewUrl(null);
                     onImageUrlChange('');
                     showErrorDialog(
                       'Failed to load image. The URL might be invalid or the image format is not supported.'
@@ -262,7 +262,7 @@ export function ImageUploader({
                 </button>
               </div>
               {/* 下面：ImageSlot 组件（50%） */}
-              <div className="flex-1 min-h-0 flex items-center justify-center">
+              <div className="flex-1 min-h-0 flex items-center justify-center bg-[#FAFAFA]">
                 <ImageSlot
                   imageUrl={imageUrl || ''}
                   maskImageUrl={maskImageUrl}
@@ -283,7 +283,6 @@ export function ImageUploader({
                   fill
                   style={{ objectFit: 'contain' }}
                   onError={() => {
-                    setPreviewUrl(null);
                     onImageUrlChange('');
                     showErrorDialog(
                       'Failed to load image. The URL might be invalid or the image format is not supported.'
@@ -346,4 +345,10 @@ export function ImageUploader({
 }
 
 // 使用React.memo包装组件以优化性能，避免不必要的重渲染
-export const MemoizedImageUploader = memo(ImageUploader);
+export const MemoizedImageUploader = memo(ImageUploader, (prevProps, nextProps) => {
+  return (
+    prevProps.imageUrl === nextProps.imageUrl &&
+    prevProps.maskImageUrl === nextProps.maskImageUrl &&
+    prevProps.showMaskEditor === nextProps.showMaskEditor
+  );
+});
