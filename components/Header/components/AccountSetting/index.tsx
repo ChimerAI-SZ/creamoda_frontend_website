@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { UsernameRequirements } from '@/app/app-components/Login/components/UsernameRequirements';
 import usePersonalInfoStore from '@/stores/usePersonalInfoStore';
 
-import { updateUserInfo } from '@/lib/api/common';
+import { updateUserInfo, uploadImage } from '@/lib/api/common';
 import { Modal } from '@/utils/modal';
 import { showErrorDialog } from '@/utils/index';
 
@@ -22,7 +22,7 @@ const AccountSettingsDrawer = React.memo(
     open: boolean;
     onOpenChange: (open: boolean) => void;
   }) => {
-    const { username, email, headPic, hasPwd, updateUsername } = usePersonalInfoStore();
+    const { username, email, headPic, hasPwd, updateUsername, updateHeadPic } = usePersonalInfoStore();
 
     // 编辑用户名的输入框的值
     const [newUsername, setNewUsername] = useState(username);
@@ -35,14 +35,27 @@ const AccountSettingsDrawer = React.memo(
       handleLogout();
     }, [handleLogout]);
 
-    const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    /**
+     * 将图片上传到服务器
+     * @param {File} file - 要上传的图片文件
+     */
+    const uploadImageToServer = async (file: File) => {
+      try {
+        const url = await uploadImage(file);
+        updateHeadPic(url);
+
+        handleUpdateUserInfo({ headPic: url });
+      } catch (error) {
+        console.error('Image upload error:', error);
+        showErrorDialog(error instanceof Error ? error.message : 'Failed to upload image');
+      }
+    };
+
+    const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0];
+
       if (file) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setSelectedImage(reader.result as string);
-        };
-        reader.readAsDataURL(file);
+        await uploadImageToServer(file);
       }
     };
 
@@ -259,7 +272,8 @@ const AccountSettingsDrawer = React.memo(
             </div>
           </DialogContent>
         </Dialog>
-        <ChangePwd open={changePwdOpen} onOpenChange={setChangePwdOpen} />
+        {/* 修改密码的弹窗 */}
+        <ChangePwd open={changePwdOpen} onOpenChange={setChangePwdOpen} handleUpdateUserInfo={handleUpdateUserInfo} />
       </>
     );
   }
