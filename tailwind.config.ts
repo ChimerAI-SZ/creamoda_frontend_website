@@ -82,15 +82,25 @@ export default {
           to: {
             height: '0'
           }
+        },
+        spin: {
+          from: {
+            transform: 'rotate(0deg)'
+          },
+          to: {
+            transform: 'rotate(360deg)'
+          }
         }
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
-        'accordion-up': 'accordion-up 0.2s ease-out'
+        'accordion-up': 'accordion-up 0.2s ease-out',
+        spin: 'spin 1s linear infinite'
       }
     },
     animation: {
-      rotateOneCircle: 'rotateOneCircle 0.5s linear' // 创建一个1秒的旋转动画
+      rotateOneCircle: 'rotateOneCircle 0.5s linear', // 创建一个1秒的旋转动画
+      spin: 'spin 1s linear infinite'
     },
     keyframes: {
       rotateOneCircle: {
@@ -99,6 +109,14 @@ export default {
         },
         '100%': {
           transform: 'rotate(-360deg)'
+        }
+      },
+      spin: {
+        '0%': {
+          transform: 'rotate(0deg)'
+        },
+        '100%': {
+          transform: 'rotate(360deg)'
         }
       }
     }
