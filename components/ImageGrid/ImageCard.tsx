@@ -5,6 +5,7 @@ import { Star, ImageDown, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Modal } from '@/utils/modal';
 import { downloadImage } from '@/utils';
+import { collectImage } from '@/lib/api/album';
 
 interface ImageCardProps {
   image: any;
@@ -16,6 +17,8 @@ export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(({ image, on
   // 新生成的图片的标记，如果为 true 则表示图片是新生成的
   // 新生成的图片不需要进入loading状态
   const newImageRef = useRef<boolean>([1, 2].includes(image.status));
+
+  const [isCollected, setIsCollected] = useState(image.isCollected);
 
   const onImageLoad = () => {
     setIsLoaded(true);
@@ -120,8 +123,17 @@ export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(({ image, on
             onClick={e => e.stopPropagation()}
           >
             <div className="flex items-center justify-center gap-8 w-full h-[28px] absolute opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <div className="w-[33px] h-[33px] bg-[#fff] flex items-center justify-center text-white rounded-[50%] cursor-pointer">
-                <Star className="w-[18px] h-[18px] text-[#000]" />
+              <div
+                className={cn(
+                  'w-[33px] h-[33px] flex items-center justify-center rounded-[50%] cursor-pointer',
+                  isCollected ? 'bg-[#F97917] text-white' : 'bg-[#fff] text-black'
+                )}
+                onClick={() => {
+                  collectImage({ genImgId: image.genImgId, action: isCollected ? 2 : 1 });
+                  setIsCollected(!isCollected);
+                }}
+              >
+                <Star className="w-[18px] h-[18px]" />
               </div>
               <div
                 className="w-[33px] h-[33px] bg-[#fff] flex items-center justify-center text-white rounded-[50%] cursor-pointer"

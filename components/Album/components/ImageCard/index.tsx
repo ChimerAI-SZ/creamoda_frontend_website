@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import Image from 'next/image';
-import { Star, ImageDown, Trash2 } from 'lucide-react';
+import { Star, ImageDown } from 'lucide-react';
 
-import type { ImageItem } from '@/components/ImageGrid';
+import type { AlbumItem } from '../Drawer';
 
 import { cn } from '@/lib/utils';
 import { downloadImage } from '@/utils';
 
-export default function ImageCard({ image }: { image: ImageItem }) {
+export default function ImageCard({ image }: { image: AlbumItem }) {
   const [isLoaded, setIsLoaded] = useState(false);
 
   const onImageLoad = () => {

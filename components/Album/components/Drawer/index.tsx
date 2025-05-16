@@ -6,18 +6,40 @@ import { Drawer, DrawerTrigger, DrawerContent, DrawerHeader, DrawerTitle } from 
 import ImageCard from '../ImageCard';
 
 import { useAlbumListStore } from '@/stores/useAlbumListStore';
+import { getCollectList } from '@/lib/api';
+import { showErrorDialog } from '@/utils/index';
 
-import type { ImageItem } from '@/components/ImageGrid';
+export interface AlbumItem {
+  genImgId: number;
+  createTime: string;
+  resultPic: string;
+}
 
 export function AlbumDrawer({ children }: { children: React.ReactNode }) {
   const { imageList, resetImageList } = useAlbumListStore();
 
+  const queryCollectList = async () => {
+    const res = await getCollectList(1, 10);
+
+    if (res.code === 0) {
+      resetImageList(res.data.list);
+    } else {
+      showErrorDialog(res.msg);
+    }
+  };
+
+  const handleOpenChange = (openState: boolean) => {
+    if (openState) {
+      queryCollectList();
+    }
+  };
+
   useEffect(() => {
-    resetImageList(mockData.list);
+    queryCollectList();
   }, []);
 
   return (
-    <Drawer>
+    <Drawer onOpenChange={handleOpenChange}>
       <DrawerTrigger>{children}</DrawerTrigger>
 
       <DrawerContent>
@@ -30,7 +52,7 @@ export function AlbumDrawer({ children }: { children: React.ReactNode }) {
 
         <div className="w-[340px] h-full bg-[#fff] p-3 overflow-y-auto">
           <div className="columns-2 gap-3">
-            {imageList.map((image: ImageItem) => (
+            {imageList.map((image: AlbumItem) => (
               <ImageCard key={image.genImgId || image.resultPic} image={image} />
             ))}
           </div>
