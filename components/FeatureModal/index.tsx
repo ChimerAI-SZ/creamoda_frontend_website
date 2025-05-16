@@ -82,7 +82,9 @@ export default function FeatureModal({
         <DialogHeader>
           <DialogTitle className="flex justify-between items-center h-[32px] mb-[16px]">
             <span>Design Features</span>
-            <X className="w-[24px] h-[24px]" />
+            <DialogTrigger asChild>
+              <X className="w-[24px] h-[24px]" />
+            </DialogTrigger>
           </DialogTitle>
         </DialogHeader>
 

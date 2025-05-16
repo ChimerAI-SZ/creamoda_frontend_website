@@ -13,6 +13,7 @@ interface UserInfo {
   status: string;
   headPic: string;
   emailVerified: string;
+  hasPwd: boolean;
 }
 
 interface ModelState extends UserInfo {
@@ -25,6 +26,7 @@ interface ModelState extends UserInfo {
   updateStatus: (status: string) => void;
   updateHeadPic: (headPic: string) => void;
   updateEmailVerified: (emailVerified: string) => void;
+  updateHasPwd: (hasPwd: boolean) => void;
 
   // Method for updating multiple fields at once
   updateUserInfo: (userInfo: Partial<UserInfo>) => void;
@@ -41,6 +43,7 @@ export const usePersonalInfoStore = create<ModelState>((set, get) => ({
   status: '',
   headPic: '',
   emailVerified: '',
+  hasPwd: false,
 
   // Status fields
   isLoading: false,
@@ -52,10 +55,10 @@ export const usePersonalInfoStore = create<ModelState>((set, get) => ({
   updateStatus: status => set({ status }),
   updateHeadPic: headPic => set({ headPic }),
   updateEmailVerified: emailVerified => set({ emailVerified }),
-
+  updateHasPwd: hasPwd => set({ hasPwd }),
   // Update multiple fields at once
   updateUserInfo: userInfo => set(state => ({ ...state, ...userInfo })),
-  clearUserInfo: () => set({ username: '', email: '', status: '', headPic: '', emailVerified: '' }),
+  clearUserInfo: () => set({ username: '', email: '', status: '', headPic: '', emailVerified: '', hasPwd: false }),
 
   // Fetch user info from API
   fetchUserInfo: async () => {
@@ -68,7 +71,8 @@ export const usePersonalInfoStore = create<ModelState>((set, get) => ({
         email: userData.email || '',
         status: userData.status || '',
         headPic: userData.headPic || '',
-        emailVerified: userData.emailVerified || ''
+        emailVerified: userData.emailVerified || '',
+        hasPwd: userData.hasPwd
       };
 
       set({ ...userInfo, isLoading: false });

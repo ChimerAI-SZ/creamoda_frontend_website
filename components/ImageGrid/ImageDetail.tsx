@@ -1,6 +1,5 @@
 import Image from 'next/image';
 
-import GetIntTouchDialog from '@/components/GetIntTouchDialog';
 import { Button } from '@/components/ui/button';
 import { Overlay } from '@/components/ui/overlay';
 
@@ -12,6 +11,12 @@ interface ImageDetailProps {
   isOpen: boolean;
   imgList: ImageItem[];
   onImageChange: (image: ImageItem | null) => void;
+}
+
+// 提取一个通用的按钮组件
+interface ActionButtonProps {
+  variant: 'default' | 'secondary';
+  text: string;
 }
 
 export default function ImageDetail({ image, onClose, isOpen, imgList, onImageChange }: ImageDetailProps) {
@@ -51,24 +56,15 @@ export default function ImageDetail({ image, onClose, isOpen, imgList, onImageCh
           {/* 其他详情内容 */}
         </div>
         {image && (
-          <div className="w-[252px] h-[140px] bg-white rounded-[4px] overflow-hidden absolute right-[-268px] bottom-0 p-4">
+          <div className="w-[252px] bg-white rounded-[4px] overflow-hidden absolute right-[-268px] bottom-0 p-4">
             <div className="text-[#121316] font-inter text-base font-medium leading-6 mb-4">Quick action</div>
-            <GetIntTouchDialog
-              source="3d_making"
-              genImgId={image.genImgId}
-              trigger={
-                <Button variant="default" className="w-full mb-3">
-                  3D making
-                </Button>
-              }
-            />
-            <div className="text-[#121316] font-inter text-sm font-normal leading-5">
-              <span>Want to retouch it? </span>
-              <GetIntTouchDialog
-                source="human_tuning"
-                genImgId={image.genImgId}
-                trigger={<span className="underline cursor-pointer">Contact us</span>}
-              />
+            <div>
+              <ActionButton variant="default" text="Virtual Try-On" />
+              <ActionButton variant="secondary" text="Magic Kit" />
+              <ActionButton variant="secondary" text="Add to favourite" />
+              <ActionButton variant="secondary" text="Add to favourite" />
+              <ActionButton variant="secondary" text="Download" />
+              <ActionButton variant="secondary" text="Delete" />
             </div>
           </div>
         )}
@@ -108,3 +104,10 @@ export default function ImageDetail({ image, onClose, isOpen, imgList, onImageCh
     </Overlay>
   );
 }
+
+const ActionButton: React.FC<ActionButtonProps> = ({ variant, text }) => (
+  <Button variant={variant} className="w-full mb-3 text-[#fff]">
+    <Image src="/images/sparkles.svg" alt="sparkles" width={20} height={20} className="object-cover" priority />
+    <span>{text}</span>
+  </Button>
+);
