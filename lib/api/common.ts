@@ -90,3 +90,17 @@ export async function uploadImage(file: File) {
     throw error;
   }
 }
+
+export async function updateUserInfo(payload: { headPic: string | null; username: string | null; pwd: string | null }) {
+  try {
+    const response = await api.post('/api/v1/user/change/user_info', {
+      username: payload.username,
+      pwd: payload.pwd,
+      headPic: payload.headPic
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error contacting us:', error);
+    throw error;
+  }
+}

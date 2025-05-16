@@ -145,7 +145,7 @@ export default function Avatar() {
               <div className="flex items-center justify-center">
                 <Button
                   variant="secondary"
-                  className="mt-6 w-[233px] px-[16px] py-[12px] border border-[#DCDCDC] text-[#fff] rounded-[30px] hover:bg-orange-50 transition-colors"
+                  className="mt-6 w-[233px] px-[16px] py-[12px] border border-[#DCDCDC] text-[#fff] rounded-[30px] transition-colors"
                   onClick={handleLogout}
                 >
                   <span className=" font-inter text-sm font-medium leading-5">Log out</span>

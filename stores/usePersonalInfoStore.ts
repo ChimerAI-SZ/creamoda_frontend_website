@@ -41,6 +41,7 @@ export const usePersonalInfoStore = create<ModelState>((set, get) => ({
   status: '',
   headPic: '',
   emailVerified: '',
+  hasPwd: false,
 
   // Status fields
   isLoading: false,
@@ -68,7 +69,8 @@ export const usePersonalInfoStore = create<ModelState>((set, get) => ({
         email: userData.email || '',
         status: userData.status || '',
         headPic: userData.headPic || '',
-        emailVerified: userData.emailVerified || ''
+        emailVerified: userData.emailVerified || '',
+        hasPwd: userData.hasPwd
       };
 
       set({ ...userInfo, isLoading: false });
