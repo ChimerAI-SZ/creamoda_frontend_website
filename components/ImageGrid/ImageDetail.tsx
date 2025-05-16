@@ -6,7 +6,7 @@ import { Overlay } from '@/components/ui/overlay';
 
 import { downloadImage } from '@/utils';
 import { collectImage } from '@/lib/api/album';
-
+import { useVariationFormStore } from '@/stores/useMagicKitStore';
 import type { ImageItem } from './index';
 
 interface ImageDetailProps {
@@ -26,6 +26,7 @@ interface ActionButtonProps {
 export default function ImageDetail({ image, onClose, isOpen, imgList, onImageChange }: ImageDetailProps) {
   const pathname = usePathname();
   const router = useRouter();
+  const { updateImageUrl } = useVariationFormStore();
 
   if (!isOpen) return null;
 
@@ -43,6 +44,7 @@ export default function ImageDetail({ image, onClose, isOpen, imgList, onImageCh
     } else if (text === 'Add to album') {
       collectImage({ genImgId: image?.genImgId ?? 0, action: 1 });
     } else if (text === 'Magic Kit') {
+      updateImageUrl(image?.resultPic ?? '');
       router.push('/magic-kit');
     } else if (text === 'Virtual Try-On') {
       router.push('/');
