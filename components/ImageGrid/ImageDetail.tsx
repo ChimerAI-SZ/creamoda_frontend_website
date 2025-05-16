@@ -24,10 +24,10 @@ interface ActionButtonProps {
 }
 
 export default function ImageDetail({ image, onClose, isOpen, imgList, onImageChange }: ImageDetailProps) {
-  if (!isOpen) return null;
-
   const pathname = usePathname();
   const router = useRouter();
+
+  if (!isOpen) return null;
 
   console.log(pathname, image, 'pathname');
 
