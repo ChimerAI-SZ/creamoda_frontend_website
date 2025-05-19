@@ -3,16 +3,16 @@ import Image from 'next/image';
 import { Star, ImageDown, Trash2 } from 'lucide-react';
 
 import { cn } from '@/utils';
-import { Modal } from '@/utils/modal';
 import { downloadImage } from '@/utils';
 import { collectImage } from '@/lib/api/album';
 
 interface ImageCardProps {
   image: any;
   onClick: () => void;
+  handleDeleteImage: (imageId: number) => void;
 }
 
-export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(({ image, onClick }, ref) => {
+export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(({ image, onClick, handleDeleteImage }, ref) => {
   const [isLoaded, setIsLoaded] = useState(false);
   // 新生成的图片的标记，如果为 true 则表示图片是新生成的
   // 新生成的图片不需要进入loading状态
@@ -145,9 +145,7 @@ export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(({ image, on
               </div>
               <div
                 className="w-[33px] h-[33px] bg-[#fff] flex items-center justify-center text-white rounded-[50%] cursor-pointer"
-                onClick={() => {
-                  Modal.confirm('Are you sure you want to delete this image?');
-                }}
+                onClick={() => handleDeleteImage(image.genImgId)}
               >
                 <Trash2 className="w-[18px] h-[18px] text-[#000]" />
               </div>

@@ -4,11 +4,10 @@ import { usePathname, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Overlay } from '@/components/ui/overlay';
 
-import { downloadImage } from '@/utils';
+import { downloadImage, deleteImage } from '@/utils';
 import { collectImage } from '@/lib/api/album';
 import { useVariationFormStore } from '@/stores/useMagicKitStore';
 import type { ImageItem } from './index';
-
 interface ImageDetailProps {
   image: ImageItem | null;
   onClose: () => void;
@@ -37,9 +36,10 @@ export default function ImageDetail({ image, onClose, isOpen, imgList, onImageCh
     if (text === 'Download') {
       downloadImage(image?.resultPic ?? '', 'image.jpg');
     } else if (text === 'Delete') {
-      console.log('delete');
+      deleteImage(image?.genImgId ?? 0, () => {
+        onClose();
+      });
     } else if (text === 'Remove from album') {
-      console.log('remove from album');
       collectImage({ genImgId: image?.genImgId ?? 0, action: 2 });
     } else if (text === 'Add to album') {
       collectImage({ genImgId: image?.genImgId ?? 0, action: 1 });

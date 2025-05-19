@@ -5,9 +5,8 @@ import { useEffect, useState, useCallback } from 'react';
 import { ImageCard } from './ImageCard';
 import ImageDetail from './ImageDetail';
 
-import { showErrorDialog } from '@/utils/index';
+import { showErrorDialog, deleteImage } from '@/utils/index';
 import { usePendingImages } from './hooks/usePendingImages';
-
 import { useGenerationStore } from '@/stores/useGenerationStore';
 import usePersonalInfoStore from '@/stores/usePersonalInfoStore';
 import { eventBus } from '@/utils/events';
@@ -137,6 +136,12 @@ export function ImageGrid() {
     setDetailVisible(true);
   }, []);
 
+  const handleDeleteImage = useCallback((imageId: number) => {
+    deleteImage(imageId, () => {
+      setImages(prev => prev.filter(img => img.genImgId !== imageId));
+    });
+  }, []);
+
   // 详情里支持切换图片，会更新在 selectedImage 上
   const handleImageChange = useCallback((image: ImageItem | null) => {
     setSelectedImage(image);
@@ -196,7 +201,12 @@ export function ImageGrid() {
       min-[3840px]:grid-cols-9"
       >
         {images.map((image, index) => (
-          <ImageCard key={image.genImgId || index} image={image} onClick={() => handleImageClick(image)} />
+          <ImageCard
+            key={image.genImgId || index}
+            image={image}
+            onClick={() => handleImageClick(image)}
+            handleDeleteImage={handleDeleteImage}
+          />
         ))}
       </div>
       <ImageDetail
