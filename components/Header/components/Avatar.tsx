@@ -14,16 +14,16 @@ import { eventBus } from '@/utils/events';
 type actionType = 'membership' | 'payment' | 'setting';
 
 const actionList = [
-  {
-    id: 0,
-    key: 'membership',
-    label: 'Membership'
-  },
-  {
-    id: 1,
-    key: 'payment',
-    label: 'Orders & Payments'
-  },
+  // {
+  //   id: 0,
+  //   key: 'membership',
+  //   label: 'Membership'
+  // },
+  // {
+  //   id: 1,
+  //   key: 'payment',
+  //   label: 'Orders & Payments'
+  // },
   {
     id: 2,
     key: 'setting',

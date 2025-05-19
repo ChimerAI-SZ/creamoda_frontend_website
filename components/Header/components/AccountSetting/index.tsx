@@ -240,7 +240,7 @@ const AccountSettingsDrawer = React.memo(
                     </Button>
                   </div>
                 </div>
-                <div className="relative flex items-center justify-start">
+                {/* <div className="relative flex items-center justify-start">
                   <div className="text-[#000] font-inter text-[20px] font-light ">
                     Permanently delete your account and all data
                   </div>
@@ -253,7 +253,7 @@ const AccountSettingsDrawer = React.memo(
                       Delete account
                     </Button>
                   </div>
-                </div>
+                </div> */}
               </div>
 
               <div>
