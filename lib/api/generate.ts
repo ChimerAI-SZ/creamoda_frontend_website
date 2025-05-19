@@ -104,16 +104,95 @@ export async function changeClothesGenerate(originalPicUrl: string, prompt: stri
  * @param prompt 提示词
  * @param fidelity 保真度
  */
-export async function copyStyleGenerate(originalPicUrl: string, prompt: string, fidelity: number) {
+export async function copyStyleGenerate(originalPicUrl: string, prompt: string, referLevel: number) {
   try {
     const response = await api.post('/api/v1/img/copy_style_generate', {
       originalPicUrl,
-      fidelity,
-      prompt
+      prompt,
+      referLevel
     });
     return response.data;
   } catch (error) {
     console.error('Error copying style generate:', error);
+    throw error;
+  }
+}
+
+/**
+ * 人物模型生成
+ * @param originalPicUrl 原始图片URL
+ * @param prompt 提示词
+ */
+export async function humanModelGenerate(originalPicUrl: string, prompt: string) {
+  try {
+    const response = await api.post('/api/v1/img/human_model_generate', {
+      originalPicUrl,
+      prompt
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error generating with human model:', error);
+    throw error;
+  }
+}
+
+/**
+ * 复制面料生成
+ * @param originalPicUrl 原始图片URL
+ * @param prompt 提示词
+ */
+export async function copyFabricGenerate(fabricPicUrl: string, prompt: string) {
+  try {
+    const response = await api.post('/api/v1/img/fabric_to_design', {
+      fabricPicUrl,
+      prompt
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error generating with fabric copy:', error);
+    throw error;
+  }
+}
+
+/**
+ * 手绘生成设计
+ * @param originalPicUrl 原始图片URL
+ * @param prompt 提示词
+ * @param colorReproduction 颜色复原
+ * @param referLevel 参考级别
+ */
+export async function sketchToDesign(originalPicUrl: string, prompt: string, referLevel: number) {
+  try {
+    const response = await api.post('/api/v1/img/sketch_to_design', {
+      originalPicUrl,
+      prompt,
+      referLevel
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error generating with fabric copy:', error);
+    throw error;
+  }
+}
+
+/**
+ * 混合图片生成
+ * @param originalPicUrl 原始图片URL
+ * @param prompt 提示词
+ * @param referenceImageUrl 参考图片URL
+ * @param referLevel 参考级别
+ */
+export async function mixImage(originalPicUrl: string, prompt: string, referenceImageUrl: string, referLevel: number) {
+  try {
+    const response = await api.post('/api/v1/img/mix_image', {
+      originalPicUrl,
+      prompt,
+      referPicUrl: referenceImageUrl,
+      referLevel
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error generating with fabric copy:', error);
     throw error;
   }
 }

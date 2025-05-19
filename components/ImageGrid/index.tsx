@@ -22,6 +22,7 @@ export interface ImageItem {
   status: number;
   resultPic: string;
   createTime: string;
+  isCollected: boolean;
 }
 
 const PAGE_SIZE = 10000; // 请求的图片数量
@@ -29,8 +30,6 @@ const PAGE_SIZE = 10000; // 请求的图片数量
 export function ImageGrid() {
   // 图片列表
   const [images, setImages] = useState<ImageItem[]>([]);
-  // 分页参数
-  const [page, setPage] = useState(1);
 
   const { setGenerating } = useGenerationStore();
   const { clearUserInfo } = usePersonalInfoStore();
@@ -88,8 +87,6 @@ export function ImageGrid() {
     const handler = () => {
       // 收到事件后重新获取第一页的图片数据，而不是当前页
       fetchImages(1);
-      // 重置页码
-      setPage(1);
     };
 
     // 订阅和卸载 imageList:generate-list 事件
@@ -172,8 +169,9 @@ export function ImageGrid() {
 
     return () => {
       eventBus.off('sidebar:submit-success', handleSubmitSuccess);
+      eventBus.off('auth:logout', handleLogout);
     };
-  }, [fetchRecentImages]);
+  }, [fetchRecentImages, clearUserInfo]);
 
   // 清理轮询定时器
   useEffect(() => {

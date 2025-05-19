@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { FormLabel } from '@/components/Sidebar/components/ImageToImageContent/FormLabel';
+import { FormLabel } from '@/components/FormLabel/FormLabel';
 import { cn } from '@/lib/utils';
 import { useModelStore } from '@/stores/useModelStore';
 
@@ -22,10 +22,22 @@ export function VariationTypeSelect({
   className = ''
 }: VariationTypeSelectProps) {
   const { variationTypes } = useModelStore();
+  const [isLoading, setIsLoading] = React.useState(true);
+
+  // Set initial value when variations are loaded
+  React.useEffect(() => {
+    if (variationTypes.length > 0) {
+      setIsLoading(false);
+      if (!value && variationTypes.length > 0) {
+        onChange(variationTypes[0].code);
+      }
+    }
+  }, [variationTypes, value, onChange]);
+
   return (
     <div className={`space-y-[6px] ${className}`}>
-      {label && <FormLabel htmlFor="variation-type">{label}</FormLabel>}
-      <Select value={value} onValueChange={onChange}>
+      {label && <FormLabel>{label}</FormLabel>}
+      <Select value={value} onValueChange={onChange} disabled={isLoading}>
         <SelectTrigger
           className={cn(
             'rounded-sm border border-[rgba(249,121,23,0.4)]',
@@ -33,7 +45,7 @@ export function VariationTypeSelect({
             'focus:ring-[rgba(249,121,23,0.4)] focus:border-[rgba(249,121,23,0.6)]'
           )}
         >
-          <SelectValue placeholder={placeholder} />
+          <SelectValue placeholder={isLoading ? 'Loading...' : placeholder} />
         </SelectTrigger>
         <SelectContent>
           {variationTypes.map(type => (

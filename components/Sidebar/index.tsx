@@ -15,7 +15,11 @@ import {
   getVariationTypeList,
   copyStyleGenerate,
   changeClothesGenerate,
-  uploadImage
+  uploadImage,
+  humanModelGenerate,
+  copyFabricGenerate,
+  sketchToDesign,
+  mixImage
 } from '@/lib/api';
 import { useModelStore } from '@/stores/useModelStore';
 import { useGenerationStore } from '@/stores/useGenerationStore';
@@ -29,6 +33,7 @@ export interface OutfitFormData {
   country: string;
   modelSize: number;
   withHumanModel: 1 | 0;
+  format: '1:1' | '2:3' | '3:4' | '9:16';
 }
 
 // Image to Image form data interface
@@ -37,7 +42,9 @@ export interface ImageUploadFormData {
   imageUrl: string;
   variationType: string;
   description: string;
-  fidelity: number;
+  referLevel: number;
+  referenceImage: File | null;
+  referenceImageUrl: string;
 }
 
 export function Sidebar() {
@@ -110,13 +117,24 @@ export function Sidebar() {
       // Call appropriate API based on variation type
       let response;
       if (data.variationType === '1') {
-        // Convert fidelity from percentage to decimal (0-100 -> 0.0-1.0)
-        const fidelityDecimal = data.fidelity / 100;
         // Call copy style API
-        response = await copyStyleGenerate(finalImageUrl, data.description, fidelityDecimal);
+        response = await copyStyleGenerate(finalImageUrl, data.description, data.referLevel);
       } else if (data.variationType === '2') {
         // Call change clothes API
         response = await changeClothesGenerate(finalImageUrl, data.description);
+      } else if (data.variationType === '3') {
+        // Call copy fabric API
+        response = await copyFabricGenerate(finalImageUrl, data.description);
+      } else if (data.variationType === '4') {
+        // Call copy fabric API
+        response = await sketchToDesign(
+          finalImageUrl,
+          data.description,
+          data.referLevel // Convert string to number, default to female
+        );
+      } else if (data.variationType === '5') {
+        // Call copy fabric API
+        response = await mixImage(finalImageUrl, data.description, data.referenceImageUrl, data.referLevel);
       } else {
         // Default to change clothes API if no type selected
         response = await changeClothesGenerate(finalImageUrl, data.description);

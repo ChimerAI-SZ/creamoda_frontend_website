@@ -46,7 +46,9 @@ export function GenerateButton({ onClick, state = 'disabled', className = '' }: 
         type="submit"
         className={`w-full px-4 py-2.5 flex items-center justify-center gap-1.5 rounded text-sm font-medium font-inter leading-5 ${buttonStyles[state]} ${className}`}
         disabled={state === 'disabled' || state === 'generating'}
-        onClick={handleClick}
+        onClick={() => {
+          handleClick();
+        }}
       >
         <Image src="/images/operation/generate.svg" alt="Generate" width={16} height={16} />
         <span className="text-white font-inter text-[14px] font-medium leading-[20px]">{buttonText}</span>

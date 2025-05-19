@@ -38,7 +38,13 @@ const nextConfig = {
 
   images: {
     remotePatterns: [
-      // Wildcard pattern to allow all domains
+      // Specific pattern for Aliyun OSS
+      {
+        protocol: 'https',
+        hostname: 'infini-imagegen.oss-cn-beijing.aliyuncs.com',
+        pathname: '/**'
+      },
+      // Wildcard pattern for other domains
       {
         protocol: 'https',
         hostname: '**',
@@ -50,10 +56,7 @@ const nextConfig = {
         pathname: '/**'
       }
     ],
-    // Allow all domains without restriction
-    domains: ['*'],
-    // Disable domain verification (alternative approach)
-    // Set to true only if the above doesn't work with some images
+    // Remove deprecated domains config
     unoptimized: false,
     minimumCacheTTL: 3600,
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
@@ -63,7 +66,16 @@ const nextConfig = {
   outputFileTracingExcludes: {
     '*': ['**/*']
   },
-  experimental: {}
+  experimental: {},
+  // next.config.js
+  webpack: config => {
+    config.externals.push({
+      'utf-8-validate': 'commonjs utf-8-validate',
+      bufferutil: 'commonjs bufferutil',
+      canvas: 'commonjs canvas'
+    });
+    return config;
+  }
 };
 
 module.exports = nextConfig;
