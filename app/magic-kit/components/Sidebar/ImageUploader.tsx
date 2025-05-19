@@ -7,9 +7,8 @@ import { X, Loader2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 
 import { uploadImage } from '@/lib/api';
-import { showErrorDialog } from '@/utils/index';
+import { showErrorDialog, cn } from '@/utils/index';
 import { isValidImageUrl } from '@/utils/validation';
-import { cn } from '@/lib/utils';
 import { ImageSlot } from '../ImageSlot';
 
 /**

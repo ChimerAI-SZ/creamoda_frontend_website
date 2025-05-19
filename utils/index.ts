@@ -1,4 +1,6 @@
 import { useErrorDialogStore } from '@/components/ErrorDialog';
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
 export const showErrorDialog = (message: string) => {
   useErrorDialogStore.getState().openDialog(message);
@@ -18,4 +20,8 @@ export function downloadImage(url: string, filename: string) {
       URL.revokeObjectURL(blobUrl);
     })
     .catch(error => console.error('Error downloading image:', error));
+}
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
 }

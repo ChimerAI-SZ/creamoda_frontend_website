@@ -4,8 +4,7 @@ import { Star, ImageDown } from 'lucide-react';
 
 import type { AlbumItem } from '../Drawer';
 
-import { cn } from '@/lib/utils';
-import { downloadImage } from '@/utils';
+import { downloadImage, cn } from '@/utils';
 
 export default function ImageCard({ image }: { image: AlbumItem }) {
   const [isLoaded, setIsLoaded] = useState(false);
