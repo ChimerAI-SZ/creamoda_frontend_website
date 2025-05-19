@@ -217,6 +217,7 @@ export function ImageGrid() {
           setDetailVisible(false);
         }}
         onImageChange={handleImageChange}
+        handleDeleteImage={handleDeleteImage}
       />
     </>
   );
