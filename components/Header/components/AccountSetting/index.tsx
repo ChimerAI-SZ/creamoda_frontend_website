@@ -1,6 +1,7 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import Image from 'next/image';
 import { Upload } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 import ChangePwd from '../ChangePwd';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -16,11 +17,13 @@ const AccountSettingsDrawer = React.memo(
   ({
     handleLogout,
     open,
-    onOpenChange
+    onOpenChange,
+    setIsOpen
   }: {
     handleLogout: () => void;
     open: boolean;
     onOpenChange: (open: boolean) => void;
+    setIsOpen: (open: boolean) => void;
   }) => {
     const { username, email, headPic, hasPwd, updateUsername, updateHeadPic } = usePersonalInfoStore();
 
@@ -30,6 +33,8 @@ const AccountSettingsDrawer = React.memo(
     const [isEditingUsername, setIsEditingUsername] = useState(false);
     const [changePwdOpen, setChangePwdOpen] = useState(false);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+    const router = useRouter();
 
     const onLogout = useCallback(() => {
       handleLogout();
@@ -255,7 +260,15 @@ const AccountSettingsDrawer = React.memo(
                 <div className="relative flex items-center justify-start">
                   <div className="text-[#000] font-inter text-[20px] font-light ">Terms of service</div>
                   <div className="absolute right-0 w-[90px]">
-                    <Button variant="outline" className="w-full p-2 py-0 h-[28px]">
+                    <Button
+                      variant="outline"
+                      className="w-full p-2 py-0 h-[28px]"
+                      onClick={() => {
+                        router.push('/terms-of-service');
+                        onOpenChange(false);
+                        setIsOpen(false);
+                      }}
+                    >
                       Read
                     </Button>
                   </div>
