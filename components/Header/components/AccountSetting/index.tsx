@@ -101,6 +101,12 @@ const AccountSettingsDrawer = React.memo(
       []
     );
 
+    const navigateAndCloseDialogs = (path: string) => {
+      router.push(path);
+      onOpenChange(false);
+      setIsOpen(false);
+    };
+
     return (
       <>
         <Dialog open={open} onOpenChange={onOpenChange}>
@@ -264,9 +270,7 @@ const AccountSettingsDrawer = React.memo(
                       variant="outline"
                       className="w-full p-2 py-0 h-[28px]"
                       onClick={() => {
-                        router.push('/terms-of-service');
-                        onOpenChange(false);
-                        setIsOpen(false);
+                        navigateAndCloseDialogs('/terms-of-service');
                       }}
                     >
                       Read
@@ -276,7 +280,13 @@ const AccountSettingsDrawer = React.memo(
                 <div className="relative flex items-center justify-start">
                   <div className="text-[#000] font-inter text-[20px] font-light ">Privacy policy</div>
                   <div className="absolute right-0 w-[90px]">
-                    <Button variant="outline" className="w-full p-2 py-0 h-[28px]">
+                    <Button
+                      variant="outline"
+                      className="w-full p-2 py-0 h-[28px]"
+                      onClick={() => {
+                        navigateAndCloseDialogs('/privacy-policy');
+                      }}
+                    >
                       Read
                     </Button>
                   </div>

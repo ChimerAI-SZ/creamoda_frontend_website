@@ -106,7 +106,6 @@ export default function Page() {
             information received from or sent to that provider as necessary to provide the requested functionality, all
             in accordance with our Privacy Policy.
           </p>
-          <br />
           <h2>3. Scope of Services</h2>
           <h3>3.1 Service Description</h3>
           <p>
@@ -253,7 +252,6 @@ export default function Page() {
             suspension or termination of your Account, forfeiture of fees paid, and/or disclosure to law-enforcement
             authorities. We reserve all rights and remedies available at law or in equity.
           </p>
-          <br />
           <h2>6. B2B Wholesale Collaboration Terms</h2>
           <h3>6.1 Platform Role</h3>
           <p>
@@ -389,7 +387,6 @@ export default function Page() {
             · (v) Sections 4 (User Content), 5 (Acceptable Use), 6.4-6.7, 7 (to the extent of unpaid amounts), 8.3, 9
             (Disclaimers & Liability), 10 (Indemnification), 13 (Governing Law), and 14 (Miscellaneous) survive.
           </p>
-          <br />
           <h2>9. Disclaimers of Warranties</h2>
           <h3>9.1 “AS-IS” Provision</h3>
           <p>
@@ -511,7 +508,6 @@ export default function Page() {
             applicable, and other relevant regulations. If compelled to disclose data by a competent authority, we will
             do so only to the extent required and, where legally permissible, will notify the affected user.
           </p>
-          <br />
           <h2>13. Third-Party Links and Services</h2>
           <h3>13.1 External Links</h3>
           <p>
