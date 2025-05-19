@@ -188,7 +188,7 @@ export function ImageGrid() {
   return (
     <>
       <div
-        className="image-grid-container grid gap-4 z-20 bg-[#FFFDFA]
+        className="image-grid-container grid gap-4 z-20 bg-[#FFFDFA] auto-rows-max
       grid-cols-1
       sm:grid-cols-2 
       min-[800px]:grid-cols-2 
