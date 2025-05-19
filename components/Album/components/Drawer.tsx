@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { X } from 'lucide-react';
 
 import { Drawer, DrawerTrigger, DrawerContent, DrawerHeader, DrawerTitle } from '@/components/ui/drawer';
-import ImageCard from '../ImageCard';
+import ImageCard from './ImageCard';
 
 import { useAlbumListStore } from '@/stores/useAlbumListStore';
 import { getCollectList } from '@/lib/api';

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { Star, ImageDown } from 'lucide-react';
 
-import type { AlbumItem } from '../Drawer';
+import type { AlbumItem } from './Drawer';
 
 import { downloadImage, cn } from '@/utils';
 

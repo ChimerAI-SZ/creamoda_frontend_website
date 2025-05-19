@@ -8,6 +8,7 @@ import { downloadImage } from '@/utils';
 import { collectImage } from '@/lib/api/album';
 import { useVariationFormStore } from '@/stores/useMagicKitStore';
 import type { ImageItem } from './index';
+
 interface ImageDetailProps {
   image: ImageItem | null;
   onClose: () => void;
