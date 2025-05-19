@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { uploadImage } from '@/lib/api';
 import { showErrorDialog } from '@/utils/index';
 import { isValidImageUrl } from '@/utils/validation';
-import { cn } from '@/lib/utils';
+import { cn } from '@/utils';
 
 /**
  * ImageUploader组件的属性接口

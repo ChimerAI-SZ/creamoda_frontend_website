@@ -9,9 +9,8 @@ import { GenerateButton } from '@/components/GenerateButton/GenerateButton';
 
 import { ImageUploader } from '@/components/ImageUploader';
 
-import { showErrorDialog } from '@/utils/index';
+import { showErrorDialog, cn } from '@/utils/index';
 import { useGenerationStore } from '@/stores/useGenerationStore';
-import { cn } from '@/lib/utils';
 import { tryOnGenerate } from '@/lib/api';
 import { eventBus } from '@/utils/events';
 
@@ -71,7 +70,7 @@ export function Sidebar() {
     >
       <div className="flex-1 overflow-hidden pt-4 ">
         <div className="h-full relative flex flex-col">
-          <div className="flex-1 overflow-y-auto">
+          <div className="flex-1 overflow-y-auto pb-20">
             <div>
               <ImageUploader
                 key="modal-uploader"

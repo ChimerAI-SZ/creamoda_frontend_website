@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { X } from 'lucide-react';
-import mockData from './mockData';
 
 import { Drawer, DrawerTrigger, DrawerContent, DrawerHeader, DrawerTitle } from '@/components/ui/drawer';
 import ImageCard from '../ImageCard';
@@ -8,6 +7,7 @@ import ImageCard from '../ImageCard';
 import { useAlbumListStore } from '@/stores/useAlbumListStore';
 import { getCollectList } from '@/lib/api';
 import { showErrorDialog } from '@/utils/index';
+import { collectImage } from '@/lib/api/album';
 
 export interface AlbumItem {
   genImgId: number;
@@ -34,6 +34,16 @@ export function AlbumDrawer({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const handleDislike = async (imageId: number) => {
+    const res = await collectImage({ genImgId: imageId, action: 2 });
+
+    if (res.code === 0) {
+      resetImageList(imageList.filter(image => image.genImgId !== imageId));
+    } else {
+      showErrorDialog(res.msg);
+    }
+  };
+
   useEffect(() => {
     queryCollectList();
   }, []);
@@ -53,7 +63,7 @@ export function AlbumDrawer({ children }: { children: React.ReactNode }) {
         <div className="w-[340px] h-full bg-[#fff] p-3 overflow-y-auto">
           <div className="columns-2 gap-3">
             {imageList.map((image: AlbumItem) => (
-              <ImageCard key={image.genImgId || image.resultPic} image={image} />
+              <ImageCard key={image.genImgId || image.resultPic} image={image} handleDislike={handleDislike} />
             ))}
           </div>
         </div>

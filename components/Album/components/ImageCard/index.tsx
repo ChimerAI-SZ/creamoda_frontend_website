@@ -4,10 +4,15 @@ import { Star, ImageDown } from 'lucide-react';
 
 import type { AlbumItem } from '../Drawer';
 
-import { cn } from '@/lib/utils';
-import { downloadImage } from '@/utils';
+import { downloadImage, cn } from '@/utils';
 
-export default function ImageCard({ image }: { image: AlbumItem }) {
+export default function ImageCard({
+  image,
+  handleDislike
+}: {
+  image: AlbumItem;
+  handleDislike: (imageId: number) => void;
+}) {
   const [isLoaded, setIsLoaded] = useState(false);
 
   const onImageLoad = () => {
@@ -58,7 +63,7 @@ export default function ImageCard({ image }: { image: AlbumItem }) {
             >
               <div className="flex items-center justify-center gap-4 w-full h-[28px] absolute opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <div className="w-[26px] h-[26px] bg-[#F97917] flex items-center justify-center text-white rounded-[50%] cursor-pointer">
-                  <Star className="w-[18px] h-[18px]" />
+                  <Star className="w-[18px] h-[18px]" onClick={() => handleDislike(image.genImgId)} />
                 </div>
                 <div
                   className="w-[26px] h-[26px] bg-[#fff] flex items-center justify-center text-white rounded-[50%] cursor-pointer"

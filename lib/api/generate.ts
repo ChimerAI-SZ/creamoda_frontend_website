@@ -196,3 +196,19 @@ export async function mixImage(originalPicUrl: string, prompt: string, reference
     throw error;
   }
 }
+
+/**
+ * 删除图片
+ * @param genImgId 图片ID
+ */
+export async function deleteImage(genImgId: number) {
+  try {
+    const response = await api.post('/api/v1/img/del', {
+      genImgId
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting image:', error);
+    throw error;
+  }
+}

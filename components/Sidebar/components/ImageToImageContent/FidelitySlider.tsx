@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { Slider } from '@/components/ui/slider';
 import { FormLabel } from '@/components/FormLabel/FormLabel';
-import { cn } from '@/lib/utils';
+import { cn } from '@/utils';
 
 interface FidelitySliderProps {
   value: number;

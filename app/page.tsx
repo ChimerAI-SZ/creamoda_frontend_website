@@ -2,8 +2,6 @@
 
 import { LoginModal } from '@/app/app-components/Login';
 
-import { MenuBar } from '@/components/MenuBar';
-
 import { Sidebar } from '@/components/Sidebar';
 import { ImageGrid } from '../components/ImageGrid/index';
 

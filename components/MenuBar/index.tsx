@@ -1,5 +1,5 @@
 import type React from 'react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/utils';
 import Image from 'next/image';
 import crown from '@/images/menu/crown.svg';
 import home from '@/images/menu/home.svg';
