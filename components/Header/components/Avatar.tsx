@@ -2,7 +2,6 @@
 
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
-import { ChevronRight } from 'lucide-react';
 
 import AccountSetting from './AccountSetting';
 import { Button } from '@/components/ui/button';
@@ -156,7 +155,12 @@ export default function Avatar() {
         </div>
       )}
 
-      <AccountSetting handleLogout={handleLogout} open={settingVisible} onOpenChange={setSettingVisible} />
+      <AccountSetting
+        handleLogout={handleLogout}
+        open={settingVisible}
+        onOpenChange={setSettingVisible}
+        setIsOpen={setIsOpen}
+      />
     </div>
   );
 }
