@@ -4,7 +4,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Overlay } from '@/components/ui/overlay';
 
-import { downloadImage, deleteImage } from '@/utils';
+import { downloadImage } from '@/utils';
 import { collectImage } from '@/lib/api/album';
 import { useVariationFormStore } from '@/stores/useMagicKitStore';
 import type { ImageItem } from './index';
@@ -14,6 +14,7 @@ interface ImageDetailProps {
   isOpen: boolean;
   imgList: ImageItem[];
   onImageChange: (image: ImageItem | null) => void;
+  handleDeleteImage: (imageId: number) => void;
 }
 
 // 提取一个通用的按钮组件
@@ -22,7 +23,14 @@ interface ActionButtonProps {
   text: string;
 }
 
-export default function ImageDetail({ image, onClose, isOpen, imgList, onImageChange }: ImageDetailProps) {
+export default function ImageDetail({
+  image,
+  onClose,
+  isOpen,
+  imgList,
+  onImageChange,
+  handleDeleteImage
+}: ImageDetailProps) {
   const pathname = usePathname();
   const router = useRouter();
   const { updateImageUrl } = useVariationFormStore();
@@ -36,9 +44,7 @@ export default function ImageDetail({ image, onClose, isOpen, imgList, onImageCh
     if (text === 'Download') {
       downloadImage(image?.resultPic ?? '', 'image.jpg');
     } else if (text === 'Delete') {
-      deleteImage(image?.genImgId ?? 0, () => {
-        onClose();
-      });
+      handleDeleteImage(image?.genImgId ?? 0);
     } else if (text === 'Remove from album') {
       collectImage({ genImgId: image?.genImgId ?? 0, action: 2 });
     } else if (text === 'Add to album') {
