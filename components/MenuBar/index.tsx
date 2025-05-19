@@ -1,5 +1,5 @@
 import type React from 'react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/utils';
 import Image from 'next/image';
 import crown from '@/images/menu/crown.svg';
 import home from '@/images/menu/home.svg';
@@ -40,7 +40,7 @@ export function MenuBar() {
   return (
     <div
       className={cn(
-        'group bg-white border-r border-gray-200 h-[calc(100vh-64px)] flex flex-col px-2 py-3 transition-all duration-500 ease-in w-[56px]',
+        'group bg-white border-r border-gray-200 h-[calc(100vh-56px)] flex flex-col px-2 py-3 transition-all duration-500 ease-in w-[56px]',
         'hover:w-[128px]'
       )}
     >

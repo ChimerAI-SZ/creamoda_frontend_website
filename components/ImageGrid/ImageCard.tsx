@@ -2,17 +2,17 @@ import { forwardRef, useState, useRef } from 'react';
 import Image from 'next/image';
 import { Star, ImageDown, Trash2 } from 'lucide-react';
 
-import { cn } from '@/lib/utils';
-import { Modal } from '@/utils/modal';
+import { cn } from '@/utils';
 import { downloadImage } from '@/utils';
 import { collectImage } from '@/lib/api/album';
 
 interface ImageCardProps {
   image: any;
   onClick: () => void;
+  handleDeleteImage: (imageId: number) => void;
 }
 
-export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(({ image, onClick }, ref) => {
+export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(({ image, onClick, handleDeleteImage }, ref) => {
   const [isLoaded, setIsLoaded] = useState(false);
   // 新生成的图片的标记，如果为 true 则表示图片是新生成的
   // 新生成的图片不需要进入loading状态
@@ -46,7 +46,7 @@ export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(({ image, on
       {/* 生成中状态，新生成的图片在 generate 和 load 操作完成之前一直展示生成中 */}
       {!isLoaded && isGenerating && (
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#FAFAFA] z-[1] rounded-[4px] border border-[#DCDCDC]">
-          <div className="relative w-[64px] h-[64px]">
+          <div className="relative w-[56px] h-[56px]">
             <Image
               src="/images/generate/generating.gif"
               alt="Generating..."
@@ -145,9 +145,7 @@ export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(({ image, on
               </div>
               <div
                 className="w-[33px] h-[33px] bg-[#fff] flex items-center justify-center text-white rounded-[50%] cursor-pointer"
-                onClick={() => {
-                  Modal.confirm('Are you sure you want to delete this image?');
-                }}
+                onClick={() => handleDeleteImage(image.genImgId)}
               >
                 <Trash2 className="w-[18px] h-[18px] text-[#000]" />
               </div>

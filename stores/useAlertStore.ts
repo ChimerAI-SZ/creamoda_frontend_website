@@ -8,7 +8,7 @@ interface AlertState {
   message: string;
   onConfirm: () => void;
   onCancel: () => void;
-  openAlert: (type: AlertType, message: string) => void;
+  openAlert: (type: AlertType, message: string, onConfirm?: () => void, onCancel?: () => void) => void;
   closeAlert: () => void;
 }
 
@@ -18,6 +18,6 @@ export const useAlertStore = create<AlertState>(set => ({
   message: '',
   onConfirm: () => {},
   onCancel: () => {},
-  openAlert: (type, message) => set({ isOpen: true, type, message }),
+  openAlert: (type, message, onConfirm, onCancel) => set({ isOpen: true, type, message, onConfirm, onCancel }),
   closeAlert: () => set({ isOpen: false, message: '' })
 }));

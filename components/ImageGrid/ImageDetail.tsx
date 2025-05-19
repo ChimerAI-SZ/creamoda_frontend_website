@@ -15,6 +15,7 @@ interface ImageDetailProps {
   isOpen: boolean;
   imgList: ImageItem[];
   onImageChange: (image: ImageItem | null) => void;
+  handleDeleteImage: (imageId: number) => void;
 }
 
 // 提取一个通用的按钮组件
@@ -23,7 +24,14 @@ interface ActionButtonProps {
   text: string;
 }
 
-export default function ImageDetail({ image, onClose, isOpen, imgList, onImageChange }: ImageDetailProps) {
+export default function ImageDetail({
+  image,
+  onClose,
+  isOpen,
+  imgList,
+  onImageChange,
+  handleDeleteImage
+}: ImageDetailProps) {
   const pathname = usePathname();
   const router = useRouter();
   const { updateImageUrl } = useVariationFormStore();
@@ -37,9 +45,8 @@ export default function ImageDetail({ image, onClose, isOpen, imgList, onImageCh
     if (text === 'Download') {
       downloadImage(image?.resultPic ?? '', 'image.jpg');
     } else if (text === 'Delete') {
-      console.log('delete');
+      handleDeleteImage(image?.genImgId ?? 0);
     } else if (text === 'Remove from album') {
-      console.log('remove from album');
       collectImage({ genImgId: image?.genImgId ?? 0, action: 2 });
     } else if (text === 'Add to album') {
       collectImage({ genImgId: image?.genImgId ?? 0, action: 1 });

@@ -19,7 +19,7 @@ const GlobalAlert: React.FC = () => {
       case 'error':
         return 'Error';
       case 'confirm':
-        return 'Confirmation';
+        return 'Confirm';
       case 'info':
         return 'Information';
       default:

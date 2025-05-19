@@ -92,9 +92,9 @@ export default function OutfitForm({ onSubmit }: OutfitFormProps) {
   }, [formData, isGenerating]);
 
   return (
-    <div className="h-full overflow-y-auto">
+    <div className="h-full">
       <div className="relative h-full flex flex-col">
-        <form className="flex-1 overflow-y-auto space-y-6 px-4">
+        <form className="flex-1 overflow-y-auto space-y-6 px-4 pb-20">
           <div className="space-y-6">
             <div className="space-y-2">
               <div className="flex items-center justify-between">
