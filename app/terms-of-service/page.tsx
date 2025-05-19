@@ -3,7 +3,7 @@ import './index.css';
 export default function Page() {
   return (
     <div className="terms-of-service-container flex">
-      <main className="flex-1 z-0 mx-auto h-[calc(100vh-64px)] overflow-y-auto flex justify-center">
+      <main className="flex-1 z-0 mx-auto h-[calc(100vh-56px)] overflow-y-auto flex justify-center">
         <div className="max-w-[800px]">
           <h1 className="whitespace-pre-wrap overflow-visible font-bold text-[40px] my-5 text-black text-center tracking-[-1px] leading-[1.3] rounded-none opacity-100 self-center order-1 min-h-[45px] h-auto flex-grow-0 flex-shrink-0 m-0 z-[7]">
             TERMS OF SERVICE
