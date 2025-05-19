@@ -13,7 +13,7 @@ const StyledLabel = memo(({ content, htmlFor }: { content: string; htmlFor?: str
 StyledLabel.displayName = 'StyledLabel';
 
 // Constants for options
-const AGE_OPTIONS = Array.from({ length: 80 }, (_, i) => i + 18); // Ages 18-97
+const AGE_OPTIONS = Array.from({ length: 83 }, (_, i) => i + 18); // Ages 18-100
 
 // Type for model size option
 interface ModelSizeOption {

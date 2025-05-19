@@ -46,7 +46,7 @@ export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(({ image, on
       {/* 生成中状态，新生成的图片在 generate 和 load 操作完成之前一直展示生成中 */}
       {!isLoaded && isGenerating && (
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#FAFAFA] z-[1] rounded-[4px] border border-[#DCDCDC]">
-          <div className="relative w-[64px] h-[64px]">
+          <div className="relative w-[56px] h-[56px]">
             <Image
               src="/images/generate/generating.gif"
               alt="Generating..."
