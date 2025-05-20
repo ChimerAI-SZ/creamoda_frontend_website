@@ -3,14 +3,13 @@ import Image from 'next/image';
 import { Upload } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
-import ChangePwd from '../ChangePwd';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import ChangePwd from './ChangePwdDialog';
 import { UsernameRequirements } from '@/app/app-components/Login/components/UsernameRequirements';
 import usePersonalInfoStore from '@/stores/usePersonalInfoStore';
 
 import { updateUserInfo, uploadImage } from '@/lib/api/common';
-import { Modal } from '@/utils/modal';
 import { showErrorDialog } from '@/utils/index';
 
 const AccountSettingsDrawer = React.memo(
@@ -18,12 +17,12 @@ const AccountSettingsDrawer = React.memo(
     handleLogout,
     open,
     onOpenChange,
-    setIsOpen
+    setIsMenuVisible
   }: {
     handleLogout: () => void;
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    setIsOpen: (open: boolean) => void;
+    setIsMenuVisible: (open: boolean) => void;
   }) => {
     const { username, email, headPic, hasPwd, updateUsername, updateHeadPic } = usePersonalInfoStore();
 
@@ -35,10 +34,6 @@ const AccountSettingsDrawer = React.memo(
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
     const router = useRouter();
-
-    const onLogout = useCallback(() => {
-      handleLogout();
-    }, [handleLogout]);
 
     /**
      * 将图片上传到服务器
@@ -103,8 +98,9 @@ const AccountSettingsDrawer = React.memo(
 
     const navigateAndCloseDialogs = (path: string) => {
       router.push(path);
+
       onOpenChange(false);
-      setIsOpen(false);
+      setIsMenuVisible(false);
     };
 
     return (
@@ -227,33 +223,11 @@ const AccountSettingsDrawer = React.memo(
                 <div className="relative flex items-center justify-start">
                   <div className="text-[#000] font-inter text-[20px] font-light ">Safely sign out of your account</div>
                   <div className="absolute right-0 w-[180px]">
-                    <Button
-                      variant="outline"
-                      className="w-full p-2 py-0 h-[28px]"
-                      onClick={() => {
-                        onLogout();
-                        onOpenChange(false);
-                        //   Modal.confirm('Are you sure you want to delete this image?');
-                      }}
-                    >
+                    <Button variant="outline" className="w-full p-2 py-0 h-[28px]" onClick={handleLogout}>
                       Log out
                     </Button>
                   </div>
                 </div>
-                {/* <div className="relative flex items-center justify-start">
-                  <div className="text-[#000] font-inter text-[20px] font-light ">
-                    Permanently delete your account and all data
-                  </div>
-                  <div className="absolute right-0 w-[180px]">
-                    <Button
-                      variant="outline"
-                      className="w-full p-2 py-0 h-[28px]"
-                      onClick={() => Modal.info('Are you sure you want to delete this image?')}
-                    >
-                      Delete account
-                    </Button>
-                  </div>
-                </div> */}
               </div>
 
               <div>
@@ -295,6 +269,7 @@ const AccountSettingsDrawer = React.memo(
             </div>
           </DialogContent>
         </Dialog>
+
         {/* 修改密码的弹窗 */}
         <ChangePwd open={changePwdOpen} onOpenChange={setChangePwdOpen} handleUpdateUserInfo={handleUpdateUserInfo} />
       </>
