@@ -3,14 +3,27 @@ import Image from 'next/image';
 import { Upload } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import Modal from './Modal';
 import { Button } from '@/components/ui/button';
 import ChangePwd from './ChangePwdDialog';
 import { UsernameRequirements } from '@/app/app-components/Login/components/UsernameRequirements';
-import usePersonalInfoStore from '@/stores/usePersonalInfoStore';
 
+import usePersonalInfoStore from '@/stores/usePersonalInfoStore';
 import { updateUserInfo, uploadImage } from '@/lib/api/common';
 import { showErrorDialog } from '@/utils/index';
+
+const LegalList = [
+  {
+    title: 'Terms of service',
+    key: 'terms-of-service',
+    route: '/terms-of-service'
+  },
+  {
+    title: 'Privacy policy',
+    key: 'privacy-policy',
+    route: '/privacy-policy'
+  }
+];
 
 const AccountSettingsDrawer = React.memo(
   ({
@@ -103,172 +116,144 @@ const AccountSettingsDrawer = React.memo(
       setIsMenuVisible(false);
     };
 
-    return (
-      <>
-        <Dialog open={open} onOpenChange={onOpenChange}>
-          <DialogContent className="w-[841px] h-[680px] max-w-none flex flex-col p-0">
-            <DialogHeader className="flex items-center justify-between pt-6 px-6">
-              <DialogTitle className="w-full leading-[48px] h-[48px]">
-                <span className="text-[#000] font-inter text-[32px] font-bold">Account Settings</span>
-              </DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4 h-[calc(100%-48px)] p-6 pb-8 overflow-y-auto">
-              <div>
-                <div className="text-black font-inter text-[24px] font-medium leading-[32px] h-[32px] pb-2 border-b border-[#E0E0E0] box-content">
-                  Profile
+    const sections = [
+      {
+        title: 'Profile',
+        content: (
+          <div className="flex items-center flex-col">
+            <label htmlFor="upload-button">
+              <div className="w-[56px] h-[56px] mb-4 focus:outline-none focus:ring-2 focus:ring-[#FF7B0D] focus:ring-offset-2 cursor-pointer relative">
+                <div className="w-full h-full rounded-full overflow-hidden">
+                  <Image
+                    src={selectedImage || headPic || '/images/defaultAvatar.svg'}
+                    alt="用户头像"
+                    width={56}
+                    height={56}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="absolute bottom-0 right-0 w-[16px] h-[16px] bg-gray-300 rounded-full flex items-center justify-center">
+                  <Upload className="w-[12px] h-[12px] text-black cursor-pointer" />
+                  <input
+                    id="upload-button"
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleImageUpload}
+                  />
                 </div>
               </div>
-
-              <div className="flex items-center flex-col">
-                <label htmlFor="upload-button">
-                  <div className="w-[56px] h-[56px] mb-4 focus:outline-none focus:ring-2 focus:ring-[#FF7B0D] focus:ring-offset-2 cursor-pointer relative">
-                    <div className="w-full h-full rounded-full overflow-hidden">
-                      <Image
-                        src={selectedImage || headPic || '/images/defaultAvatar.svg'}
-                        alt="用户头像"
-                        width={56}
-                        height={56}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="absolute bottom-0 right-0 w-[16px] h-[16px] bg-gray-300 rounded-full flex items-center justify-center">
-                      <Upload className="w-[12px] h-[12px] text-black cursor-pointer" />
+            </label>
+            <div className="w-full">
+              <div className="flex items-start justify-between w-full mb-4 relative gap-4">
+                <div className="min-w-[240px] text-[20px] leading-[28px] font-light">Username</div>
+                <div className="flex-grow text-[#999] text-[20px] leading-[20px] font-light">
+                  {isEditingUsername ? (
+                    <div className="max-w-[280px]">
                       <input
-                        id="upload-button"
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        onChange={handleImageUpload}
+                        type="text"
+                        placeholder="New UserName"
+                        className="w-full p-2 border text-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        value={newUsername}
+                        onChange={e => setNewUsername(e.target.value)}
                       />
+                      {<UsernameRequirements username={newUsername} />}
                     </div>
-                  </div>
-                </label>
-                <div className="w-full">
-                  <div className="flex items-start justify-between w-full mb-4 relative gap-4">
-                    <div className="min-w-[240px] text-[20px] leading-[28px] font-light">Username</div>
-                    <div className="flex-grow text-[#999] text-[20px] leading-[20px] font-light">
-                      {isEditingUsername ? (
-                        <div className="max-w-[280px]">
-                          <input
-                            type="text"
-                            placeholder="New UserName"
-                            className="w-full p-2 border text-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            value={newUsername}
-                            onChange={e => setNewUsername(e.target.value)}
-                          />
-                          {<UsernameRequirements username={newUsername} />}
-                        </div>
-                      ) : (
-                        username
-                      )}
-                    </div>
-                    <div className="absolute right-0">
-                      {isEditingUsername ? (
-                        <div className="flex items-center justify-start gap-2">
-                          <Button
-                            variant="outline"
-                            className="p-2 py-0 h-[28px] w-[90px]"
-                            onClick={() => setIsEditingUsername(false)}
-                          >
-                            Cancel
-                          </Button>
-                          <Button
-                            variant="default"
-                            className="p-2 py-0 h-[28px] w-[90px]"
-                            onClick={() => handleUpdateUserInfo({ username: newUsername })}
-                          >
-                            Save
-                          </Button>
-                        </div>
-                      ) : (
-                        <Button
-                          variant="outline"
-                          className="p-2 py-0 h-[28px] w-[90px]"
-                          onClick={() => setIsEditingUsername(true)}
-                        >
-                          Edit
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between w-ful relative gap-4">
-                    <div className="min-w-[240px] text-[20px] leading-[20px] font-light">E-mail</div>
-                    <div className="flex-grow text-[#999] text-[20px] leading-[20px] font-light">{email}</div>
-                  </div>
+                  ) : (
+                    username
+                  )}
                 </div>
-              </div>
-
-              <div>
-                <div className="text-black font-inter text-[24px] font-medium leading-[32px] h-[32px] pb-2 border-b border-[#E0E0E0] box-content">
-                  Account management
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                {hasPwd && (
-                  <div className="relative flex items-center justify-start">
-                    <div className="text-[#000] font-inter text-[20px] font-light ">Update your login password</div>
-                    <div className="absolute right-0 w-[180px]">
+                <div className="absolute right-0">
+                  {isEditingUsername ? (
+                    <div className="flex items-center justify-start gap-2">
                       <Button
                         variant="outline"
-                        className="w-full p-2 py-0 h-[28px]"
-                        onClick={() => setChangePwdOpen(true)}
+                        className="p-2 py-0 h-[28px] w-[90px]"
+                        onClick={() => setIsEditingUsername(false)}
                       >
-                        Change password
+                        Cancel
+                      </Button>
+                      <Button
+                        variant="default"
+                        className="p-2 py-0 h-[28px] w-[90px]"
+                        onClick={() => handleUpdateUserInfo({ username: newUsername })}
+                      >
+                        Save
                       </Button>
                     </div>
-                  </div>
-                )}
-
-                <div className="relative flex items-center justify-start">
-                  <div className="text-[#000] font-inter text-[20px] font-light ">Safely sign out of your account</div>
-                  <div className="absolute right-0 w-[180px]">
-                    <Button variant="outline" className="w-full p-2 py-0 h-[28px]" onClick={handleLogout}>
-                      Log out
-                    </Button>
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <div className="text-black font-inter text-[24px] font-medium leading-[32px] h-[32px] pb-2 border-b border-[#E0E0E0] box-content">
-                  Legal
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <div className="relative flex items-center justify-start">
-                  <div className="text-[#000] font-inter text-[20px] font-light ">Terms of service</div>
-                  <div className="absolute right-0 w-[90px]">
+                  ) : (
                     <Button
                       variant="outline"
-                      className="w-full p-2 py-0 h-[28px]"
-                      onClick={() => {
-                        navigateAndCloseDialogs('/terms-of-service');
-                      }}
+                      className="p-2 py-0 h-[28px] w-[90px]"
+                      onClick={() => setIsEditingUsername(true)}
                     >
-                      Read
+                      Edit
                     </Button>
-                  </div>
+                  )}
                 </div>
-                <div className="relative flex items-center justify-start">
-                  <div className="text-[#000] font-inter text-[20px] font-light ">Privacy policy</div>
-                  <div className="absolute right-0 w-[90px]">
-                    <Button
-                      variant="outline"
-                      className="w-full p-2 py-0 h-[28px]"
-                      onClick={() => {
-                        navigateAndCloseDialogs('/privacy-policy');
-                      }}
-                    >
-                      Read
-                    </Button>
-                  </div>
-                </div>
+              </div>
+              <div className="flex items-center justify-between w-ful relative gap-4">
+                <div className="min-w-[240px] text-[20px] leading-[20px] font-light">E-mail</div>
+                <div className="flex-grow text-[#999] text-[20px] leading-[20px] font-light">{email}</div>
               </div>
             </div>
-          </DialogContent>
-        </Dialog>
+          </div>
+        )
+      },
+      {
+        title: 'Account management',
+        content: (
+          <div className="space-y-2">
+            {hasPwd && (
+              <div className="relative flex items-center justify-start">
+                <div className="text-[#000] font-inter text-[20px] font-light ">Update your login password</div>
+                <div className="absolute right-0 w-[180px]">
+                  <Button variant="outline" className="w-full p-2 py-0 h-[28px]" onClick={() => setChangePwdOpen(true)}>
+                    Change password
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            <div className="relative flex items-center justify-start">
+              <div className="text-[#000] font-inter text-[20px] font-light ">Safely sign out of your account</div>
+              <div className="absolute right-0 w-[180px]">
+                <Button variant="outline" className="w-full p-2 py-0 h-[28px]" onClick={handleLogout}>
+                  Log out
+                </Button>
+              </div>
+            </div>
+          </div>
+        )
+      },
+      {
+        title: 'Legal',
+        content: (
+          <div className="space-y-2">
+            {LegalList.map(item => (
+              <div className="relative flex items-center justify-start">
+                <div className="text-[#000] font-inter text-[20px] font-light ">{item.title}</div>
+                <div className="absolute right-0 w-[90px]">
+                  <Button
+                    variant="outline"
+                    className="w-full p-2 py-0 h-[28px]"
+                    onClick={() => {
+                      navigateAndCloseDialogs(item.route);
+                    }}
+                  >
+                    Read
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )
+      }
+    ];
+
+    return (
+      <>
+        <Modal title="Account Settings" open={open} onOpenChange={onOpenChange} sections={sections} />
 
         {/* 修改密码的弹窗 */}
         <ChangePwd open={changePwdOpen} onOpenChange={setChangePwdOpen} handleUpdateUserInfo={handleUpdateUserInfo} />
