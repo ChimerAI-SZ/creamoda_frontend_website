@@ -3,25 +3,26 @@ import Image from 'next/image';
 import { Upload } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import Modal from './Modal';
 import { Button } from '@/components/ui/button';
 import { UsernameRequirements } from '@/app/app-components/Login/components/UsernameRequirements';
-import usePersonalInfoStore from '@/stores/usePersonalInfoStore';
 
+import usePersonalInfoStore from '@/stores/usePersonalInfoStore';
 import { updateUserInfo, uploadImage } from '@/lib/api/common';
 import { showErrorDialog } from '@/utils/index';
+import { LegalList } from './const';
 
 const AccountSettingsDrawer = React.memo(
   ({
     handleLogout,
     open,
     onOpenChange,
-    setIsOpen
+    setIsMenuVisible
   }: {
     handleLogout: () => void;
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    setIsOpen: (open: boolean) => void;
+    setIsMenuVisible: (open: boolean) => void;
   }) => {
     const { username, email, headPic, hasPwd, updateUsername, updateHeadPic } = usePersonalInfoStore();
 
@@ -29,14 +30,9 @@ const AccountSettingsDrawer = React.memo(
     const [newUsername, setNewUsername] = useState(username);
 
     const [isEditingUsername, setIsEditingUsername] = useState(false);
-    const [changePwdOpen, setChangePwdOpen] = useState(false);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
     const router = useRouter();
-
-    const onLogout = useCallback(() => {
-      handleLogout();
-    }, [handleLogout]);
 
     /**
      * 将图片上传到服务器
@@ -101,187 +97,157 @@ const AccountSettingsDrawer = React.memo(
 
     const navigateAndCloseDialogs = (path: string) => {
       router.push(path);
+
       onOpenChange(false);
-      setIsOpen(false);
+      setIsMenuVisible(false);
     };
 
-    return (
-      <>
-        <Dialog open={open} onOpenChange={onOpenChange}>
-          <DialogContent className="w-[841px] h-[680px] max-w-none flex flex-col p-0">
-            <DialogHeader className="flex items-center justify-between pt-6 px-6">
-              <DialogTitle className="w-full leading-[48px] h-[48px]">
-                <span className="text-[#000] font-inter text-[32px] font-bold">Account Settings</span>
-              </DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4 h-[calc(100%-48px)] p-6 pb-8 overflow-y-auto">
-              <div>
-                <div className="text-black font-inter text-[24px] font-medium leading-[32px] h-[32px] pb-2 border-b border-[#E0E0E0] box-content">
-                  Profile
-                </div>
+    const sections = [
+      {
+        title: 'Current subscription',
+        content: (
+          <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center justify-start gap-4">
+                <Image
+                  src="/images/membership/basic_plan.svg"
+                  alt="sparkles"
+                  width={80}
+                  height={80}
+                  className="object-cover"
+                />
+                <span className="text-[#000] text-center font-inter text-[20px] font-light leading-[20px]">
+                  Basic plan - $ 19.9 per month
+                </span>
               </div>
-
-              <div className="flex items-center flex-col">
-                <label htmlFor="upload-button">
-                  <div className="w-[56px] h-[56px] mb-4 focus:outline-none focus:ring-2 focus:ring-[#FF7B0D] focus:ring-offset-2 cursor-pointer relative">
-                    <div className="w-full h-full rounded-full overflow-hidden">
-                      <Image
-                        src={selectedImage || headPic || '/images/defaultAvatar.svg'}
-                        alt="用户头像"
-                        width={56}
-                        height={56}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="absolute bottom-0 right-0 w-[16px] h-[16px] bg-gray-300 rounded-full flex items-center justify-center">
-                      <Upload className="w-[12px] h-[12px] text-black cursor-pointer" />
+              <div className="text-[#000] font-inter text-[14px] font-light leading-[20px]">
+                Your subscription will renew on May 14,2025
+              </div>
+            </div>
+            <div>
+              <Button variant="outline" className="p-2 py-0 h-[28px] w-[233px]">
+                Cancel subscription
+              </Button>
+            </div>
+          </div>
+        )
+      },
+      {
+        title: 'Billing information',
+        content: (
+          <div className="flex items-center flex-col">
+            <div className="w-full">
+              <div className="flex items-start justify-between w-full mb-4 relative gap-4">
+                <div className="min-w-[240px] text-[20px] leading-[28px] font-light">Username</div>
+                <div className="flex-grow text-[#999] text-[20px] leading-[20px] font-light">
+                  {isEditingUsername ? (
+                    <div className="max-w-[280px]">
                       <input
-                        id="upload-button"
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        onChange={handleImageUpload}
+                        type="text"
+                        placeholder="New UserName"
+                        className="w-full p-2 border text-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        value={newUsername}
+                        onChange={e => setNewUsername(e.target.value)}
                       />
+                      {<UsernameRequirements username={newUsername} />}
                     </div>
-                  </div>
-                </label>
-                <div className="w-full">
-                  <div className="flex items-start justify-between w-full mb-4 relative gap-4">
-                    <div className="min-w-[240px] text-[20px] leading-[28px] font-light">Username</div>
-                    <div className="flex-grow text-[#999] text-[20px] leading-[20px] font-light">
-                      {isEditingUsername ? (
-                        <div className="max-w-[280px]">
-                          <input
-                            type="text"
-                            placeholder="New UserName"
-                            className="w-full p-2 border text-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            value={newUsername}
-                            onChange={e => setNewUsername(e.target.value)}
-                          />
-                          {<UsernameRequirements username={newUsername} />}
-                        </div>
-                      ) : (
-                        username
-                      )}
-                    </div>
-                    <div className="absolute right-0">
-                      {isEditingUsername ? (
-                        <div className="flex items-center justify-start gap-2">
-                          <Button
-                            variant="outline"
-                            className="p-2 py-0 h-[28px] w-[90px]"
-                            onClick={() => setIsEditingUsername(false)}
-                          >
-                            Cancel
-                          </Button>
-                          <Button
-                            variant="default"
-                            className="p-2 py-0 h-[28px] w-[90px]"
-                            onClick={() => handleUpdateUserInfo({ username: newUsername })}
-                          >
-                            Save
-                          </Button>
-                        </div>
-                      ) : (
-                        <Button
-                          variant="outline"
-                          className="p-2 py-0 h-[28px] w-[90px]"
-                          onClick={() => setIsEditingUsername(true)}
-                        >
-                          Edit
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between w-ful relative gap-4">
-                    <div className="min-w-[240px] text-[20px] leading-[20px] font-light">E-mail</div>
-                    <div className="flex-grow text-[#999] text-[20px] leading-[20px] font-light">{email}</div>
-                  </div>
+                  ) : (
+                    username
+                  )}
                 </div>
-              </div>
-
-              <div>
-                <div className="text-black font-inter text-[24px] font-medium leading-[32px] h-[32px] pb-2 border-b border-[#E0E0E0] box-content">
-                  Account management
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                {hasPwd && (
-                  <div className="relative flex items-center justify-start">
-                    <div className="text-[#000] font-inter text-[20px] font-light ">Update your login password</div>
-                    <div className="absolute right-0 w-[180px]">
+                <div className="absolute right-0">
+                  {isEditingUsername ? (
+                    <div className="flex items-center justify-start gap-2">
                       <Button
                         variant="outline"
-                        className="w-full p-2 py-0 h-[28px]"
-                        onClick={() => setChangePwdOpen(true)}
+                        className="p-2 py-0 h-[28px] w-[90px]"
+                        onClick={() => setIsEditingUsername(false)}
                       >
-                        Change password
+                        Cancel
+                      </Button>
+                      <Button
+                        variant="default"
+                        className="p-2 py-0 h-[28px] w-[90px]"
+                        onClick={() => handleUpdateUserInfo({ username: newUsername })}
+                      >
+                        Save
                       </Button>
                     </div>
-                  </div>
-                )}
-
-                <div className="relative flex items-center justify-start">
-                  <div className="text-[#000] font-inter text-[20px] font-light ">Safely sign out of your account</div>
-                  <div className="absolute right-0 w-[180px]">
+                  ) : (
                     <Button
                       variant="outline"
-                      className="w-full p-2 py-0 h-[28px]"
-                      onClick={() => {
-                        onLogout();
-                        onOpenChange(false);
-                        //   Modal.confirm('Are you sure you want to delete this image?');
-                      }}
+                      className="p-2 py-0 h-[28px] w-[233px]"
+                      onClick={() => setIsEditingUsername(true)}
                     >
-                      Log out
+                      Update information
                     </Button>
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <div className="text-black font-inter text-[24px] font-medium leading-[32px] h-[32px] pb-2 border-b border-[#E0E0E0] box-content">
-                  Legal
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <div className="relative flex items-center justify-start">
-                  <div className="text-[#000] font-inter text-[20px] font-light ">Terms of service</div>
-                  <div className="absolute right-0 w-[90px]">
-                    <Button
-                      variant="outline"
-                      className="w-full p-2 py-0 h-[28px]"
-                      onClick={() => {
-                        navigateAndCloseDialogs('/terms-of-service');
-                      }}
-                    >
-                      Read
-                    </Button>
-                  </div>
-                </div>
-                <div className="relative flex items-center justify-start">
-                  <div className="text-[#000] font-inter text-[20px] font-light ">Privacy policy</div>
-                  <div className="absolute right-0 w-[90px]">
-                    <Button
-                      variant="outline"
-                      className="w-full p-2 py-0 h-[28px]"
-                      onClick={() => {
-                        navigateAndCloseDialogs('/privacy-policy');
-                      }}
-                    >
-                      Read
-                    </Button>
-                  </div>
+                  )}
                 </div>
               </div>
             </div>
-          </DialogContent>
-        </Dialog>
-        {/* 修改密码的弹窗 */}
-      </>
-    );
+          </div>
+        )
+      },
+      {
+        title: 'Billing history',
+        content: (
+          <div className="space-y-2">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Due date
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Description
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Invoice
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                <tr>
+                  <td className="px-6 py-4 whitespace-nowrap">May 4, 2025</td>
+                  <td className="px-6 py-4 whitespace-nowrap">Basic plan</td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                      Paid
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">$19.9</td>
+                </tr>
+                <tr>
+                  <td className="px-6 py-4 whitespace-nowrap">May 1, 2025</td>
+                  <td className="px-6 py-4 whitespace-nowrap">100 credits</td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                      Paid
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">$10</td>
+                </tr>
+                <tr>
+                  <td className="px-6 py-4 whitespace-nowrap">Apr. 1, 2025</td>
+                  <td className="px-6 py-4 whitespace-nowrap">100 credits</td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                      Unpaid
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">$10</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        )
+      }
+    ];
+
+    return <Modal title="Orders & Payment" open={open} onOpenChange={onOpenChange} sections={sections} />;
   }
 );
 

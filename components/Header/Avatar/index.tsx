@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import AccountSetting from './AccountSettings';
 import AvatarMenu from './AvatarMenu';
 import Membership from '@/components/Membership';
+import OrdersAndPayment from './OrdersAndPayment';
 
 import { logout } from '@/lib/api';
 import usePersonalInfoStore from '@/stores/usePersonalInfoStore';
@@ -18,7 +19,7 @@ export default function Avatar() {
   const [isMenuVisible, setIsMenuVisible] = useState(false); // 个人详情菜单弹窗是否展示
   const [settingVisible, setSettingVisible] = useState(false); // account settings 弹窗是否展示
   const [membershipVisible, setMembershipVisible] = useState(false); // membership 弹窗是否展示
-
+  const [paymentVisible, setPaymentVisible] = useState(false); // payment 弹窗是否展示
   // 获取用户信息
   const { username, email, headPic, fetchUserInfo } = usePersonalInfoStore();
 
@@ -55,12 +56,15 @@ export default function Avatar() {
   };
 
   const handleAction = (key: AvatarActionType) => {
-    if (key === 'setting') {
-      setSettingVisible(true);
-    } else if (key === 'membership') {
-      setIsMenuVisible(false);
-      setMembershipVisible(true);
-    }
+    const visibilityMap = {
+      setting: setSettingVisible,
+      membership: setMembershipVisible,
+      payment: setPaymentVisible
+    };
+
+    // 隐藏菜单并打开对应的 dialog
+    setIsMenuVisible(false);
+    visibilityMap[key]?.(true);
   };
 
   const closeMenu = () => {
@@ -112,6 +116,13 @@ export default function Avatar() {
       />
 
       {membershipVisible && <Membership onClose={() => setMembershipVisible(false)} />}
+
+      <OrdersAndPayment
+        handleLogout={handleLogout}
+        open={paymentVisible}
+        onOpenChange={setPaymentVisible}
+        setIsMenuVisible={setIsMenuVisible}
+      />
     </div>
   );
 }

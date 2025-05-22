@@ -4,26 +4,9 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 
 import usePersonalInfoStore from '@/stores/usePersonalInfoStore';
+import { actionList } from './const';
 
 import type { AvatarActionType } from '.';
-
-const actionList = [
-  {
-    id: 0,
-    key: 'membership',
-    label: 'Membership'
-  },
-  {
-    id: 1,
-    key: 'payment',
-    label: 'Orders & Payments'
-  },
-  {
-    id: 2,
-    key: 'setting',
-    label: 'Account Settings'
-  }
-];
 
 const AvatarMenu: React.FC<{
   closeMenu: () => void;

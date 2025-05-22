@@ -11,19 +11,7 @@ import { UsernameRequirements } from '@/app/app-components/Login/components/User
 import usePersonalInfoStore from '@/stores/usePersonalInfoStore';
 import { updateUserInfo, uploadImage } from '@/lib/api/common';
 import { showErrorDialog } from '@/utils/index';
-
-const LegalList = [
-  {
-    title: 'Terms of service',
-    key: 'terms-of-service',
-    route: '/terms-of-service'
-  },
-  {
-    title: 'Privacy policy',
-    key: 'privacy-policy',
-    route: '/privacy-policy'
-  }
-];
+import { LegalList } from './const';
 
 const AccountSettingsDrawer = React.memo(
   ({
