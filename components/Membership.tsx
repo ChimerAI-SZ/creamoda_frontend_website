@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js';
+import { DollarSign } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
 import { Overlay } from '@/components/ui/overlay';
 
 import { cn } from '@/utils';
 import { handlePurchaseCredit, handleSubscribe, handleCaptureOrder } from '@/lib/api/payment';
 
-const paymentList = [
+export const paymentList = [
   {
     title: 'Credit',
     type: [
@@ -22,7 +22,8 @@ const paymentList = [
         ],
         logo: 'credit_log_1.svg',
         price: 5,
-        alert: 'One-time payment'
+        alert: 'One-time payment',
+        subscribeLevel: 0
       },
       {
         key: 'credit_100',
@@ -34,7 +35,8 @@ const paymentList = [
         ],
         logo: 'credit_log_2.svg',
         price: 10,
-        alert: 'One-time payment'
+        alert: 'One-time payment',
+        subscribeLevel: 0
       },
       {
         key: 'credit_200',
@@ -46,7 +48,8 @@ const paymentList = [
         ],
         logo: 'credit_log_3.svg',
         price: 30,
-        alert: 'One-time payment'
+        alert: 'One-time payment',
+        subscribeLevel: 0
       }
     ]
   },
@@ -58,16 +61,18 @@ const paymentList = [
         title: 'Basic Plan',
         description: ['200 credits', '100 images every 4 hours', 'Simultaneous generations: 2'],
         logo: 'basic_plan.svg',
-        price: '19.9 per month',
-        alert: 'Cancel anytime'
+        price: '19.9',
+        alert: 'Cancel anytime',
+        subscribeLevel: 1
       },
       {
         key: 'plan_pro',
         title: 'Pro Plan',
         description: ['400 credits', '200 images every 4 hours', 'Simultaneous generations: 4'],
         logo: 'pro_plan.svg',
-        price: '39.9 per month',
-        alert: 'Cancel anytime'
+        price: '39.9',
+        alert: 'Cancel anytime',
+        subscribeLevel: 2
       },
       {
         key: 'plan_enterprise',
@@ -78,9 +83,10 @@ const paymentList = [
           'Priority customer support',
           'Custom AI model training'
         ],
-        price: '59.9 per month',
+        price: '59.9',
         logo: 'enterprise_plan.svg',
-        alert: 'Cancel anytime'
+        alert: 'Cancel anytime',
+        subscribeLevel: 3
       }
     ]
   }
@@ -90,31 +96,6 @@ const Membership: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const [selectedType, setSelectedType] = useState<'Credit' | 'Plan'>('Credit');
 
   const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || '';
-
-  const handlePurchase = async (key: string) => {
-    if (selectedType === 'Credit') {
-      const value = +key.split('_')[1];
-
-      const res = await handlePurchaseCredit(value as 40 | 100 | 200);
-      if (res.code === 0) {
-        const newWindow = window.open('', '_blank');
-
-        if (newWindow) {
-          newWindow.location.href = res.data.url;
-        }
-      } else {
-        console.log(res);
-      }
-    } else {
-      const levelMap = new Map([
-        ['plan_basic', 1],
-        ['plan_pro', 2],
-        ['plan_enterprise', 3]
-      ]);
-
-      handleSubscribe(levelMap.get(key as 'plan_basic' | 'plan_pro' | 'plan_enterprise') as 1 | 2 | 3);
-    }
-  };
 
   return (
     <Overlay onClick={onClose}>
@@ -154,12 +135,23 @@ const Membership: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                     e.stopPropagation();
                   }}
                   key={type.key}
-                  className="bg-white rounded-lg p-4 py-[40px] w-[320px] h-[572px] flex flex-col items-center justify-between"
+                  className="bg-white rounded-lg p-4 py-[40px] w-[320px] h-[572px] flex flex-col items-center justify-between gap-2"
                 >
-                  <div className="text-black text-center font-inter text-[30px] font-medium leading-[20px]">
-                    {type.title}
+                  <div>
+                    <div className="text-black text-center font-inter text-[30px] font-medium leading-[32px] mb-3">
+                      {type.title}
+                    </div>
+                    <div className="flex items-start justify-center gap-1 mb-1 h-[32px]">
+                      <DollarSign className="h-5 w-5" />
+                      <div className="flex items-end justify-start leading-[32px] gap-1">
+                        <span className="text-[28px] font-bold">{type.price}</span>
+                        {selectedType === 'Plan' && (
+                          <span className="text-[14px] font-normal leading-[24px]">per month</span>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                  <div className="w-[200px] h-[200px] flex items-center justify-center">
+                  <div className="w-[200px] h-[200px] flex items-center justify-center shrink-1">
                     <Image src={`/images/membership/${type.logo}`} alt={type.title} width={200} height={200} />
                   </div>
                   <div>
@@ -178,45 +170,36 @@ const Membership: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                       <PayPalButtons
                         createOrder={async () => {
                           if (selectedType === 'Credit') {
-                            const res = await fetch('/api/create-order', {
-                              method: 'POST',
-                              headers: { 'Content-Type': 'application/json' },
-                              body: JSON.stringify({ value: type.price, currency: 'USD' })
-                            });
-                            const data = await res.json();
-                            return data.id;
+                            const value = +type.key.split('_')[1];
+
+                            const res = await handlePurchaseCredit(value as 40 | 100 | 200);
+                            if (res.code === 0) {
+                              return res.data.id;
+                            } else {
+                              console.log(res);
+                            }
                           } else {
-                            const res = await fetch('/api/create-order', {
-                              method: 'POST',
-                              headers: { 'Content-Type': 'application/json' },
-                              body: JSON.stringify({ value: 10, currency: 'USD' })
-                            });
-                            const data = await res.json();
-                            return data.id;
+                            const levelMap = new Map([
+                              ['plan_basic', 1],
+                              ['plan_pro', 2],
+                              ['plan_enterprise', 3]
+                            ]);
+
+                            const res = await handleSubscribe(
+                              levelMap.get(type.key as 'plan_basic' | 'plan_pro' | 'plan_enterprise') as 1 | 2 | 3
+                            );
+
+                            if (res.code === 0) {
+                              return res.data.id;
+                            } else {
+                              console.log(res);
+                            }
                           }
                         }}
                         onApprove={async data => {
-                          const captureRes = await fetch('/api/capture-order', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ orderId: data.orderID })
-                          });
-                          const captureData = await captureRes.json();
-                          console.log(captureData);
-                          await handleCaptureOrder(captureData.id);
+                          await handleCaptureOrder(data.orderID);
                         }}
-                      >
-                        ${type.price}
-                      </PayPalButtons>
-                      {/* <Button
-                      variant="default"
-                      className="min-w-[168px] rounded-[100px]"
-                      onClick={() => {
-                        handlePurchase(type.key);
-                      }}
-                    >
-                      
-                    </Button> */}
+                      />
                     </div>
                     <div className="text-[#999] text-center font-inter text-[14px] font-medium leading-[20px]">
                       {type.alert}

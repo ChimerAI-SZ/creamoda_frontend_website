@@ -157,7 +157,10 @@ const AccountSettingsDrawer = React.memo(
                       <Button
                         variant="outline"
                         className="p-2 py-0 h-[28px] w-[90px]"
-                        onClick={() => setIsEditingUsername(false)}
+                        onClick={() => {
+                          setNewUsername('');
+                          setIsEditingUsername(false);
+                        }}
                       >
                         Cancel
                       </Button>

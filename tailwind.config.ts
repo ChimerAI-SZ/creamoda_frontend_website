@@ -59,6 +59,10 @@ export default {
           'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
           border: 'hsl(var(--sidebar-border))',
           ring: 'hsl(var(--sidebar-ring))'
+        },
+        warning: {
+          DEFAULT: '#FF3D30',
+          hover: ' linear-gradient(0deg, rgba(10, 21, 50, 0.10) 0%, rgba(10, 21, 50, 0.10) 100%), #FF3D30'
         }
       },
       borderRadius: {

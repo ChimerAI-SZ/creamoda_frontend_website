@@ -41,3 +41,28 @@ export async function handleCaptureOrder(token: string, subscription_id?: string
     throw error;
   }
 }
+
+// 取消订阅
+export async function handleCancelSubscribe() {
+  try {
+    const response = await api.post('/api/v1/pay/cancel_subscribe');
+
+    return response.data;
+  } catch (error) {
+    console.error('Error getting variation type list:', error);
+    throw error;
+  }
+}
+
+// 查询消费记录
+
+export async function queryBillingHistory(page: number = 1, pageSize: number = 5) {
+  try {
+    const response = await api.get(`/api/v1/pay/billing_history?page=${page}&page_size=${pageSize}`);
+
+    return response.data;
+  } catch (error) {
+    console.error('Error getting variation type list:', error);
+    throw error;
+  }
+}

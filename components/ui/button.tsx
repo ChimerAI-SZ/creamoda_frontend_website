@@ -14,11 +14,14 @@ const buttonVariants = cva(
         outline: 'border border-primary bg-background shadow-sm hover:bg-accent hover:text-accent-foreground',
         secondary: 'bg-[#737373] text-secondary-foreground shadow-sm hover:bg-[#888]',
         ghost: 'hover:bg-accent hover:text-accent-foreground',
-        link: 'text-primary underline-offset-4 hover:underline'
+        link: 'text-primary underline-offset-4 hover:underline',
+        gradient: 'bg-gradient-to-r from-[#8C5CF6] to-[#5E96FF] text-white shadow-md hover:opacity-90',
+        gradientDestructive:
+          'bg-warning hover:bg-warning-hover text-white shadow-md hover:opacity-90 rounded-full text-white'
       },
       size: {
         default: 'h-9 px-4 py-2',
-        sm: 'h-7 rounded-md px-3 text-xs w-fit',
+        sm: 'h-8 px-3 py-[6px] w-fit text-center text-[14px] font-bold leading-[20px]',
         lg: 'h-10 rounded-md px-8',
         icon: 'h-9 w-9'
       }

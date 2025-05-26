@@ -10,6 +10,7 @@ import OrdersAndPayment from './OrdersAndPayment';
 
 import { logout } from '@/lib/api';
 import usePersonalInfoStore from '@/stores/usePersonalInfoStore';
+import { Button } from '@/components/ui/button';
 import { showErrorDialog } from '@/utils/index';
 import { eventBus } from '@/utils/events';
 
@@ -21,7 +22,7 @@ export default function Avatar() {
   const [membershipVisible, setMembershipVisible] = useState(false); // membership 弹窗是否展示
   const [paymentVisible, setPaymentVisible] = useState(false); // payment 弹窗是否展示
   // 获取用户信息
-  const { username, email, headPic, fetchUserInfo } = usePersonalInfoStore();
+  const { username, email, headPic, fetchUserInfo, credit } = usePersonalInfoStore();
 
   const handleOpenMenu = () => {
     const token = localStorage.getItem('auth_token');
@@ -87,10 +88,22 @@ export default function Avatar() {
           onClick={() => {
             setMembershipVisible(true);
           }}
-          className="flex items-center gap-1 rounded-full px-2 py-1 bg-gradient-to-r from-[rgba(0,143,247,0.40)] via-[rgba(160,144,249,0.40)] via-[42.97%] to-[rgba(249,121,23,0.40)] to-[82.53%] cursor-pointer"
         >
-          <Image src="/images/menu/start.svg" alt="sparkles" width={16} height={16} className="object-cover" />
-          <span className="text-[#FFF] text-center font-inter text-[14px] font-semibold leading-[20px]">100 Cr</span>
+          {credit > 0 ? (
+            <div>
+              <div className="flex items-center gap-1 rounded-full px-2 py-1 bg-gradient-to-r from-[rgba(0,143,247,0.40)] via-[rgba(160,144,249,0.40)] via-[42.97%] to-[rgba(249,121,23,0.40)] to-[82.53%] cursor-pointer">
+                <Image src="/images/menu/start.svg" alt="sparkles" width={16} height={16} className="object-cover" />
+                <span className="text-[#FFF] text-center font-inter text-[14px] font-semibold leading-[20px]">
+                  {credit} Cr
+                </span>
+              </div>
+            </div>
+          ) : (
+            <Button variant="gradientDestructive" size="sm" className="w-fit">
+              <Image src="/images/menu/start.svg" alt="sparkles" width={16} height={16} className="object-cover" />
+              <span className="text-[#FFF] text-center font-inter text-[14px] font-semibold leading-[20px]">0 Cr</span>
+            </Button>
+          )}
         </div>
         <div
           className="w-8 h-8 rounded-full overflow-hidden focus:outline-none focus:ring-2 focus:ring-[#FF7B0D] focus:ring-offset-2 cursor-pointer"
@@ -118,10 +131,9 @@ export default function Avatar() {
       {membershipVisible && <Membership onClose={() => setMembershipVisible(false)} />}
 
       <OrdersAndPayment
-        handleLogout={handleLogout}
         open={paymentVisible}
         onOpenChange={setPaymentVisible}
-        setIsMenuVisible={setIsMenuVisible}
+        setMembershipVisible={setMembershipVisible}
       />
     </div>
   );
