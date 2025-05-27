@@ -14,13 +14,13 @@ export function ToggleTag({ icon, label, isActive, onClick }: ToggleTagProps) {
       onClick={onClick}
       className={cn(
         'flex flex-col items-center gap-2 py-4 rounded-t-lg transition-colors relative',
-        isActive ? 'text-[#F97917] bg-white' : 'text-[#999] hover:text-[#F97917]',
+        isActive ? 'text-primary bg-white' : 'text-[#999] hover:text-primary',
         'font-inter text-sm font-medium leading-5'
       )}
     >
       {icon}
       <span>{label}</span>
-      {isActive && <div className="absolute bottom-[-1px] left-0 right-0 h-[2px] bg-[#F97917]" />}
+      {isActive && <div className="absolute bottom-[-1px] left-0 right-0 h-[2px] bg-primary" />}
     </button>
   );
 }

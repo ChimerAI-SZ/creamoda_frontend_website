@@ -236,7 +236,7 @@ export function ImageUploader({
       <div
         className={cn(
           'relative w-[302px] h-[288px] rounded-[4px] border border-[#DCDCDC] transition-colors',
-          dragActive ? 'border-[#FF7B0D] bg-[#FFE4D2]' : 'hover:bg-gray-50',
+          dragActive ? 'border-primary bg-[#FFE4D2]' : 'hover:bg-gray-50',
           styleType === 'default' && 'bg-[#FAFAFA]'
         )}
         onDragEnter={handleDrag}
@@ -247,7 +247,7 @@ export function ImageUploader({
         {isUploading || isLoadingImageUrl ? (
           // 加载状态
           <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <Loader2 className="h-8 w-8 text-[#FF7B0D] animate-spin mb-2" />
+            <Loader2 className="h-8 w-8 text-primary animate-spin mb-2" />
             <span className="text-sm text-gray-600">
               {isUploading
                 ? 'Uploading image...'

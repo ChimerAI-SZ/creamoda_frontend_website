@@ -92,7 +92,7 @@ export function Sidebar() {
                   key={type}
                   className={cn(
                     'w-full h-[48px] flex items-center justify-center border rounded-[4px] border-[#dcdcdc] cursor-pointer',
-                    clothingType === type && 'border-[#F97917]'
+                    clothingType === type && 'border-primary'
                   )}
                   onClick={() => setClothingType(type as ClothingType)}
                 >
@@ -106,7 +106,7 @@ export function Sidebar() {
                       height={16}
                       unoptimized
                     />
-                    <span className={cn('leading-[18px] text-[12px]', clothingType === type && 'text-[#F97917]')}>
+                    <span className={cn('leading-[18px] text-[12px]', clothingType === type && 'text-primary')}>
                       {type.charAt(0).toUpperCase() + type.slice(1)}
                     </span>
                   </div>

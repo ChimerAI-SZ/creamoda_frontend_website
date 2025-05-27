@@ -305,7 +305,7 @@ export const SignUpForm = ({ onToggleView, onSignupSuccess }: SignUpFormProps) =
         disabled={!isFormValid || isLoading || registrationSuccess}
         className={`h-[52px] w-full py-[10px] px-4 flex justify-center items-center gap-[6px] rounded-[4px] ${
           isFormValid && !isLoading && !registrationSuccess
-            ? 'bg-[#F97917] hover:bg-gradient-to-r hover:from-[#F9BE60] hover:to-[#F97917] hover:shadow-[0px_4px_4px_0px_rgba(252,182,61,0.25)]'
+            ? 'bg-primary hover:bg-gradient-to-r hover:from-[#F9BE60] hover:to-primary hover:shadow-[0px_4px_4px_0px_rgba(252,182,61,0.25)]'
             : 'bg-[rgba(249,121,23,0.5)] cursor-not-allowed'
         } text-white font-inter text-sm font-medium leading-5 transition-all`}
       >

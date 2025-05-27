@@ -18,7 +18,7 @@ function MenuItem({ icon, title, isActive, onClick }: MenuItemProps) {
       onClick={onClick}
       className={cn(
         'relative flex items-center rounded-lg transition-all duration-200 group mb-[12px] h-[40px] mx-auto w-full',
-        isActive ? 'bg-[#FF7B0D] text-[#fff] flex-shrink-0' : 'text-[#999] hover:bg-gray-100 hover:text-gray-700'
+        isActive ? 'bg-primary text-[#fff] flex-shrink-0' : 'text-[#999] hover:bg-gray-100 hover:text-gray-700'
       )}
     >
       <div
@@ -27,7 +27,7 @@ function MenuItem({ icon, title, isActive, onClick }: MenuItemProps) {
           isActive && ' rounded-[9999px]'
         )}
       >
-        <div className={cn('flex items-center justify-center', isActive && 'bg-[#FF7B0D] rounded-full ')}>{icon}</div>
+        <div className={cn('flex items-center justify-center', isActive && 'bg-primary rounded-full ')}>{icon}</div>
       </div>
       <span className=" whitespace-nowrap overflow-hidden transition-all duration-300 ease-in-out opacity-0 w-0 group-hover:opacity-100 group-hover:w-auto ">
         {title}

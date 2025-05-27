@@ -102,7 +102,7 @@ export default function OutfitForm({ onSubmit }: OutfitFormProps) {
 
                 <FeatureModal handleConfirm={handleConfirm}>
                   <div className="flex items-center gap-2">
-                    <div className="cursor-pointer flex h-[20px] px-[8px] justify-center items-center content-center flex-shrink-0 flex-wrap text-[#F97917] font-inter text-[12px] font-semibold leading-[20px] border border-[#F97917] bg-[#FFF] rounded-[20px] text-center">
+                    <div className="cursor-pointer flex h-[20px] px-[8px] justify-center items-center content-center flex-shrink-0 flex-wrap text-primary font-inter text-[12px] font-semibold leading-[20px] border border-primary bg-[#FFF] rounded-[20px] text-center">
                       Design Features
                     </div>
                   </div>

@@ -92,8 +92,13 @@ export const paymentList = [
   }
 ];
 
-const Membership: React.FC<{ onClose: () => void }> = ({ onClose }) => {
-  const [selectedType, setSelectedType] = useState<'Credit' | 'Plan'>('Credit');
+export type PaymentType = 'Credit' | 'Plan';
+
+const Membership: React.FC<{ onClose: () => void; defaultType?: PaymentType }> = ({
+  onClose,
+  defaultType = 'Credit'
+}) => {
+  const [selectedType, setSelectedType] = useState<PaymentType>(defaultType);
 
   const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || '';
 
@@ -103,7 +108,7 @@ const Membership: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         <div className="relative flex gap-4 bg-[#f5f5f5] p-2 mx-auto mb-[48px] w-[344px] rounded-[36px]">
           <div
             className={cn(
-              'absolute w-1/2 bg-[#F97917] h-[calc(100%-16px)] rounded-full transition-transform duration-500 ease-in-out transform z-0',
+              'absolute w-1/2 bg-primary h-[calc(100%-16px)] rounded-full transition-transform duration-500 ease-in-out transform z-0',
               selectedType === 'Credit' ? 'translate-x-0' : 'translate-x-[90%]'
             )}
           ></div>
@@ -112,7 +117,7 @@ const Membership: React.FC<{ onClose: () => void }> = ({ onClose }) => {
               <div
                 onClick={e => {
                   e.stopPropagation();
-                  setSelectedType(item.title as 'Credit' | 'Plan');
+                  setSelectedType(item.title as PaymentType);
                 }}
                 className={cn(
                   'text-[14px] font-medium h-[24px] leading-[24px] rounded-full text-[#999] font-inter transition-colors duration-500 ease-in-out',
@@ -125,7 +130,7 @@ const Membership: React.FC<{ onClose: () => void }> = ({ onClose }) => {
           ))}
         </div>
 
-        <PayPalScriptProvider options={{ clientId }}>
+        <PayPalScriptProvider options={{ clientId, vault: true }}>
           <div className="flex gap-[72px]">
             {paymentList
               .find(item => item.title === selectedType)
@@ -168,36 +173,46 @@ const Membership: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                   <div className="flex flex-col items-center">
                     <div className="h-[40px] max-h-[40px] overflow-hidden">
                       <PayPalButtons
-                        createOrder={async () => {
-                          if (selectedType === 'Credit') {
-                            const value = +type.key.split('_')[1];
+                        createOrder={
+                          selectedType === 'Credit'
+                            ? async () => {
+                                const value = +type.key.split('_')[1];
 
-                            const res = await handlePurchaseCredit(value as 40 | 100 | 200);
-                            if (res.code === 0) {
-                              return res.data.id;
-                            } else {
-                              console.log(res);
-                            }
-                          } else {
-                            const levelMap = new Map([
-                              ['plan_basic', 1],
-                              ['plan_pro', 2],
-                              ['plan_enterprise', 3]
-                            ]);
+                                const res = await handlePurchaseCredit(value as 40 | 100 | 200);
+                                if (res.code === 0) {
+                                  return res.data.id;
+                                } else {
+                                  console.log(res);
+                                }
+                              }
+                            : undefined
+                        }
+                        createSubscription={
+                          selectedType === 'Plan'
+                            ? async () => {
+                                const levelMap = new Map([
+                                  ['plan_basic', 1],
+                                  ['plan_pro', 2],
+                                  ['plan_enterprise', 3]
+                                ]);
 
-                            const res = await handleSubscribe(
-                              levelMap.get(type.key as 'plan_basic' | 'plan_pro' | 'plan_enterprise') as 1 | 2 | 3
-                            );
+                                const res = await handleSubscribe(
+                                  levelMap.get(type.key as 'plan_basic' | 'plan_pro' | 'plan_enterprise') as 1 | 2 | 3
+                                );
 
-                            if (res.code === 0) {
-                              return res.data.id;
-                            } else {
-                              console.log(res);
-                            }
-                          }
-                        }}
+                                if (res.code === 0) {
+                                  return res.data.id;
+                                } else {
+                                  console.log(res);
+                                }
+                              }
+                            : undefined
+                        }
                         onApprove={async data => {
-                          await handleCaptureOrder(data.orderID);
+                          await handleCaptureOrder(
+                            data.orderID,
+                            selectedType === 'Plan' ? data.subscriptionID || '' : undefined
+                          );
                         }}
                       />
                     </div>

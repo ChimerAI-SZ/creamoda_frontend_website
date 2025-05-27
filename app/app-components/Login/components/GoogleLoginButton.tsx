@@ -98,10 +98,10 @@ export const GoogleLoginButton = ({ onError, onSuccess }: GoogleLoginButtonProps
       type="button"
       onClick={handleGoogleLogin}
       disabled={isLoading}
-      className="h-[52px] w-full py-[10px] px-4 flex items-center justify-center gap-[6px] rounded-[4px] border border-[#F97917] bg-white hover:border-[rgba(249,121,23,0.5)] transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+      className="h-[52px] w-full py-[10px] px-4 flex items-center justify-center gap-[6px] rounded-[4px] border border-primary bg-white hover:border-[rgba(249,121,23,0.5)] transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
     >
       {isLoading ? (
-        <div className="w-5 h-5 border-2 border-gray-300 border-t-[#F97917] rounded-full animate-spin" />
+        <div className="w-5 h-5 border-2 border-gray-300 border-t-primary rounded-full animate-spin" />
       ) : (
         <Image src={google.src} alt="Google Logo" width={20} height={20} className="cursor-pointer" />
       )}

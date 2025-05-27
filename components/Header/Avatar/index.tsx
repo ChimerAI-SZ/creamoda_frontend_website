@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 
 import AccountSetting from './AccountSettings';
 import AvatarMenu from './AvatarMenu';
-import Membership from '@/components/Membership';
+import Membership, { PaymentType } from '@/components/Membership';
 import OrdersAndPayment from './OrdersAndPayment';
 
 import { logout } from '@/lib/api';
@@ -20,6 +20,7 @@ export default function Avatar() {
   const [isMenuVisible, setIsMenuVisible] = useState(false); // 个人详情菜单弹窗是否展示
   const [settingVisible, setSettingVisible] = useState(false); // account settings 弹窗是否展示
   const [membershipVisible, setMembershipVisible] = useState(false); // membership 弹窗是否展示
+  const [defaultMembershipType, setDefaultMembershipType] = useState<PaymentType>('Credit'); // membership 弹窗是否展示
   const [paymentVisible, setPaymentVisible] = useState(false); // payment 弹窗是否展示
   // 获取用户信息
   const { username, email, headPic, fetchUserInfo, credit } = usePersonalInfoStore();
@@ -59,7 +60,10 @@ export default function Avatar() {
   const handleAction = (key: AvatarActionType) => {
     const visibilityMap = {
       setting: setSettingVisible,
-      membership: setMembershipVisible,
+      membership: () => {
+        setDefaultMembershipType('Plan');
+        setMembershipVisible(true);
+      },
       payment: setPaymentVisible
     };
 
@@ -86,6 +90,7 @@ export default function Avatar() {
       <div className="flex items-center justify-start gap-3">
         <div
           onClick={() => {
+            setDefaultMembershipType('Credit');
             setMembershipVisible(true);
           }}
         >
@@ -106,7 +111,7 @@ export default function Avatar() {
           )}
         </div>
         <div
-          className="w-8 h-8 rounded-full overflow-hidden focus:outline-none focus:ring-2 focus:ring-[#FF7B0D] focus:ring-offset-2 cursor-pointer"
+          className="w-8 h-8 rounded-full overflow-hidden focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 cursor-pointer"
           onClick={handleOpenMenu}
         >
           <Image
@@ -128,12 +133,17 @@ export default function Avatar() {
         setIsMenuVisible={setIsMenuVisible}
       />
 
-      {membershipVisible && <Membership onClose={() => setMembershipVisible(false)} />}
+      {membershipVisible && (
+        <Membership onClose={() => setMembershipVisible(false)} defaultType={defaultMembershipType} />
+      )}
 
       <OrdersAndPayment
         open={paymentVisible}
         onOpenChange={setPaymentVisible}
-        setMembershipVisible={setMembershipVisible}
+        handleOpenMembership={(type: PaymentType) => {
+          setDefaultMembershipType(type);
+          setMembershipVisible(true);
+        }}
       />
     </div>
   );

@@ -153,7 +153,7 @@ const GetIntTouchDialog: React.FC<GetIntTouchDialogProps> = ({ trigger, genImgId
                 setOpen(false);
               }}
             >
-              <span className="text-[#F97917] font-inter text-[14px] font-medium leading-[20px]">OK</span>
+              <span className="text-primary font-inter text-[14px] font-medium leading-[20px]">OK</span>
             </Button>
           </div>
         </DialogContent>

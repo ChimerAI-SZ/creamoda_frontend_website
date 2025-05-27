@@ -126,7 +126,7 @@ export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(({ image, on
               <div
                 className={cn(
                   'w-[33px] h-[33px] flex items-center justify-center rounded-[50%] cursor-pointer',
-                  isCollected ? 'bg-[#F97917] text-white' : 'bg-[#fff] text-black'
+                  isCollected ? 'bg-primary text-white' : 'bg-[#fff] text-black'
                 )}
                 onClick={() => {
                   collectImage({ genImgId: image.genImgId, action: isCollected ? 2 : 1 });

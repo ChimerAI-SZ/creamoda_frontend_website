@@ -62,7 +62,7 @@ export default function ImageCard({
               onClick={e => e.stopPropagation()}
             >
               <div className="flex items-center justify-center gap-4 w-full h-[28px] absolute opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <div className="w-[26px] h-[26px] bg-[#F97917] flex items-center justify-center text-white rounded-[50%] cursor-pointer">
+                <div className="w-[26px] h-[26px] bg-primary flex items-center justify-center text-white rounded-[50%] cursor-pointer">
                   <Star className="w-[18px] h-[18px]" onClick={() => handleDislike(image.genImgId)} />
                 </div>
                 <div

@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 
 import usePersonalInfoStore from '@/stores/usePersonalInfoStore';
 import { Modal as GlobalModal } from '@/utils/modal';
-import { paymentList } from '@/components/Membership';
+import { paymentList, PaymentType } from '@/components/Membership';
 import { handleCancelSubscribe, queryBillingHistory } from '@/lib/api/payment';
 import { updateUserInfo } from '@/lib/api/common';
 import { showErrorDialog } from '@/utils';
@@ -19,31 +19,22 @@ const validateEmail = (email: string): boolean => {
   return EMAIL_REGEX.test(email);
 };
 
-// 将initialData的声明移到useState之前
-const initialData = [
-  { dueDate: 'May 4, 2025', description: 'Basic plan', status: 'Paid', invoice: '$19.9' },
-  { dueDate: 'May 1, 2025', description: '100 credits', status: 'Paid', invoice: '$10' },
-  { dueDate: 'Apr. 1, 2025', description: '100 credits', status: 'Unpaid', invoice: '$10' },
-  { dueDate: 'May 4, 2025', description: 'Basic plan', status: 'Paid', invoice: '$19.9' },
-  { dueDate: 'May 1, 2025', description: '100 credits', status: 'Paid', invoice: '$10' },
-  { dueDate: 'Apr. 1, 2025', description: '100 credits', status: 'Unpaid', invoice: '$10' },
-  { dueDate: 'May 4, 2025', description: 'Basic plan', status: 'Paid', invoice: '$19.9' },
-  { dueDate: 'May 1, 2025', description: '100 credits', status: 'Paid', invoice: '$10' },
-  { dueDate: 'Apr. 1, 2025', description: '100 credits', status: 'Unpaid', invoice: '$10' },
-  { dueDate: 'May 4, 2025', description: 'Basic plan', status: 'Paid', invoice: '$19.9' },
-  { dueDate: 'May 1, 2025', description: '100 credits', status: 'Paid', invoice: '$10' },
-  { dueDate: 'Apr. 1, 2025', description: '100 credits', status: 'Unpaid', invoice: '$10' }
-];
+export interface BillingHistoryItem {
+  dueDate: string;
+  description: string;
+  status: 'Success' | 'Failed' | 'Pending';
+  invoice: string;
+}
 
 const AccountSettingsDrawer = React.memo(
   ({
     open,
     onOpenChange,
-    setMembershipVisible
+    handleOpenMembership
   }: {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    setMembershipVisible: (open: boolean) => void;
+    handleOpenMembership: (type: PaymentType) => void;
   }) => {
     const { subscribeLevel, billingEmail, renewTime } = usePersonalInfoStore();
     // 编辑用户名的输入框的值
@@ -52,8 +43,7 @@ const AccountSettingsDrawer = React.memo(
     const [isEditingEmail, setIsEditingEmail] = useState(false);
 
     // bill history begins
-    const [tableData, setTableData] = useState(initialData); // bill history table data
-    const [total, setTotal] = useState(0); // bill history total
+    const [tableData, setTableData] = useState<BillingHistoryItem[]>([]); // bill history table data
     const [hasMore, setHasMore] = useState(true); // bill history has more
     const [page, setPage] = useState(1); // bill history page
     const PAGE_SIZE = 10; // bill history page size
@@ -116,7 +106,6 @@ const AccountSettingsDrawer = React.memo(
 
       if (res.code === 0) {
         setTableData(prevData => [...prevData, ...res.data.list]);
-        setTotal(res.data.total);
 
         setPage(page + 1);
         // 判断是否还有更多数据
@@ -128,31 +117,6 @@ const AccountSettingsDrawer = React.memo(
 
     useEffect(() => {
       handleQueryBillingHistory();
-    }, []);
-
-    // 模拟加载更多数据的函数
-    const loadMoreData = () => {
-      const moreData = [
-        { dueDate: 'Jun. 1, 2025', description: 'Premium plan', status: 'Paid', invoice: '$29.9' },
-        { dueDate: 'Jul. 1, 2025', description: '200 credits', status: 'Unpaid', invoice: '$20' }
-      ];
-      setTableData(prevData => [...prevData, ...moreData]);
-    };
-
-    // 添加类型注解
-    const handleScroll = (event: Event) => {
-      const target = event.target as Document;
-      const { scrollTop, scrollHeight, clientHeight } = target.scrollingElement!;
-      if (scrollHeight - scrollTop === clientHeight) {
-        loadMoreData();
-      }
-    };
-
-    // 监听滚动事件
-    useEffect(() => {
-      window.addEventListener('scroll', handleScroll);
-
-      return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
     const sections = [
@@ -189,7 +153,7 @@ const AccountSettingsDrawer = React.memo(
               {subscribeLevel === 0 ? (
                 <Button
                   onClick={() => {
-                    setMembershipVisible(true);
+                    handleOpenMembership('Plan');
                     onOpenChange(false);
                   }}
                   variant="outline"
@@ -296,7 +260,7 @@ const AccountSettingsDrawer = React.memo(
                       <td>{item.dueDate}</td>
                       <td>{item.description}</td>
                       <td>
-                        {item.status === 'Paid' ? (
+                        {item.status === 'Success' ? (
                           <span className="border border-[#34C759] rounded-[6px] text-[#34C759] text-[10px] font-inter px-2 py-[2px] font-light leading-[20px]">
                             Paid
                           </span>

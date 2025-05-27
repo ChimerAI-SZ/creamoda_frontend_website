@@ -110,7 +110,7 @@ const AccountSettingsDrawer = React.memo(
         content: (
           <div className="flex items-center flex-col">
             <label htmlFor="upload-button">
-              <div className="w-[56px] h-[56px] mb-4 focus:outline-none focus:ring-2 focus:ring-[#FF7B0D] focus:ring-offset-2 cursor-pointer relative">
+              <div className="w-[56px] h-[56px] mb-4 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 cursor-pointer relative">
                 <div className="w-full h-full rounded-full overflow-hidden">
                   <Image
                     src={selectedImage || headPic || '/images/defaultAvatar.svg'}
@@ -222,7 +222,7 @@ const AccountSettingsDrawer = React.memo(
         content: (
           <div className="space-y-2">
             {LegalList.map(item => (
-              <div className="relative flex items-center justify-start">
+              <div className="relative flex items-center justify-start" key={item.title}>
                 <div className="text-[#000] font-inter text-[20px] font-light ">{item.title}</div>
                 <div className="absolute right-0 w-[90px]">
                   <Button

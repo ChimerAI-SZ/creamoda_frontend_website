@@ -23,7 +23,7 @@ export const VerificationSuccess = ({ onBackToLogin }: VerificationSuccessProps)
       </p>
       <Button
         onClick={onBackToLogin}
-        className="h-[52px] w-[200px] py-[10px] px-4 mt-[16px] flex justify-center items-center gap-[6px] rounded-[4px] bg-[#FFFFFF] border border-[#F97917] hover:bg-[#FFFFFF] hover:text-[#F97917]/80 hover:border-[#F97917]/80 text-[#F97917] font-medium text-sm leading-5"
+        className="h-[52px] w-[200px] py-[10px] px-4 mt-[16px] flex justify-center items-center gap-[6px] rounded-[4px] bg-[#FFFFFF] border border-primary hover:bg-[#FFFFFF] hover:text-primary/80 hover:border-primary/80 text-primary font-medium text-sm leading-5"
       >
         Back to Login
       </Button>

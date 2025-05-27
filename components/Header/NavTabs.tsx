@@ -24,8 +24,8 @@ function NavItem({ text, href }: NavItem) {
     'text-center cursor-pointer transition-colors',
     'inline-block py-[6px] px-[10px]',
     {
-      'text-[#FF7B0D]': isActive,
-      'hover:text-[#FF7B0D]': !isActive
+      'text-primary': isActive,
+      'hover:text-primary': !isActive
     }
   );
 
