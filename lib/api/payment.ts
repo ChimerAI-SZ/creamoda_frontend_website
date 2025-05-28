@@ -1,5 +1,4 @@
 import { api } from '@/lib/axios';
-import axios from 'axios';
 
 /**
  * 订阅列表
