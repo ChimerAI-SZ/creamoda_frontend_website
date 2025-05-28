@@ -36,7 +36,7 @@ export function GenerateButton({ onClick, state = 'disabled', className = '' }: 
   // Button styles based on state
   const buttonStyles = {
     disabled: 'bg-[#CECECE] text-white cursor-not-allowed',
-    ready: 'bg-primary text-white hover:bg-[#E86806] cursor-pointer',
+    ready: 'bg-primary text-white hover:bg-primary-hover cursor-pointer',
     generating: 'bg-[rgba(249,121,23,0.5)] text-white cursor-not-allowed'
   };
 

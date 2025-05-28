@@ -7,6 +7,7 @@ import { Overlay } from '@/components/ui/overlay';
 
 import { cn } from '@/utils';
 import { handlePurchaseCredit, handleSubscribe, handleCaptureOrder } from '@/lib/api/payment';
+import { usePersonalInfoStore } from '@/stores/usePersonalInfoStore';
 
 export const paymentList = [
   {
@@ -209,10 +210,17 @@ const Membership: React.FC<{ onClose: () => void; defaultType?: PaymentType }> =
                             : undefined
                         }
                         onApprove={async data => {
-                          await handleCaptureOrder(
+                          const res = await handleCaptureOrder(
                             data.orderID,
                             selectedType === 'Plan' ? data.subscriptionID || '' : undefined
                           );
+
+                          if (res.code === 0) {
+                            onClose();
+                            await usePersonalInfoStore.getState().fetchUserInfo();
+                          } else {
+                            console.log(res);
+                          }
                         }}
                       />
                     </div>

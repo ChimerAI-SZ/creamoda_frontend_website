@@ -12,6 +12,7 @@ interface UserInfo {
   subscribeLevel: 1 | 2 | 3 | 0;
   billingEmail: string;
   renewTime: string;
+  isRenew: 0 | 1;
 }
 
 interface ModelState extends UserInfo {
@@ -48,6 +49,7 @@ export const usePersonalInfoStore = create<ModelState>((set, get) => ({
   subscribeLevel: 0, // 订阅等级
   billingEmail: '', // 账单邮箱
   renewTime: '', // 续费时间
+  isRenew: 0, // 是否续费
 
   // Status fields
   isLoading: false,
@@ -78,6 +80,8 @@ export const usePersonalInfoStore = create<ModelState>((set, get) => ({
       emailVerified: '',
       hasPwd: false,
       credit: 0,
+      isRenew: 0,
+
       subscribeLevel: 0,
       billingEmail: '',
       renewTime: ''
@@ -97,6 +101,7 @@ export const usePersonalInfoStore = create<ModelState>((set, get) => ({
         emailVerified: userData.emailVerified || '',
         hasPwd: userData.hasPwd,
         credit: userData.credit || 0,
+        isRenew: userData.isRenew || 0,
         subscribeLevel: userData.subscribeLevel || 0,
         billingEmail: userData.billingEmail || '',
         renewTime: userData.renewTime || ''
