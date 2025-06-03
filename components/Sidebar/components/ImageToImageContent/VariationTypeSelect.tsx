@@ -2,24 +2,21 @@
 
 import * as React from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { FormLabel } from '@/components/FormLabel/FormLabel';
-import { cn } from '@/utils';
 import { useModelStore } from '@/stores/useModelStore';
+import { StyledLabel } from '../StyledLabel';
 
 interface VariationTypeSelectProps {
   value: string;
   onChange: (value: string) => void;
   label?: string;
   placeholder?: string;
-  className?: string;
 }
 
 export function VariationTypeSelect({
   value,
   onChange,
   label = 'Variation Type',
-  placeholder = 'Category Switcher',
-  className = ''
+  placeholder = 'Category Switcher'
 }: VariationTypeSelectProps) {
   const { variationTypes } = useModelStore();
   const [isLoading, setIsLoading] = React.useState(true);
@@ -35,16 +32,12 @@ export function VariationTypeSelect({
   }, [variationTypes, value, onChange]);
 
   return (
-    <div className={`space-y-[6px] ${className}`}>
-      {label && <FormLabel>{label}</FormLabel>}
+    <div
+      className={`space-y-[6px] rounded-[16px] px-3 py-[10px] bg-gradient-to-r from-[#95FFCF] via-[#599EFF] to-[#7E5EFF]`}
+    >
+      {label && <StyledLabel content={label} />}
       <Select value={value} onValueChange={onChange} disabled={isLoading}>
-        <SelectTrigger
-          className={cn(
-            'rounded-sm border border-[rgba(249,121,23,0.4)]',
-            'bg-gradient-to-r from-[rgba(252,226,214,0.2)] to-[rgba(252,226,214,0.2)]',
-            'focus:ring-[rgba(249,121,23,0.4)] focus:border-[rgba(249,121,23,0.6)]'
-          )}
-        >
+        <SelectTrigger>
           <SelectValue placeholder={isLoading ? 'Loading...' : placeholder} />
         </SelectTrigger>
         <SelectContent>

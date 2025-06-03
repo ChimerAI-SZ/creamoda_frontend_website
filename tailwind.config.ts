@@ -64,6 +64,19 @@ export default {
         warning: {
           DEFAULT: '#FF3D30',
           hover: ' linear-gradient(0deg, rgba(10, 21, 50, 0.10) 0%, rgba(10, 21, 50, 0.10) 100%), #FF3D30'
+        },
+        gray: {
+          DEFAULT: '#0A1532',
+          80: 'rgba(10,21,50,0.80)',
+          60: 'rgba(10,21,50,0.60)',
+          40: 'rgba(10,21,50,0.40)',
+          20: 'rgba(10,21,50,0.20)',
+          6: 'rgba(10,21,50,0.06)'
+        },
+        eff: {
+          DEFAULT: 'rgba(239, 243, 246, 0.50)',
+          hover: '#EFF3F6',
+          disabled: 'rgba(239, 243, 246, 0.50)'
         }
       },
       borderRadius: {
@@ -101,6 +114,9 @@ export default {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         spin: 'spin 1s linear infinite'
+      },
+      boxShadow: {
+        'card-shadow': '0px 8px 40px 0px rgba(10, 21, 50, 0.06)'
       }
     },
     animation: {

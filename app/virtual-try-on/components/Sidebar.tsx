@@ -82,7 +82,6 @@ export function Sidebar() {
                 }, [])}
                 imageUrl={modelImage.imageUrl}
                 currentImage={modelImage.image}
-                styleType="newStyle"
                 imageType="Model Image"
               />
             </div>
@@ -124,13 +123,12 @@ export function Sidebar() {
                 }, [])}
                 imageUrl={clothingImage.imageUrl}
                 currentImage={clothingImage.image}
-                styleType="newStyle"
                 imageType="Clothing Image"
               />
             </div>
           </div>
         </div>
-        <div className="sticky bottom-0 left-0 right-0 pb-4 bg-white">
+        <div className="sticky bottom-0 left-0 right-0 py-4 bg-white">
           <GenerateButton onClick={handleSubmit} state={btnState} />
         </div>
       </div>

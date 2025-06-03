@@ -18,7 +18,6 @@ import { ImageSlot } from './ImageSlot';
  * @property {Function} onMaskImageUrlChange - 当mask图片URL变化时的回调函数
  * @property {string} imageUrl - 当前图片的URL
  * @property {string} maskImageUrl - 当前mask图片的URL
- * @property {string} styleType - 样式类型，支持'default'和'newStyle'
  * @property {string} imageType - 图片类型
  * @property {boolean} showMaskEditor - 是否显示涂鸦编辑器
  */
@@ -27,10 +26,7 @@ interface ImageUploaderProps {
   onMaskImageUrlChange: (url: string, uploadedMaskUrl?: string) => void;
   imageUrl: string;
   maskImageUrl?: string;
-  /**
-   * 样式类型，支持'default'和'newStyle'
-   */
-  styleType?: 'default' | 'newStyle';
+
   imageType?: string;
   /**
    * 是否显示涂鸦编辑器
@@ -54,7 +50,6 @@ export function ImageUploader({
   onMaskImageUrlChange,
   imageUrl,
   maskImageUrl = '',
-  styleType = 'default',
   imageType = 'Click or drag to upload',
   showMaskEditor = false
 }: ImageUploaderProps) {
@@ -213,8 +208,7 @@ export function ImageUploader({
       <div
         className={cn(
           'relative w-[302px] h-[288px] rounded-[4px] transition-colors',
-          dragActive ? 'border-primary bg-[#FFE4D2]' : '',
-          styleType === 'default' && ''
+          dragActive ? 'border-primary bg-[#FFE4D2]' : ''
         )}
         onDragEnter={handleDrag}
         onDragLeave={handleDrag}
@@ -328,14 +322,9 @@ export function ImageUploader({
               onChange={handleUrlChange}
               className={cn(
                 'bg-white absolute left-[50%] translate-x-[-50%]  w-[270px] h-[36px] px-[12px] text-[14px] font-normal leading-5 placeholder:text-[#d5d5d5] rounded-sm',
-                styleType === 'newStyle' ? 'bottom-[36px]' : 'bottom-[12px]'
+                'bottom-[12px]'
               )}
             />
-            {styleType === 'newStyle' && (
-              <div className="absolute bottom-[12px] w-full h-[12px] flex items-center justify-center">
-                <span className="text-[#999] text-[10px] font-thin">Use a good resolution image for best results</span>
-              </div>
-            )}
           </>
         )}
       </div>

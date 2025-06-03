@@ -1,8 +1,10 @@
 'use client';
 
 import * as React from 'react';
+
 import { Slider } from '@/components/ui/slider';
-import { FormLabel } from '@/components/FormLabel/FormLabel';
+import { StyledLabel } from '../StyledLabel';
+
 import { cn } from '@/utils';
 
 interface FidelitySliderProps {
@@ -16,7 +18,7 @@ export function FidelitySlider({ value, onChange, label = 'Reference Level', cla
   return (
     <div className={cn('space-y-4', className)}>
       <div className="flex items-center">
-        <FormLabel>{label}</FormLabel>
+        <StyledLabel content={label} htmlFor="fidelity" />
       </div>
       <div className="relative items-center">
         <Slider

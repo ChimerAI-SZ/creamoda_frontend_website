@@ -1,12 +1,14 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { Inter } from 'next/font/google';
-import { showErrorDialog } from '@/utils/index';
 
-import { ToggleTag } from './components/ToggleTag';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import TextToImageContent from './components/TextToImageContent';
 import ImageToImageContent from './components/ImageToImageContent/index';
+
+import { showErrorDialog } from '@/utils/index';
+
 const inter = Inter({ subsets: ['latin'] });
 
 import {
@@ -48,7 +50,6 @@ export interface ImageUploadFormData {
 }
 
 export function Sidebar() {
-  const [activeTag, setActiveTag] = useState<'text' | 'image'>('text');
   const { setModelSizes, setVariationTypes } = useModelStore();
   const { setGenerating } = useGenerationStore();
 
@@ -177,19 +178,29 @@ export function Sidebar() {
 
   return (
     <div
-      className={`w-[334px] h-[calc(100vh-56px)] flex-shrink-0 bg-white border-r box-content border-gray-200 flex flex-col z-0 ${inter.className}`}
+      className={`w-[378px] h-[calc(100vh-110px)] overflow-y-auto py-4 rounded-[20px] flex-shrink-0 bg-white shadow-card-shadow flex flex-col z-0 ${inter.className}`}
     >
-      <div className="flex justify-center items-center w-full px-3 border-b border-[#DCDCDC] gap-[46px]">
-        <ToggleTag label="Text to image" isActive={activeTag === 'text'} onClick={() => setActiveTag('text')} />
-        <ToggleTag label="Image to image" isActive={activeTag === 'image'} onClick={() => setActiveTag('image')} />
-      </div>
-      <div className="flex-1 overflow-hidden pt-4 ">
-        <div className={activeTag === 'text' ? 'block h-full' : 'hidden'}>
-          <TextToImageContent onSubmit={handleSubmit} />
-        </div>
-        <div className={activeTag === 'image' ? 'block  h-full overflow-x-hidden' : 'hidden'}>
-          <ImageToImageContent onSubmit={handleImageSubmit} />
-        </div>
+      <div className="flex justify-center items-center w-full h-full gap-[46px]">
+        <Tabs defaultValue="text" className="h-full flex flex-col">
+          <div className="flex items-center justify-center">
+            <TabsList>
+              <TabsTrigger value="text">Text to image</TabsTrigger>
+              <TabsTrigger value="image">Image to image</TabsTrigger>
+            </TabsList>
+          </div>
+          <div className="flex-1 overflow-hidden pt-4 ">
+            <TabsContent value="text" className="h-full">
+              <div className={'block h-full'}>
+                <TextToImageContent onSubmit={handleSubmit} />
+              </div>
+            </TabsContent>
+            <TabsContent value="image" className="h-full">
+              <div className={'block  h-full overflow-y-auto'}>
+                <ImageToImageContent onSubmit={handleImageSubmit} />
+              </div>
+            </TabsContent>
+          </div>
+        </Tabs>
       </div>
     </div>
   );

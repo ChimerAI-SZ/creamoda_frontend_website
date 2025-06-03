@@ -1,19 +1,11 @@
-import React, { memo } from 'react';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Label } from '@/components/ui/label';
+import React from 'react';
+import Image from 'next/image';
+
+import { StyledLabel } from './StyledLabel';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { COUNTRIES_LIST } from './constant';
+import RadioGroup from '@/components/ui/radio';
 
-// StyledLabel component from TextToImageContent
-const StyledLabel = memo(({ content, htmlFor }: { content: string; htmlFor?: string }) => (
-  <Label htmlFor={htmlFor} className="text-[#1A1A1A] font-inter text-[14px] font-medium leading-[20px] py-[6px]">
-    {content}
-  </Label>
-));
-StyledLabel.displayName = 'StyledLabel';
-
-// Constants for options
-const AGE_OPTIONS = Array.from({ length: 83 }, (_, i) => i + 18); // Ages 18-100
+import { COUNTRIES_LIST, RatioList, AGE_OPTIONS } from '../constant';
 
 // Type for model size option
 interface ModelSizeOption {
@@ -35,7 +27,6 @@ interface GenderAgeCountryFieldsProps {
   onModelSizeChange?: (value: string) => void;
   // Optional title prop
   title?: string;
-  ratioList?: string[];
   onRatioChange?: (value: string) => void;
   selectedRatio?: string;
 }
@@ -53,7 +44,6 @@ export const GenderAgeCountryFields: React.FC<GenderAgeCountryFieldsProps> = ({
   modelSizes = [],
   onModelSizeChange,
   title,
-  ratioList,
   onRatioChange,
   selectedRatio
 }) => {
@@ -61,34 +51,28 @@ export const GenderAgeCountryFields: React.FC<GenderAgeCountryFieldsProps> = ({
   const modelSizeValue = modelSize?.toString() || '';
 
   return (
-    <div className="space-y-4 mt-4">
+    <div className="mt-6">
       {title && <h3 className="text-[#121316] font-inter text-[14px] font-bold leading-5 py-[6px]">{title}</h3>}
 
-      <div className={title ? 'mt-3' : ''}>
-        <div className="flex items-center justify-between mt-2">
+      <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 items-start">
           <StyledLabel htmlFor="gender_field" content="Gender" />
-
-          <RadioGroup id="gender_field" value={gender} onValueChange={onGenderChange} className="flex gap-4 w-[155px]">
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="2" id="female" />
-              <Label className="text-[#121316] font-inter text-[14px] font-normal leading-5 py-[6px]" htmlFor="female">
-                Female
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="1" id="male" />
-              <Label className="text-[#121316] font-inter text-[14px] font-normal leading-5 py-[6px]" htmlFor="male">
-                Male
-              </Label>
-            </div>
-          </RadioGroup>
+          <RadioGroup
+            options={[
+              { label: 'Male', value: '1' },
+              { label: 'Female', value: '2' }
+            ]}
+            name="gender"
+            selectedValue={gender}
+            onChange={onGenderChange}
+          />
         </div>
 
-        <div className="flex items-center justify-between mt-2">
+        <div className="flex flex-col gap-2 items-start">
           <StyledLabel content="Age" />
 
           <Select value={age} onValueChange={onAgeChange}>
-            <SelectTrigger className="w-[155px] rounded-sm">
+            <SelectTrigger className="rounded-sm">
               <SelectValue placeholder="Select age" />
             </SelectTrigger>
             <SelectContent>
@@ -101,11 +85,11 @@ export const GenderAgeCountryFields: React.FC<GenderAgeCountryFieldsProps> = ({
           </Select>
         </div>
 
-        <div className="flex items-center justify-between mt-2">
+        <div className="flex flex-col gap-2 items-start">
           <StyledLabel content="Country" />
 
           <Select value={country} onValueChange={onCountryChange}>
-            <SelectTrigger className="w-[155px] rounded-sm">
+            <SelectTrigger className="rounded-sm">
               <SelectValue placeholder="Select country" />
             </SelectTrigger>
             <SelectContent className="max-h-[300px]">
@@ -119,29 +103,23 @@ export const GenderAgeCountryFields: React.FC<GenderAgeCountryFieldsProps> = ({
         </div>
 
         {showModelSizeField && onModelSizeChange && (
-          <div className="flex items-center justify-between mt-2">
+          <div className="flex flex-col gap-2 items-start">
             <StyledLabel content="Type" />
 
-            <Select value={modelSizeValue} onValueChange={onModelSizeChange}>
-              <SelectTrigger className="w-[155px] rounded-sm">
-                <SelectValue placeholder="Select type" />
-              </SelectTrigger>
-              <SelectContent>
-                {modelSizes.map(type => (
-                  <SelectItem key={type.code} value={type.code}>
-                    {type.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <RadioGroup
+              options={modelSizes.map(item => ({ label: item.name, value: item.code }))}
+              name="modelSize"
+              selectedValue={modelSizeValue}
+              onChange={onModelSizeChange}
+            />
           </div>
         )}
 
         <h3 className="text-[#121316] font-inter text-[14px] font-bold leading-5 pt-[24px]">Format</h3>
-        <div className="flex items-center justify-between mt-2">
+        <div className="flex flex-col gap-2 items-start">
           <StyledLabel content="Aspect Ratio" />
 
-          <Select value={selectedRatio} onValueChange={onRatioChange}>
+          {/* <Select value={selectedRatio} onValueChange={onRatioChange}>
             <SelectTrigger className="w-[155px] rounded-sm">
               <SelectValue placeholder="Select type" />
             </SelectTrigger>
@@ -152,7 +130,32 @@ export const GenderAgeCountryFields: React.FC<GenderAgeCountryFieldsProps> = ({
                 </SelectItem>
               ))}
             </SelectContent>
-          </Select>
+          </Select> */}
+
+          <RadioGroup
+            options={RatioList.map(ratio => {
+              return {
+                label: (
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="w-[18px] h-[18px] flex items-center justify-center">
+                      <Image
+                        src={`/images/generate/${ratio.icon}`}
+                        alt={ratio.value}
+                        width={18}
+                        height={18}
+                        className="w-full h-full object-contain"
+                      />
+                    </div>
+                    <span className="text-[#0A1532] text-[14px] font-normal leading-[20px]">{ratio.value}</span>
+                  </div>
+                ),
+                value: ratio.value
+              };
+            })}
+            name="gender"
+            selectedValue={gender}
+            onChange={onGenderChange}
+          />
         </div>
       </div>
     </div>

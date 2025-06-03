@@ -96,17 +96,21 @@ export default function Avatar() {
         >
           {credit > 0 ? (
             <div>
-              <div className="flex items-center gap-1 rounded-full px-2 py-1 bg-gradient-to-r from-[rgba(0,143,247,0.40)] via-[rgba(160,144,249,0.40)] via-[42.97%] to-[rgba(249,121,23,0.40)] to-[82.53%] cursor-pointer">
-                <Image src="/images/menu/start.svg" alt="sparkles" width={16} height={16} className="object-cover" />
-                <span className="text-[#FFF] text-center font-inter text-[14px] font-semibold leading-[20px]">
+              <Button
+                variant="gradient"
+                size="md"
+                // className="flex items-center gap-1 rounded-full px-2 py-1 bg-gradient-to-r from-[rgba(0,143,247,0.40)] via-[rgba(160,144,249,0.40)] via-[42.97%] to-[rgba(249,121,23,0.40)] to-[82.53%] cursor-pointer"
+              >
+                <Image src="/images/menu/integral.svg" alt="integral" width={16} height={16} className="object-cover" />
+                <span className="text-[#FFF] text-center font-inter text-[14px] font-bold leading-[20px]">
                   {credit} Cr
                 </span>
-              </div>
+              </Button>
             </div>
           ) : (
             <Button variant="gradientDestructive" size="sm" className="w-fit">
-              <Image src="/images/menu/start.svg" alt="sparkles" width={16} height={16} className="object-cover" />
-              <span className="text-[#FFF] text-center font-inter text-[14px] font-semibold leading-[20px]">0 Cr</span>
+              <Image src="/images/menu/integral.svg" alt="integral" width={16} height={16} className="object-cover" />
+              <span className="text-[#FFF] text-center font-inter text-[14px] leading-[20px]">0 Cr</span>
             </Button>
           )}
         </div>

@@ -20,7 +20,6 @@ import { cn } from '@/utils';
  * @property {string} imageUrl - 当前图片的URL
  * @property {string} maskImageUrl - 当前mask图片的URL
  * @property {File | null} currentImage - 当前选择的图片文件
- * @property {string} styleType - 样式类型，支持'default'和'newStyle'
  * @property {string} imageType - 图片类型
  */
 interface ImageUploaderProps {
@@ -30,10 +29,6 @@ interface ImageUploaderProps {
   imageUrl: string;
   maskImageUrl?: string;
   currentImage: File | null;
-  /**
-   * 样式类型，支持'default'和'newStyle'
-   */
-  styleType?: 'default' | 'newStyle';
   imageType?: string;
 }
 
@@ -53,9 +48,7 @@ export function ImageUploader({
   onImageUrlChange,
   onMaskImageUrlChange,
   imageUrl,
-  maskImageUrl,
   currentImage,
-  styleType = 'default',
   imageType = 'Click or drag to upload'
 }: ImageUploaderProps) {
   // 状态管理
@@ -232,96 +225,93 @@ export function ImageUploader({
   };
 
   return (
-    <div className="space-y-2 flex items-center justify-center">
-      <div
-        className={cn(
-          'relative w-[302px] h-[288px] rounded-[4px] border border-[#DCDCDC] transition-colors',
-          dragActive ? 'border-primary bg-[#FFE4D2]' : 'hover:bg-gray-50',
-          styleType === 'default' && 'bg-[#FAFAFA]'
-        )}
-        onDragEnter={handleDrag}
-        onDragLeave={handleDrag}
-        onDragOver={handleDrag}
-        onDrop={handleDrop}
-      >
-        {isUploading || isLoadingImageUrl ? (
-          // 加载状态
-          <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <Loader2 className="h-8 w-8 text-primary animate-spin mb-2" />
-            <span className="text-sm text-gray-600">
-              {isUploading
-                ? 'Uploading image...'
-                : isLoadingImageUrl
-                ? 'Loading image from URL...'
-                : 'Processing image...'}
-            </span>
-          </div>
-        ) : previewUrl ? (
-          // 图片预览模式
-          <div className="relative w-full h-full">
-            <div className="absolute inset-0 flex items-center justify-center p-4">
-              <Image
-                src={previewUrl}
-                alt="Uploaded image"
-                fill
-                className="object-contain"
-                onError={() => {
-                  // 图片加载错误时清除预览
-                  setPreviewUrl(null);
-                  onImageUrlChange('');
-                  showErrorDialog(
-                    'Failed to load image. The URL might be invalid or the image format is not supported.'
-                  );
-                }}
-              />
+    <div className="space-y-2 w-full flex items-center justify-center ">
+      <div className="relative p-[1px] bg-gradient-to-r from-[#704DFF] via-[#599EFF] to-[#6EFABB] rounded-md w-full">
+        <div
+          className={cn(
+            'relative w-full h-[180px] rounded-[4px] border border-[#DCDCDC] transition-colors',
+            dragActive ? 'border-primary bg-[#FFE4D2]' : 'hover:bg-gray-50',
+            'bg-[#FAFAFA]'
+          )}
+          onDragEnter={handleDrag}
+          onDragLeave={handleDrag}
+          onDragOver={handleDrag}
+          onDrop={handleDrop}
+        >
+          {isUploading || isLoadingImageUrl ? (
+            // 加载状态
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <Loader2 className="h-8 w-8 text-primary animate-spin mb-2" />
+              <span className="text-sm text-gray-600">
+                {isUploading
+                  ? 'Uploading image...'
+                  : isLoadingImageUrl
+                  ? 'Loading image from URL...'
+                  : 'Processing image...'}
+              </span>
             </div>
-            <button
-              onClick={handleRemoveImage}
-              className="absolute top-3 right-[13.14px] bg-white rounded-[4px] p-[2px] border-[0.875px] border-[#DCDCDC] hover:bg-gray-100"
-              type="button"
-            >
-              <X className="h-4 w-4 text-[#E4E4E7]" />
-            </button>
-          </div>
-        ) : (
-          // 上传模式
-          <>
-            <input
-              id="image-upload"
-              type="file"
-              className="hidden"
-              accept="image/jpeg,image/png"
-              onChange={handleFileChange}
-            />
-            <label
-              htmlFor="image-upload"
-              className="absolute left-[50%] translate-x-[-50%] h-[calc(100%-48px)] w-full cursor-pointer"
-            >
-              <div className="flex items-center justify-center mt-[82px] h-[48px] shrink-0">
-                <Image src="/images/operation/up.svg" alt="Upload" width={48} height={48} />
+          ) : previewUrl ? (
+            // 图片预览模式
+            <div className="relative w-full h-full">
+              <div className="absolute inset-0 flex items-center justify-center p-4">
+                <Image
+                  src={previewUrl}
+                  alt="Uploaded image"
+                  fill
+                  className="object-contain"
+                  onError={() => {
+                    // 图片加载错误时清除预览
+                    setPreviewUrl(null);
+                    onImageUrlChange('');
+                    showErrorDialog(
+                      'Failed to load image. The URL might be invalid or the image format is not supported.'
+                    );
+                  }}
+                />
               </div>
-              <div className="flex flex-col items-center justify-center mt-2">
-                <span className="text-sm font-normal text-[#121316] font-inter leading-5">{imageType}</span>
-                <span className="text-xs font-normal text-[#999] font-inter leading-[15px]">Format: .jpeg, .png</span>
-              </div>
-            </label>
-            <Input
-              type="text"
-              placeholder="Or paste image address"
-              value={newImageUrl || ''}
-              onChange={handleUrlChange}
-              className={cn(
-                'bg-white absolute left-[50%] translate-x-[-50%]  w-[270px] h-[36px] px-[12px] text-[14px] font-normal leading-5 placeholder:text-[#d5d5d5] rounded-sm',
-                styleType === 'newStyle' ? 'bottom-[36px]' : 'bottom-[12px]'
-              )}
-            />
-            {styleType === 'newStyle' && (
-              <div className="absolute bottom-[12px] w-full h-[12px] flex items-center justify-center">
-                <span className="text-[#999] text-[10px] font-thin">Use a good resolution image for best results</span>
-              </div>
-            )}
-          </>
-        )}
+              <button
+                onClick={handleRemoveImage}
+                className="absolute top-3 right-[13.14px] bg-white rounded-[4px] p-[2px] border-[0.875px] border-[#DCDCDC] hover:bg-gray-100"
+                type="button"
+              >
+                <X className="h-4 w-4 text-[#E4E4E7]" />
+              </button>
+            </div>
+          ) : (
+            // 上传模式
+            <>
+              <input
+                id="image-upload"
+                type="file"
+                className="hidden"
+                accept="image/jpeg,image/png"
+                onChange={handleFileChange}
+              />
+              <label
+                htmlFor="image-upload"
+                className="absolute left-[50%] translate-x-[-50%] h-full w-full cursor-pointer flex flex-col items-center justify-center"
+              >
+                <div className="flex items-center justify-center h-[48px] shrink-0">
+                  <Image src="/images/generate/upload_image.svg" alt="Upload" width={55} height={55} />
+                </div>
+                <div className="flex flex-col items-center justify-center">
+                  <span className="text-sm font-normal text-[#121316] font-inter leading-5">{imageType}</span>
+                  <span className="text-xs font-normal text-[#999] font-inter leading-[15px]">Format: .jpeg, .png</span>
+                </div>
+              </label>
+              {/* <Input
+                type="text"
+                placeholder="Or paste image address"
+                value={newImageUrl || ''}
+                onChange={handleUrlChange}
+                className={cn(
+                  'bg-white absolute left-[50%] translate-x-[-50%]  w-[270px] h-[36px] px-[12px] text-[14px] font-normal leading-5 placeholder:text-[#d5d5d5] rounded-sm',
+                  'bottom-[12px]'
+                )}
+              /> */}
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

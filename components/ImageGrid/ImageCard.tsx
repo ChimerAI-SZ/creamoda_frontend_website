@@ -85,7 +85,7 @@ export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(({ image, on
       {!isFailed && (
         <div
           className={cn(
-            'absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center bg-[#FAFAFA] rounded-[4px] border border-[#DCDCDC] overflow-hidden',
+            'absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center bg-[#FAFAFA] rounded-[16px] border border-[#DCDCDC] overflow-hidden',
             !(!isLoaded || isGenerating) ? 'opacity-100' : 'opacity-0'
           )}
         >

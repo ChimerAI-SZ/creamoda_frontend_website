@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-[#f7f7f8] flex flex-col">
+      <body className="min-h-screen flex flex-col bg-[url('/images/bg.png')] bg-cover">
         <Header />
         {children}
         <ErrorDialog />

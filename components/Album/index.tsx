@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { Star } from 'lucide-react';
 
 import { AlbumDrawer } from './components/Drawer';
@@ -8,8 +9,11 @@ export function Album() {
   return (
     <>
       <AlbumDrawer>
-        <div className="album-drawer-trigger absolute top-[80px] right-0 h-[40px] w-[40px] bg-primary shadow-[0px_0px_10px_0px_rgba(80,87,102,0.2)] flex items-center justify-center rounded-[4px_0_0_4px] cursor-pointer">
-          <Star className="w-5 h-5 text-white" />
+        <div
+          className="album-drawer-trigger absolute top-[86px] right-[10px] h-[50px] w-[50px] bg-white shadow-[0px_4.762px_23.81px_rgba(112,77,255,0.40)] flex items-center justify-center rounded-full cursor-pointer"
+          style={{ fill: 'var(--100, #FFF)', filter: 'drop-shadow(0px 4.762px 23.81px rgba(112, 77, 255, 0.40))' }}
+        >
+          <Image src="/images/album/star.svg" alt="star" width={30} height={30} />
         </div>
       </AlbumDrawer>
     </>

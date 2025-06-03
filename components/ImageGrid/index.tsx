@@ -187,8 +187,10 @@ export function ImageGrid() {
 
   return (
     <>
-      <div
-        className="image-grid-container grid gap-4 z-20 bg-[#FFFDFA] auto-rows-max
+      <div className="w-full h-full p-4 z-20 bg-[#fff] rounded-[20px] overflow-hidden shadow-card-shadow">
+        <div className="h-full overflow-y-auto">
+          <div
+            className="image-grid-container grid gap-4 auto-rows-max
       grid-cols-1
       sm:grid-cols-2 
       min-[800px]:grid-cols-2 
@@ -199,15 +201,17 @@ export function ImageGrid() {
       min-[2560px]:grid-cols-7
       min-[3440px]:grid-cols-8
       min-[3840px]:grid-cols-9"
-      >
-        {images.map((image, index) => (
-          <ImageCard
-            key={image.genImgId || index}
-            image={image}
-            onClick={() => handleImageClick(image)}
-            handleDeleteImage={handleDeleteImage}
-          />
-        ))}
+          >
+            {images.map((image, index) => (
+              <ImageCard
+                key={image.genImgId || index}
+                image={image}
+                onClick={() => handleImageClick(image)}
+                handleDeleteImage={handleDeleteImage}
+              />
+            ))}
+          </div>
+        </div>
       </div>
       <ImageDetail
         imgList={images}

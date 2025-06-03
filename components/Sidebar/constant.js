@@ -185,3 +185,25 @@ export const COUNTRIES_LIST = [
   { label: 'Zambia', value: 'zambia' },
   { label: 'Zimbabwe', value: 'zimbabwe' }
 ];
+
+export const RatioList = [
+  {
+    value: '1:1',
+    icon: 'ratio-one_to_one.svg'
+  },
+  {
+    value: '2:3',
+    icon: 'ratio-two_to_three.svg'
+  },
+  {
+    value: '3:4',
+    icon: 'ratio-three_to_four.svg'
+  },
+  {
+    value: '9:16',
+    icon: 'ratio-nine_to_sixteen.svg'
+  }
+];
+
+// Constants for options
+export const AGE_OPTIONS = Array.from({ length: 83 }, (_, i) => i + 18); // Ages 18-100
