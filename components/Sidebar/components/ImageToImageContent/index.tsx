@@ -8,7 +8,7 @@ import { FormLabel } from '@/components/FormLabel/FormLabel';
 import { VariationTypeSelect } from './VariationTypeSelect';
 import { FidelitySlider } from '@/components/Sidebar/components/ImageToImageContent/FidelitySlider';
 import { ImageUploadFormData } from '@/components/Sidebar';
-import { DescribeDesign } from '@/components/Sidebar/components/DescribeDesign';
+import { DescribeDesign } from '@/components/DescribeDesign';
 import { StyledLabel } from '../StyledLabel';
 
 import { useGenerationStore } from '@/stores/useGenerationStore';

@@ -8,7 +8,7 @@ import { VariationTypeSelect } from '@/components/VariationTypeSelect/VariationT
 import { useVariationFormStore } from '@/stores/useMagicKitStore';
 import { variationTypes } from '@/app/magic-kit/const';
 import { FormLabel } from '@/components/FormLabel/FormLabel';
-import { DescribeDesign } from '@/components/Sidebar/components/DescribeDesign';
+import { DescribeDesign } from '@/components/DescribeDesign';
 import { ColorPicker } from './ColorPicker';
 import { ImageUploader as SecondImageUploader, MemoizedImageUploader } from './ImageUploader';
 import {

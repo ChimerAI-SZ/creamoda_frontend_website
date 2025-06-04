@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { Textarea } from '@/components/ui/textarea';
 import FeatureModal from '@/components/FeatureModal';
 import RandomPrompt from '@/components/randomPrompt';
-import { StyledLabel } from './StyledLabel';
+import { StyledLabel } from './Sidebar/components/StyledLabel';
 import { Button } from '@/components/ui/button';
 
 interface DescribeDesignProps {

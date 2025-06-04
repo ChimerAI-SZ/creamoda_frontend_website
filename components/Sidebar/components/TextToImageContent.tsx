@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 
 import { GenerateButton } from '@/components/GenerateButton/GenerateButton';
 import { GenderAgeCountryFields } from '@/components/Sidebar/components/GenderAgeCountryFields';
-import { DescribeDesign } from './DescribeDesign';
+import { DescribeDesign } from '../../DescribeDesign';
 
 import { useModelStore } from '@/stores/useModelStore';
 import { useGenerationStore } from '@/stores/useGenerationStore';
