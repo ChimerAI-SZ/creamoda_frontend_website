@@ -1,22 +1,17 @@
 'use client';
 
-import * as React from 'react';
+import { useEffect, useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { FormLabel } from '@/components/FormLabel/FormLabel';
-import { cn } from '@/utils';
+import { StyledLabel } from './StyledLabel';
 
-export interface VariationType {
-  code: string;
-  name: string;
-}
+import type { BasicOptionItem } from '@/stores/useModelStore';
 
 interface VariationTypeSelectProps {
   value: string;
   onChange: (value: string) => void;
-  variationTypes: VariationType[];
+  variationTypes: BasicOptionItem[];
   label?: string;
   placeholder?: string;
-  className?: string;
 }
 
 export function VariationTypeSelect({
@@ -24,13 +19,12 @@ export function VariationTypeSelect({
   onChange,
   variationTypes,
   label = 'Variation Type',
-  placeholder = 'Category Switcher',
-  className = ''
+  placeholder = 'Category Switcher'
 }: VariationTypeSelectProps) {
-  const [isLoading, setIsLoading] = React.useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Set initial value when variations are loaded
-  React.useEffect(() => {
+  useEffect(() => {
     if (variationTypes.length > 0) {
       setIsLoading(false);
       if (!value && variationTypes.length > 0) {
@@ -40,21 +34,17 @@ export function VariationTypeSelect({
   }, [variationTypes, value, onChange]);
 
   return (
-    <div className={`space-y-[6px] ${className}`}>
-      {label && <FormLabel>{label}</FormLabel>}
+    <div
+      className={`space-y-[6px] rounded-[16px] px-3 py-[10px] bg-gradient-to-r from-[#95FFCF] via-[#599EFF] to-[#7E5EFF]`}
+    >
+      {label && <StyledLabel content={label} />}
       <Select value={value} onValueChange={onChange} disabled={isLoading}>
-        <SelectTrigger
-          className={cn(
-            'rounded-sm border border-[rgba(249,121,23,0.4)]',
-            'bg-gradient-to-r from-[rgba(252,226,214,0.2)] to-[rgba(252,226,214,0.2)]',
-            'focus:ring-[rgba(249,121,23,0.4)] focus:border-[rgba(249,121,23,0.6)]'
-          )}
-        >
+        <SelectTrigger>
           <SelectValue placeholder={isLoading ? 'Loading...' : placeholder} />
         </SelectTrigger>
         <SelectContent>
-          {variationTypes.map(type => (
-            <SelectItem key={type.code} value={type.code}>
+          {variationTypes.map((type, index) => (
+            <SelectItem key={index} value={type.code}>
               {type.name}
             </SelectItem>
           ))}

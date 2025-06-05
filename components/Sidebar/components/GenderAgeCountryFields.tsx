@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 
-import { StyledLabel } from './StyledLabel';
+import { StyledLabel } from '../../StyledLabel';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import RadioGroup from '@/components/ui/radio';
 
@@ -17,9 +17,11 @@ interface GenderAgeCountryFieldsProps {
   gender: string;
   age: string;
   country: string;
+  selectedRatio: string;
   onGenderChange: (value: string) => void;
   onAgeChange: (value: string) => void;
   onCountryChange: (value: string) => void;
+  onRatioChange: (value: string) => void;
   // Optional Type field props
   showModelSizeField?: boolean;
   modelSize?: string | number;
@@ -27,8 +29,6 @@ interface GenderAgeCountryFieldsProps {
   onModelSizeChange?: (value: string) => void;
   // Optional title prop
   title?: string;
-  onRatioChange?: (value: string) => void;
-  selectedRatio?: string;
 }
 
 export const GenderAgeCountryFields: React.FC<GenderAgeCountryFieldsProps> = ({
@@ -119,19 +119,6 @@ export const GenderAgeCountryFields: React.FC<GenderAgeCountryFieldsProps> = ({
         <div className="flex flex-col gap-2 items-start">
           <StyledLabel content="Aspect Ratio" />
 
-          {/* <Select value={selectedRatio} onValueChange={onRatioChange}>
-            <SelectTrigger className="w-[155px] rounded-sm">
-              <SelectValue placeholder="Select type" />
-            </SelectTrigger>
-            <SelectContent>
-              {ratioList?.map(ratio => (
-                <SelectItem key={ratio} value={ratio}>
-                  {ratio}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select> */}
-
           <RadioGroup
             options={RatioList.map(ratio => {
               return {
@@ -153,8 +140,8 @@ export const GenderAgeCountryFields: React.FC<GenderAgeCountryFieldsProps> = ({
               };
             })}
             name="gender"
-            selectedValue={gender}
-            onChange={onGenderChange}
+            selectedValue={selectedRatio}
+            onChange={onRatioChange}
           />
         </div>
       </div>

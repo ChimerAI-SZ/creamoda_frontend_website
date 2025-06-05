@@ -61,17 +61,17 @@ export default function ImageCard({
               className="absolute  w-full h-[28px] z-1 bottom-4 left-1/2 -translate-x-1/2 "
               onClick={e => e.stopPropagation()}
             >
-              <div className="flex items-center justify-center gap-4 w-full h-[28px] absolute opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <div className="w-[26px] h-[26px] bg-primary flex items-center justify-center text-white rounded-[50%] cursor-pointer">
+              <div className="flex items-center justify-center gap-4 w-full h-[28px] opacity-0 absolute group-hover:opacity-100 transition-opacity duration-300">
+                <div className="w-8 h-8 bg-gray-40 rounded-[8px] flex items-center justify-center text-white cursor-pointer">
                   <Star className="w-[18px] h-[18px]" onClick={() => handleDislike(image.genImgId)} />
                 </div>
                 <div
-                  className="w-[26px] h-[26px] bg-[#fff] flex items-center justify-center text-white rounded-[50%] cursor-pointer"
+                  className="w-8 h-8 bg-gray-40 rounded-[8px] flex items-center justify-center text-white cursor-pointer"
                   onClick={() => {
                     downloadImage(image.resultPic, 'image.jpg');
                   }}
                 >
-                  <ImageDown className="w-[18px] h-[18px] text-[#000]" />
+                  <Image src="/images/album/download.svg" alt="download" width={18} height={18} />
                 </div>
               </div>
             </div>

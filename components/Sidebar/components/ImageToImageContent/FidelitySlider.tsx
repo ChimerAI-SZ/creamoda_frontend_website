@@ -3,7 +3,7 @@
 import * as React from 'react';
 
 import { Slider } from '@/components/ui/slider';
-import { StyledLabel } from '../StyledLabel';
+import { StyledLabel } from '../../../StyledLabel';
 
 import { cn } from '@/utils';
 

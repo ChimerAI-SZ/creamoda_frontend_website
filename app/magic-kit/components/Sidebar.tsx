@@ -4,13 +4,13 @@ import { useState, useEffect, useCallback } from 'react';
 
 import { GenerateButton } from '@/components/GenerateButton/GenerateButton';
 import { useGenerationStore } from '@/stores/useGenerationStore';
-import { VariationTypeSelect } from '@/components/VariationTypeSelect/VariationTypeSelect';
+import { VariationTypeSelect } from '@/components/VariationTypeSelect';
 import { useVariationFormStore } from '@/stores/useMagicKitStore';
-import { variationTypes } from '@/app/magic-kit/const';
-import { FormLabel } from '@/components/FormLabel/FormLabel';
+import { StyledLabel } from '@/components/StyledLabel';
 import { DescribeDesign } from '@/components/DescribeDesign';
 import { ColorPicker } from './ColorPicker';
-import { ImageUploader as SecondImageUploader, MemoizedImageUploader } from './ImageUploader';
+import { MemoizedImageUploader } from '@/components/ImageUploader';
+
 import {
   changeClothesColor,
   changeBackground,
@@ -20,6 +20,8 @@ import {
 } from '@/lib/api/magicKit';
 import { eventBus } from '@/utils/events';
 import { showErrorDialog } from '@/utils/index';
+
+import { variationTypes } from '../const';
 
 export function Sidebar() {
   const { isGenerating, setGenerating } = useGenerationStore();
@@ -192,7 +194,7 @@ export function Sidebar() {
         return (
           <div className="space-y-6">
             <div className="space-y-2">
-              <FormLabel>Upload original image</FormLabel>
+              <StyledLabel content="Upload original image" />
               <MemoizedImageUploader
                 imageUrl={formData.imageUrl || ''}
                 onImageUrlChange={updateImageUrl}
@@ -202,10 +204,11 @@ export function Sidebar() {
               />
             </div>
             <div className="space-y-2">
-              <FormLabel>Color selection</FormLabel>
+              <StyledLabel content="Color selection" />
               <ColorPicker value={formData.colorSelection || '#ffffff'} onChange={updateColorSelection} />
             </div>
             <DescribeDesign
+              label="Describe the final design"
               description={formData.description || ''}
               onDescriptionChange={e => updateDescription(e.target.value)}
               onFeatureSelection={handleFeatureSelection}
@@ -218,7 +221,7 @@ export function Sidebar() {
         return (
           <div className="space-y-6">
             <div className="space-y-2">
-              <FormLabel>Upload original image</FormLabel>
+              <StyledLabel content="Upload original image" />
               <MemoizedImageUploader
                 imageUrl={formData.imageUrl || ''}
                 onImageUrlChange={updateImageUrl}
@@ -228,7 +231,7 @@ export function Sidebar() {
               />
             </div>
             <div className="space-y-2">
-              <FormLabel>Upload reference image</FormLabel>
+              <StyledLabel content="Upload reference image" />
               <MemoizedImageUploader
                 imageUrl={formData.referenceImageUrl || ''}
                 onImageUrlChange={updateReferenceImageUrl}
@@ -238,6 +241,7 @@ export function Sidebar() {
               />
             </div>
             <DescribeDesign
+              label="Describe the final design"
               description={formData.description || ''}
               onDescriptionChange={e => updateDescription(e.target.value)}
               onFeatureSelection={handleFeatureSelection}
@@ -250,7 +254,7 @@ export function Sidebar() {
         return (
           <div className="space-y-6">
             <div className="space-y-2">
-              <FormLabel>Upload original image</FormLabel>
+              <StyledLabel content="Upload original image" />
               <MemoizedImageUploader
                 imageUrl={formData.imageUrl || ''}
                 onImageUrlChange={updateImageUrl}
@@ -266,7 +270,7 @@ export function Sidebar() {
         return (
           <div className="space-y-6">
             <div className="space-y-2">
-              <FormLabel>Upload original image</FormLabel>
+              <StyledLabel content="Upload original image" />
               <MemoizedImageUploader
                 imageUrl={formData.imageUrl || ''}
                 onImageUrlChange={updateImageUrl}
@@ -276,6 +280,7 @@ export function Sidebar() {
               />
             </div>
             <DescribeDesign
+              label="Describe the final design"
               description={formData.description || ''}
               onDescriptionChange={e => updateDescription(e.target.value)}
               onFeatureSelection={handleFeatureSelection}
@@ -288,7 +293,7 @@ export function Sidebar() {
         return (
           <div className="space-y-6">
             <div className="space-y-2">
-              <FormLabel>Upload original image</FormLabel>
+              <StyledLabel content="Upload original image" />
               <MemoizedImageUploader
                 imageUrl={formData.imageUrl || ''}
                 onImageUrlChange={updateImageUrl}
@@ -304,7 +309,7 @@ export function Sidebar() {
         return (
           <div className="space-y-6">
             <div>
-              <FormLabel>Upload Image</FormLabel>
+              <StyledLabel content="Upload Image" />
               <MemoizedImageUploader
                 imageUrl={formData.imageUrl || ''}
                 onImageUrlChange={updateImageUrl}
@@ -319,19 +324,25 @@ export function Sidebar() {
   };
 
   return (
-    <div className="w-[334px] h-[calc(100vh-56px)] flex-shrink-0 bg-white border-r box-content border-gray-200 flex flex-col z-0">
-      <div className="flex-1 overflow-y-auto px-4 py-6">
-        <VariationTypeSelect
-          value={currentVariationType}
-          onChange={setCurrentVariationType}
-          variationTypes={variationTypes}
-        />
+    <div
+      className={`w-[378px] h-[calc(100vh-110px)] py-4 rounded-[20px] flex-shrink-0 bg-white shadow-card-shadow flex flex-col z-0 `}
+    >
+      <div className="flex-1 overflow-hidden">
+        <div className="h-full relative flex flex-col px-6 overflow-y-auto">
+          <div className="flex flex-col gap-6 pb-20">
+            <VariationTypeSelect
+              value={currentVariationType}
+              onChange={setCurrentVariationType}
+              variationTypes={variationTypes}
+            />
 
-        {currentVariationType && <div className="mt-6">{renderVariationContent()}</div>}
-      </div>
+            {currentVariationType && <div>{renderVariationContent()}</div>}
+          </div>
+        </div>
 
-      <div className="sticky bottom-0 left-0 right-0 px-4 pb-4 bg-white">
-        <GenerateButton onClick={handleSubmit} state={btnState} />
+        <div className="sticky bottom-0 left-0 right-0 pt-4 bg-white shadow-card-shadow">
+          <GenerateButton onClick={handleSubmit} state={btnState} />
+        </div>
       </div>
     </div>
   );

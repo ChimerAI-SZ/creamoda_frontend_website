@@ -1,6 +1,6 @@
 import { forwardRef, useState, useRef } from 'react';
 import Image from 'next/image';
-import { Star, ImageDown, Trash2 } from 'lucide-react';
+import { Star, Trash2 } from 'lucide-react';
 
 import { cn } from '@/utils';
 import { downloadImage } from '@/utils';
@@ -136,13 +136,14 @@ export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(({ image, on
                 <Star className="w-[18px] h-[18px]" />
               </div>
               <div
-                className="w-[33px] h-[33px] bg-[#fff] flex items-center justify-center text-white rounded-[50%] cursor-pointer"
+                className="w-8 h-8 bg-gray-40 rounded-[8px] flex items-center justify-center text-white cursor-pointer"
                 onClick={() => {
                   downloadImage(image.resultPic, 'image.jpg');
                 }}
               >
-                <ImageDown className="w-[18px] h-[18px] text-[#000]" />
+                <Image src="/images/album/download.svg" alt="download" width={18} height={18} />
               </div>
+
               <div
                 className="w-[33px] h-[33px] bg-[#fff] flex items-center justify-center text-white rounded-[50%] cursor-pointer"
                 onClick={() => handleDeleteImage(image.genImgId)}

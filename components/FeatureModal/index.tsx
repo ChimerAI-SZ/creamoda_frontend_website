@@ -40,6 +40,7 @@ export default function FeatureModal({
   handleConfirm: (features: string[]) => void;
 }) {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const featureListRef = useRef<HTMLDivElement>(null);
 
   // 一级 nav 的左右阴影显影控制
   const [showBefore, setShowBefore] = useState(false);
@@ -49,6 +50,9 @@ export default function FeatureModal({
   const [activeCategory, setActiveCategory] = useState('Style'); // 一级分类选中状态
   const [activeSubcategory, setActiveSubcategory] = useState('Style'); // 二级分类选中状态
   const [activeFeature, setActiveFeature] = useState<string[]>([]); // 选中的词条
+
+  const [showAllFeatures, setShowAllFeatures] = useState(false);
+  const [showArrow, setShowArrow] = useState(false);
 
   const handleScroll = () => {
     if (scrollRef.current) {
@@ -72,6 +76,28 @@ export default function FeatureModal({
     activeElement?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
   }, [activeCategory]);
 
+  useEffect(() => {
+    if (featureListRef.current) {
+      // 通过判断子元素的offset来判断是否存在换行。如果有换行的话需要展示下拉按钮。
+      function hasFlexWrapped(container: HTMLDivElement) {
+        const children = Array.from(container.children) as HTMLElement[];
+        if (children.length <= 1) return false;
+
+        const firstTop = (children[0] as HTMLElement)?.offsetTop;
+
+        console.log(
+          children,
+          children.map(child => (child as HTMLElement).offsetTop)
+        );
+        return children.some(child => (child as HTMLElement).offsetTop !== firstTop);
+      }
+
+      const currentShowArrow = hasFlexWrapped(featureListRef.current);
+
+      setShowArrow(currentShowArrow);
+    }
+  }, [activeFeature]);
+
   const toggleFeature = (feature: string) => {
     setActiveFeature(prev => (prev.includes(feature) ? prev.filter(f => f !== feature) : [...prev, feature]));
   };
@@ -94,27 +120,51 @@ export default function FeatureModal({
 
         <div className="w-full flex flex-col overflow-y-auto relative">
           <div className="sticky top-0 bg-white z-10 px-[24px]">
-            <div className="flex justify-between items-center h-[64px] shrink-0">
-              <div className="flex justify-start items-start gap-2">
-                <div className="flex justify-start items-center flex-wrap">
+            <div className="flex justify-between items-start min-h-[64px] shrink-0">
+              <div className="flex justify-start items-start gap-2 my-[20px]">
+                <div
+                  className={`relative flex justify-start items-center flex-wrap ${!showAllFeatures && 'max-h-[64px]'}`}
+                >
                   {activeFeature.length > 0 ? (
-                    activeFeature.map(feature => (
-                      <div
-                        key={feature}
-                        className="pr-[6px] pl-[10px] h-6 py-[2px] mb-1 mr-2 border border-primary rounded-[16px] flex items-center justify-start gap-1 shrink-0 text-primary font-medium text-[14px] leading-[20px] cursor-default"
-                      >
-                        <span className="max-w-[120px] leading-[20px] overflow-hidden text-ellipsis whitespace-nowrap">
-                          {feature}
-                        </span>
-                        <X
-                          className="w-[12px] h-[12px] hover:text-black cursor-pointer shrink-0"
-                          onClick={() => toggleFeature(feature)}
-                        />
-                      </div>
-                    ))
+                    <div
+                      ref={featureListRef}
+                      className={cn(
+                        'flex justify-start items-center flex-wrap max-h-[24px] overflow-hidden',
+                        showAllFeatures && 'max-h-none h-auto'
+                      )}
+                    >
+                      {activeFeature.map(feature => (
+                        <div
+                          key={feature}
+                          className="pr-[6px] pl-[10px] h-6 py-[2px] mb-2 mr-2 border border-primary rounded-[16px] flex items-center justify-start gap-1 shrink-0 text-primary font-medium text-[14px] leading-[20px] cursor-default"
+                        >
+                          <span className="max-w-[120px] leading-[20px] overflow-hidden text-ellipsis whitespace-nowrap">
+                            {feature}
+                          </span>
+                          <X
+                            className="w-[12px] h-[12px] hover:text-black cursor-pointer shrink-0"
+                            onClick={() => toggleFeature(feature)}
+                          />
+                        </div>
+                      ))}
+                    </div>
                   ) : (
                     <div className="text-gray-60 font-normal leading-5 text-[16px]">
                       Select design features (multiple choices)
+                    </div>
+                  )}
+                  {showArrow && (
+                    <div
+                      onClick={() => setShowAllFeatures(!showAllFeatures)}
+                      className="absolute top-0 right-[-8px] h-6 flex items-center justify-center text-primary leading-[20px] cursor-pointer"
+                    >
+                      <Image
+                        src={'/images/generate/expand.svg'}
+                        alt="feature-modal-bg"
+                        width={16}
+                        height={16}
+                        className={cn('rounded-full', showAllFeatures ? 'rotate-180' : '')}
+                      />
                     </div>
                   )}
                 </div>
@@ -183,9 +233,10 @@ export default function FeatureModal({
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {(designFeatures as DesignFeaturesType)[activeCategory][activeSubcategory]?.map((feature, index) => (
                   <div
+                    key={feature}
                     className={cn(
                       'relative p-[1px] border border-border rounded-[16px] w-full',
-                      activeFeature.includes(feature) && 'bg-gradient-to-b from-[#704DFF] via-[#599EFF] to-[#6EFABB]'
+                      activeFeature.includes(feature) && 'bg-gradient-primary'
                     )}
                   >
                     <div

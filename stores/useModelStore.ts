@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 
 export interface BasicOptionItem {
-  id: number | string;
+  code: string;
   name: string;
   [key: string]: any;
 }

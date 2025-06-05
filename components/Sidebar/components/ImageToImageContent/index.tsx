@@ -5,14 +5,15 @@ import * as React from 'react';
 import { GenerateButton, GenerateButtonState } from '@/components/GenerateButton/GenerateButton';
 import { MemoizedImageUploader as ImageUploader } from '@/components/ImageUploader';
 import { FormLabel } from '@/components/FormLabel/FormLabel';
-import { VariationTypeSelect } from './VariationTypeSelect';
+import { VariationTypeSelect } from '@/components/VariationTypeSelect';
 import { FidelitySlider } from '@/components/Sidebar/components/ImageToImageContent/FidelitySlider';
 import { ImageUploadFormData } from '@/components/Sidebar';
 import { DescribeDesign } from '@/components/DescribeDesign';
-import { StyledLabel } from '../StyledLabel';
+import { StyledLabel } from '../../../StyledLabel';
 
 import { useGenerationStore } from '@/stores/useGenerationStore';
 import { useVariationFormStore } from '@/stores/useVariationFormStore';
+import { useModelStore } from '@/stores/useModelStore';
 
 interface ImageUploadFormProps {
   onSubmit?: (data: ImageUploadFormData) => void;
@@ -32,6 +33,7 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
   } = useVariationFormStore();
 
   const { isGenerating, setGenerating } = useGenerationStore();
+  const { variationTypes } = useModelStore();
 
   // Get the current variation data based on the selected variation type
   const currentData = React.useMemo(() => {
@@ -179,7 +181,11 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
     <div className="flex flex-col h-full">
       <div className="flex-1 overflow-y-auto overflow pb-4 h-[calc(100%-52px)]">
         <form onSubmit={handleFormSubmit} className="flex-1 overflow-y-auto overflow-x-hidden space-y-4 px-4">
-          <VariationTypeSelect value={currentVariationType} onChange={handleVariationTypeChange} />
+          <VariationTypeSelect
+            value={currentVariationType}
+            onChange={handleVariationTypeChange}
+            variationTypes={variationTypes}
+          />
           {currentVariationType === '1' && (
             <div className="space-y-4">
               <div className="space-y-[10px]">

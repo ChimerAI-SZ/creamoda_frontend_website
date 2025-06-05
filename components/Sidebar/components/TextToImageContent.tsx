@@ -85,24 +85,6 @@ function OutfitForm({ onSubmit }: OutfitFormProps) {
         <form className="flex-1 overflow-y-auto space-y-6 pb-[84px] px-4">
           <div className="space-y-6">
             <div className="space-y-2">
-              {/* <div className="flex items-center justify-between">
-                <StyledLabel htmlFor="text_to_img_description" content="Describe your outfit" />
-
-                <FeatureModal handleConfirm={handleConfirm}>
-                  <Button variant={'default'} size={'sm'} className="flex items-center gap-1">
-                    <Image src="/images/generate/design_features.svg" alt="Generate" width={16} height={16} />
-                    <span>Design Features</span>
-                  </Button>
-                </FeatureModal>
-              </div>
-              <Textarea
-                id="text_to_img_description"
-                placeholder=""
-                className="min-h-[180px] resize-none p-4 placeholder:text-[rgba(10,21,50,0.20)] placeholder:font-inter placeholder:text-[14px] placeholder:font-normal placeholder:leading-[20px] rounded-sm"
-                value={formData.prompt}
-                onChange={handlePromptChange}
-              />
-              <RandomPrompt handleQueryRandomPrompt={handleQueryRandomPrompt} /> */}
               <DescribeDesign
                 label="Describe the final design"
                 description={formData.prompt}
@@ -139,43 +121,3 @@ function OutfitForm({ onSubmit }: OutfitFormProps) {
 }
 
 export default OutfitForm;
-function WaveLoader({ progress = 35 }) {
-  const waveRef = useRef<SVGPathElement>(null);
-
-  useEffect(() => {
-    const updateWave = () => {
-      const amplitude = 4;
-      const wavelength = 40;
-      const offsetY = 100 - progress;
-
-      const wavePath = Array.from({ length: 100 }, (_, x) => {
-        const y = Math.sin((x / wavelength) * Math.PI * 2) * amplitude + offsetY;
-        return `${x},${y}`;
-      }).join(' ');
-
-      if (waveRef.current) {
-        waveRef.current.setAttribute('d', `M0,100 L${wavePath} L100,100 Z`);
-      }
-    };
-
-    updateWave();
-  }, [progress]);
-
-  return (
-    <div className="relative w-[200px] h-[300px] rounded-2xl bg-gray-100 flex items-center justify-center text-xl font-bold text-purple-500">
-      <svg className="absolute w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-        <defs>
-          <clipPath id="waveClip">
-            <path ref={waveRef} d="M0,100 L100,100 L100,100 Z" />
-          </clipPath>
-        </defs>
-        <rect x="0" y="0" width="100" height="100" clipPath="url(#waveClip)" fill="url(#grad)" />
-        <linearGradient id="grad" gradientTransform="rotate(90)">
-          <stop offset="0%" stopColor="#c3baff" />
-          <stop offset="100%" stopColor="#8a7aff" />
-        </linearGradient>
-      </svg>
-      <div className="z-10 mix-blend-difference">CREAMODA</div>
-    </div>
-  );
-}

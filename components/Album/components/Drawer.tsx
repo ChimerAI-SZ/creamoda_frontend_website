@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import Image from 'next/image';
 import { X } from 'lucide-react';
 
 import { Drawer, DrawerTrigger, DrawerContent, DrawerHeader, DrawerTitle } from '@/components/ui/drawer';
@@ -53,19 +54,29 @@ export function AlbumDrawer({ children }: { children: React.ReactNode }) {
       <DrawerTrigger>{children}</DrawerTrigger>
 
       <DrawerContent>
-        <DrawerHeader className="flex items-center justify-between">
-          <DrawerTitle>Album</DrawerTitle>
-          <DrawerTrigger>
-            <X />
-          </DrawerTrigger>
+        <DrawerHeader className="px-[18px]">
+          <DrawerTitle className="flex items-center justify-between">
+            <div className="w-full h-[80px] flex items-center justify-center border-b border-[#E5E5E5]">
+              <Image src="/images/album/star.svg" alt="album" width={30} height={30} />
+            </div>
+          </DrawerTitle>
         </DrawerHeader>
 
         <div className="w-[340px] h-full bg-[#fff] p-3 overflow-y-auto">
-          <div className="columns-2 gap-3">
-            {imageList.map((image: AlbumItem) => (
-              <ImageCard key={image.genImgId || image.resultPic} image={image} handleDislike={handleDislike} />
-            ))}
-          </div>
+          {imageList.length > 0 ? (
+            <div className="columns-2 gap-3">
+              {imageList.map((image: AlbumItem) => (
+                <ImageCard key={image.genImgId || image.resultPic} image={image} handleDislike={handleDislike} />
+              ))}
+            </div>
+          ) : (
+            <div className="w-full h-full flex flex-col items-center justify-start mt-[52px]">
+              <Image src="/images/album/empty_placeholder.svg" alt="empty" width={100} height={100} />
+              <div className="text-gray-40 text-center text-[14px] font-normal leading-5 mt-[16px]">
+                No favorites yet
+              </div>
+            </div>
+          )}
         </div>
       </DrawerContent>
     </Drawer>

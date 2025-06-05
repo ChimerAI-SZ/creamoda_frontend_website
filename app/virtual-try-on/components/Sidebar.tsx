@@ -6,8 +6,9 @@ import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 
 import { GenerateButton } from '@/components/GenerateButton/GenerateButton';
-
 import { ImageUploader } from '@/components/ImageUploader';
+import { StyledLabel } from '@/components/StyledLabel';
+import RadioGroup from '@/components/ui/radio';
 
 import { showErrorDialog, cn } from '@/utils/index';
 import { useGenerationStore } from '@/stores/useGenerationStore';
@@ -16,6 +17,21 @@ import { eventBus } from '@/utils/events';
 
 import type { TryOnFormData } from '@/lib/api';
 type ClothingType = 'top' | 'bottom' | 'one-piece';
+
+const clothingTypeList = [
+  {
+    label: 'Tops',
+    value: 'top'
+  },
+  {
+    label: 'Bottoms',
+    value: 'bottom'
+  },
+  {
+    label: 'One-pieces',
+    value: 'one-piece'
+  }
+];
 
 export function Sidebar() {
   // 上传的样衣类型
@@ -66,12 +82,14 @@ export function Sidebar() {
 
   return (
     <div
-      className={`w-[334px] h-[calc(100vh-56px)] flex-shrink-0 bg-white border-r box-content border-gray-200 flex flex-col z-0`}
+      className={`w-[378px] h-[calc(100vh-110px)] overflow-y-auto py-4 rounded-[20px] flex-shrink-0 bg-white shadow-card-shadow flex flex-col z-0 `}
     >
-      <div className="flex-1 overflow-hidden pt-4 ">
-        <div className="h-full relative flex flex-col">
-          <div className="flex-1 overflow-y-auto pb-20">
-            <div>
+      <div className="flex-1 overflow-hidden">
+        <div className="h-full relative flex flex-col px-6 overflow-y-auto">
+          <div className="flex flex-col gap-6 pb-20">
+            <div className="space-y-2">
+              <StyledLabel htmlFor="modal-uploader" content="Upload model image" />
+
               <ImageUploader
                 key="modal-uploader"
                 onImageChange={useCallback((image: File | null) => {
@@ -85,34 +103,39 @@ export function Sidebar() {
                 imageType="Model Image"
               />
             </div>
-            <div className="flex gap-[16px] items-center justify-center mt-[20px] px-[16px]">
-              {['top', 'bottom', 'one-piece'].map(type => (
-                <div
-                  key={type}
-                  className={cn(
-                    'w-full h-[48px] flex items-center justify-center border rounded-[4px] border-[#dcdcdc] cursor-pointer',
-                    clothingType === type && 'border-primary'
-                  )}
-                  onClick={() => setClothingType(type as ClothingType)}
-                >
-                  <div className="flex items-center gap-[2px] flex-col">
-                    <Image
-                      src={`/images/virtual-try-on/clothing_type_${type}${
-                        clothingType === type ? '_selected' : '_unselected'
-                      }.svg`}
-                      alt={type}
-                      width={16}
-                      height={16}
-                      unoptimized
-                    />
-                    <span className={cn('leading-[18px] text-[12px]', clothingType === type && 'text-primary')}>
-                      {type.charAt(0).toUpperCase() + type.slice(1)}
-                    </span>
-                  </div>
-                </div>
-              ))}
+            <div className="space-y-2">
+              <StyledLabel content="Clothing type" />
+
+              <RadioGroup
+                options={clothingTypeList.map(type => {
+                  return {
+                    label: (
+                      <div className="flex flex-col items-center gap-2">
+                        <div className="w-[18px] h-[18px] flex items-center justify-center">
+                          <Image
+                            src={`/images/virtual-try-on/${type.value}.svg`}
+                            alt={type.value}
+                            width={18}
+                            height={18}
+                            className="w-full h-full object-contain"
+                          />
+                        </div>
+                        <span className="text-[#0A1532] text-[14px] font-normal leading-[20px]">{type.value}</span>
+                      </div>
+                    ),
+                    value: type.value
+                  };
+                })}
+                name="gender"
+                selectedValue={clothingType}
+                onChange={value => {
+                  setClothingType(value as ClothingType);
+                }}
+              />
             </div>
-            <div className="mt-[20px]">
+            <div className="space-y-2">
+              <StyledLabel htmlFor="cloting-uploader" content="Upload clothing image" />
+
               <ImageUploader
                 key="cloting-uploader"
                 onImageChange={useCallback((image: File | null) => {
@@ -128,7 +151,7 @@ export function Sidebar() {
             </div>
           </div>
         </div>
-        <div className="sticky bottom-0 left-0 right-0 py-4 bg-white">
+        <div className="sticky bottom-0 left-0 right-0 pt-4 bg-white shadow-card-shadow">
           <GenerateButton onClick={handleSubmit} state={btnState} />
         </div>
       </div>

@@ -16,7 +16,7 @@ const RadioGroup: React.FC<RadioGroupProps> = ({ options, name, selectedValue, o
   return (
     <div className="flex gap-2 w-full">
       {options.map(option => (
-        <label key={option.value} className="flex items-center flex-grow flex-shrink-0">
+        <label key={option.value} className="flex items-center flex-1">
           <input
             type="radio"
             name={name}

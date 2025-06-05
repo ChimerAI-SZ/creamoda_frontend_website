@@ -18,7 +18,6 @@ import {
   copyStyleGenerate,
   changeClothesGenerate,
   uploadImage,
-  humanModelGenerate,
   copyFabricGenerate,
   sketchToDesign,
   mixImage

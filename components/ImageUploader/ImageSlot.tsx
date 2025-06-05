@@ -80,23 +80,25 @@ export const ImageSlot: React.FC<ImageSlotProps> = ({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <button
-          className="w-full h-full flex flex-col items-center justify-center border border-dashed  bg-[#FAFAFA] border-gray-300 rounded cursor-pointer  transition"
-          onClick={onClick}
-          type="button"
-        >
-          <div className="w-full h-full flex flex-col">
-            <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
-              {maskImage ? (
-                <Image src={maskImage} alt="Mask Image" fill className="object-contain" />
-              ) : (
-                <div className="text-center p-4 text-[#121316] font-inter text-sm font-normal leading-5">
-                  Select the region to be modified
-                </div>
-              )}
+        <div className="h-full flex-1 flex items-center justify-center bg-[#EFF3F6] relative p-[1px] border border-border rounded-[18px] w-full bg-gradient-primary">
+          <button
+            className="w-full h-full flex flex-col items-center justify-center rounded-[16px] bg-[#EFF3F6] cursor-pointer  transition"
+            onClick={onClick}
+            type="button"
+          >
+            <div className="w-full h-full flex flex-col">
+              <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
+                {maskImage ? (
+                  <Image src={maskImage} alt="Mask Image" fill className="object-contain" />
+                ) : (
+                  <div className="text-center p-4 text-black font-inter text-sm font-normal">
+                    Select the region to be modified
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-        </button>
+          </button>
+        </div>
       </DialogTrigger>
       <DialogContent className="flex items-center justify-center max-w-[90vw] max-h-[90vh]">
         <DialogTitle className="sr-only">图像编辑器</DialogTitle>
