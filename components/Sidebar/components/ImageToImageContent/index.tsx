@@ -376,57 +376,58 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
                 placeholderText={getPlaceholderText()}
               />
             </div>
-        )}
-        {currentVariationType === '6' && (
-          <div className="space-y-4">
-            <div className="space-y-[10px]">
-              <FormLabel>Upload original image</FormLabel>
-              <ImageUploader
-                onImageChange={handleImageChange}
-                onImageUrlChange={handleImageUrlChange}
-                imageUrl={currentData.imageUrl}
-                currentImage={currentData.image}
-              />
+          )}
+          {currentVariationType === '6' && (
+            <div className="space-y-4">
+              <div className="space-y-[10px]">
+                <FormLabel>Upload original image</FormLabel>
+                <ImageUploader
+                  onImageChange={handleImageChange}
+                  onImageUrlChange={handleImageUrlChange}
+                  imageUrl={currentData.imageUrl}
+                  currentImage={currentData.image}
+                />
+              </div>
             </div>
-          </div>
-        )}
-        {currentVariationType === '7' && (
-          <div className="space-y-4">
-            <div className="space-y-[10px]">
-              <FormLabel>Upload image</FormLabel>
-              <ImageUploader
-                onImageChange={handleImageChange}
-                onImageUrlChange={handleImageUrlChange}
-                imageUrl={currentData.imageUrl}
-                currentImage={currentData.image}
-              />
+          )}
+          {currentVariationType === '7' && (
+            <div className="space-y-4">
+              <div className="space-y-[10px]">
+                <FormLabel>Upload image</FormLabel>
+                <ImageUploader
+                  onImageChange={handleImageChange}
+                  onImageUrlChange={handleImageUrlChange}
+                  imageUrl={currentData.imageUrl}
+                  currentImage={currentData.image}
+                />
+              </div>
+              <div className="space-y-[10px]">
+                <FormLabel>Upload frabic image</FormLabel>
+                <ImageUploader2
+                  onImageUrlChange={handleFabricImageUrlChange}
+                  imageUrl={currentData.fabricPicUrl}
+                  onMaskImageUrlChange={onMaskImageUrlChange}
+                  maskImageUrl={currentData.maskPicUrl}
+                  showMaskEditor={true}
+                />
+              </div>
             </div>
-            <div className="space-y-[10px]">
-              <FormLabel>Upload frabic image</FormLabel>
-              <ImageUploader2
-                onImageUrlChange={handleFabricImageUrlChange}
-                imageUrl={currentData.fabricPicUrl}
-                onMaskImageUrlChange={onMaskImageUrlChange}
-                maskImageUrl={currentData.maskPicUrl}
-                showMaskEditor={true}
-              />
+          )}
+          {currentVariationType === '8' && (
+            <div className="space-y-4">
+              <div className="space-y-[10px]">
+                <FormLabel>Upload image</FormLabel>
+                <ImageUploader
+                  onImageChange={handleImageChange}
+                  onImageUrlChange={handleImageUrlChange}
+                  imageUrl={currentData.imageUrl}
+                  currentImage={currentData.image}
+                />
+              </div>
             </div>
-          </div>
-        )}
-        {currentVariationType === '8' && (
-          <div className="space-y-4">
-            <div className="space-y-[10px]">
-              <FormLabel>Upload image</FormLabel>
-              <ImageUploader
-                onImageChange={handleImageChange}
-                onImageUrlChange={handleImageUrlChange}
-                imageUrl={currentData.imageUrl}
-                currentImage={currentData.image}
-              />
-            </div>
-          </div>
-        )}
-      </form>
+          )}
+        </form>
+      </div>
       <div className="sticky bottom-0 left-0 right-0 pb-4 bg-white">
         <GenerateButton onClick={handleSubmit} state={buttonState} />
       </div>
