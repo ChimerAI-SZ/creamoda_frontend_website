@@ -212,3 +212,55 @@ export async function deleteImage(genImgId: number) {
     throw error;
   }
 }
+
+/**
+ * 图生图-改变版型
+ * @param originalPicUrl 原始图片URL
+ */
+export async function changePattern(originalPicUrl: string) {
+  try {
+    const response = await api.post('/api/v1/img/change_pattern', {
+      originalPicUrl
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error changing pattern:', error);
+    throw error;
+  }
+}
+
+/**
+ * 图生图-改变面料
+ * @param originalPicUrl 原始图片URL
+ * @param fabricPicUrl 面料图片URL
+ * @param maskPicUrl 蒙版图片URL
+ */
+export async function changeFabric(originalPicUrl: string, fabricPicUrl: string, maskPicUrl: string) {
+  try {
+    const response = await api.post('/api/v1/img/change_fabric', {
+      originalPicUrl,
+      fabricPicUrl,
+      maskPicUrl
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error changing fabric:', error);
+    throw error;
+  }
+}
+
+/**
+ * 图生图-改变印花
+ * @param originalPicUrl 原始图片URL
+ */
+export async function changePrinting(originalPicUrl: string) {
+  try {
+    const response = await api.post('/api/v1/img/change_printing', {
+      originalPicUrl
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error changing printing:', error);
+    throw error;
+  }
+}

@@ -21,7 +21,10 @@ import {
   humanModelGenerate,
   copyFabricGenerate,
   sketchToDesign,
-  mixImage
+  mixImage,
+  changeFabric,
+  changePrinting,
+  changePattern
 } from '@/lib/api';
 import { useModelStore } from '@/stores/useModelStore';
 import { useGenerationStore } from '@/stores/useGenerationStore';
@@ -47,6 +50,8 @@ export interface ImageUploadFormData {
   referLevel: number;
   referenceImage: File | null;
   referenceImageUrl: string;
+  fabricPicUrl: string;
+  maskPicUrl: string;
 }
 
 export function Sidebar() {
@@ -88,11 +93,56 @@ export function Sidebar() {
         return;
       }
 
-      // Validate description
-      if (!data.description.trim()) {
-        showErrorDialog('Please provide a description');
-        setGenerating(false);
-        return;
+      // Validation based on variation type
+      switch (data.variationType) {
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+          // These types require description
+          if (!data.description.trim()) {
+            showErrorDialog('Please provide a description');
+            setGenerating(false);
+            return;
+          }
+          break;
+
+        case '5':
+          // Type 5 requires description and reference image
+          if (!data.description.trim()) {
+            showErrorDialog('Please provide a description');
+            setGenerating(false);
+            return;
+          }
+          if (!data.referenceImageUrl && !data.referenceImage) {
+            showErrorDialog('Please upload a reference image');
+            setGenerating(false);
+            return;
+          }
+          break;
+
+        case '6':
+        case '8':
+          // Types 6 and 8 only require main image, no description needed
+          break;
+
+        case '7':
+          // Type 7 requires fabric image
+          if (!data.fabricPicUrl) {
+            showErrorDialog('Please upload a fabric image');
+            setGenerating(false);
+            return;
+          }
+          break;
+
+        default:
+          // For unknown types, require description
+          if (!data.description.trim()) {
+            showErrorDialog('Please provide a description');
+            setGenerating(false);
+            return;
+          }
+          break;
       }
 
       // If has local image but no URL, upload the image first
@@ -115,6 +165,19 @@ export function Sidebar() {
         return;
       }
 
+      // Handle reference image upload for type 5 if needed
+      let finalReferenceImageUrl = data.referenceImageUrl;
+      if (data.variationType === '5' && data.referenceImage && !data.referenceImageUrl) {
+        try {
+          finalReferenceImageUrl = await uploadImage(data.referenceImage);
+        } catch (error) {
+          console.error('Error uploading reference image:', error);
+          showErrorDialog('Failed to upload reference image. Please try again.');
+          setGenerating(false);
+          return;
+        }
+      }
+
       // Call appropriate API based on variation type
       let response;
       if (data.variationType === '1') {
@@ -134,8 +197,17 @@ export function Sidebar() {
           data.referLevel // Convert string to number, default to female
         );
       } else if (data.variationType === '5') {
-        // Call copy fabric API
-        response = await mixImage(finalImageUrl, data.description, data.referenceImageUrl, data.referLevel);
+        // Call mix image API
+        response = await mixImage(finalImageUrl, data.description, finalReferenceImageUrl, data.referLevel);
+      } else if (data.variationType === '6') {
+        // Call change pattern API
+        response = await changePattern(finalImageUrl);
+      } else if (data.variationType === '7') {
+        // Call change fabric API
+        response = await changeFabric(finalImageUrl, data.fabricPicUrl, data.maskPicUrl);
+      } else if (data.variationType === '8') {
+        // Call change printing API
+        response = await changePrinting(finalImageUrl);
       } else {
         // Default to change clothes API if no type selected
         response = await changeClothesGenerate(finalImageUrl, data.description);

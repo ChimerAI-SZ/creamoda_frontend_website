@@ -13,6 +13,7 @@ import { StyledLabel } from '../StyledLabel';
 
 import { useGenerationStore } from '@/stores/useGenerationStore';
 import { useVariationFormStore } from '@/stores/useVariationFormStore';
+import { ImageUploader as ImageUploader2 } from '@/app/magic-kit/components/ImageUploader';
 
 interface ImageUploadFormProps {
   onSubmit?: (data: ImageUploadFormData) => void;
@@ -28,7 +29,9 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
     updateDescription,
     updateReferLevel,
     updateReferenceImage,
-    updateReferenceImageUrl
+    updateReferenceImageUrl,
+    updateFabricPicUrl,
+    updateMaskPicUrl
   } = useVariationFormStore();
 
   const { isGenerating, setGenerating } = useGenerationStore();
@@ -42,7 +45,9 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
         description: '',
         referLevel: 2,
         referenceImage: null,
-        referenceImageUrl: ''
+        referenceImageUrl: '',
+        fabricPicUrl: '',
+        maskPicUrl: ''
       };
     }
     return variationData[currentVariationType];
@@ -69,6 +74,22 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
       updateReferenceImage(image);
     },
     [updateReferenceImage]
+  );
+
+  const onMaskImageUrlChange = React.useCallback(
+    (imageUrl: string, uploadedMaskUrl?: string) => {
+      if (uploadedMaskUrl) {
+        updateMaskPicUrl(uploadedMaskUrl);
+      }
+    },
+    [updateMaskPicUrl]
+  );
+
+  const handleFabricImageUrlChange = React.useCallback(
+    (imageUrl: string) => {
+      updateFabricPicUrl(imageUrl);
+    },
+    [updateFabricPicUrl]
   );
 
   const handleReferenceImageUrlChange = React.useCallback(
@@ -145,7 +166,9 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
           description: currentData.description,
           referLevel: currentData.referLevel,
           referenceImage: currentData.referenceImage,
-          referenceImageUrl: currentData.referenceImageUrl
+          referenceImageUrl: currentData.referenceImageUrl,
+          fabricPicUrl: currentData.fabricPicUrl,
+          maskPicUrl: currentData.maskPicUrl
         };
 
         // Call the parent's onSubmit function with the form data
@@ -168,12 +191,66 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
       return 'generating';
     }
 
-    if (!currentData.description.trim() || (!currentData.image && !currentData.imageUrl)) {
+    // Check if main image is provided
+    const hasMainImage = currentData.image || currentData.imageUrl;
+    if (!hasMainImage) {
       return 'disabled';
     }
 
+    // Validation based on variation type
+    switch (currentVariationType) {
+      case '1':
+      case '2':
+      case '3':
+      case '4':
+        // These types require description
+        if (!currentData.description.trim()) {
+          return 'disabled';
+        }
+        break;
+
+      case '5':
+        // Type 5 requires description and reference image
+        if (!currentData.description.trim()) {
+          return 'disabled';
+        }
+        const hasReferenceImage = currentData.referenceImage || currentData.referenceImageUrl;
+        if (!hasReferenceImage) {
+          return 'disabled';
+        }
+        break;
+
+      case '6':
+      case '8':
+        // Types 6 and 8 only require main image, no description needed
+        break;
+
+      case '7':
+        // Type 7 requires fabric image
+        if (!currentData.fabricPicUrl) {
+          return 'disabled';
+        }
+        break;
+
+      default:
+        // For unknown types, require description
+        if (!currentData.description.trim()) {
+          return 'disabled';
+        }
+        break;
+    }
+
     return 'ready';
-  }, [currentData.description, currentData.image, currentData.imageUrl, isGenerating]);
+  }, [
+    currentData.description,
+    currentData.image,
+    currentData.imageUrl,
+    currentData.referenceImage,
+    currentData.referenceImageUrl,
+    currentData.fabricPicUrl,
+    currentVariationType,
+    isGenerating
+  ]);
 
   return (
     <div className="flex flex-col h-full">
@@ -299,10 +376,58 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
                 placeholderText={getPlaceholderText()}
               />
             </div>
-          )}
-        </form>
-      </div>
-      <div className="sticky bottom-0 left-0 right-0 py-4 bg-white">
+        )}
+        {currentVariationType === '6' && (
+          <div className="space-y-4">
+            <div className="space-y-[10px]">
+              <FormLabel>Upload original image</FormLabel>
+              <ImageUploader
+                onImageChange={handleImageChange}
+                onImageUrlChange={handleImageUrlChange}
+                imageUrl={currentData.imageUrl}
+                currentImage={currentData.image}
+              />
+            </div>
+          </div>
+        )}
+        {currentVariationType === '7' && (
+          <div className="space-y-4">
+            <div className="space-y-[10px]">
+              <FormLabel>Upload image</FormLabel>
+              <ImageUploader
+                onImageChange={handleImageChange}
+                onImageUrlChange={handleImageUrlChange}
+                imageUrl={currentData.imageUrl}
+                currentImage={currentData.image}
+              />
+            </div>
+            <div className="space-y-[10px]">
+              <FormLabel>Upload frabic image</FormLabel>
+              <ImageUploader2
+                onImageUrlChange={handleFabricImageUrlChange}
+                imageUrl={currentData.fabricPicUrl}
+                onMaskImageUrlChange={onMaskImageUrlChange}
+                maskImageUrl={currentData.maskPicUrl}
+                showMaskEditor={true}
+              />
+            </div>
+          </div>
+        )}
+        {currentVariationType === '8' && (
+          <div className="space-y-4">
+            <div className="space-y-[10px]">
+              <FormLabel>Upload image</FormLabel>
+              <ImageUploader
+                onImageChange={handleImageChange}
+                onImageUrlChange={handleImageUrlChange}
+                imageUrl={currentData.imageUrl}
+                currentImage={currentData.image}
+              />
+            </div>
+          </div>
+        )}
+      </form>
+      <div className="sticky bottom-0 left-0 right-0 pb-4 bg-white">
         <GenerateButton onClick={handleSubmit} state={buttonState} />
       </div>
     </div>
