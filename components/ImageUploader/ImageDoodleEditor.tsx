@@ -1,10 +1,13 @@
 'use client';
 
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
-import { Button } from '@/components/ui/button';
-import { Slider } from '@/components/ui/slider';
+import NextImage from 'next/image';
 import { ReactSketchCanvas, type ReactSketchCanvasRef } from 'react-sketch-canvas';
 import { PencilIcon, EraserIcon, TrashIcon, UndoIcon, RedoIcon, SaveIcon, Loader2 } from 'lucide-react';
+
+import { Button } from '@/components/ui/button';
+import { Slider } from '@/components/ui/slider';
+
 import { uploadImage } from '@/lib/api/common';
 
 interface ImageDoodleEditorProps {
@@ -25,7 +28,6 @@ export default function ImageDoodleEditor({
   height = 480
 }: ImageDoodleEditorProps) {
   const [color, setColor] = useState<string>('#ff0000');
-  const [showColorPicker, setShowColorPicker] = useState<boolean>(false);
   const [eraseMode, setEraseMode] = useState<boolean>(false);
   const [maskDataUrl, setMaskDataUrl] = useState<string | null>(maskImageUrl || null);
   const [transparentDoodleUrl, setTransparentDoodleUrl] = useState<string | null>(maskImageUrl || null);
@@ -684,17 +686,8 @@ export default function ImageDoodleEditor({
   // Memoize toolbar buttons to prevent unnecessary re-renders
   const toolbarButtons = useMemo(
     () => (
-      <div className="flex w-full gap-2 border-b border-gray-200 pb-2 mb-4 pl-11">
-        <div className="relative flex flex-col" onMouseEnter={handlePenSliderEnter} onMouseLeave={handlePenSliderLeave}>
-          <Button
-            variant={!eraseMode ? 'default' : 'ghost'}
-            size="sm"
-            onClick={handlePenClick}
-            className="flex flex-col items-center justify-center w-[70px] h-[70px]"
-          >
-            <PencilIcon className="w-5 h-5" />
-            笔刷
-          </Button>
+      <div className="absolute w-1/2 top-4 flex items-center justify-center gap-4 z-10">
+        {/* <div className="relative flex flex-col" onMouseEnter={handlePenSliderEnter} onMouseLeave={handlePenSliderLeave}>
           {showPenSlider && (
             <div
               className="absolute top-full left-[-50%] mt-2 p-3 bg-white shadow-lg rounded-md z-10 w-[140px]"
@@ -719,15 +712,6 @@ export default function ImageDoodleEditor({
           onMouseEnter={handleEraserSliderEnter}
           onMouseLeave={handleEraserSliderLeave}
         >
-          <Button
-            variant={eraseMode ? 'default' : 'ghost'}
-            size="sm"
-            onClick={handleEraserClick}
-            className="flex flex-col items-center justify-center w-[70px] h-[70px]"
-          >
-            <EraserIcon className="w-5 h-5" />
-            橡皮
-          </Button>
           {showEraserSlider && (
             <div
               className="absolute top-full left-[-50%] mt-2 p-3 bg-white shadow-lg rounded-md z-10 w-[140px]"
@@ -745,37 +729,55 @@ export default function ImageDoodleEditor({
               />
             </div>
           )}
+        </div> */}
+
+        <div className="flex px-3 py-2 bg-gray-40 rounded-[8px] gap-2">
+          <div className="w-[24px] h-[24px] cursor-pointer">
+            <NextImage
+              onClick={handlePenClick}
+              src="/images/magic-kit/zoom_in.svg"
+              width={24}
+              height={24}
+              alt="zoom in"
+            />
+          </div>
+          <div className="w-[24px] h-[24px] cursor-pointer">
+            <NextImage
+              onClick={handleEraserClick}
+              src="/images/magic-kit/zoom_out.svg"
+              width={24}
+              height={24}
+              alt="zoom out"
+            />
+          </div>
         </div>
 
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handleUndo}
-          className="flex flex-col  items-center justify-center w-[70px] h-[70px]"
-        >
-          <UndoIcon className="w-5 h-5" />
-          撤销
-        </Button>
+        <div className="flex px-3 py-2 bg-gray-40 rounded-[8px] gap-2">
+          <div className="w-[24px] h-[24px] cursor-pointer">
+            <NextImage onClick={handlePenClick} src="/images/magic-kit/brush.svg" width={24} height={24} alt="brush" />
+          </div>
+          <div className="w-[24px] h-[24px] cursor-pointer">
+            <NextImage
+              onClick={handleEraserClick}
+              src="/images/magic-kit/eraser.svg"
+              width={24}
+              height={24}
+              alt="eraser"
+            />
+          </div>
+        </div>
 
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handleRedo}
-          className="flex flex-col items-center justify-center w-[70px] h-[70px]"
-        >
-          <RedoIcon className="w-5 h-5" />
-          重做
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handleReset}
-          className="flex flex-col items-center justify-center w-[70px] h-[70px]"
-          title="Reset Canvas (Clear Undo History)"
-        >
-          <TrashIcon className="w-5 h-5" />
-          清除
-        </Button>
+        <div className="flex px-3 py-2 bg-gray-40 rounded-[8px] gap-2">
+          <div className="w-[24px] h-[24px] cursor-pointer">
+            <NextImage onClick={handleUndo} src="/images/magic-kit/undo.svg" width={24} height={24} alt="undo" />
+          </div>
+          <div className="w-[24px] h-[24px] cursor-pointer">
+            <NextImage onClick={handleRedo} src="/images/magic-kit/redo.svg" width={24} height={24} alt="redo" />
+          </div>
+          <div className="w-[24px] h-[24px] cursor-pointer">
+            <NextImage onClick={handleReset} src="/images/magic-kit/delete.svg" width={24} height={24} alt="reset" />
+          </div>
+        </div>
       </div>
     ),
     [
@@ -837,10 +839,7 @@ export default function ImageDoodleEditor({
   );
 
   return (
-    <>
-      <div className="flex justify-between items-center w-full mb-2">
-        <h2 className="text-xl font-bold">选择修改的区域 *</h2>
-      </div>
+    <div className="relative">
       {toolbarButtons}
 
       <div className="flex flex-col md:flex-row gap-4 w-full">
@@ -950,16 +949,16 @@ export default function ImageDoodleEditor({
           </div>
         </div>
       </div>
-      <div className="flex justify-center mt-4">
-        <div
-          className={`w-[150px] h-[40px] bg-[#ff7315] cursor-pointer text-white rounded-md flex items-center justify-center ${
-            isUploading ? 'opacity-70 pointer-events-none' : ''
-          }`}
+      <div className="flex justify-center mt-6">
+        <Button
+          variant="default"
+          size="default"
           onClick={handleSave}
+          className="bg-primary hover:bg-primary-hover hover:bg-none"
         >
-          Confirm
+          <span>Confirm</span>
           {isUploading && <Loader2 className="w-5 h-5 animate-spin ml-2" />}
-        </div>
+        </Button>
       </div>
 
       {/* Hidden canvas for generating mask image */}
@@ -969,6 +968,6 @@ export default function ImageDoodleEditor({
         height={originalImageSize?.height || containerHeight}
         className="hidden"
       />
-    </>
+    </div>
   );
 }

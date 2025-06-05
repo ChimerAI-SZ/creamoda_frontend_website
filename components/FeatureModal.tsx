@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import Image from 'next/image';
+import { X } from 'lucide-react';
 
 import {
   Dialog,
@@ -10,7 +11,6 @@ import {
   DialogTrigger,
   DialogFooter
 } from '@/components/ui/dialog';
-import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 import { cn } from '@/utils';

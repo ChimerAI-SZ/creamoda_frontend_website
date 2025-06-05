@@ -22,7 +22,7 @@ const buttonVariants = cva(
           'bg-warning hover:bg-warning-hover text-white shadow-md hover:opacity-90 rounded-full text-white'
       },
       size: {
-        default: 'h-9 px-4 py-2',
+        default: 'h-9 pl-[113px] pr-[133px] py-2',
         sm: 'h-6 px-2 py-1 w-fit text-center text-center text-[12px] font-medium leading-[16px] text-white',
         md: 'h-8 px-[11px] py-[6px] w-fit text-center text-center text-[14px] font-bold leading-[20px] text-white',
         lg: 'h-[48px] rounded-full px-8',

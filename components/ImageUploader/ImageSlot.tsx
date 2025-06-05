@@ -100,8 +100,8 @@ export const ImageSlot: React.FC<ImageSlotProps> = ({
           </button>
         </div>
       </DialogTrigger>
-      <DialogContent className="flex items-center justify-center max-w-[90vw] max-h-[90vh]">
-        <DialogTitle className="sr-only">图像编辑器</DialogTitle>
+      <DialogContent className="flex items-center justify-center max-w-[90vw] min-w-[1040px] w-[1040px] max-h-[90vh]">
+        <DialogTitle className="sr-only"></DialogTitle>
         {/* 直接显示涂鸦编辑器 */}
         <div className="w-full h-full">
           <ImageDoodleEditor

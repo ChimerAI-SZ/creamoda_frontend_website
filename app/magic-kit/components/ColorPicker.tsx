@@ -1,7 +1,11 @@
 'use client';
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Pipette } from 'lucide-react';
+import { Pipette, X } from 'lucide-react';
+import Image from 'next/image';
+
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { cn } from '@/utils';
 
 interface ColorPickerProps {
   value: string;
@@ -168,6 +172,7 @@ export function ColorPicker({ value = '#ffffff', onChange }: ColorPickerProps) {
       const hex = rgbToHex(r, g, b);
 
       setCurrentColor(hex);
+      onChange(hex);
       setPosition({ x: boundedX, y: boundedY });
     }
   };
@@ -208,6 +213,7 @@ export function ColorPicker({ value = '#ffffff', onChange }: ColorPickerProps) {
         const hex = rgbToHex(r, g, b);
 
         setCurrentColor(hex);
+        onChange(hex);
       }
     }
   };
@@ -217,6 +223,7 @@ export function ColorPicker({ value = '#ffffff', onChange }: ColorPickerProps) {
     const hex = e.target.value;
     if (/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(hex)) {
       setCurrentColor(hex);
+      onChange(hex);
       updatePositionsFromColor(hex);
     }
   };
@@ -228,41 +235,19 @@ export function ColorPicker({ value = '#ffffff', onChange }: ColorPickerProps) {
       const eyeDropper = new window.EyeDropper();
       const result = await eyeDropper.open();
       setCurrentColor(result.sRGBHex);
+      onChange(result.sRGBHex);
       updatePositionsFromColor(result.sRGBHex);
     } catch (e) {
       console.error('Eye dropper error:', e);
     }
   };
 
-  // Handle color confirmation
-  const handleConfirm = () => {
-    onChange(currentColor);
-    setIsOpen(false);
-  };
-
-  // Effect to handle clicks outside of the color picker
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isOpen]);
-
   // Update internal state when prop value changes
   useEffect(() => {
     setCurrentColor(value);
-    if (isOpen) {
-      updatePositionsFromColor(value);
-    }
+    onChange(value);
+
+    isOpen && updatePositionsFromColor(value);
   }, [value, isOpen, updatePositionsFromColor]);
 
   // Update positions when picker is opened - remove currentColor from dependencies to prevent loop
@@ -272,15 +257,22 @@ export function ColorPicker({ value = '#ffffff', onChange }: ColorPickerProps) {
     }
   }, [isOpen, updatePositionsFromColor]); // Removed currentColor from dependencies
 
+  const { r, g, b } = hsvToRgb(hue / 360, 1, 1);
+  const sliderColor = rgbToHex(r, g, b);
+
   return (
     <div className="relative" ref={containerRef}>
-      <div className="flex items-center justify-between">
-        <div
-          className="flex-1 flex items-center border border-gray-300 rounded-md px-3 py-2 cursor-pointer"
-          onClick={() => setIsOpen(!isOpen)}
-        >
-          <div className="w-5 h-5 rounded-md mr-2" style={{ backgroundColor: currentColor }} />
-          <span className="text-sm flex-1">{currentColor}</span>
+      <div className="flex items-center justify-between h-[48px] bg-[#EFF3F6] rounded-[8px] w-full px-4 py-2">
+        <div className="flex-1 flex items-center rounded-md py-2 cursor-pointer gap-4">
+          <div className="text-[#0A1532] text-sm font-normal">Hex</div>
+          <div
+            className="flex items-center justify-start w-[224px] bg-white h-[32px] rounded-[8px] p-1"
+            onClick={() => setIsOpen(!isOpen)}
+          >
+            <div className="w-5 h-5 rounded-md mr-4" style={{ backgroundColor: currentColor }} />
+            <div className="w-[1px] h-full bg-[#EFF3F6] mr-4" />
+            <span className="text-sm flex-1 text-gray-40 font-normal">{currentColor}</span>
+          </div>
         </div>
         <button
           type="button"
@@ -290,98 +282,102 @@ export function ColorPicker({ value = '#ffffff', onChange }: ColorPickerProps) {
           }}
           className="ml-2 text-gray-500 hover:text-gray-700 transition-colors"
         >
-          <Pipette className="w-5 h-5" />
+          <Image src="/images/generate/pipette.svg" alt="pipette" width={20} height={20} />
         </button>
       </div>
 
-      {isOpen && (
-        <div className="absolute top-full left-0 mt-2 z-10 p-4 bg-white rounded-md shadow-lg border border-gray-200 w-64">
-          {/* Color gradient panel */}
-          <div
-            ref={colorPanelRef}
-            className="w-full h-40 relative cursor-crosshair"
-            style={{
-              background: `linear-gradient(to right, #fff, hsl(${hue}, 100%, 50%))`,
-              backgroundImage: `
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogContent overlayVisible={false} className="p-4 w-[280px] left-[426px] translate-x-0 shadow-card-shadow">
+          <DialogHeader>
+            <DialogTitle>
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-normal">Colors</span>
+                <DialogTrigger asChild>
+                  <X className="w-4 h-4 cursor-pointer" />
+                </DialogTrigger>
+              </div>
+            </DialogTitle>
+          </DialogHeader>
+          <div className="top-full z-10 bg-white rounded-md">
+            {/* Color gradient panel */}
+            <div
+              ref={colorPanelRef}
+              className="w-full h-40 relative cursor-crosshair rounded-[16px]"
+              style={{
+                background: `linear-gradient(to right, #fff, hsl(${hue}, 100%, 50%))`,
+                backgroundImage: `
                 linear-gradient(to top, #000, transparent),
                 linear-gradient(to right, #fff, hsl(${hue}, 100%, 50%))
               `
-            }}
-            onMouseDown={e => {
-              handleColorPanelInteraction(e);
-              const onMouseMove = (e: MouseEvent) => handleColorPanelInteraction(e as any);
-              const onMouseUp = () => {
-                document.removeEventListener('mousemove', onMouseMove);
-                document.removeEventListener('mouseup', onMouseUp);
-              };
-
-              document.addEventListener('mousemove', onMouseMove);
-              document.addEventListener('mouseup', onMouseUp);
-            }}
-            onClick={handleColorPanelInteraction}
-          >
-            <div
-              className="absolute w-4 h-4 border-2 border-white rounded-full -translate-x-1/2 -translate-y-1/2 shadow-md"
-              style={{
-                left: position.x,
-                top: position.y,
-                backgroundColor: currentColor
               }}
-            />
-          </div>
+              onMouseDown={e => {
+                e.stopPropagation();
+                handleColorPanelInteraction(e);
+                const onMouseMove = (e: MouseEvent) => handleColorPanelInteraction(e as any);
+                const onMouseUp = () => {
+                  document.removeEventListener('mousemove', onMouseMove);
+                  document.removeEventListener('mouseup', onMouseUp);
+                };
 
-          {/* Hue slider */}
-          <div
-            ref={hueSliderRef}
-            className="w-full h-5 mt-4 rounded cursor-pointer relative"
-            style={{
-              background: 'linear-gradient(to right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00)'
-            }}
-            onMouseDown={e => {
-              handleHueChange(e);
-              const onMouseMove = (e: MouseEvent) => handleHueChange(e as any);
-              const onMouseUp = () => {
-                document.removeEventListener('mousemove', onMouseMove);
-                document.removeEventListener('mouseup', onMouseUp);
-              };
-
-              document.addEventListener('mousemove', onMouseMove);
-              document.addEventListener('mouseup', onMouseUp);
-            }}
-            onClick={handleHueChange}
-          >
-            <div
-              className="absolute w-2 h-7 bg-white border border-gray-300 rounded -translate-x-1/2 -translate-y-1 shadow-sm pointer-events-none"
-              style={{
-                left: `${Math.max(1, Math.min(99, (hue / 360) * 100))}%`
+                document.addEventListener('mousemove', onMouseMove);
+                document.addEventListener('mouseup', onMouseUp);
               }}
-            />
-          </div>
-
-          {/* Hex input */}
-          <div className="flex items-center mt-4">
-            <span className="text-sm mr-2">HEX</span>
-            <input
-              type="text"
-              value={currentColor}
-              onChange={handleHexChange}
-              className="w-full px-2 py-1 border border-gray-300 rounded text-sm text-center"
-              placeholder="#ffffff"
-            />
-          </div>
-
-          {/* Confirm button */}
-          <div className="w-full flex justify-end">
-            <button
-              type="button"
-              onClick={handleConfirm}
-              className="mt-3 p-2 border border-gray-300 text-black rounded font-medium text-sm hover:bg-gray-50 transition-colors"
+              onClick={handleColorPanelInteraction}
             >
-              confirm
-            </button>
+              <div
+                className="absolute w-4 h-4 border-2 border-white rounded-full -translate-x-1/2 -translate-y-1/2 shadow-md"
+                style={{
+                  left: position.x,
+                  top: position.y,
+                  backgroundColor: currentColor
+                }}
+              />
+            </div>
+
+            {/* Hue slider */}
+            <div
+              ref={hueSliderRef}
+              className="w-full h-3 mt-4 rounded-[16px] cursor-pointer relative"
+              style={{
+                background: 'linear-gradient(to right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00)'
+              }}
+              onMouseDown={e => {
+                handleHueChange(e);
+                const onMouseMove = (e: MouseEvent) => handleHueChange(e as any);
+                const onMouseUp = () => {
+                  document.removeEventListener('mousemove', onMouseMove);
+                  document.removeEventListener('mouseup', onMouseUp);
+                };
+
+                document.addEventListener('mousemove', onMouseMove);
+                document.addEventListener('mouseup', onMouseUp);
+              }}
+              onClick={handleHueChange}
+            >
+              <div
+                className="absolute flex items-center justify-center w-4 h-4 bg-white border border-gray-300 rounded-full top-1/2 -translate-x-1/2 -translate-y-1/2 shadow-sm pointer-events-none"
+                style={{
+                  left: `${Math.max(1, Math.min(99, (hue / 360) * 100))}%`
+                }}
+              >
+                <div className={cn('w-2 h-2 rounded-full')} style={{ background: sliderColor }} />
+              </div>
+            </div>
+
+            {/* Hex input */}
+            <div className="flex items-center mt-4">
+              <div className="text-[#0A1532] text-sm font-normal mr-[6px]">Hex</div>
+              <input
+                type="text"
+                value={currentColor}
+                onChange={handleHexChange}
+                className="w-full px-2 py-1 rounded-[8px] text-sm text-center bg-[#EFF3F6]"
+                placeholder="#ffffff"
+              />
+            </div>
           </div>
-        </div>
-      )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
