@@ -9,7 +9,7 @@ import ChangePwd from './ChangePwdDialog';
 import { UsernameRequirements } from '@/app/app-components/Login/components/UsernameRequirements';
 
 import usePersonalInfoStore from '@/stores/usePersonalInfoStore';
-import { updateUserInfo, uploadImage } from '@/lib/api/common';
+import { updateUserInfo, uploadImage } from '@/lib/api';
 import { showErrorDialog } from '@/utils/index';
 import { LegalList } from './const';
 

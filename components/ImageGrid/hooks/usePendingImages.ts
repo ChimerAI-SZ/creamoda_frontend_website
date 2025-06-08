@@ -70,7 +70,7 @@ export function usePendingImages({ onImageUpdate, pollInterval = 3000 }: UsePend
       // 开始定时轮询
       pollTimerRef.current = setInterval(checkPendingImages, pollInterval);
     }
-  }, [checkPendingImages, pollInterval]);
+  }, [pollInterval]);
 
   const stopPolling = useCallback(() => {
     if (pollTimerRef.current) {

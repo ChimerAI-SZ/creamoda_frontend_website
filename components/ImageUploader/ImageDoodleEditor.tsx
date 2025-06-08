@@ -3,12 +3,11 @@
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import NextImage from 'next/image';
 import { ReactSketchCanvas, type ReactSketchCanvasRef } from 'react-sketch-canvas';
-import { PencilIcon, EraserIcon, TrashIcon, UndoIcon, RedoIcon, SaveIcon, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { Slider } from '@/components/ui/slider';
 
-import { uploadImage } from '@/lib/api/common';
+import { uploadImage } from '@/lib/api';
 
 interface ImageDoodleEditorProps {
   imageUrl: string;

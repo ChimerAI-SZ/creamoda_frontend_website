@@ -1,12 +1,10 @@
 import Image from 'next/image';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
 import { Overlay } from '@/components/ui/overlay';
 
-import { downloadImage } from '@/utils';
-import { collectImage } from '@/lib/api/album';
-import { useVariationFormStore } from '@/stores/useMagicKitStore';
+import { cn } from '@/utils';
 import type { ImageItem } from './index';
 
 interface ImageDetailProps {
@@ -15,13 +13,16 @@ interface ImageDetailProps {
   isOpen: boolean;
   imgList: ImageItem[];
   onImageChange: (image: ImageItem | null) => void;
-  handleDeleteImage: (imageId: number) => void;
+  handleActionButtonClick: (text: string, image: ImageItem) => void;
 }
 
 // 提取一个通用的按钮组件
 interface ActionButtonProps {
-  variant: 'default' | 'secondary';
+  variant: 'primary' | 'tertiary' | 'secondary';
   text: string;
+  iconName: string;
+  className?: string;
+  content?: React.ReactNode | string;
 }
 
 export default function ImageDetail({
@@ -30,48 +31,40 @@ export default function ImageDetail({
   isOpen,
   imgList,
   onImageChange,
-  handleDeleteImage
+  handleActionButtonClick
 }: ImageDetailProps) {
   const pathname = usePathname();
-  const router = useRouter();
-  const { updateImageUrl } = useVariationFormStore();
 
   if (!isOpen) return null;
 
-  console.log(pathname, image, 'pathname');
-
-  const handleActionButtonClick = (text: string) => {
-    console.log(text, 'text');
-    if (text === 'Download') {
-      downloadImage(image?.resultPic ?? '', 'image.jpg');
-    } else if (text === 'Delete') {
-      handleDeleteImage(image?.genImgId ?? 0);
-    } else if (text === 'Remove from album') {
-      collectImage({ genImgId: image?.genImgId ?? 0, action: 2 });
-    } else if (text === 'Add to album') {
-      collectImage({ genImgId: image?.genImgId ?? 0, action: 1 });
-    } else if (text === 'Magic Kit') {
-      updateImageUrl(image?.resultPic ?? '');
-      router.push('/magic-kit');
-    } else if (text === 'Virtual Try-On') {
-      router.push(`/virtual-try-on?imageUrl=${encodeURIComponent(image?.resultPic ?? '')}`);
-    }
-  };
-
-  const ActionButton: React.FC<ActionButtonProps> = ({ variant, text }) => (
-    <Button variant={variant} className="w-full mb-3 text-[#fff]" onClick={() => handleActionButtonClick(text)}>
-      <Image src="/images/sparkles.svg" alt="sparkles" width={20} height={20} className="object-cover" priority />
-      <span>{text}</span>
+  const ActionButton: React.FC<ActionButtonProps> = ({ variant, text, content, className, iconName }) => (
+    <Button
+      variant={variant}
+      className={cn('w-[192px] mb-3 px-0', className)}
+      onClick={() => handleActionButtonClick(text, image as ImageItem)}
+    >
+      <Image
+        src={`/images/album/${iconName}.svg`}
+        alt={iconName}
+        width={20}
+        height={20}
+        className="object-cover"
+        priority
+      />
+      <span>{content ?? text}</span>
     </Button>
   );
 
   return (
     <Overlay onClick={onClose}>
-      <div className="relative" onClick={e => e.stopPropagation()}>
-        <div className="relative aspect-[3/4] max-h-[60vh] h-[645px] w-auto bg-white rounded-[4px] overflow-hidden">
+      <div
+        className="relative flex items-center justify-center max-h-[75vh] h-[680px] "
+        onClick={e => e.stopPropagation()}
+      >
+        <div className="relative aspect-[3/4] h-full w-auto bg-white rounded-tl-[20px] rounded-bl-[20px] overflow-hidden shadow-card-shadow">
           {/* 图片详情内容 */}
           {image && (
-            <div className="relative w-full h-full border border-[rgba(182,182,182,0.5)] shadow-[0_0.11rem_0.89rem_0_rgba(0,0,0,0.07)] z-[1] transition-transform duration-500">
+            <div className="relative w-full h-full shadow-[0_0.11rem_0.89rem_0_rgba(0,0,0,0.07)] z-[1] transition-transform duration-500">
               {/* 添加模糊背景 */}
               <div
                 className="absolute inset-0 bg-cover bg-center blur-xl opacity-50 scale-110"
@@ -99,25 +92,38 @@ export default function ImageDetail({
           {/* 其他详情内容 */}
         </div>
         {image && (
-          <div className="w-[252px] bg-white rounded-[4px] overflow-hidden absolute right-[-268px] bottom-0 p-4">
-            <div className="text-[#121316] font-inter text-base font-medium leading-6 mb-4">Quick action</div>
+          <div className="bg-white overflow-hidden rounded-tr-[20px] rounded-br-[20px] px-6 h-full w-[240px] flex flex-col gap-6">
+            <div className="text-gray-60 text-sm font-medium h-[68px] flex items-center justify-center border-b border-[#EFF3F6]">
+              Quick action
+            </div>
             <div>
               {['/', '/virtual-try-on', '/magic-kit'].includes(pathname) && (
                 <>
-                  {pathname !== '/magic-kit' && <ActionButton variant="default" text="Magic Kit" />}
                   {pathname !== '/virtual-try-on' && (
-                    <ActionButton variant={pathname === '/' ? 'secondary' : 'default'} text="Virtual Try-On" />
+                    <ActionButton variant="primary" text="Virtual Try-On" iconName="virtual_try_on" />
+                  )}
+                  {pathname !== '/magic-kit' && (
+                    <ActionButton
+                      variant={pathname === '/virtual-try-on' ? 'primary' : 'secondary'}
+                      text="Magic Kit"
+                      iconName="magic_kit"
+                    />
                   )}
                 </>
               )}
-              <ActionButton variant="secondary" text={image?.isCollected ? 'Remove from album' : 'Add to album'} />
-              <ActionButton variant="secondary" text="Download" />
-              <ActionButton variant="secondary" text="Delete" />
+              <ActionButton
+                variant="tertiary"
+                text={image?.isCollected ? 'Remove from album' : 'Add to album'}
+                iconName={image?.isCollected ? 'added_to_album' : 'add_to_album_black'}
+              />
+              <ActionButton variant="tertiary" text="Download" iconName="download_black" />
+              <ActionButton variant="tertiary" text="Delete" iconName="delete_black" />
+              <ActionButton variant="tertiary" text="Share" iconName="share" />
             </div>
           </div>
         )}
 
-        <div className="flex items-center justify-center gap-[20px] absolute left-[50%] translate-x-[-50%] bottom-[-144px] h-[112px] rounded-[4px] ">
+        {/* <div className="flex items-center justify-center gap-[20px] absolute left-[50%] translate-x-[-50%] bottom-[-144px] h-[112px] rounded-[4px] ">
           {imgList
             .filter(item => item.genId === image?.genId)
             .map(pic => {
@@ -147,7 +153,7 @@ export default function ImageDetail({
                 </div>
               );
             })}
-        </div>
+        </div> */}
       </div>
     </Overlay>
   );

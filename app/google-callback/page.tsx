@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { getGoogleCallback, saveAuthToken } from '@/lib/api/index';
+import { getGoogleCallback, saveAuthToken } from '@/lib/api';
 
 // Add dynamic import to disable pre-rendering
 export const dynamic = 'force-dynamic';

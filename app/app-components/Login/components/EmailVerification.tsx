@@ -1,7 +1,7 @@
 import { useState, useEffect, ChangeEvent, FormEvent, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { resendVerificationCode, verifyEmail } from '@/lib/api/index';
+import { resendVerificationCode, verifyEmail } from '@/lib/api';
 
 interface EmailVerificationProps {
   email?: string;

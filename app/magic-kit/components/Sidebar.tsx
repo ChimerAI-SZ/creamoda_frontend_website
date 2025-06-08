@@ -11,13 +11,7 @@ import { DescribeDesign } from '@/components/DescribeDesign';
 import { ColorPicker } from './ColorPicker';
 import { MemoizedImageUploader } from '@/components/ImageUploader';
 
-import {
-  changeClothesColor,
-  changeBackground,
-  removeBackground,
-  particialModification,
-  upscale
-} from '@/lib/api/magicKit';
+import { changeClothesColor, changeBackground, removeBackground, particialModification, upscale } from '@/lib/api';
 import { eventBus } from '@/utils/events';
 import { showErrorDialog } from '@/utils/index';
 
