@@ -13,7 +13,7 @@ export function Overlay({ children, className, onClick, isVisible = true }: Over
 
   return (
     <div
-      className={cn('fixed inset-0 bg-black/50 z-[5000] flex items-center justify-center', className)}
+      className={cn('fixed inset-0 bg-gray-40 z-[5000] flex items-center justify-center', className)}
       onClick={onClick}
     >
       {children}

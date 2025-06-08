@@ -16,16 +16,19 @@ export const actionList = [
   {
     id: 0,
     key: 'membership',
-    label: 'Membership'
+    label: 'Membership',
+    iconName: 'membership'
   },
   {
     id: 1,
     key: 'payment',
-    label: 'Orders & Payments'
+    label: 'Orders & Payments',
+    iconName: 'orders'
   },
   {
     id: 2,
     key: 'setting',
-    label: 'Account Settings'
+    label: 'Account Settings',
+    iconName: 'setting'
   }
 ];

@@ -16,19 +16,19 @@ const AvatarMenu: React.FC<{
   const { username, email, headPic } = usePersonalInfoStore();
 
   return (
-    <div className="fixed inset-0 top-[56px] bg-black/30 z-40" onClick={closeMenu}>
+    <div className="fixed inset-0 top-[56px] z-40" onClick={closeMenu}>
       <div
-        className="fixed top-[70px] right-3 bg-white z-50 flex flex-col items-center p-5 w-[386px] rounded-[6px] shadow-[-2px_4px_10px_0px_rgba(0,0,0,0.05)]"
+        className="fixed top-[56px] right-6 bg-white z-50 flex px-6 flex-col items-center w-[300px] rounded-[16px] shadow-[-2px_4px_10px_0px_rgba(0,0,0,0.05)]"
         onClick={e => e.stopPropagation()}
       >
-        <div className="w-full max-w-md space-y-8">
-          <div className="flex items-center justify-start gap-3 mb-4">
-            <div className="w-[32px] h-[32px] overflow-hidden rounded-[50%] border-[#666] border-[1px]">
+        <div className="w-full">
+          <div className="flex items-center justify-start gap-3 py-4 border-b border-[#F5F5F5]">
+            <div className="w-[40px] h-[40px] overflow-hidden rounded-[50%] border-[#666] border-[1px]">
               <Image
                 src={headPic || '/images/defaultAvatar.svg'}
                 alt="用户头像"
-                width={32}
-                height={32}
+                width={40}
+                height={40}
                 className="w-full h-full object-cover"
               />
             </div>
@@ -38,31 +38,28 @@ const AvatarMenu: React.FC<{
             </div>
           </div>
 
-          <div>
+          <div className="py-3 border-b border-[#F5F5F5]">
             {actionList.map(item => (
               <div
-                className="flex items-center justify-between px-3 h-[42px] leading-[42px] font-semibold text-[#000305] cursor-pointer"
+                className="flex items-center justify-start gap-3 px-4 h-[42px] leading-[42px] font-semibold text-[#000305] cursor-pointer"
                 key={item.id}
                 onClick={() => {
                   handleAction(item.key as AvatarActionType);
                 }}
               >
-                <div>{item.label}</div>
                 <div>
-                  <Image src="/images/menu/avatar_right_arrow.svg" alt="arrow right" width={24} height={24} />
+                  <Image src={`/images/menu/${item.iconName}.svg`} alt={item.iconName} width={24} height={24} />
                 </div>
+                <div className="text-[#0A1532] text-[16px] font-inter font-medium leading-[22px]">{item.label}</div>
               </div>
             ))}
           </div>
 
-          <div className="flex items-center justify-center">
-            <Button
-              variant="secondary"
-              className="mt-6 w-[233px] px-[16px] py-[12px] border border-[#DCDCDC] text-[#fff] rounded-[30px] transition-colors"
-              onClick={handleLogout}
-            >
-              <span className=" font-inter text-sm font-medium leading-5">Log out</span>
-            </Button>
+          <div className="flex items-center justify-start py-3 px-4">
+            <div className="flex items-center justify-start gap-4 cursor-pointer" onClick={handleLogout}>
+              <Image src="/images/menu/log_out.svg" alt="logout" width={24} height={24} />
+              <span className="text-gray-60 text-[16px] font-inter font-medium leading-[22px]">Log out</span>
+            </div>
           </div>
         </div>
       </div>

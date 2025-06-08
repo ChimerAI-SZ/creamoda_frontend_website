@@ -9,8 +9,7 @@ import { Button } from '@/components/ui/button';
 import usePersonalInfoStore from '@/stores/usePersonalInfoStore';
 import { Modal as GlobalModal } from '@/utils/modal';
 import { paymentList, PaymentType } from '@/components/Membership';
-import { handleCancelSubscribe, queryBillingHistory } from '@/lib/api/payment';
-import { updateUserInfo } from '@/lib/api/common';
+import { handleCancelSubscribe, queryBillingHistory, updateUserInfo } from '@/lib/api';
 import { showErrorDialog } from '@/utils';
 
 // 邮箱验证函数

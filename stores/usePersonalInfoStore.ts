@@ -1,5 +1,6 @@
 import { create } from 'zustand';
-import { getUserInfo } from '@/lib/api/index';
+
+import { getUserInfo } from '@/lib/api';
 
 interface UserInfo {
   username: string;

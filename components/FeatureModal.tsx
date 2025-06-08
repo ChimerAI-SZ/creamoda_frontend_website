@@ -138,9 +138,7 @@ export default function FeatureModal({
                           key={feature}
                           className="pr-[6px] pl-[10px] h-6 py-[2px] mb-2 mr-2 border border-primary rounded-[16px] flex items-center justify-start gap-1 shrink-0 text-primary font-medium text-[14px] leading-[20px] cursor-default"
                         >
-                          <span className="max-w-[120px] leading-[20px] overflow-hidden text-ellipsis whitespace-nowrap">
-                            {feature}
-                          </span>
+                          <span className="max-w-[120px] leading-[20px] truncate">{feature}</span>
                           <X
                             className="w-[12px] h-[12px] hover:text-black cursor-pointer shrink-0"
                             onClick={() => toggleFeature(feature)}

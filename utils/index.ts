@@ -4,7 +4,7 @@ import { twMerge } from 'tailwind-merge';
 import { useErrorDialogStore } from '@/components/ErrorDialog';
 import { Modal } from '@/utils/modal';
 
-import { deleteImage as deleteImageApi } from '@/lib/api/generate';
+import { deleteImage as deleteImageApi } from '@/lib/api';
 
 export const showErrorDialog = (message: string) => {
   useErrorDialogStore.getState().openDialog(message);

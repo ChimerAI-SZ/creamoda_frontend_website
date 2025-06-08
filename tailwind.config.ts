@@ -119,7 +119,8 @@ export default {
         'card-shadow': '0px 8px 40px 0px rgba(10, 21, 50, 0.06)'
       },
       backgroundImage: {
-        'gradient-primary': 'linear-gradient(to bottom, #704DFF, #599EFF, #6EFABB)'
+        'gradient-primary': 'linear-gradient(to bottom, #704DFF, #599EFF, #6EFABB)',
+        'gradient-card': 'linear-gradient(to bottom, #cfc4fb, #704df7)'
       }
     },
     animation: {

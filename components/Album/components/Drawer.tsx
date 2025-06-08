@@ -6,9 +6,8 @@ import { Drawer, DrawerTrigger, DrawerContent, DrawerHeader, DrawerTitle } from 
 import ImageCard from './ImageCard';
 
 import { useAlbumListStore } from '@/stores/useAlbumListStore';
-import { getCollectList } from '@/lib/api';
+import { getCollectList, collectImage } from '@/lib/api';
 import { showErrorDialog } from '@/utils/index';
-import { collectImage } from '@/lib/api/album';
 
 export interface AlbumItem {
   genImgId: number;
