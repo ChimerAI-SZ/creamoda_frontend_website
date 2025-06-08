@@ -11,7 +11,12 @@ const buttonVariants = cva(
       variant: {
         default:
           'rounded-[100px] bg-gradient-to-r from-[#D0C4FF] to-[#5F44F7] text-primary-foreground shadow hover:bg-[linear-gradient(0deg,_rgba(10,21,50,0.20)_0%,_rgba(10,21,50,0.20)_100%),_linear-gradient(90deg,_#D0C4FF_0%,_#5F44F7_70%)] disabled:bg-[rgba(10,21,50,0.20)] disabled:bg-none',
-        primary: 'bg-primary text-primary-foreground shadow-sm hover:bg-primary-hover disabled:bg-primary-disabled',
+
+        primary:
+          'bg-primary text-primary-foreground rounded-[8px] px-[6px] py-[5px] shadow-sm hover:bg-primary-hover disabled:bg-primary-disabled',
+        primarySecondary:
+          'bg-white border border-gray-20 rounded-[8px] text-gray-80 px-[6px] py-[5px] shadow-sm hover:bg-[#e6e8ea] hover:border-primary hover:text-primary disabled:bg-white disabled:border-gray-10 disabled:text-gray-20',
+
         destructive: 'bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90',
         outline:
           'border border-primary bg-background shadow-sm hover:bg-accent hover:text-accent-foreground hover:border-primary',
@@ -26,7 +31,7 @@ const buttonVariants = cva(
         tertiary: 'bg-[#EFF3F6] disabled:bg-[#EFF3F6] hover:bg-[rgba(10,21,50,0.10)] text-gray-60 shadow-sm'
       },
       size: {
-        default: 'h-9 pl-[113px] pr-[133px] py-2',
+        default: 'h-9 py-2',
         sm: 'h-6 px-2 py-1 w-fit text-center text-center text-[12px] font-medium leading-[16px] text-white',
         md: 'h-8 px-[11px] py-[6px] w-fit text-center text-center text-[14px] font-bold leading-[20px] text-white',
         lg: 'h-[48px] rounded-full px-8',
