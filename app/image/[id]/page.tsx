@@ -1,6 +1,9 @@
 import { ImageData } from './type';
 import { LoginModal } from '@/app/app-components/Login';
 import { Metadata } from 'next';
+import { queryImageDetail } from '@/lib/api';
+
+// import { getDataFromDatabaseOrService } from '@/pages/api/image/[id]';
 
 interface ImagePageProps {
   params: Promise<{ id: string }>;
@@ -12,12 +15,9 @@ export async function generateStaticParams() {
 
 async function getImageData(id: string): Promise<ImageData> {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_NEXT_SERVER_URL}/api/image/${id}`);
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
-    }
-    const data = await res.json();
-    return data.data;
+    const { data } = await queryImageDetail(id);
+    console.log('data', data);
+    return data;
   } catch (error) {
     console.error('Error fetching image data:', error);
     throw error;
