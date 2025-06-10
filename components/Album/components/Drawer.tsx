@@ -52,7 +52,7 @@ export function AlbumDrawer({ children }: { children: React.ReactNode }) {
     <Drawer onOpenChange={handleOpenChange}>
       <DrawerTrigger>{children}</DrawerTrigger>
 
-      <DrawerContent>
+      <DrawerContent className="z-50">
         <DrawerHeader className="px-[18px]">
           <DrawerTitle className="flex items-center justify-between">
             <div className="w-full h-[80px] flex items-center justify-center border-b border-[#E5E5E5]">

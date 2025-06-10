@@ -29,7 +29,7 @@ export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(({ image, on
   return (
     <div
       ref={ref}
-      className="aspect-[3/4] relative overflow-hidden group border-none"
+      className="aspect-[3/4] relative overflow-hidden group border-none z-50"
       onClick={() => !isGenerating && !isFailed && onClick()}
     >
       {/* 初次加载状态 */}

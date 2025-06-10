@@ -86,22 +86,20 @@ export default function ImageDetail({ image, onClose, isOpen, handleActionButton
           <div className="relative bg-white overflow-hidden rounded-tr-[20px] rounded-br-[20px] h-full w-[394px]">
             <div className="overflow-y-auto pb-[calc(32px+80px)] h-full">
               <div className=" flex flex-col gap-4">
-                <div className="pt-6 sticky top-0 bg-white shadow-[0px_8px_40px_0px_rgba(10,21,50,0.06)]  px-6">
-                  <div className="flex items-center justify-center gap-[6px] w-full h-[40px] mb-[10px]">
+                <div className="pt-6 sticky top-0 bg-white shadow-[0px_8px_40px_0px_rgba(10,21,50,0.06)] pb-3 px-6">
+                  <div className="flex items-center justify-center gap-3 w-full h-[40px] mb-[10px]">
                     <div>
                       <Image
                         src={image.creator.headPic || '/images/defaultAvatar.svg'}
                         alt="用户头像"
-                        width={24}
-                        height={24}
+                        width={40}
+                        height={40}
                         className="w-full h-full object-cover"
                       />
                     </div>
                     <div className="flex-grow">
-                      <div className="text-gray-80 text-[10px] font-bold leading-[14px]">{image.creator.name}</div>
-                      <div className="text-[rgba(10,21,50,0.60)] text-[10px] font-normal leading-[14px]">
-                        {image.creator.email}
-                      </div>
+                      <div className="text-[rgba(10,21,50,.80)] text-sm font-semibold">{image.creator.name}</div>
+                      <div className="text-[rgba(10,21,50,.60)] text-sm font-semibold">{image.creator.email}</div>
                     </div>
                   </div>
                   <div className="flex items-center flex-wrap justify-start gap-[6px] w-full cursor-default">

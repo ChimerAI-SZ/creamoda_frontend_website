@@ -116,7 +116,12 @@ const AccountSettingsDrawer = React.memo(
     }, [page, tableData]);
 
     useEffect(() => {
-      handleQueryBillingHistory();
+      const token = localStorage.getItem('auth_token') || '';
+
+      if (token) {
+        // 用户已登录，关闭模态框
+        handleQueryBillingHistory();
+      }
     }, []);
 
     const sections = [
