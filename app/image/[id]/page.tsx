@@ -1,49 +1,24 @@
 import { ImageData } from './type';
-import { LoginModal } from '@/app/app-components/Login';
-import { Metadata } from 'next';
 import { queryImageDetail } from '@/lib/api';
-
-// import { getDataFromDatabaseOrService } from '@/pages/api/image/[id]';
-
-interface ImagePageProps {
-  params: Promise<{ id: string }>;
-}
-
-export async function generateStaticParams() {
-  return Array.from({ length: 10 }, (_, i) => ({ id: (i + 1).toString() }));
-}
+// import { PageProps } from 'next';
 
 async function getImageData(id: string): Promise<ImageData> {
   try {
     const { data } = await queryImageDetail(id);
-    console.log('data', data);
     return data;
   } catch (error) {
-    console.error('Error fetching image data:', error);
+    console.error('Error fetching image data:', JSON.stringify(error));
     throw error;
   }
 }
 
-// ✅ 这里是重点：生成页面的 SEO Metadata
-export async function generateMetadata({ params }: ImagePageProps): Promise<Metadata> {
-  const { id } = await params;
-  const image = await getImageData(id);
-  return {
-    keywords: [...(image?.genType ?? []), ...(image?.materials ?? []), ...(image?.trendStyles ?? [])].join(',')
-  };
-}
-
 // 页面组件
-export default async function ImageDetailPage({ params }: ImagePageProps) {
-  // 确保在使用 params 之前等待其解析
-  const { id } = await params;
-  console.log('Image ID:', id);
+export default async function ImageDetailPage({ params }: { params: any }) {
+  const id = params.id;
   let image;
   try {
     image = await getImageData(id);
-    console.log('Image Data:', image);
   } catch (error) {
-    console.error('Error fetching image data:', error);
     return <div>Error loading image data.</div>;
   }
 
@@ -104,7 +79,6 @@ export default async function ImageDetailPage({ params }: ImagePageProps) {
           </div>
         </div>
       </div>
-      <LoginModal />
     </div>
   );
 }
