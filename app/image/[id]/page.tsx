@@ -3,7 +3,7 @@ import { LoginModal } from '@/app/app-components/Login';
 import { Metadata } from 'next';
 
 interface ImagePageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 export async function generateStaticParams() {
@@ -18,16 +18,26 @@ async function getImageData(id: string): Promise<ImageData> {
 
 // ✅ 这里是重点：生成页面的 SEO Metadata
 export async function generateMetadata({ params }: ImagePageProps): Promise<Metadata> {
-  const image = await getImageData(params.id);
-
+  const { id } = await params;
+  const image = await getImageData(id);
   return {
-    keywords: [...image.genType, ...image.materials, ...image.trendStyles].join(',')
+    keywords: [...(image?.genType ?? []), ...(image?.materials ?? []), ...(image?.trendStyles ?? [])].join(',')
   };
 }
 
 // 页面组件
 export default async function ImageDetailPage({ params }: ImagePageProps) {
-  const image = await getImageData(params.id);
+  // 确保在使用 params 之前等待其解析
+  const { id } = await params;
+  console.log('Image ID:', id);
+  let image;
+  try {
+    image = await getImageData(id);
+    console.log('Image Data:', image);
+  } catch (error) {
+    console.error('Error fetching image data:', error);
+    return <div>Error loading image data.</div>;
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
