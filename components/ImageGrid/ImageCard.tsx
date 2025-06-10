@@ -123,7 +123,7 @@ export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(({ image, on
           >
             <div className="flex items-center justify-center gap-6 w-full h-[28px] absolute opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               <div
-                className="w-8 h-8 bg-gray-40 rounded-[8px] flex items-center justify-center text-white cursor-pointer"
+                className="w-8 h-8 bg-[rgba(255,255,255,0.40)] backdrop-blur-sm rounded-[8px] flex items-center justify-center text-white cursor-pointer"
                 onClick={() => {
                   collectImage({ genImgId: image.genImgId, action: isCollected ? 2 : 1 });
                   setIsCollected(!isCollected);
@@ -138,7 +138,7 @@ export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(({ image, on
                 />
               </div>
               <div
-                className="w-8 h-8 bg-gray-40 rounded-[8px] flex items-center justify-center text-white cursor-pointer"
+                className="w-8 h-8 bg-[rgba(255,255,255,0.40)] backdrop-blur-sm rounded-[8px] flex items-center justify-center text-white cursor-pointer"
                 onClick={() => {
                   downloadImage(image.resultPic, 'image.jpg');
                 }}
@@ -147,7 +147,7 @@ export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(({ image, on
               </div>
 
               <div
-                className="w-8 h-8 bg-gray-40 rounded-[8px] flex items-center justify-center text-white cursor-pointer"
+                className="w-8 h-8 bg-[rgba(255,255,255,0.40)] backdrop-blur-sm rounded-[8px] flex items-center justify-center text-white cursor-pointer"
                 onClick={() => handleDeleteImage(image.genImgId)}
               >
                 <Image src="/images/album/delete.svg" alt="delete" width={18} height={18} />

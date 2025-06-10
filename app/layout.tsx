@@ -6,6 +6,8 @@ import { Analytics } from '@vercel/analytics/react';
 import { Header } from '@/components/Header';
 import GlobalAlert from '@/components/GlobalAlert';
 
+import { TooltipProvider } from '@/components/ui/tooltip';
+
 import '@/utils/modal';
 
 export const metadata: Metadata = {
@@ -22,11 +24,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className="min-h-screen flex flex-col bg-[url('/images/bg.png')] bg-cover">
-        <Header />
-        {children}
-        <ErrorDialog />
-        <Analytics />
-        <GlobalAlert />
+        <TooltipProvider>
+          <Header />
+          {children}
+          <ErrorDialog />
+          <Analytics />
+          <GlobalAlert />
+        </TooltipProvider>
       </body>
     </html>
   );
