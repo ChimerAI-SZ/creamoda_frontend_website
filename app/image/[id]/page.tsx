@@ -11,7 +11,7 @@ export async function generateStaticParams() {
 }
 
 async function getImageData(id: string): Promise<ImageData> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/image/${id}`);
+  const res = await fetch(`${process.env.NEXT_PUBLIC_NEXT_SERVER_URL}/api/image/${id}`);
   const data = await res.json();
   return data.data;
 }

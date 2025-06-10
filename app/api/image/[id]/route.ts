@@ -7,8 +7,6 @@ export async function GET(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const id = pathname.split('/').pop(); // 获取路径中的最后一个部分作为 id
 
-  console.log('id', id);
-  debugger;
   if (!id) {
     return NextResponse.json({ error: 'ID is required' }, { status: 400 });
   }
