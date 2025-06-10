@@ -192,7 +192,11 @@ export default function ImageDetail({ image, onClose, isOpen, handleActionButton
                 variant="tertiary"
                 className={cn('px-0', 'flex-grow h-[40px]')}
                 onClick={() => {
-                  image.isLike ? community.cancelLikeImage(image.genImgId) : community.likeImage(image.genImgId);
+                  if (image.isLike) {
+                    community.cancelLikeImage(image.genImgId);
+                  } else {
+                    community.likeImage(image.genImgId);
+                  }
                 }}
               >
                 <Image

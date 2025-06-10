@@ -171,7 +171,11 @@ export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(({ image, on
               <div
                 className="w-8 h-8 bg-[rgba(255,255,255,0.40)] rounded-[8px] flex items-center justify-center text-white cursor-pointer"
                 onClick={() => {
-                  image.islike ? community.cancelLikeImage(image.genImgId) : community.likeImage(image.genImgId);
+                  if (image.islike) {
+                    community.cancelLikeImage(image.genImgId);
+                  } else {
+                    community.likeImage(image.genImgId);
+                  }
                 }}
               >
                 <Image

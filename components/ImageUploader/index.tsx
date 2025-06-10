@@ -93,7 +93,9 @@ export function ImageUploader({
       // 上传成功 - 使用服务器返回的URL更新
       onImageUrlChange(url);
       // 清除文件引用，因为我们现在使用URL
-      onImageChange && onImageChange(null);
+      if (onImageChange) {
+        onImageChange(null);
+      }
     } catch (error) {
       console.error('Image upload error:', error);
       showErrorDialog(error instanceof Error ? error.message : 'Failed to upload image');
@@ -129,7 +131,9 @@ export function ImageUploader({
       const file = e.dataTransfer.files[0];
       if (file.type.includes('image/')) {
         // 首先更新本地状态以立即显示预览
-        onImageChange && onImageChange(file);
+        if (onImageChange) {
+          onImageChange(file);
+        }
         // 清除之前的图片URL
         onImageUrlChange('');
         // 然后上传到服务器
@@ -146,7 +150,9 @@ export function ImageUploader({
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       // 首先更新本地状态以立即显示预览
-      onImageChange && onImageChange(file);
+      if (onImageChange) {
+        onImageChange(file);
+      }
       // 清除之前的图片URL
       onImageUrlChange('');
       // 然后上传到服务器
@@ -222,7 +228,9 @@ export function ImageUploader({
    * 移除当前图片
    */
   const handleRemoveImage = () => {
-    onImageChange && onImageChange(null);
+    if (onImageChange) {
+      onImageChange(null);
+    }
     onImageUrlChange('');
     if (onMaskImageUrlChange) {
       onMaskImageUrlChange('', '');
@@ -294,7 +302,9 @@ export function ImageUploader({
                     maskImageUrl={maskImageUrl}
                     onImageSave={(dataUrl, uploadedMaskUrl) => {
                       // 当涂鸦保存后，将涂鸦结果作为mask图片
-                      onMaskImageUrlChange && onMaskImageUrlChange(dataUrl, uploadedMaskUrl);
+                      if (onMaskImageUrlChange) {
+                        onMaskImageUrlChange(dataUrl, uploadedMaskUrl);
+                      }
                     }}
                   />
                 </div>

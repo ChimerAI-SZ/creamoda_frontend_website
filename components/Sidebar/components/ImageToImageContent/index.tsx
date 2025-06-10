@@ -14,7 +14,7 @@ import { StyledLabel } from '../../../StyledLabel';
 import { useGenerationStore } from '@/stores/useGenerationStore';
 import { useVariationFormStore } from '@/stores/useVariationFormStore';
 import { useModelStore } from '@/stores/useModelStore';
-import { ImageUploader as ImageUploader2 } from '@/app/magic-kit/components/ImageUploader';
+import { ImageUploader as ImageUploader2 } from '@/components/ImageUploader';
 
 interface ImageUploadFormProps {
   onSubmit?: (data: ImageUploadFormData) => void;

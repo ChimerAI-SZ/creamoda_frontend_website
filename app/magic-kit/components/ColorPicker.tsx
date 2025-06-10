@@ -247,7 +247,9 @@ export function ColorPicker({ value = '#ffffff', onChange }: ColorPickerProps) {
     setCurrentColor(value);
     onChange(value);
 
-    isOpen && updatePositionsFromColor(value);
+    if (isOpen) {
+      updatePositionsFromColor(value);
+    }
   }, [value, isOpen, updatePositionsFromColor]);
 
   // Update positions when picker is opened - remove currentColor from dependencies to prevent loop
