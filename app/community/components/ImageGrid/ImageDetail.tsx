@@ -84,9 +84,9 @@ export default function ImageDetail({ image, onClose, isOpen, handleActionButton
         </div>
         {image && (
           <div className="relative bg-white overflow-hidden rounded-tr-[20px] rounded-br-[20px] h-full w-[394px]">
-            <div className="overflow-y-auto pb-[calc(32px+80px)] pt-6 px-6 h-full">
+            <div className="overflow-y-auto pb-[calc(32px+80px)] h-full">
               <div className=" flex flex-col gap-4">
-                <div>
+                <div className="pt-6 sticky top-0 bg-white shadow-[0px_8px_40px_0px_rgba(10,21,50,0.06)]  px-6">
                   <div className="flex items-center justify-center gap-[6px] w-full h-[40px] mb-[10px]">
                     <div>
                       <Image
@@ -115,7 +115,7 @@ export default function ImageDetail({ image, onClose, isOpen, handleActionButton
                     ))}
                   </div>
                 </div>
-                <div>
+                <div className="px-6">
                   <div className="flex items-center justify-between gap-[6px] w-full">
                     <StyledLabel content="Prompt" />
                     <Copy
@@ -140,7 +140,7 @@ export default function ImageDetail({ image, onClose, isOpen, handleActionButton
                   </div>
                 </div>
                 {image.trendStyles.length > 0 && (
-                  <div>
+                  <div className="px-6">
                     <StyledLabel content="Material" />
                     <div className="flex flex-wrap gap-2">
                       {image.trendStyles.map((trend: string) => (
@@ -150,7 +150,7 @@ export default function ImageDetail({ image, onClose, isOpen, handleActionButton
                   </div>
                 )}
                 {image.materials.length > 0 && (
-                  <div>
+                  <div className="px-6">
                     <StyledLabel content="Material" />
                     <div className="flex flex-wrap gap-2">
                       {image.materials.map((material: string) => (
@@ -159,11 +159,11 @@ export default function ImageDetail({ image, onClose, isOpen, handleActionButton
                     </div>
                   </div>
                 )}
-                <div>
+                <div className="px-6">
                   <StyledLabel content="Al design description" />
                   <div>{image.description}</div>
                 </div>
-                <div>
+                <div className="px-6">
                   <div className="text-gray-20 text-center text-xs font-medium">
                     The creator has full license for this design.
                   </div>

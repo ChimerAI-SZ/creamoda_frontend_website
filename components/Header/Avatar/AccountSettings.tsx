@@ -7,6 +7,7 @@ import Modal from './Modal';
 import { Button } from '@/components/ui/button';
 import ChangePwd from './ChangePwdDialog';
 import { UsernameRequirements } from '@/app/app-components/Login/components/UsernameRequirements';
+import { Input } from '@/components/ui/input';
 
 import usePersonalInfoStore from '@/stores/usePersonalInfoStore';
 import { updateUserInfo, uploadImage } from '@/lib/api';
@@ -33,6 +34,8 @@ const AccountSettingsDrawer = React.memo(
     const [isEditingUsername, setIsEditingUsername] = useState(false);
     const [changePwdOpen, setChangePwdOpen] = useState(false);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+    const [usernameTooltipVisible, setUsernameTooltipVisible] = useState(false);
 
     const router = useRouter();
 
@@ -104,48 +107,52 @@ const AccountSettingsDrawer = React.memo(
       setIsMenuVisible(false);
     };
 
+    // 保存新用户名
+    const handleSaveUsername = () => {
+      if (newUsername.length < 3 || newUsername.length > 20 || !/^[\p{L}\p{N}_\-\.]*$/u.test(username)) {
+        setUsernameTooltipVisible(true);
+        return;
+      }
+
+      handleUpdateUserInfo({ username: newUsername });
+    };
+
     const sections = [
       {
         title: 'Profile',
         content: (
           <div className="flex items-center flex-col">
-            <label htmlFor="upload-button">
-              <div className="w-[56px] h-[56px] mb-4 focus:primarySecondary-none focus:ring-2 focus:ring-primary focus:ring-offset-2 cursor-pointer relative">
-                <div className="w-full h-full rounded-full overflow-hidden">
-                  <Image
-                    src={selectedImage || headPic || '/images/defaultAvatar.svg'}
-                    alt="用户头像"
-                    width={56}
-                    height={56}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className="absolute bottom-0 right-0 w-[16px] h-[16px] bg-gray-300 rounded-full flex items-center justify-center">
-                  <Upload className="w-[12px] h-[12px] text-black cursor-pointer" />
-                  <input
-                    id="upload-button"
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={handleImageUpload}
-                  />
-                </div>
-              </div>
-            </label>
             <div className="w-full">
-              <div className="flex items-start justify-between w-full mb-4 relative gap-3">
+              <label htmlFor="upload-button" className="w-full">
+                <div className="w-full h-[64px] mb-4 focus:primarySecondary-none focus:ring-2 focus:ring-primary focus:ring-offset-2 cursor-pointer relative">
+                  <div className="w-[64px] h-[64px] rounded-full overflow-hidden">
+                    <Image
+                      src={selectedImage || headPic || '/images/defaultAvatar.svg'}
+                      alt="用户头像"
+                      width={64}
+                      height={64}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                </div>
+              </label>
+              <input id="upload-button" type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+            </div>
+            <div className="w-full">
+              <div className="flex items-center justify-between w-full mb-4 relative gap-3">
                 <div className="text-[#0A1532] text-base font-medium w-[100px]">Username</div>
                 <div className="flex-grow text-[#999] text-[20px] leading-[20px] font-light">
                   {isEditingUsername ? (
                     <div className="max-w-[280px]">
-                      <input
+                      {/* <UsernameRequirements username={newUsername} tooltipVisible={usernameTooltipVisible}> */}
+                      <Input
                         type="text"
-                        placeholder="New UserName"
-                        className="w-full p-2 border text-black rounded-md focus:primarySecondary-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="New Username"
                         value={newUsername}
                         onChange={e => setNewUsername(e.target.value)}
+                        className="h-[42px]"
                       />
-                      {<UsernameRequirements username={newUsername} />}
+                      {/* </UsernameRequirements> */}
                     </div>
                   ) : (
                     <span className="text-primary text-base font-medium">{username}</span>
@@ -156,7 +163,7 @@ const AccountSettingsDrawer = React.memo(
                     <div className="flex items-center justify-start gap-2">
                       <Button
                         variant="primarySecondary"
-                        className="p-2 py-0 h-[28px] w-[90px]"
+                        className="p-2 py-0 h-[32px] w-[90px]"
                         onClick={() => {
                           setNewUsername('');
                           setIsEditingUsername(false);
@@ -164,11 +171,7 @@ const AccountSettingsDrawer = React.memo(
                       >
                         Cancel
                       </Button>
-                      <Button
-                        variant="primary"
-                        className="p-2 py-0 h-[28px] w-[90px]"
-                        onClick={() => handleUpdateUserInfo({ username: newUsername })}
-                      >
+                      <Button variant="primary" className="p-2 py-0 h-[32px] w-[90px]" onClick={handleSaveUsername}>
                         Save
                       </Button>
                     </div>

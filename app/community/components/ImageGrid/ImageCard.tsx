@@ -110,27 +110,33 @@ export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(({ image, on
         <>
           <div className="relative w-full h-full z-1">
             <div
-              className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center rounded-[16px] "
+              className="absolute inset-0 group-hover:opacity-100 opacity-0 transition-opacity duration-300 flex items-center justify-center rounded-[16px]"
               style={{
                 background: 'linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.5) 100%)'
               }}
             />
           </div>
-          <div className="absolute w-full h-[32px] z-1 top-0" onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-center gap-[6px] w-full h-[48px] py-[10px] px-[20px] absolute opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white/40">
-              <div>
-                <Image
-                  src={image.creator.headPic || '/images/defaultAvatar.svg'}
-                  alt="用户头像"
-                  width={24}
-                  height={24}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="flex-grow">
-                <div className="text-gray-80 text-[10px] font-bold leading-[14px]">{image.creator.name}</div>
-                <div className="text-[rgba(10,21,50,0.60)] text-[10px] font-normal leading-[14px]">
-                  {image.creator.email}
+          <div
+            className="absolute flex items-center justify-center w-full h-[48px] overflow-hidden z-1 top-[1px]"
+            onClick={e => e.stopPropagation()}
+          >
+            {/* 为了防止backdrop-blur影响border，所以需要减去2px */}
+            <div className="flex items-center overflow-hidden justify-center w-[calc(100%-2px)] h-[48px] px-[20px] pt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute bg-white/40 backdrop-blur-sm rounded-tr-[16px] rounded-tl-[16px]">
+              <div className="flex items-center justify-center gap-[6px] w-full h-full py-[6px]">
+                <div className="z-10">
+                  <Image
+                    src={image.creator.headPic || '/images/defaultAvatar.svg'}
+                    alt="用户头像"
+                    width={24}
+                    height={24}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="flex-grow z-10">
+                  <div className="text-gray-80 text-[10px] font-bold leading-[14px]">{image.creator.name}</div>
+                  <div className="text-[rgba(10,21,50,0.60)] text-[10px] font-normal leading-[14px]">
+                    {image.creator.email}
+                  </div>
                 </div>
               </div>
             </div>
@@ -141,13 +147,12 @@ export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(({ image, on
           >
             <div className="flex items-center justify-center gap-6 w-full h-[32px] absolute opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               <div
-                className="w-8 h-8 bg-gray-40 rounded-[8px] flex items-center justify-center text-white cursor-pointer"
+                className="w-8 h-8 bg-[rgba(255,255,255,0.40)] rounded-[8px] flex items-center justify-center text-white cursor-pointer"
                 onClick={() => {
                   album.collectImage({ genImgId: image.genImgId, action: isCollected ? 2 : 1 });
                   setIsCollected(!isCollected);
                 }}
               >
-                {/* <Star className="w-[18px] h-[18px]" /> */}
                 <Image
                   src={`/images/album/add${isCollected ? 'ed' : ''}_to_album.svg`}
                   alt="download"
@@ -156,7 +161,7 @@ export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(({ image, on
                 />
               </div>
               <div
-                className="w-8 h-8 bg-gray-40 rounded-[8px] flex items-center justify-center text-white cursor-pointer"
+                className="w-8 h-8 bg-[rgba(255,255,255,0.40)] rounded-[8px] flex items-center justify-center text-white cursor-pointer"
                 onClick={() => {
                   downloadImage(image.picUrl, 'image.jpg');
                 }}
@@ -164,7 +169,7 @@ export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(({ image, on
                 <Image src="/images/album/download.svg" alt="download" width={18} height={18} />
               </div>
               <div
-                className="w-8 h-8 bg-gray-40 rounded-[8px] flex items-center justify-center text-white cursor-pointer"
+                className="w-8 h-8 bg-[rgba(255,255,255,0.40)] rounded-[8px] flex items-center justify-center text-white cursor-pointer"
                 onClick={() => {
                   image.islike ? community.cancelLikeImage(image.genImgId) : community.likeImage(image.genImgId);
                 }}
