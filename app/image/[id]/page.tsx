@@ -11,9 +11,17 @@ export async function generateStaticParams() {
 }
 
 async function getImageData(id: string): Promise<ImageData> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_NEXT_SERVER_URL}/api/image/${id}`);
-  const data = await res.json();
-  return data.data;
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_NEXT_SERVER_URL}/api/image/${id}`);
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    const data = await res.json();
+    return data.data;
+  } catch (error) {
+    console.error('Error fetching image data:', error);
+    throw error;
+  }
 }
 
 // ✅ 这里是重点：生成页面的 SEO Metadata
