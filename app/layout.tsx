@@ -14,7 +14,6 @@ import '@/utils/modal';
 export const metadata: Metadata = {
   title: 'CREAMODA',
   description: 'Fashion design platform',
-  generator: 'v0.dev',
   icons: {
     icon: [{ url: '/favicon.ico' }, { url: '/icon.png', type: 'image/png' }],
     apple: [{ url: '/apple-icon.png' }]

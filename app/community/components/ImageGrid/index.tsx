@@ -93,25 +93,6 @@ export function ImageGrid() {
     setDetailVisible(true);
   }, []);
 
-  const handleActionButtonClick = (text: string, image: SEO_Image_Type) => {
-    if (text === 'Download') {
-      downloadImage(image?.picUrl ?? '', 'image.jpg');
-    } else if (text === 'Delete') {
-      const imageId = image?.genImgId ?? 0;
-
-      deleteImage(imageId, () => {
-        setImages(prev => prev.filter(img => img.genImgId !== imageId));
-
-        setDetailVisible(false);
-      });
-    } else if (text === 'Magic Kit') {
-      updateImageUrl(image?.picUrl ?? '');
-      router.push('/magic-kit');
-    } else if (text === 'Virtual Try-On') {
-      router.push(`/virtual-try-on?imageUrl=${encodeURIComponent(image?.picUrl ?? '')}`);
-    }
-  };
-
   useEffect(() => {
     fetchImages(1);
   }, []);
@@ -145,7 +126,6 @@ export function ImageGrid() {
         onClose={() => {
           setDetailVisible(false);
         }}
-        handleActionButtonClick={handleActionButtonClick}
       />
     </>
   );

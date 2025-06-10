@@ -1,39 +1,37 @@
-// app/image/[id]/page.tsx
 import { ImageData } from './type';
 import { LoginModal } from '@/app/app-components/Login';
+import { Metadata } from 'next';
 
 interface ImagePageProps {
   params: { id: string };
 }
 
 export async function generateStaticParams() {
-  // 生成前10个页面的静态路径
-  return Array.from({ length: 10 }, (_, i) => ({
-    id: (i + 1).toString()
-  }));
+  return Array.from({ length: 10 }, (_, i) => ({ id: (i + 1).toString() }));
 }
 
 async function getImageData(id: string): Promise<ImageData> {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/image/${id}`);
   const data = await res.json();
-  console.log('Fetched data:', data);
   return data.data;
 }
 
+// ✅ 这里是重点：生成页面的 SEO Metadata
+export async function generateMetadata({ params }: ImagePageProps): Promise<Metadata> {
+  const image = await getImageData(params.id);
+
+  return {
+    keywords: [...image.genType, ...image.materials, ...image.trendStyles].join(',')
+  };
+}
+
+// 页面组件
 export default async function ImageDetailPage({ params }: ImagePageProps) {
-  const image = await getImageData(params?.id);
+  const image = await getImageData(params.id);
 
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* SEO 优化 */}
-      <head>
-        <title>{image?.description} | AI艺术画廊</title>
-        <meta name="description" content={image?.prompt} />
-        <meta property="og:image" content={image?.originalImgUrl} />
-      </head>
-
       <div className="grid md:grid-cols-2 gap-8">
-        {/* 图片展示区 */}
         <div className="bg-gray-100 rounded-lg overflow-hidden">
           <img
             src={image?.originalImgUrl}
@@ -43,23 +41,20 @@ export default async function ImageDetailPage({ params }: ImagePageProps) {
           />
         </div>
 
-        {/* 图片详情 */}
         <div>
           <h1 className="text-3xl font-bold mb-4">{image?.description}</h1>
-
           <div className="mb-6">
             <p className="text-gray-700 mb-4">{image?.prompt}</p>
             <div className="flex items-center space-x-4">
-              <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full">{image?.likeCount} 人喜欢</span>
+              <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full">{image?.likeCount} Liked</span>
               {image?.isCollected ? (
-                <button className="text-red-500">★ 已收藏</button>
+                <button className="text-red-500">★ Collected</button>
               ) : (
-                <button className="text-gray-500">☆ 收藏</button>
+                <button className="text-gray-500">☆ Collect</button>
               )}
             </div>
           </div>
 
-          {/* 创作者信息 */}
           <div className="border-t pt-4">
             <div className="flex items-center mb-3">
               <img src={image?.creator.headPic} alt={image?.creator.name} className="w-12 h-12 rounded-full mr-3" />
@@ -70,7 +65,6 @@ export default async function ImageDetailPage({ params }: ImagePageProps) {
             </div>
           </div>
 
-          {/* 标签信息 */}
           <div className="mt-6">
             <div className="flex flex-wrap gap-2">
               {image?.genType.map(tag => (

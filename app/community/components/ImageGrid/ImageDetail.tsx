@@ -13,38 +13,10 @@ interface ImageDetailProps {
   image: SEO_Image_Type | null;
   onClose: () => void;
   isOpen: boolean;
-  handleActionButtonClick: (text: string, image: SEO_Image_Type) => void;
 }
 
-// 提取一个通用的按钮组件
-interface ActionButtonProps {
-  variant: 'primary' | 'tertiary' | 'secondary';
-  text: string;
-  iconName: string;
-  className?: string;
-  content?: React.ReactNode | string;
-}
-
-export default function ImageDetail({ image, onClose, isOpen, handleActionButtonClick }: ImageDetailProps) {
+export default function ImageDetail({ image, onClose, isOpen }: ImageDetailProps) {
   if (!isOpen) return null;
-
-  const ActionButton: React.FC<ActionButtonProps> = ({ variant, text, content, className, iconName }) => (
-    <Button
-      variant={variant}
-      className={cn('px-0', className)}
-      onClick={() => handleActionButtonClick(text, image as SEO_Image_Type)}
-    >
-      <Image
-        src={`/images/album/${iconName}.svg`}
-        alt={iconName}
-        width={20}
-        height={20}
-        className="object-cover"
-        priority
-      />
-      {(content ?? text) && <span>{content ?? text}</span>}
-    </Button>
-  );
 
   return (
     <Overlay onClick={onClose}>
@@ -91,7 +63,7 @@ export default function ImageDetail({ image, onClose, isOpen, handleActionButton
                     <div>
                       <Image
                         src={image.creator.headPic || '/images/defaultAvatar.svg'}
-                        alt="用户头像"
+                        alt="avatar"
                         width={40}
                         height={40}
                         className="w-full h-full object-cover"

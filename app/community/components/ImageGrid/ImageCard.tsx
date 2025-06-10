@@ -1,5 +1,6 @@
 import { forwardRef, useState, useRef } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 import { cn } from '@/utils';
 import { downloadImage } from '@/utils';
@@ -186,6 +187,9 @@ export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(({ image, on
                 />
               </div>
             </div>
+          </div>
+          <div className="">
+            <Link href={`/image/${image.seoImgUid}`} />
           </div>
         </>
       )}
