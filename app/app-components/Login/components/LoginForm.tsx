@@ -1,8 +1,11 @@
 import { useState, useCallback } from 'react';
+
 import { Button } from '@/components/ui/button';
 import { FormField } from './FormField';
 import { validators } from '../validators';
+
 import { login, saveAuthToken } from '@/lib/api';
+import { cn } from '@/utils';
 
 interface LoginFormProps {
   onToggleView: () => void;
@@ -128,13 +131,13 @@ export const LoginForm = ({ onToggleView, onSuccess }: LoginFormProps) => {
       </div>
 
       <Button
+        variant="primary"
         type="submit"
         disabled={!isFormValid || isLoading}
-        className={`h-[52px] w-full py-[10px] px-4 flex justify-center items-center gap-[6px] rounded-[4px] ${
-          isFormValid && !isLoading
-            ? 'bg-primary hover:bg-gradient-to-r hover:from-[#F9BE60] hover:to-primary hover:shadow-[0px_4px_4px_0px_rgba(252,182,61,0.25)]'
-            : 'bg-[rgba(249,121,23,0.5)] cursor-not-allowed'
-        } text-white font-inter text-sm font-medium leading-5 transition-all`}
+        className={cn(
+          'h-[44px] w-full flex justify-center items-center gap-[6px] text-white font-inter text-base font-bold transition-all disabled:opacity-70 disabled:cursor-not-allowed',
+          !(isFormValid && !isLoading) && 'bg-primary/50 cursor-not-allowed'
+        )}
       >
         {isLoading ? 'Logging in...' : 'Login'}
       </Button>

@@ -1,10 +1,13 @@
 import { useState, useCallback, useEffect } from 'react';
+
 import { Button } from '@/components/ui/button';
 import { FormField } from './FormField';
-import { validators } from '../validators';
-import { register } from '@/lib/api';
 import { PasswordRequirements } from './PasswordRequirements';
 import { UsernameRequirements } from './UsernameRequirements';
+
+import { validators } from '../validators';
+import { register } from '@/lib/api';
+import { cn } from '@/utils';
 
 interface SignUpFormProps {
   onToggleView: () => void;
@@ -301,13 +304,13 @@ export const SignUpForm = ({ onToggleView, onSignupSuccess }: SignUpFormProps) =
       />
 
       <Button
+        variant="primary"
         type="submit"
         disabled={!isFormValid || isLoading || registrationSuccess}
-        className={`h-[52px] w-full py-[10px] px-4 flex justify-center items-center gap-[6px] rounded-[4px] ${
-          isFormValid && !isLoading && !registrationSuccess
-            ? 'bg-primary hover:bg-gradient-to-r hover:from-[#F9BE60] hover:to-primary hover:shadow-[0px_4px_4px_0px_rgba(252,182,61,0.25)]'
-            : 'bg-[rgba(249,121,23,0.5)] cursor-not-allowed'
-        } text-white font-inter text-sm font-medium leading-5 transition-all`}
+        className={cn(
+          'h-[44px] w-full flex justify-center items-center gap-[6px] text-white font-inter text-base font-bold transition-all disabled:opacity-70 disabled:cursor-not-allowed',
+          !(isFormValid && !isLoading && !registrationSuccess) && 'bg-primary/50 cursor-not-allowed'
+        )}
       >
         {isLoading ? 'Signing up...' : 'Sign Up'}
       </Button>

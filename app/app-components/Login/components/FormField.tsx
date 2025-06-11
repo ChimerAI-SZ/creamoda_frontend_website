@@ -80,7 +80,7 @@ export const FormField = ({
           onKeyUp={onKeyUp}
           onFocus={handleFocus}
           onBlur={handleBlur}
-          className={`h-[52px] py-[10px] px-4 rounded-[4px] border ${getBorderColorClass()} !ring-0 !ring-offset-0 !outline-none focus:!ring-0 focus:!ring-offset-0 focus-visible:!ring-0 focus-visible:!ring-offset-0 bg-white font-inter text-sm font-normal leading-5 ${
+          className={`h-[42px] ${getBorderColorClass()} !ring-0 !ring-offset-0 !outline-none focus:!ring-0 focus:!ring-offset-0 focus-visible:!ring-0 focus-visible:!ring-offset-0 bg-white font-inter text-sm font-normal leading-5 ${
             isPassword ? 'pr-10' : ''
           }`}
           style={{
