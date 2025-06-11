@@ -46,3 +46,14 @@ export function deleteImage(imageId: number, onSuccess: () => void) {
     () => {}
   );
 }
+
+// 定义一个自定义日志函数
+export function log(message: string, ...optionalParams: any[]) {
+  if (typeof window !== 'undefined') {
+    const logging = localStorage.getItem('LOGGING') === 'true' || process.env.NEXT_PUBLIC_LOGGING === 'true';
+
+    if (logging) {
+      console.log(message, ...optionalParams);
+    }
+  }
+}

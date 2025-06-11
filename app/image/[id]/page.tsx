@@ -1,24 +1,30 @@
 import { ImageData } from './type';
 import { queryImageDetail } from '@/lib/api';
-// import { PageProps } from 'next';
+
+import { log } from '@/utils';
 
 async function getImageData(id: string): Promise<ImageData> {
   try {
+    log('Fetching image data for ID:', id);
     const { data } = await queryImageDetail(id);
+
+    log('Fetched data:', data);
     return data;
   } catch (error) {
-    console.error('Error fetching image data:', JSON.stringify(error));
+    log('Error fetching image data:', JSON.stringify(error));
     throw error;
   }
 }
 
 // 页面组件
 export default async function ImageDetailPage({ params }: { params: any }) {
+  log('page loaded');
   const id = params.id;
   let image;
   try {
     image = await getImageData(id);
   } catch (error) {
+    log('Error fetching image data - 1:', JSON.stringify(error));
     return <div>Error loading image data.</div>;
   }
 
