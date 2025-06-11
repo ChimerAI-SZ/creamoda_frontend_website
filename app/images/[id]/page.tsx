@@ -1,31 +1,53 @@
-import { ImageData } from './type';
-import { queryImageDetail } from '@/lib/api';
+// import { ImageData } from './type';
+// import { queryImageDetail } from '@/lib/api';
 
-import { log } from '@/utils';
+// import { log } from '@/utils';
 
-async function getImageData(id: string): Promise<ImageData> {
-  try {
-    log('Fetching image data for ID:', id);
-    const { data } = await queryImageDetail(id);
+// async function getImageData(id: string): Promise<ImageData> {
+//   try {
+//     log('Fetching image data for ID:', id);
+//     const { data } = await queryImageDetail(id);
 
-    log('Fetched data:', data);
-    return data;
-  } catch (error) {
-    log('Error fetching image data:', JSON.stringify(error));
-    throw error;
-  }
-}
+//     log('Fetched data:', data);
+//     return data;
+//   } catch (error) {
+//     log('Error fetching image data:', JSON.stringify(error));
+//     throw error;
+//   }
+// }
 
 // 页面组件
-export default async function ImageDetailPage({ params }: { params: any }) {
-  log('page loaded');
-  const id = params.id;
+export default function ImageDetailPage() {
+  // const id = params.id;
   let image;
   try {
-    image = await getImageData(id);
+    // image = await getImageData(id);
+    image = {
+      genImgId: 660,
+      genType: ['design', 'text to image'],
+      prompt: 'Helped me generate a cool T-shirt with a cat on it',
+      originalImgUrl: 'https://creamoda-test.oss-cn-beijing.aliyuncs.com/uploads/20250528141224_d74b45af.jpg',
+      materials: [],
+      trendStyles: [],
+      description: 'test desc',
+      isLike: 0,
+      likeCount: 1,
+      isCollected: 0,
+      creator: {
+        uid: 46,
+        name: 'Rick_123',
+        email: '417253782@qq.com',
+        headPic: ''
+      }
+    };
   } catch (error) {
-    log('Error fetching image data - 1:', JSON.stringify(error));
-    return <div>Error loading image data.</div>;
+    const err = error as Error; // 将 error 转换为 Error 类型
+    return (
+      <div>
+        <h1>Error</h1>
+        <p>{err.message}</p>
+      </div>
+    );
   }
 
   return (
@@ -56,7 +78,7 @@ export default async function ImageDetailPage({ params }: { params: any }) {
 
           <div className="border-t pt-4">
             <div className="flex items-center mb-3">
-              <img src={image?.creator.headPic} alt={image?.creator.name} className="w-12 h-12 rounded-full mr-3" />
+              <img src={image?.creator?.headPic} alt={image?.creator.name} className="w-12 h-12 rounded-full mr-3" />
               <div>
                 <h3 className="font-semibold">{image?.creator.name}</h3>
                 <p className="text-sm text-gray-600">{image?.creator.email}</p>

@@ -189,7 +189,7 @@ export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(({ image, on
             </div>
           </div>
           <div className="">
-            <Link href={`/image/${image.seoImgUid}`} />
+            <Link href={`/images/${image.seoImgUid}`} />
           </div>
         </>
       )}
