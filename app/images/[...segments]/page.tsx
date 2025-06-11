@@ -1,6 +1,6 @@
 export const dynamic = 'force-dynamic'; // 开启 SSR
 
-type tParams = Promise<{ slug: string }>;
+type tParams = Promise<{ segments: string[] }>;
 
 // 模拟接口请求函数（你可以替换为真实 API 调用）
 async function fetchImageBySlug(slug: string) {
@@ -27,16 +27,19 @@ async function fetchImageBySlug(slug: string) {
 }
 
 export default async function ImageDetailPage(props: { params: tParams }) {
-  const { slug } = await props.params;
+  const { segments } = await props.params;
 
-  if (!slug) {
+  if (!segments || segments.length === 0) {
     return (
       <div className="p-8 text-red-500">
         <h1>Invalid URL</h1>
-        <p>Slug is missing from the URL.</p>
+        <p>Segments are missing from the URL.</p>
       </div>
     );
   }
+
+  // 假设第一个segment是图片ID或slug
+  const slug = segments[0];
 
   let image;
   try {
