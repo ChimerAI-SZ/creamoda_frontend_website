@@ -1,5 +1,7 @@
 export const dynamic = 'force-dynamic'; // 开启 SSR
 
+type tParams = Promise<{ slug: string }>;
+
 // 模拟接口请求函数（你可以替换为真实 API 调用）
 async function fetchImageBySlug(slug: string) {
   if (!slug) throw new Error('Missing slug');
@@ -24,8 +26,8 @@ async function fetchImageBySlug(slug: string) {
   };
 }
 
-export default async function ImageDetailPage({ params }: { params: { segments: string[] } }) {
-  const slug = params.segments?.[0];
+export default async function ImageDetailPage(props: { params: tParams }) {
+  const { slug } = await props.params;
 
   if (!slug) {
     return (
