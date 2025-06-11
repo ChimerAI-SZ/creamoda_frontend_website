@@ -15,7 +15,7 @@
 //     throw error;
 //   }
 // }
-
+'use client';
 // 页面组件
 export default function ImageDetailPage() {
   // const id = params.id;
