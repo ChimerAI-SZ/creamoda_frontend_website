@@ -252,7 +252,7 @@ export function Sidebar() {
       className={`w-[378px] h-[calc(100vh-110px)] overflow-y-auto py-4 rounded-[20px] flex-shrink-0 bg-white shadow-card-shadow flex flex-col z-0 ${inter.className}`}
     >
       <div className="flex justify-center items-center w-full h-full gap-[46px]">
-        <Tabs defaultValue="text" className="h-full flex flex-col">
+        <Tabs defaultValue="text" className="h-full w-full flex flex-col">
           <div className="flex items-center justify-center">
             <TabsList>
               <TabsTrigger value="text">Text to image</TabsTrigger>
