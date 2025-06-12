@@ -1,29 +1,18 @@
 export const dynamic = 'force-dynamic'; // 开启 SSR
 
+import Image from 'next/image';
+
+import { community } from '@/lib/api';
+
 type tParams = Promise<{ segments: string[] }>;
 
 // 模拟接口请求函数（你可以替换为真实 API 调用）
 async function fetchImageBySlug(slug: string) {
   if (!slug) throw new Error('Missing slug');
-  // 模拟返回数据
-  return {
-    genImgId: 660,
-    genType: ['design', 'text to image'],
-    prompt: 'Helped me generate a cool T-shirt with a cat on it',
-    originalImgUrl: 'https://creamoda-test.oss-cn-beijing.aliyuncs.com/uploads/20250528141224_d74b45af.jpg',
-    materials: [],
-    trendStyles: [],
-    description: 'test desc',
-    isLike: 0,
-    likeCount: 1,
-    isCollected: 0,
-    creator: {
-      uid: 46,
-      name: 'Rick_123',
-      email: '417253782@qq.com',
-      headPic: ''
-    }
-  };
+
+  const { data } = await community.queryImageDetail(slug as string);
+  console.log(data);
+  return data;
 }
 
 export default async function ImageDetailPage(props: { params: tParams }) {
@@ -58,11 +47,13 @@ export default async function ImageDetailPage(props: { params: tParams }) {
     <div className="container mx-auto px-4 py-8">
       <div className="grid md:grid-cols-2 gap-8">
         <div className="bg-gray-100 rounded-lg overflow-hidden">
-          <img
+          <Image
             src={image.originalImgUrl}
             alt={image.description}
             className="w-full h-auto object-contain"
             loading="lazy"
+            width={500}
+            height={500}
           />
         </div>
 

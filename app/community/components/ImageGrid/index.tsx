@@ -1,14 +1,12 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
 
 import { ImageCard } from './ImageCard';
 import ImageDetail from './ImageDetail';
 
-import { showErrorDialog, deleteImage, downloadImage } from '@/utils';
+import { showErrorDialog } from '@/utils';
 import { useGenerationStore } from '@/stores/useGenerationStore';
-import { useVariationFormStore } from '@/stores/useMagicKitStore';
 import { community } from '@/lib/api';
 
 // 图片类型接口
@@ -55,8 +53,6 @@ export function ImageGrid() {
   const [detailVisible, setDetailVisible] = useState<boolean>(false);
 
   const { setGenerating } = useGenerationStore();
-  const { updateImageUrl } = useVariationFormStore();
-  const router = useRouter();
 
   // 加载图片数据
   const fetchImages = useCallback(
