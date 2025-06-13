@@ -36,7 +36,10 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
   } = useVariationFormStore();
 
   const { isGenerating, setGenerating } = useGenerationStore();
-  const { variationTypes } = useModelStore();
+
+  // 从 store 中获取 variationTypes，当前是图生图，对应 type 为 2
+  const { getVariationTypesByType } = useModelStore();
+  const variationTypes = getVariationTypesByType(2);
 
   // Get the current variation data based on the selected variation type
   const currentData = React.useMemo(() => {
@@ -222,14 +225,20 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
         }
         break;
 
-      case '6':
-      case '8':
+      case '7':
+      case '9':
         // Types 6 and 8 only require main image, no description needed
         break;
 
-      case '7':
+      case '8':
         // Type 7 requires fabric image
         if (!currentData.fabricPicUrl) {
+          return 'disabled';
+        }
+        break;
+      case '10':
+        // Type 10 requires reference image
+        if (!currentData.referenceImageUrl) {
           return 'disabled';
         }
         break;
@@ -383,7 +392,7 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
               />
             </div>
           )}
-          {currentVariationType === '6' && (
+          {currentVariationType === '7' && (
             <div className="space-y-4">
               <div className="space-y-[10px]">
                 <FormLabel>Upload original image</FormLabel>
@@ -396,7 +405,7 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
               </div>
             </div>
           )}
-          {currentVariationType === '7' && (
+          {currentVariationType === '8' && (
             <div className="space-y-4">
               <div className="space-y-[10px]">
                 <FormLabel>Upload image</FormLabel>
@@ -419,7 +428,7 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
               </div>
             </div>
           )}
-          {currentVariationType === '8' && (
+          {currentVariationType === '9' && (
             <div className="space-y-4">
               <div className="space-y-[10px]">
                 <FormLabel>Upload image</FormLabel>
@@ -428,6 +437,28 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
                   onImageUrlChange={handleImageUrlChange}
                   imageUrl={currentData.imageUrl}
                   currentImage={currentData.image}
+                />
+              </div>
+            </div>
+          )}
+          {currentVariationType === '10' && (
+            <div className="space-y-4">
+              <div className="space-y-[10px]">
+                <FormLabel>Upload image</FormLabel>
+                <ImageUploader
+                  onImageChange={handleImageChange}
+                  onImageUrlChange={handleImageUrlChange}
+                  imageUrl={currentData.imageUrl}
+                  currentImage={currentData.image}
+                />
+              </div>
+              <div className="space-y-[10px]">
+                <FormLabel>Upload reference image</FormLabel>
+                <ImageUploader
+                  onImageChange={handleReferenceImageChange}
+                  onImageUrlChange={handleReferenceImageUrlChange}
+                  imageUrl={currentData.referenceImageUrl}
+                  currentImage={currentData.referenceImage}
                 />
               </div>
             </div>

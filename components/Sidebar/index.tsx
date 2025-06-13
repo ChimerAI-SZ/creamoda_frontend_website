@@ -23,7 +23,8 @@ import {
   mixImage,
   changeFabric,
   changePrinting,
-  changePattern
+  changePattern,
+  styleFusion
 } from '@/lib/api';
 import { useModelStore } from '@/stores/useModelStore';
 import { useGenerationStore } from '@/stores/useGenerationStore';
@@ -54,7 +55,7 @@ export interface ImageUploadFormData {
 }
 
 export function Sidebar() {
-  const { setModelSizes, setVariationTypes } = useModelStore();
+  const { setModelSizes } = useModelStore();
   const { setGenerating } = useGenerationStore();
 
   // 文生图 / 图生图 提交事件
@@ -134,6 +135,15 @@ export function Sidebar() {
           }
           break;
 
+        case '10':
+          // 风格融合需要两张图片
+          if (!data.referenceImageUrl && !data.referenceImage) {
+            showErrorDialog('Please upload a reference image');
+            setGenerating(false);
+            return;
+          }
+          break;
+
         default:
           // For unknown types, require description
           if (!data.description.trim()) {
@@ -198,15 +208,18 @@ export function Sidebar() {
       } else if (data.variationType === '5') {
         // Call mix image API
         response = await mixImage(finalImageUrl, data.description, finalReferenceImageUrl, data.referLevel);
-      } else if (data.variationType === '6') {
+      } else if (data.variationType === '7') {
         // Call change pattern API
         response = await changePattern(finalImageUrl);
-      } else if (data.variationType === '7') {
+      } else if (data.variationType === '8') {
         // Call change fabric API
         response = await changeFabric(finalImageUrl, data.fabricPicUrl, data.maskPicUrl);
-      } else if (data.variationType === '8') {
+      } else if (data.variationType === '9') {
         // Call change printing API
         response = await changePrinting(finalImageUrl);
+      } else if (data.variationType === '10') {
+        // Call style fusion API
+        response = await styleFusion(finalImageUrl, finalReferenceImageUrl);
       } else {
         // Default to change clothes API if no type selected
         response = await changeClothesGenerate(finalImageUrl, data.description);
@@ -233,11 +246,10 @@ export function Sidebar() {
     const fetchData = async () => {
       try {
         // 并行请求两个API
-        const [modelSizes, variationTypes] = await Promise.all([getModelSizeList(), getVariationTypeList()]);
+        const [modelSizes] = await Promise.all([getModelSizeList()]);
 
         // 设置数据
         setModelSizes(modelSizes || []);
-        setVariationTypes(variationTypes || []);
       } catch (error) {
         console.error('Error fetching data:', error);
         showErrorDialog('Something went wrong. Please try again later or contact support if the issue persists');
@@ -245,7 +257,7 @@ export function Sidebar() {
     };
 
     fetchData();
-  }, [setModelSizes, setVariationTypes]);
+  }, [setModelSizes]);
 
   return (
     <div

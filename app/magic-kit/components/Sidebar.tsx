@@ -14,8 +14,7 @@ import { MemoizedImageUploader } from '@/components/ImageUploader';
 import { changeClothesColor, changeBackground, removeBackground, particialModification, upscale } from '@/lib/api';
 import { eventBus } from '@/utils/events';
 import { showErrorDialog } from '@/utils/index';
-
-import { variationTypes } from '../const';
+import useModelStore from '@/stores/useModelStore';
 
 export function Sidebar() {
   const { isGenerating, setGenerating } = useGenerationStore();
@@ -31,6 +30,8 @@ export function Sidebar() {
   } = useVariationFormStore();
 
   const [btnState, setBtnState] = useState<'disabled' | 'ready' | 'generating'>('disabled');
+  const { getVariationTypesByType } = useModelStore();
+  const variationTypes = getVariationTypesByType(4);
 
   // 提交事件
   const handleSubmit = async () => {

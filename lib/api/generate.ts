@@ -264,3 +264,16 @@ export async function changePrinting(originalPicUrl: string) {
     throw error;
   }
 }
+
+export async function styleFusion(originalPicUrl: string, referPicUrl: string) {
+  try {
+    const response = await api.post('/api/v1/img/style_fusion', {
+      originalPicUrl,
+      referPicUrl
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fusing styles:', error);
+    throw error;
+  }
+}

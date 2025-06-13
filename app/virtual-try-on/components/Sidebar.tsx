@@ -15,8 +15,7 @@ import { showErrorDialog } from '@/utils/index';
 import { useGenerationStore } from '@/stores/useGenerationStore';
 import { tryOn } from '@/lib/api';
 import { eventBus } from '@/utils/events';
-
-import { variationTypes } from '../const';
+import useModelStore from '@/stores/useModelStore';
 
 import type { TryOnFormData, ChangePoseFormData } from '@/types/virtualTryOn';
 type ClothingType = 'top' | 'bottom' | 'one-piece';
@@ -39,11 +38,15 @@ const clothingTypeList = [
 export function Sidebar() {
   // 上传的样衣类型
   const [btnState, setBtnState] = useState<'disabled' | 'ready' | 'generating'>('disabled');
-  const [currentVariationType, setCurrentVariationType] = useState<string>('virtualTryOn');
+  const [currentVariationType, setCurrentVariationType] = useState<string>('1');
 
   const { isGenerating, setGenerating } = useGenerationStore();
 
   const searchParams = useSearchParams();
+
+  // 从 store 中获取 variationTypes，当前是虚拟试穿，对应 type 为 3
+  const { getVariationTypesByType } = useModelStore();
+  const variationTypes = getVariationTypesByType(3);
 
   // virtual try on begins
   const [clothingType, setClothingType] = useState<ClothingType>('top');
@@ -72,10 +75,10 @@ export function Sidebar() {
   // change pose end
 
   useEffect(() => {
-    if (currentVariationType === 'virtualTryOn') {
+    if (currentVariationType === '1') {
       setModelImage({ image: null, imageUrl: '' });
       setClothingImage({ image: null, imageUrl: searchParams.get('imageUrl') as string });
-    } else if (currentVariationType === 'changePose') {
+    } else if (currentVariationType === '2') {
       setReferencePoseImage({ image: null, imageUrl: '' });
       setTargetPoseImage({ image: null, imageUrl: '' });
     }
@@ -83,7 +86,7 @@ export function Sidebar() {
 
   // 文生图 / 图生图 提交事件
   const handleSubmit = () => {
-    if (currentVariationType === 'virtualTryOn') {
+    if (currentVariationType === '1') {
       const data: TryOnFormData = {
         originalPicUrl: modelImage.imageUrl,
         clothingPhoto: clothingImage.imageUrl,
@@ -103,7 +106,7 @@ export function Sidebar() {
           // 若生成失败放开拦截
           setGenerating(false);
         });
-    } else if (currentVariationType === 'changePose') {
+    } else if (currentVariationType === '2') {
       const data: ChangePoseFormData = {
         originalPicUrl: targetPoseImage.imageUrl,
         referPicUrl: referencePoseImage.imageUrl
@@ -152,7 +155,7 @@ export function Sidebar() {
               variationTypes={variationTypes}
             />
 
-            {currentVariationType === 'virtualTryOn' && (
+            {currentVariationType === '1' && (
               <div key={`virtual-try-on-${currentVariationType}`}>
                 <div className="space-y-2" key={`modal-uploader-${currentVariationType}`}>
                   <StyledLabel htmlFor="modal-uploader" content="Upload model image" />
@@ -231,7 +234,7 @@ export function Sidebar() {
               </div>
             )}
 
-            {currentVariationType === 'changePose' && (
+            {currentVariationType === '2' && (
               <div key={`change-pose-${currentVariationType}`}>
                 <div className="space-y-2" key={`reference-pose-uploader-${currentVariationType}`}>
                   <StyledLabel htmlFor="reference-pose-uploader" content="Upload reference pose image" />

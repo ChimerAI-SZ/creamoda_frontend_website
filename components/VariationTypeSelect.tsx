@@ -4,12 +4,12 @@ import { useEffect, useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { StyledLabel } from './StyledLabel';
 
-import type { BasicOptionItem } from '@/stores/useModelStore';
+import type { UnifiedVariationType } from '@/stores/useModelStore';
 
 interface VariationTypeSelectProps {
   value: string;
   onChange: (value: string) => void;
-  variationTypes: BasicOptionItem[];
+  variationTypes: UnifiedVariationType[];
   label?: string;
   placeholder?: string;
 }
@@ -28,7 +28,7 @@ export function VariationTypeSelect({
     if (variationTypes.length > 0) {
       setIsLoading(false);
       if (!value && variationTypes.length > 0) {
-        onChange(variationTypes[0].code);
+        onChange(variationTypes[0].variationType.toString());
       }
     }
   }, [variationTypes, value, onChange]);
@@ -44,8 +44,8 @@ export function VariationTypeSelect({
         </SelectTrigger>
         <SelectContent>
           {variationTypes.map((type, index) => (
-            <SelectItem key={index} value={type.code}>
-              {type.name}
+            <SelectItem key={index} value={type.variationType.toString()}>
+              {type.label}
             </SelectItem>
           ))}
         </SelectContent>
