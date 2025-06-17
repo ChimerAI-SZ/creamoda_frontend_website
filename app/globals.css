@@ -38,6 +38,9 @@
     /* --ring: 0 0% 30.2%; */
 
     --radius: 0.5rem;
+
+    --error: 4 100% 59%;
+    --error-foreground: 223 67% 12%/0.6;
   }
 }
 

@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-// import x from '@/images/login/x.svg';
 import { X } from 'lucide-react';
 import { LoginForm } from './components/LoginForm';
 import { SignUpForm } from './components/SignUpForm';
@@ -198,7 +197,7 @@ export function LoginModal() {
                 <div className="space-y-4 w-full">
                   {googleLoginError && (
                     <div className="p-3 bg-red-50 border border-red-200 rounded-md">
-                      <p className="text-[#E50000] text-sm font-inter">{googleLoginError}</p>
+                      <p className="text-error text-sm font-inter">{googleLoginError}</p>
                     </div>
                   )}
 

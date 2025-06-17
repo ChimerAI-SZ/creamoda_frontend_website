@@ -78,7 +78,7 @@ const ChangePwd = React.memo(
                   }
                 }}
               />
-              {error && <p className="mt-1 text-[#E50000] text-xs font-inter">{error}</p>}
+              {error && <p className="mt-1 text-error text-xs font-inter">{error}</p>}
             </div>
           </div>
           <div className="flex items-center justify-center gap-3">

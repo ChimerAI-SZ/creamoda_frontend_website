@@ -1,18 +1,19 @@
 import React, { useCallback, useState } from 'react';
 import Image from 'next/image';
-import { Upload } from 'lucide-react';
+import { Info } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 import Modal from './Modal';
 import { Button } from '@/components/ui/button';
 import ChangePwd from './ChangePwdDialog';
-import { UsernameRequirements } from '@/app/app-components/Login/components/UsernameRequirements';
 import { Input } from '@/components/ui/input';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 import usePersonalInfoStore from '@/stores/usePersonalInfoStore';
 import { updateUserInfo, uploadImage } from '@/lib/api';
-import { showErrorDialog } from '@/utils/index';
+import { cn, showErrorDialog } from '@/utils/index';
 import { LegalList } from './const';
+import { verificationRules, validators } from '@/app/app-components/Login/const';
 
 const AccountSettingsDrawer = React.memo(
   ({
@@ -36,6 +37,7 @@ const AccountSettingsDrawer = React.memo(
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
     const [usernameTooltipVisible, setUsernameTooltipVisible] = useState(false);
+    const [usernameErrors, setUsernameErrors] = useState<number[]>([]);
 
     const router = useRouter();
 
@@ -140,19 +142,50 @@ const AccountSettingsDrawer = React.memo(
             </div>
             <div className="w-full">
               <div className="flex items-center justify-between w-full mb-4 relative gap-3">
-                <div className="text-[#0A1532] text-base font-medium w-[100px]">Username</div>
+                <div className="text-[#0A1532] text-base font-medium w-[100px] flex items-center gap-2 justify-start">
+                  <span>Username</span>
+                  {isEditingUsername && (
+                    <div>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Info className={cn('w-4 h-4 cursor-pointer', usernameErrors.length > 0 && 'text-error')} />
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom" className="bg-[#0A1532] py-2 px-3">
+                          <div className="text-xs leading-relaxed space-y-1">
+                            {verificationRules
+                              .find(rule => rule.type === 'name')
+                              ?.rule.map(r => (
+                                <div className="flex items-center gap-2">
+                                  <Image
+                                    src={`/images/login/${usernameErrors.includes(r.key) ? 'error' : 'correct'}.svg`}
+                                    alt="username-requirements"
+                                    width={16}
+                                    height={16}
+                                  />
+                                  {r.label}
+                                </div>
+                              ))}
+                          </div>
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
+                  )}
+                </div>
                 <div className="flex-grow text-[#999] text-[20px] leading-[20px] font-light">
                   {isEditingUsername ? (
                     <div className="max-w-[280px]">
-                      {/* <UsernameRequirements username={newUsername} tooltipVisible={usernameTooltipVisible}> */}
                       <Input
+                        variant={usernameErrors.length > 0 ? 'error' : 'default'}
                         type="text"
                         placeholder="New Username"
                         value={newUsername}
                         onChange={e => setNewUsername(e.target.value)}
                         className="h-[42px]"
+                        onBlur={() => {
+                          setUsernameTooltipVisible(true);
+                          setUsernameErrors(validators.name(newUsername));
+                        }}
                       />
-                      {/* </UsernameRequirements> */}
                     </div>
                   ) : (
                     <span className="text-primary text-base font-medium">{username}</span>
@@ -171,7 +204,12 @@ const AccountSettingsDrawer = React.memo(
                       >
                         Cancel
                       </Button>
-                      <Button variant="primary" className="p-2 py-0 h-[32px] w-[90px]" onClick={handleSaveUsername}>
+                      <Button
+                        variant="primary"
+                        className="p-2 py-0 h-[32px] w-[90px]"
+                        disabled={usernameErrors.length > 0}
+                        onClick={handleSaveUsername}
+                      >
                         Save
                       </Button>
                     </div>

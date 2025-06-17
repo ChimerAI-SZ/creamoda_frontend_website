@@ -118,7 +118,7 @@ export const EmailVerification = ({
       <div className="space-y-4 w-full">
         {errorMessage && (
           <div className="p-3 bg-red-50 border border-red-200 rounded-md">
-            <p className="text-[#E50000] text-sm">{errorMessage}</p>
+            <p className="text-error text-sm">{errorMessage}</p>
           </div>
         )}
         <form onSubmit={handleVerifyCode} className="space-y-4">
