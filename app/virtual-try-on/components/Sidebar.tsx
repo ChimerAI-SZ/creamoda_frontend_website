@@ -162,18 +162,12 @@ export function Sidebar() {
 
                   <ImageUploader
                     key={`modal-uploader-${currentVariationType}-model`}
-                    onImageChange={useCallback(
-                      (image: File | null) => {
-                        setModelImage(prev => ({ ...prev, image }));
-                      },
-                      [setModelImage]
-                    )}
-                    onImageUrlChange={useCallback(
-                      (imageUrl: string) => {
-                        setModelImage(prev => ({ ...prev, imageUrl }));
-                      },
-                      [setModelImage]
-                    )}
+                    onImageChange={(image: File | null) => {
+                      setModelImage(prev => ({ ...prev, image }));
+                    }}
+                    onImageUrlChange={(imageUrl: string) => {
+                      setModelImage(prev => ({ ...prev, imageUrl }));
+                    }}
                     imageUrl={modelImage.imageUrl}
                     currentImage={modelImage.image}
                     imageType="Model Image"
@@ -214,18 +208,12 @@ export function Sidebar() {
 
                   <ImageUploader
                     key={`cloting-uploader-${currentVariationType}-clothing`}
-                    onImageChange={useCallback(
-                      (image: File | null) => {
-                        setClothingImage(prev => ({ ...prev, image }));
-                      },
-                      [setClothingImage]
-                    )}
-                    onImageUrlChange={useCallback(
-                      (imageUrl: string) => {
-                        setClothingImage(prev => ({ ...prev, imageUrl }));
-                      },
-                      [setClothingImage]
-                    )}
+                    onImageChange={(image: File | null) => {
+                      setClothingImage(prev => ({ ...prev, image }));
+                    }}
+                    onImageUrlChange={(imageUrl: string) => {
+                      setClothingImage(prev => ({ ...prev, imageUrl }));
+                    }}
                     imageUrl={clothingImage.imageUrl}
                     currentImage={clothingImage.image}
                     imageType="Clothing Image"
@@ -240,18 +228,12 @@ export function Sidebar() {
                   <StyledLabel htmlFor="reference-pose-uploader" content="Upload reference pose image" />
                   <ImageUploader
                     key={`reference-pose-uploader-${currentVariationType}-reference`}
-                    onImageChange={useCallback(
-                      (image: File | null) => {
-                        setReferencePoseImage(prev => ({ ...prev, image }));
-                      },
-                      [setReferencePoseImage]
-                    )}
-                    onImageUrlChange={useCallback(
-                      (imageUrl: string) => {
-                        setReferencePoseImage(prev => ({ ...prev, imageUrl }));
-                      },
-                      [setReferencePoseImage]
-                    )}
+                    onImageChange={(image: File | null) => {
+                      setReferencePoseImage(prev => ({ ...prev, image }));
+                    }}
+                    onImageUrlChange={(imageUrl: string) => {
+                      setReferencePoseImage(prev => ({ ...prev, imageUrl }));
+                    }}
                     imageUrl={referencePoseImage.imageUrl}
                     currentImage={referencePoseImage.image}
                     imageType="Reference Pose Image"
@@ -261,18 +243,12 @@ export function Sidebar() {
                   <StyledLabel htmlFor="target-pose-uploader" content="Upload target pose image" />
                   <ImageUploader
                     key={`target-pose-uploader-${currentVariationType}-target`}
-                    onImageChange={useCallback(
-                      (image: File | null) => {
-                        setTargetPoseImage(prev => ({ ...prev, image }));
-                      },
-                      [setTargetPoseImage]
-                    )}
-                    onImageUrlChange={useCallback(
-                      (imageUrl: string) => {
-                        setTargetPoseImage(prev => ({ ...prev, imageUrl }));
-                      },
-                      [setTargetPoseImage]
-                    )}
+                    onImageChange={(image: File | null) => {
+                      setTargetPoseImage(prev => ({ ...prev, image }));
+                    }}
+                    onImageUrlChange={(imageUrl: string) => {
+                      setTargetPoseImage(prev => ({ ...prev, imageUrl }));
+                    }}
                     imageUrl={targetPoseImage.imageUrl}
                     currentImage={targetPoseImage.image}
                     imageType="Target Pose Image"

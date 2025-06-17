@@ -154,8 +154,8 @@ const AccountSettingsDrawer = React.memo(
                           <div className="text-xs leading-relaxed space-y-1">
                             {verificationRules
                               .find(rule => rule.type === 'name')
-                              ?.rule.map(r => (
-                                <div className="flex items-center gap-2">
+                              ?.rule.map((r, index) => (
+                                <div className="flex items-center gap-2" key={r.key + index}>
                                   <Image
                                     src={`/images/login/${usernameErrors.includes(r.key) ? 'error' : 'correct'}.svg`}
                                     alt="username-requirements"
