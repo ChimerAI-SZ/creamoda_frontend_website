@@ -8,6 +8,7 @@ import { cn, downloadImage } from '@/utils';
 import type { SEO_Image_Type } from './index';
 import { StyledLabel } from '@/components/StyledLabel';
 import { album, community } from '@/lib/api';
+import { useAlertStore } from '@/stores/useAlertStore';
 
 interface ImageDetailProps {
   image: SEO_Image_Type | null;
@@ -16,6 +17,8 @@ interface ImageDetailProps {
 }
 
 export default function ImageDetail({ image, onClose, isOpen }: ImageDetailProps) {
+  const { showAlert } = useAlertStore();
+
   if (!isOpen) return null;
 
   return (
@@ -85,33 +88,40 @@ export default function ImageDetail({ image, onClose, isOpen }: ImageDetailProps
                     ))}
                   </div>
                 </div>
-                <div className="px-6">
-                  <div className="flex items-center justify-between gap-[6px] w-full">
-                    <StyledLabel content="Prompt" />
-                    <Copy
-                      className="w-4 h-4 cursor-pointer"
-                      onClick={() => {
-                        navigator.clipboard.writeText(image.prompt).then(
-                          () => {
-                            // todo 成功提示
-                            console.log('Prompt copied to clipboard');
-                          },
-                          err => {
-                            console.error('Could not copy text: ', err);
-                          }
-                        );
-                      }}
-                    />
-                  </div>
-                  <div className="relative p-[1px] border border-border rounded-[18px] w-full bg-gradient-primary">
-                    <div className="bg-[#EFF3F6] text-gray-60 p-3 w-full h-full text-sm rounded-[16px] font-normal">
-                      {image.prompt}
+                {image.prompt && (
+                  <div className="px-6">
+                    <div className="flex items-center justify-between gap-[6px] w-full">
+                      <StyledLabel content="Prompt" />
+                      <Copy
+                        className="w-4 h-4 cursor-pointer"
+                        onClick={() => {
+                          navigator.clipboard.writeText(image.prompt).then(
+                            () => {
+                              showAlert({
+                                type: 'success',
+                                content: 'Prompt copied to clipboard'
+                              });
+                            },
+                            err => {
+                              showAlert({
+                                type: 'error',
+                                content: 'Sorry. Could not copy text: ' + err
+                              });
+                            }
+                          );
+                        }}
+                      />
+                    </div>
+                    <div className="relative p-[1px] border border-border rounded-[18px] w-full bg-gradient-primary">
+                      <div className="bg-[#EFF3F6] text-gray-60 p-3 w-full h-full text-sm rounded-[16px] font-normal">
+                        {image.prompt}
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
                 {image.trendStyles.length > 0 && (
                   <div className="px-6">
-                    <StyledLabel content="Material" />
+                    <StyledLabel content="Trend Styles" />
                     <div className="flex flex-wrap gap-2">
                       {image.trendStyles.map((trend: string) => (
                         <Tag key={trend} text={trend} />
@@ -144,9 +154,36 @@ export default function ImageDetail({ image, onClose, isOpen }: ImageDetailProps
               <Button
                 variant="tertiary"
                 className={cn('px-0', 'flex-grow h-[40px]')}
-                onClick={() =>
-                  album.collectImage({ genImgId: image?.genImgId ?? 0, action: image?.isCollected ? 2 : 1 })
-                }
+                onClick={async () => {
+                  try {
+                    const res = await album.collectImage({
+                      genImgId: image?.genImgId ?? 0,
+                      action: image?.isCollected ? 2 : 1
+                    });
+                    if (res.code === 0) {
+                      showAlert({
+                        type: 'success',
+                        content: image?.isCollected
+                          ? 'Image removed from album successfully'
+                          : 'Image added to album successfully'
+                      });
+                    } else {
+                      showAlert({
+                        type: 'error',
+                        content:
+                          res.message ||
+                          'Something went wrong. Please try again later or contact support if the issue persists'
+                      });
+                    }
+                  } catch (error: any) {
+                    showAlert({
+                      type: 'error',
+                      content:
+                        error.message ||
+                        'Something went wrong. Please try again later or contact support if the issue persists'
+                    });
+                  }
+                }}
               >
                 <Image
                   src={`/images/album/${image?.isCollected ? 'added_to_album' : 'add_to_album_black'}.svg`}
@@ -161,11 +198,36 @@ export default function ImageDetail({ image, onClose, isOpen }: ImageDetailProps
               <Button
                 variant="tertiary"
                 className={cn('px-0', 'flex-grow h-[40px]')}
-                onClick={() => {
-                  if (image.isLike) {
-                    community.cancelLikeImage(image.genImgId);
-                  } else {
-                    community.likeImage(image.genImgId);
+                onClick={async () => {
+                  try {
+                    let res;
+
+                    if (image.isLike) {
+                      res = await community.likeImage(image.genImgId);
+                    } else {
+                      res = await community.likeImage(image.genImgId);
+                    }
+
+                    if (res.code === 0) {
+                      showAlert({
+                        type: 'success',
+                        content: image.isLike ? 'Image unliked successfully' : 'Image liked successfully'
+                      });
+                    } else {
+                      showAlert({
+                        type: 'error',
+                        content:
+                          res.message ||
+                          'Something went wrong. Please try again later or contact support if the issue persists'
+                      });
+                    }
+                  } catch (error: any) {
+                    showAlert({
+                      type: 'error',
+                      content:
+                        error.message ||
+                        'Something went wrong. Please try again later or contact support if the issue persists'
+                    });
                   }
                 }}
               >

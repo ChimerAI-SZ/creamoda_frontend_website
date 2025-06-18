@@ -1,15 +1,13 @@
 import type React from 'react';
 import type { Metadata } from 'next';
 
-import { ErrorDialog } from '@/components/ErrorDialog';
 import { Analytics } from '@vercel/analytics/react';
 import { Header } from '@/components/Header';
-import GlobalAlert from '@/components/GlobalAlert';
 import { LoginModal } from '@/app/app-components/Login';
 
 import { TooltipProvider } from '@/components/ui/tooltip';
-
-import '@/utils/modal';
+import { GlobalConfirm } from '@/components/GlobalConfirm';
+import { AlertToast } from '@/components/AlertToast';
 
 export const metadata: Metadata = {
   title: 'CREAMODA',
@@ -27,11 +25,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <TooltipProvider>
           <Header />
           {children}
-          <ErrorDialog />
           <Analytics />
-          <GlobalAlert />
           <LoginModal />
+          <GlobalConfirm />
         </TooltipProvider>
+        <AlertToast />
       </body>
     </html>
   );

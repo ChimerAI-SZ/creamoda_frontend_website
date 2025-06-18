@@ -11,8 +11,8 @@ import OrdersAndPayment from './OrdersAndPayment';
 import { logout } from '@/lib/api';
 import usePersonalInfoStore from '@/stores/usePersonalInfoStore';
 import { Button } from '@/components/ui/button';
-import { showErrorDialog } from '@/utils/index';
 import { eventBus } from '@/utils/events';
+import { useAlertStore } from '@/stores/useAlertStore';
 
 export type AvatarActionType = 'membership' | 'payment' | 'setting';
 
@@ -24,6 +24,8 @@ export default function Avatar() {
   const [paymentVisible, setPaymentVisible] = useState(false); // payment 弹窗是否展示
   // 获取用户信息
   const { username, email, headPic, fetchUserInfo, credit } = usePersonalInfoStore();
+
+  const { showAlert } = useAlertStore();
 
   const handleOpenMenu = () => {
     const token = localStorage.getItem('auth_token');
@@ -48,9 +50,18 @@ export default function Avatar() {
         eventBus.emit('auth:login', { isOpen: true });
         // 登出登出
         eventBus.emit('auth:logout', void 0);
+
+        showAlert({
+          type: 'success',
+          content: 'Logged out successfully'
+        });
       })
-      .catch(error => {
-        showErrorDialog('Something went wrong. Please try again later or contact support if the issue persists');
+      .catch((error: any) => {
+        showAlert({
+          type: 'error',
+          content:
+            error.message || 'Something went wrong. Please try again later or contact support if the issue persists'
+        });
       })
       .finally(() => {
         localStorage.removeItem('auth_token');

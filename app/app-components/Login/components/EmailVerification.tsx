@@ -1,7 +1,7 @@
 import { useState, useEffect, ChangeEvent, FormEvent, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { resendVerificationCode, verifyEmail } from '@/lib/api';
+import { auth } from '@/lib/api';
 
 interface EmailVerificationProps {
   email?: string;
@@ -33,7 +33,7 @@ export const EmailVerification = ({
       setIsResending(true);
 
       try {
-        const data = await resendVerificationCode(email);
+        const data = await auth.resendVerificationCode(email);
 
         if (data.code !== 0) {
           setErrorMessage(data.msg || 'Failed to send verification code. Please try again.');
@@ -65,7 +65,7 @@ export const EmailVerification = ({
     setErrorMessage('');
 
     try {
-      const data = await resendVerificationCode(email);
+      const data = await auth.resendVerificationCode(email);
 
       if (data.code !== 0) {
         setErrorMessage(data.msg || 'Failed to resend verification code. Please try again.');
@@ -91,7 +91,7 @@ export const EmailVerification = ({
     setErrorMessage('');
 
     try {
-      const data = await verifyEmail(verificationCode, email || '');
+      const data = await auth.verifyEmail(verificationCode, email || '');
 
       if (data.code === 0) {
         if (onVerificationComplete) {

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 
 import Image from 'next/image';
@@ -11,11 +11,11 @@ import { StyledLabel } from '@/components/StyledLabel';
 import RadioGroup from '@/components/ui/radio';
 import { VariationTypeSelect } from '@/components/VariationTypeSelect';
 
-import { showErrorDialog } from '@/utils/index';
 import { useGenerationStore } from '@/stores/useGenerationStore';
 import { tryOn } from '@/lib/api';
 import { eventBus } from '@/utils/events';
 import useModelStore from '@/stores/useModelStore';
+import { useAlertStore } from '@/stores/useAlertStore';
 
 import type { TryOnFormData, ChangePoseFormData } from '@/types/virtualTryOn';
 type ClothingType = 'top' | 'bottom' | 'one-piece';
@@ -41,6 +41,7 @@ export function Sidebar() {
   const [currentVariationType, setCurrentVariationType] = useState<string>('1');
 
   const { isGenerating, setGenerating } = useGenerationStore();
+  const { showAlert } = useAlertStore();
 
   const searchParams = useSearchParams();
 
@@ -85,46 +86,60 @@ export function Sidebar() {
   }, [currentVariationType]);
 
   // 文生图 / 图生图 提交事件
-  const handleSubmit = () => {
-    if (currentVariationType === '1') {
-      const data: TryOnFormData = {
-        originalPicUrl: modelImage.imageUrl,
-        clothingPhoto: clothingImage.imageUrl,
-        clothType: (clothingType + 's') as 'tops' | 'bottoms' | 'one-pieces'
-      };
+  const handleSubmit = async () => {
+    try {
+      if (currentVariationType === '1') {
+        const data: TryOnFormData = {
+          originalPicUrl: modelImage.imageUrl,
+          clothingPhoto: clothingImage.imageUrl,
+          clothType: (clothingType + 's') as 'tops' | 'bottoms' | 'one-pieces'
+        };
 
-      tryOn
-        .tryOnGenerate(data)
-        .then(() => {
+        const res = await tryOn.tryOnGenerate(data);
+
+        if (res.code === 0) {
           // 触发 iamgeGrid 里的提交回调时间（刷新生图历史图片）
           eventBus.emit('sidebar:submit-success', void 0);
           // 修改getnerating状态
           setGenerating(true);
-        })
-        .catch((error: Error) => {
-          showErrorDialog(error.message || 'Failed to generate image');
-          // 若生成失败放开拦截
+        } else {
           setGenerating(false);
-        });
-    } else if (currentVariationType === '2') {
-      const data: ChangePoseFormData = {
-        originalPicUrl: targetPoseImage.imageUrl,
-        referPicUrl: referencePoseImage.imageUrl
-      };
 
-      tryOn
-        .changePoseGenerate(data)
-        .then(() => {
+          showAlert({
+            type: 'error',
+            content:
+              res.message || 'Something went wrong. Please try again later or contact support if the issue persists'
+          });
+        }
+      } else if (currentVariationType === '2') {
+        const data: ChangePoseFormData = {
+          originalPicUrl: targetPoseImage.imageUrl,
+          referPicUrl: referencePoseImage.imageUrl
+        };
+
+        const res = await tryOn.changePoseGenerate(data);
+
+        if (res.code === 0) {
           // 触发 iamgeGrid 里的提交回调时间（刷新生图历史图片）
           eventBus.emit('sidebar:submit-success', void 0);
           // 修改getnerating状态
           setGenerating(true);
-        })
-        .catch((error: Error) => {
-          showErrorDialog(error.message || 'Failed to generate image');
-          // 若生成失败放开拦截
+        } else {
           setGenerating(false);
-        });
+
+          showAlert({
+            type: 'error',
+            content:
+              res.message || 'Something went wrong. Please try again later or contact support if the issue persists'
+          });
+        }
+      }
+    } catch (error: any) {
+      showAlert({
+        type: 'error',
+        content:
+          error.message || 'Something went wrong. Please try again later or contact support if the issue persists'
+      });
     }
   };
 

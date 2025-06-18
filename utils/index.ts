@@ -1,15 +1,6 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
-import { useErrorDialogStore } from '@/components/ErrorDialog';
-import { Modal } from '@/utils/modal';
-
-import { deleteImage as deleteImageApi } from '@/lib/api';
-
-export const showErrorDialog = (message: string) => {
-  useErrorDialogStore.getState().openDialog(message);
-};
-
 export function downloadImage(url: string, filename: string) {
   fetch(url)
     .then(response => response.blob())
@@ -28,23 +19,6 @@ export function downloadImage(url: string, filename: string) {
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
-}
-
-export function deleteImage(imageId: number, onSuccess: () => void) {
-  Modal.confirm(
-    'Are you sure you want to delete this image?',
-    async () => {
-      const res = await deleteImageApi(imageId);
-      console.log(res);
-
-      if (res.code === 0) {
-        onSuccess();
-      } else {
-        Modal.error('Delete failed');
-      }
-    },
-    () => {}
-  );
 }
 
 // 定义一个自定义日志函数

@@ -11,9 +11,10 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 
 import usePersonalInfoStore from '@/stores/usePersonalInfoStore';
 import { updateUserInfo, uploadImage } from '@/lib/api';
-import { cn, showErrorDialog } from '@/utils/index';
+import { cn } from '@/utils/index';
 import { LegalList } from './const';
 import { verificationRules, validators } from '@/app/app-components/Login/const';
+import { useAlertStore } from '@/stores/useAlertStore';
 
 const AccountSettingsDrawer = React.memo(
   ({
@@ -28,7 +29,6 @@ const AccountSettingsDrawer = React.memo(
     setIsMenuVisible: (open: boolean) => void;
   }) => {
     const { username, email, headPic, hasPwd, updateUsername, updateHeadPic } = usePersonalInfoStore();
-
     // 编辑用户名的输入框的值
     const [newUsername, setNewUsername] = useState(username);
 
@@ -36,10 +36,11 @@ const AccountSettingsDrawer = React.memo(
     const [changePwdOpen, setChangePwdOpen] = useState(false);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-    const [usernameTooltipVisible, setUsernameTooltipVisible] = useState(false);
     const [usernameErrors, setUsernameErrors] = useState<number[]>([]);
 
     const router = useRouter();
+
+    const { showAlert } = useAlertStore();
 
     /**
      * 将图片上传到服务器
@@ -51,9 +52,12 @@ const AccountSettingsDrawer = React.memo(
         updateHeadPic(url);
 
         handleUpdateUserInfo({ headPic: url });
-      } catch (error) {
-        console.error('Image upload error:', error);
-        showErrorDialog(error instanceof Error ? error.message : 'Failed to upload image');
+      } catch (error: any) {
+        showAlert({
+          type: 'error',
+          content:
+            error.message || 'Something went wrong. Please try again later or contact support if the issue persists'
+        });
       }
     };
 
@@ -66,7 +70,7 @@ const AccountSettingsDrawer = React.memo(
     };
 
     const handleUpdateUserInfo = useCallback(
-      (updates: { headPic?: string | null; username?: string | null; pwd?: string | null }) => {
+      async (updates: { headPic?: string | null; username?: string | null; pwd?: string | null }) => {
         const updatePayload: { headPic: string | null; username: string | null; pwd: string | null } = {
           headPic: null,
           username: null,
@@ -84,20 +88,28 @@ const AccountSettingsDrawer = React.memo(
           updatePayload.pwd = updates.pwd;
         }
 
-        updateUserInfo(updatePayload)
-          .then(res => {
-            // 处理响应
-            if (res.code === 0) {
-              setIsEditingUsername(false);
-              updateUsername(newUsername);
-            } else {
-              showErrorDialog(res.message || 'Failed to update username');
-            }
-          })
-          .catch(error => {
-            // 处理错误
-            showErrorDialog(error.message || 'Failed to update username');
+        try {
+          const res = await updateUserInfo(updatePayload);
+
+          if (res.code === 0) {
+            setIsEditingUsername(false);
+            updateUsername(newUsername);
+            showAlert({
+              type: 'success',
+              content: 'Username updated successfully'
+            });
+          } else {
+            showAlert({
+              type: 'error',
+              content: res.message || 'Failed to update username'
+            });
+          }
+        } catch (error: any) {
+          showAlert({
+            type: 'error',
+            content: error.message || 'Failed to update username'
           });
+        }
       },
       []
     );
@@ -111,11 +123,6 @@ const AccountSettingsDrawer = React.memo(
 
     // 保存新用户名
     const handleSaveUsername = () => {
-      if (newUsername.length < 3 || newUsername.length > 20 || !/^[\p{L}\p{N}_\-\.]*$/u.test(username)) {
-        setUsernameTooltipVisible(true);
-        return;
-      }
-
       handleUpdateUserInfo({ username: newUsername });
     };
 
@@ -182,7 +189,6 @@ const AccountSettingsDrawer = React.memo(
                         onChange={e => setNewUsername(e.target.value)}
                         className="h-[42px]"
                         onBlur={() => {
-                          setUsernameTooltipVisible(true);
                           setUsernameErrors(validators.name(newUsername));
                         }}
                       />

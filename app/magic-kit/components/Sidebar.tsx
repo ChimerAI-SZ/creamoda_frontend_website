@@ -13,8 +13,8 @@ import { MemoizedImageUploader } from '@/components/ImageUploader';
 
 import { changeClothesColor, changeBackground, removeBackground, particialModification, upscale } from '@/lib/api';
 import { eventBus } from '@/utils/events';
-import { showErrorDialog } from '@/utils/index';
 import useModelStore from '@/stores/useModelStore';
+import { useAlertStore } from '@/stores/useAlertStore';
 
 export function Sidebar() {
   const { isGenerating, setGenerating } = useGenerationStore();
@@ -29,6 +29,7 @@ export function Sidebar() {
     updateColorSelection
   } = useVariationFormStore();
 
+  const { showAlert } = useAlertStore();
   const [btnState, setBtnState] = useState<'disabled' | 'ready' | 'generating'>('disabled');
   const { getVariationTypesByType } = useModelStore();
   const variationTypes = getVariationTypesByType(4);
@@ -118,19 +119,24 @@ export function Sidebar() {
             return;
         }
 
-        // Process response
-        console.log('Generation response:', response);
         if (response.code === 0) {
           eventBus.emit('sidebar:submit-success', void 0);
         } else {
-          showErrorDialog(response.msg || 'Failed to generate image');
+          showAlert({
+            type: 'error',
+            content: response.msg || 'Failed to generate image'
+          });
           setGenerating(false);
         }
 
         // Here you would handle the response, like updating the UI or showing results
         // Example: if (response && response.success) { ... }
-      } catch (error) {
-        console.error('Error in image generation:', error);
+      } catch (error: any) {
+        showAlert({
+          type: 'error',
+          content:
+            error.message || 'Something went wrong. Please try again later or contact support if the issue persists'
+        });
       }
     }
   };

@@ -155,6 +155,29 @@ export default function ImageDoodleEditor({
     canvasRef.current?.eraseMode(false);
   }, []);
 
+  const handleZoomIn = useCallback(() => {
+    // setEraseMode(false);
+    // canvasRef.current?.eraseMode(false);
+    if (eraseMode) {
+      const width = eraserWidth + 5 > 50 ? 50 : eraserWidth + 5;
+      setEraserWidth(width);
+    } else {
+      const width = strokeWidth + 5 > 50 ? 50 : strokeWidth + 5;
+      setStrokeWidth(width);
+    }
+  }, [eraserWidth, strokeWidth]);
+  const handleZoomOut = useCallback(() => {
+    // setEraseMode(false);
+    // canvasRef.current?.eraseMode(false);
+    if (eraseMode) {
+      const width = eraserWidth - 5 < 0 ? 0 : eraserWidth - 5;
+      setEraserWidth(width);
+    } else {
+      const width = strokeWidth - 5 < 0 ? 0 : strokeWidth - 5;
+      setStrokeWidth(width);
+    }
+  }, []);
+
   // Handle eraser tool selection
   const handleEraserClick = useCallback(() => {
     setEraseMode(true);
@@ -686,54 +709,10 @@ export default function ImageDoodleEditor({
   const toolbarButtons = useMemo(
     () => (
       <div className="absolute w-1/2 top-4 flex items-center justify-center gap-4 z-10">
-        {/* <div className="relative flex flex-col" onMouseEnter={handlePenSliderEnter} onMouseLeave={handlePenSliderLeave}>
-          {showPenSlider && (
-            <div
-              className="absolute top-full left-[-50%] mt-2 p-3 bg-white shadow-lg rounded-md z-10 w-[140px]"
-              onMouseEnter={handlePenSliderEnter}
-              onMouseLeave={handlePenSliderLeave}
-            >
-              <Slider
-                defaultValue={[strokeWidth]}
-                value={[strokeWidth]}
-                onValueChange={handleStrokeWidthChange}
-                max={50}
-                min={1}
-                step={1}
-                className="w-full"
-              />
-            </div>
-          )}
-        </div>
-
-        <div
-          className="relative flex flex-col"
-          onMouseEnter={handleEraserSliderEnter}
-          onMouseLeave={handleEraserSliderLeave}
-        >
-          {showEraserSlider && (
-            <div
-              className="absolute top-full left-[-50%] mt-2 p-3 bg-white shadow-lg rounded-md z-10 w-[140px]"
-              onMouseEnter={handleEraserSliderEnter}
-              onMouseLeave={handleEraserSliderLeave}
-            >
-              <Slider
-                defaultValue={[eraserWidth]}
-                value={[eraserWidth]}
-                onValueChange={handleEraserWidthChange}
-                max={50}
-                min={1}
-                step={1}
-                className="w-full"
-              />
-            </div>
-          )}
-        </div> */}
-
         <div className="flex px-3 py-2 bg-gray-40 rounded-[8px] gap-2">
           <div className="w-[24px] h-[24px] cursor-pointer">
             <NextImage
-              onClick={handlePenClick}
+              onClick={handleZoomIn}
               src="/images/magic-kit/zoom_in.svg"
               width={24}
               height={24}
@@ -742,7 +721,7 @@ export default function ImageDoodleEditor({
           </div>
           <div className="w-[24px] h-[24px] cursor-pointer">
             <NextImage
-              onClick={handleEraserClick}
+              onClick={handleZoomOut}
               src="/images/magic-kit/zoom_out.svg"
               width={24}
               height={24}

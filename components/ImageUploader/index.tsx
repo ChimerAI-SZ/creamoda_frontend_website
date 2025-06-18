@@ -8,9 +8,10 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
 import { uploadImage } from '@/lib/api';
-import { showErrorDialog, cn } from '@/utils/index';
+import { cn } from '@/utils/index';
 import { isValidImageUrl } from '@/utils/validation';
 import { ImageSlot } from './ImageSlot';
+import { useAlertStore } from '@/stores/useAlertStore';
 
 /**
  * ImageUploader组件的属性接口
@@ -56,6 +57,8 @@ export function ImageUploader({
   maskImageUrl = '',
   showMaskEditor = false
 }: ImageUploaderProps) {
+  const { showAlert } = useAlertStore();
+
   // 状态管理
   const [dragActive, setDragActive] = useState(false); // 是否处于拖拽状态
   const [previewUrl, setPreviewUrl] = useState<string | null>(null); // 预览图片URL
@@ -96,9 +99,11 @@ export function ImageUploader({
       if (onImageChange) {
         onImageChange(null);
       }
-    } catch (error) {
-      console.error('Image upload error:', error);
-      showErrorDialog(error instanceof Error ? error.message : 'Failed to upload image');
+    } catch (error: any) {
+      showAlert({
+        type: 'error',
+        content: error.message || 'Failed to upload image'
+      });
     } finally {
       setIsUploading(false);
     }
@@ -201,21 +206,29 @@ export function ImageUploader({
           };
           img.onerror = () => {
             setIsLoadingImageUrl(false);
-            showErrorDialog('Unable to load the image from this URL. Please try another image URL.');
+            showAlert({
+              type: 'error',
+              content: 'Unable to load the image from this URL. Please try another image URL.'
+            });
             onImageUrlChange('');
           };
           img.src = processedUrl;
         } catch (error) {
           console.error('Error converting URL to base64:', error);
-          showErrorDialog('Failed to process the image URL. Please try a different URL.');
+          showAlert({
+            type: 'error',
+            content: 'Failed to process the image URL. Please try a different URL.'
+          });
           setIsLoadingImageUrl(false);
           onImageUrlChange('');
         }
       } else {
         // URL格式无效
-        showErrorDialog(
-          'Please enter a valid image URL (must start with http:// or https:// and end with .jpg, .jpeg, .png, etc.)'
-        );
+        showAlert({
+          type: 'error',
+          content:
+            'Please enter a valid image URL (must start with http:// or https:// and end with .jpg, .jpeg, .png, etc.)'
+        });
         onImageUrlChange('');
       }
     } else {
@@ -284,9 +297,11 @@ export function ImageUploader({
                       style={{ objectFit: 'contain' }}
                       onError={() => {
                         onImageUrlChange('');
-                        showErrorDialog(
-                          'Failed to load image. The URL might be invalid or the image format is not supported.'
-                        );
+                        showAlert({
+                          type: 'error',
+                          content:
+                            'Failed to load image. The URL might be invalid or the image format is not supported.'
+                        });
                       }}
                     />
                     {/* 删除按钮，点击后删除图片并恢复上传区域 */}
@@ -322,9 +337,11 @@ export function ImageUploader({
                       // 图片加载错误时清除预览
                       setPreviewUrl(null);
                       onImageUrlChange('');
-                      showErrorDialog(
-                        'Failed to load image. The URL might be invalid or the image format is not supported.'
-                      );
+
+                      showAlert({
+                        type: 'error',
+                        content: 'Failed to load image. The URL might be invalid or the image format is not supported.'
+                      });
                     }}
                   />
                 </div>

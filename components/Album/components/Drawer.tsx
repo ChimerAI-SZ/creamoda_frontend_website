@@ -7,7 +7,7 @@ import ImageCard from './ImageCard';
 
 import { useAlbumListStore } from '@/stores/useAlbumListStore';
 import { getCollectList, collectImage } from '@/lib/api';
-import { showErrorDialog } from '@/utils/index';
+import { useAlertStore } from '@/stores/useAlertStore';
 
 export interface AlbumItem {
   genImgId: number;
@@ -17,14 +17,17 @@ export interface AlbumItem {
 
 export function AlbumDrawer({ children }: { children: React.ReactNode }) {
   const { imageList, resetImageList } = useAlbumListStore();
-
+  const { showAlert } = useAlertStore();
   const queryCollectList = async () => {
     const res = await getCollectList(1, 10);
 
     if (res.code === 0) {
       resetImageList(res.data.list);
     } else {
-      showErrorDialog(res.msg);
+      showAlert({
+        type: 'error',
+        content: res.msg
+      });
     }
   };
 
@@ -40,7 +43,10 @@ export function AlbumDrawer({ children }: { children: React.ReactNode }) {
     if (res.code === 0) {
       resetImageList(imageList.filter(image => image.genImgId !== imageId));
     } else {
-      showErrorDialog(res.msg);
+      showAlert({
+        type: 'error',
+        content: res.msg
+      });
     }
   };
 

@@ -115,14 +115,14 @@ export const unifiedVariationTypes: UnifiedVariationType[] = [
     tags: 'design, virtual try on, change pose',
     available: true
   },
-  {
-    type: 3,
-    variationType: 3,
-    label: 'Model Three-View',
-    name: '模特三视图',
-    tags: 'design, virtual try on, model three-view',
-    available: false
-  },
+  // {
+  //   type: 3,
+  //   variationType: 3,
+  //   label: 'Model Three-View',
+  //   name: '模特三视图',
+  //   tags: 'design, virtual try on, model three-view',
+  //   available: false
+  // },
 
   {
     type: 4,

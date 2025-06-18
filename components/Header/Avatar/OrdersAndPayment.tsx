@@ -2,16 +2,17 @@ import React, { useCallback, useEffect, useState } from 'react';
 import Image from 'next/image';
 import dayjs from 'dayjs';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { TriangleAlert } from 'lucide-react';
 
 import Modal from './Modal';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
 import usePersonalInfoStore from '@/stores/usePersonalInfoStore';
-import { Modal as GlobalModal } from '@/utils/modal';
+import { useDialogStore } from '@/stores/useDialogStore';
+import { useAlertStore } from '@/stores/useAlertStore';
 import { paymentList, PaymentType } from '@/components/Membership';
-import { handleCancelSubscribe, queryBillingHistory, updateUserInfo } from '@/lib/api';
-import { showErrorDialog } from '@/utils';
+import { payment, common } from '@/lib/api';
 
 // 邮箱验证函数
 const validateEmail = (email: string): boolean => {
@@ -49,20 +50,44 @@ const AccountSettingsDrawer = React.memo(
     const PAGE_SIZE = 10; // bill history page size
     // bill history ends
 
+    const { showConfirm } = useDialogStore();
+    const { showAlert } = useAlertStore();
+
     const planInfo = paymentList
       .find(item => item.title === 'Plan')
       ?.type.find(item => item?.subscribeLevel === subscribeLevel);
 
     // 取消订阅
     const handleCancelSubscription = () => {
-      GlobalModal.confirm(
-        'Are you sure you want to cancel your subscription?',
-        async () => {
-          const res = await handleCancelSubscribe();
-          console.log('cancel subscription', res);
-        },
-        () => {}
-      );
+      showConfirm({
+        icon: (
+          <div className="w-full h-full rounded-full bg-[#f9f5ff] flex items-center justify-center">
+            <TriangleAlert color="#ff3c2e" className="w-full h-full" />
+          </div>
+        ),
+        title: 'Are you sure you want to cancel your subscription?',
+        onConfirm: async () => {
+          try {
+            const res = await payment.handleCancelSubscribe();
+            if (res.code === 0) {
+              showAlert({
+                type: 'success',
+                content: 'Subscription cancelled successfully'
+              });
+            } else {
+              showAlert({
+                type: 'error',
+                content: res.message || 'Failed to cancel subscription'
+              });
+            }
+          } catch (error: any) {
+            showAlert({
+              type: 'error',
+              content: error.message || 'Failed to cancel subscription'
+            });
+          }
+        }
+      });
     };
 
     const handleSaveEmail = () => {
@@ -85,33 +110,49 @@ const AccountSettingsDrawer = React.memo(
         updatePayload.billingEmail = updates.billingEmail;
       }
 
-      updateUserInfo(updatePayload)
+      common
+        .updateUserInfo(updatePayload)
         .then(res => {
           // 处理响应
           if (res.code === 0) {
             setIsEditingEmail(false);
           } else {
-            showErrorDialog(res.message || 'Failed to update billing email');
+            showAlert({
+              type: 'error',
+              content: res.message || 'Failed to update billing email'
+            });
           }
         })
-        .catch(error => {
-          // 处理错误
-          showErrorDialog(error.message || 'Failed to update billing email');
+        .catch((error: any) => {
+          showAlert({
+            type: 'error',
+            content: error.message || 'Failed to update billing email'
+          });
         });
     }, []);
 
     // 查询消费记录
     const handleQueryBillingHistory = useCallback(async () => {
-      const res = await queryBillingHistory(page, PAGE_SIZE);
+      try {
+        const res = await payment.queryBillingHistory(page, PAGE_SIZE);
 
-      if (res.code === 0) {
-        setTableData(prevData => [...prevData, ...res.data.list]);
+        if (res.code === 0) {
+          setTableData(prevData => [...prevData, ...res.data.list]);
 
-        setPage(page + 1);
-        // 判断是否还有更多数据
-        setHasMore(tableData.length + res.data.list.length < res.data.total);
-      } else {
-        showErrorDialog(res.message || 'Failed to query billing history');
+          setPage(page + 1);
+          // 判断是否还有更多数据
+          setHasMore(tableData.length + res.data.list.length < res.data.total);
+        } else {
+          showAlert({
+            type: 'error',
+            content: res.message || 'Failed to query billing history'
+          });
+        }
+      } catch (error: any) {
+        showAlert({
+          type: 'error',
+          content: error.message || 'Failed to query billing history'
+        });
       }
     }, [page, tableData]);
 

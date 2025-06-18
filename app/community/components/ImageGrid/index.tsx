@@ -5,7 +5,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { ImageCard } from './ImageCard';
 import ImageDetail from './ImageDetail';
 
-import { showErrorDialog } from '@/utils';
+import { useAlertStore } from '@/stores/useAlertStore';
 import { useGenerationStore } from '@/stores/useGenerationStore';
 import { community } from '@/lib/api';
 
@@ -53,6 +53,7 @@ export function ImageGrid() {
   const [detailVisible, setDetailVisible] = useState<boolean>(false);
 
   const { setGenerating } = useGenerationStore();
+  const { showAlert } = useAlertStore();
 
   // 加载图片数据
   const fetchImages = useCallback(
@@ -70,7 +71,10 @@ export function ImageGrid() {
           }
         }
       } catch (error) {
-        showErrorDialog('Something went wrong. Please try again later or contact support if the issue persists');
+        showAlert({
+          type: 'error',
+          content: 'Something went wrong. Please try again later or contact support if the issue persists'
+        });
       }
     },
     [setGenerating]
@@ -78,15 +82,23 @@ export function ImageGrid() {
 
   // 图片点击事件，标记当前点击的图片，然后打开详情
   const handleImageClick = useCallback(async (image: ImageItem) => {
-    const data = await community.queryImageDetail(image.seoImgUid as string);
+    try {
+      const data = await community.queryImageDetail(image.seoImgUid as string);
 
-    if (data.code === 0) {
-      const imageDetail = data.data as SEO_Image_Type;
-      imageDetail.picUrl = image.picUrl ?? '';
+      if (data.code === 0) {
+        const imageDetail = data.data as SEO_Image_Type;
+        imageDetail.picUrl = image.picUrl ?? '';
 
-      setSelectedImage(imageDetail);
+        setSelectedImage(imageDetail);
+      }
+      setDetailVisible(true);
+    } catch (error: any) {
+      showAlert({
+        type: 'error',
+        content:
+          error.message || 'Something went wrong. Please try again later or contact support if the issue persists'
+      });
     }
-    setDetailVisible(true);
   }, []);
 
   useEffect(() => {

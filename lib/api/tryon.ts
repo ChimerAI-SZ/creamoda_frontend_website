@@ -11,8 +11,7 @@ export async function tryOnGenerate(data: TryOnFormData) {
   try {
     const response = await api.post(`/api/v1/img/virtual_try_on`, data);
     return response.data;
-  } catch (error) {
-    console.error('Error getting generate list:', error);
+  } catch (error: any) {
     throw error;
   }
 }
@@ -21,8 +20,7 @@ export async function changePoseGenerate(data: ChangePoseFormData) {
   try {
     const response = await api.post(`/api/v1/img/change_pose`, data);
     return response.data;
-  } catch (error) {
-    console.error('Error getting generate list:', error);
+  } catch (error: any) {
     throw error;
   }
 }
