@@ -119,7 +119,7 @@ export default async function ImageDetailPage(props: { params: tParams }) {
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       </Head>
       <div className="container mx-auto flex items-center justify-center h-[calc(100vh-56px)]">
-        <div className="flex items-center justify-center gap-8">
+        <div className="flex items-start justify-center gap-8">
           <div className="bg-transparent max-h-[80vh] rounded-lg overflow-hidden flex-shrink-0 flex items-center justify-center">
             <Image
               src={image.originalImgUrl}
@@ -132,7 +132,7 @@ export default async function ImageDetailPage(props: { params: tParams }) {
             />
           </div>
 
-          <div className="flex flex-col gap-4 h-full py-8">
+          <div className="flex flex-col gap-4 h-full">
             <div className="border-b pt-4">
               <div className="flex items-center mb-3">
                 <img
@@ -156,30 +156,6 @@ export default async function ImageDetailPage(props: { params: tParams }) {
                   # {type}
                 </div>
               ))}
-              {image.genType.map((type: string) => (
-                <div
-                  key={type}
-                  className="shrink-0 h-24px py-[2px] px-[6px] text-[#46B2FF] text-center text-sm font-medium"
-                >
-                  # {type}
-                </div>
-              ))}
-              {image.genType.map((type: string) => (
-                <div
-                  key={type}
-                  className="shrink-0 h-24px py-[2px] px-[6px] text-[#46B2FF] text-center text-sm font-medium"
-                >
-                  # {type}
-                </div>
-              ))}
-              {image.genType.map((type: string) => (
-                <div
-                  key={type}
-                  className="shrink-0 h-24px py-[2px] px-[6px] text-[#46B2FF] text-center text-sm font-medium"
-                >
-                  # {type}
-                </div>
-              ))}
             </div>
 
             <div className="">
@@ -194,8 +170,15 @@ export default async function ImageDetailPage(props: { params: tParams }) {
               </div>
             </div>
 
+            {image.prompt && (
+              <div className="">
+                <div className="text-3xl font-bold mb-2">Prompt</div>
+                <div>{image.prompt}</div>
+              </div>
+            )}
+
             <div className="">
-              <div className="text-3xl font-bold mb-2">Prompt</div>
+              <div className="text-3xl font-bold mb-2">AI description</div>
               <div>{image.description}</div>
             </div>
 
