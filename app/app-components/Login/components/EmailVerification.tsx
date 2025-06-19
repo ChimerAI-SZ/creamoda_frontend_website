@@ -1,7 +1,7 @@
 import { useState, useEffect, ChangeEvent, FormEvent, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { resendVerificationCode, verifyEmail } from '@/lib/api/index';
+import { auth } from '@/lib/api';
 
 interface EmailVerificationProps {
   email?: string;
@@ -33,7 +33,7 @@ export const EmailVerification = ({
       setIsResending(true);
 
       try {
-        const data = await resendVerificationCode(email);
+        const data = await auth.resendVerificationCode(email);
 
         if (data.code !== 0) {
           setErrorMessage(data.msg || 'Failed to send verification code. Please try again.');
@@ -65,7 +65,7 @@ export const EmailVerification = ({
     setErrorMessage('');
 
     try {
-      const data = await resendVerificationCode(email);
+      const data = await auth.resendVerificationCode(email);
 
       if (data.code !== 0) {
         setErrorMessage(data.msg || 'Failed to resend verification code. Please try again.');
@@ -91,7 +91,7 @@ export const EmailVerification = ({
     setErrorMessage('');
 
     try {
-      const data = await verifyEmail(verificationCode, email || '');
+      const data = await auth.verifyEmail(verificationCode, email || '');
 
       if (data.code === 0) {
         if (onVerificationComplete) {
@@ -118,7 +118,7 @@ export const EmailVerification = ({
       <div className="space-y-4 w-full">
         {errorMessage && (
           <div className="p-3 bg-red-50 border border-red-200 rounded-md">
-            <p className="text-[#E50000] text-sm">{errorMessage}</p>
+            <p className="text-error text-sm">{errorMessage}</p>
           </div>
         )}
         <form onSubmit={handleVerifyCode} className="space-y-4">
@@ -157,7 +157,7 @@ export const EmailVerification = ({
             disabled={isVerifying || !verificationCode.trim()}
             className={`h-[52px] w-full py-[10px] px-4 flex justify-center items-center gap-[6px] rounded-[4px] ${
               !isVerifying && verificationCode.trim()
-                ? 'bg-[#F97917] hover:bg-gradient-to-r hover:from-[#F9BE60] hover:to-[#F97917] hover:shadow-[0px_4px_4px_0px_rgba(252,182,61,0.25)]'
+                ? 'bg-primary hover:bg-gradient-to-r hover:from-[#F9BE60] hover:to-primary hover:shadow-[0px_4px_4px_0px_rgba(252,182,61,0.25)]'
                 : 'bg-[rgba(249,121,23,0.5)] cursor-not-allowed'
             } text-white font-medium leading-5 transition-all`}
           >

@@ -1,7 +1,10 @@
 import { useState } from 'react';
+import { Eye, EyeOff } from 'lucide-react';
+
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Eye, EyeOff } from 'lucide-react';
+
+import { cn } from '@/utils';
 
 interface FormFieldProps {
   label: string;
@@ -10,10 +13,11 @@ interface FormFieldProps {
   placeholder: string;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  description?: React.ReactNode;
   onKeyUp?: () => void;
   onFocus?: () => void;
   onBlur?: () => void;
-  error?: string;
+  error?: number[] | string;
 }
 
 export const FormField = ({
@@ -26,7 +30,8 @@ export const FormField = ({
   onKeyUp,
   onFocus,
   onBlur,
-  error
+  error,
+  description
 }: FormFieldProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
@@ -50,23 +55,26 @@ export const FormField = ({
 
   // Determine the border color based on state - error takes priority
   const getBorderColorClass = () => {
-    if (error) return 'border-[#E50000] focus:border-[#E50000] focus-visible:border-[#E50000]';
+    if (error) return 'border-error focus:border-error focus-visible:border-error';
     if (isFocused) return 'border-[#4D4D4D] focus:border-[#4D4D4D]';
     return 'border-[#D9D9D9] focus:border-[#4D4D4D]';
   };
 
   // Determine border color for inline style - error takes priority
   const getBorderColor = () => {
-    if (error) return '#E50000';
-    if (isFocused) return '#4D4D4D';
-    return '#D9D9D9';
+    if (error && error.length > 0) return 'border-error';
+    if (isFocused) return 'border-[#4D4D4D]';
+    return 'border-[#D9D9D9]';
   };
 
   return (
     <div className="mb-4">
       <div className="flex justify-between items-center mb-[6px]">
         <Label htmlFor={name || label.toLowerCase()} className="text-[#1A1A1A] font-inter text-sm font-medium">
-          {label}
+          <div className="flex items-center gap-2">
+            <span>{label}</span>
+            {description && <div>{description}</div>}
+          </div>
         </Label>
       </div>
       <div className="relative">
@@ -80,11 +88,13 @@ export const FormField = ({
           onKeyUp={onKeyUp}
           onFocus={handleFocus}
           onBlur={handleBlur}
-          className={`h-[52px] py-[10px] px-4 rounded-[4px] border ${getBorderColorClass()} !ring-0 !ring-offset-0 !outline-none focus:!ring-0 focus:!ring-offset-0 focus-visible:!ring-0 focus-visible:!ring-offset-0 bg-white font-inter text-sm font-normal leading-5 ${
+          className={cn(
+            'h-[42px] !ring-0 !ring-offset-0 !outline-none focus:!ring-0 focus:!ring-offset-0 focus-visible:!ring-0 focus-visible:!ring-offset-0 bg-white font-inter text-sm font-normal leading-5 ',
+            getBorderColorClass(),
+            getBorderColor(),
             isPassword ? 'pr-10' : ''
-          }`}
+          )}
           style={{
-            borderColor: getBorderColor(),
             outline: 'none',
             boxShadow: 'none'
           }}
@@ -104,7 +114,7 @@ export const FormField = ({
           </button>
         )}
       </div>
-      {error && <p className="mt-1 text-[#E50000] text-xs font-inter">{error}</p>}
+      {error && typeof error === 'string' && <p className="mt-1 text-error text-xs font-inter">{error}</p>}
     </div>
   );
 };

@@ -16,13 +16,19 @@
     "plugins": [
       {
         "name": "next"
+      },
+      {
+        "name": "typescript-graphql-plugin",
+        "version": "^1.1.1"
       }
     ],
+    "typeRoots": ["./types", "./node_modules/@types"],
     "paths": {
       "@/*": ["./*"],
       "@/images/*": ["./public/images/*"],
       "@/lib/*": ["./lib/*"],
-      "@/utils/*": ["./utils/*"]
+      "@/utils/*": ["./utils/*"],
+      "@/hooks/*": ["./hooks/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

@@ -1,23 +1,37 @@
 import { create } from 'zustand';
+import { ReactNode } from 'react';
 
-type AlertType = 'error' | 'confirm' | 'info';
+export type AlertType = 'success' | 'warning' | 'error' | 'custom';
 
-interface AlertState {
-  isOpen: boolean;
+export interface AlertState {
+  open: boolean;
   type: AlertType;
-  message: string;
-  onConfirm: () => void;
-  onCancel: () => void;
-  openAlert: (type: AlertType, message: string, onConfirm?: () => void, onCancel?: () => void) => void;
-  closeAlert: () => void;
+  content: string;
+  title?: string;
+  icon?: ReactNode;
 }
 
-export const useAlertStore = create<AlertState>(set => ({
-  isOpen: false,
-  type: 'info',
-  message: '',
-  onConfirm: () => {},
-  onCancel: () => {},
-  openAlert: (type, message, onConfirm, onCancel) => set({ isOpen: true, type, message, onConfirm, onCancel }),
-  closeAlert: () => set({ isOpen: false, message: '' })
+interface AlertStore extends AlertState {
+  showAlert: (params: AlertParams) => void;
+  close: () => void;
+}
+
+type AlertParams = {
+  type: AlertType;
+  content: string;
+  title?: string;
+  icon?: ReactNode;
+};
+
+export const useAlertStore = create<AlertStore>(set => ({
+  open: false,
+  type: 'success',
+  content: '',
+  title: '',
+  icon: undefined,
+  showAlert: ({ type, content, title = '', icon }) => {
+    console.log('alert visble');
+    set({ open: true, type, content, title, icon });
+  },
+  close: () => set({ open: false })
 }));

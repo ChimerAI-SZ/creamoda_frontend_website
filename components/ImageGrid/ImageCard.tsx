@@ -1,10 +1,9 @@
 import { forwardRef, useState, useRef } from 'react';
 import Image from 'next/image';
-import { Star, ImageDown, Trash2 } from 'lucide-react';
 
 import { cn } from '@/utils';
 import { downloadImage } from '@/utils';
-import { collectImage } from '@/lib/api/album';
+import { collectImage } from '@/lib/api';
 
 interface ImageCardProps {
   image: any;
@@ -30,12 +29,12 @@ export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(({ image, on
   return (
     <div
       ref={ref}
-      className="aspect-[3/4] relative overflow-hidden group border-none"
+      className="aspect-[3/4] relative overflow-hidden group border-none z-50"
       onClick={() => !isGenerating && !isFailed && onClick()}
     >
       {/* 初次加载状态 */}
       {!isLoaded && !newImageRef.current && (
-        <div className="absolute z-1 inset-0 flex flex-col items-center justify-center bg-[#FAFAFA] z-[1] rounded-[4px] border border-[#DCDCDC]">
+        <div className="absolute z-1 inset-0 flex flex-col items-center justify-center bg-[#FAFAFA] z-[1] rounded-[16px] border border-[#DCDCDC]">
           <div className="relative w-[48px] h-[48px]">
             <Image src="/images/generate/loading.svg" alt="Loading..." fill className="object-cover" priority />
           </div>
@@ -45,7 +44,7 @@ export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(({ image, on
 
       {/* 生成中状态，新生成的图片在 generate 和 load 操作完成之前一直展示生成中 */}
       {!isLoaded && isGenerating && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#FAFAFA] z-[1] rounded-[4px] border border-[#DCDCDC]">
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#FAFAFA] z-[1] rounded-[16px] border border-[#DCDCDC]">
           <div className="relative w-[56px] h-[56px]">
             <Image
               src="/images/generate/generating.gif"
@@ -68,7 +67,7 @@ export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(({ image, on
 
       {/* 生成失败状态 */}
       {isFailed && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#FAFAFA] z-[1] rounded-[4px] border border-[#DCDCDC]">
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#FAFAFA] z-[1] rounded-[16px] border border-[#DCDCDC]">
           <div className="relative w-[150px] h-[150px]">
             <Image
               src="/images/generate/failToGenerate.svg"
@@ -85,7 +84,7 @@ export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(({ image, on
       {!isFailed && (
         <div
           className={cn(
-            'absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center bg-[#FAFAFA] rounded-[4px] border border-[#DCDCDC] overflow-hidden',
+            'absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center bg-[#FAFAFA] rounded-[16px] border border-[#DCDCDC] overflow-hidden',
             !(!isLoaded || isGenerating) ? 'opacity-100' : 'opacity-0'
           )}
         >
@@ -112,7 +111,7 @@ export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(({ image, on
         <>
           <div className="relative w-full h-full z-1">
             <div
-              className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center rounded-[4px]"
+              className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center rounded-[16px] "
               style={{
                 background: 'linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.5) 100%)'
               }}
@@ -122,32 +121,36 @@ export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(({ image, on
             className="absolute w-full h-[28px] z-1 bottom-6 left-1/2 -translate-x-1/2 "
             onClick={e => e.stopPropagation()}
           >
-            <div className="flex items-center justify-center gap-8 w-full h-[28px] absolute opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <div className="flex items-center justify-center gap-6 w-full h-[28px] absolute opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               <div
-                className={cn(
-                  'w-[33px] h-[33px] flex items-center justify-center rounded-[50%] cursor-pointer',
-                  isCollected ? 'bg-[#F97917] text-white' : 'bg-[#fff] text-black'
-                )}
+                className="w-8 h-8 bg-[rgba(255,255,255,0.40)] backdrop-blur-sm rounded-[8px] flex items-center justify-center text-white cursor-pointer"
                 onClick={() => {
                   collectImage({ genImgId: image.genImgId, action: isCollected ? 2 : 1 });
                   setIsCollected(!isCollected);
                 }}
               >
-                <Star className="w-[18px] h-[18px]" />
+                {/* <Star className="w-[18px] h-[18px]" /> */}
+                <Image
+                  src={`/images/album/add${isCollected ? 'ed' : ''}_to_album.svg`}
+                  alt="download"
+                  width={18}
+                  height={18}
+                />
               </div>
               <div
-                className="w-[33px] h-[33px] bg-[#fff] flex items-center justify-center text-white rounded-[50%] cursor-pointer"
+                className="w-8 h-8 bg-[rgba(255,255,255,0.40)] backdrop-blur-sm rounded-[8px] flex items-center justify-center text-white cursor-pointer"
                 onClick={() => {
                   downloadImage(image.resultPic, 'image.jpg');
                 }}
               >
-                <ImageDown className="w-[18px] h-[18px] text-[#000]" />
+                <Image src="/images/album/download.svg" alt="download" width={18} height={18} />
               </div>
+
               <div
-                className="w-[33px] h-[33px] bg-[#fff] flex items-center justify-center text-white rounded-[50%] cursor-pointer"
+                className="w-8 h-8 bg-[rgba(255,255,255,0.40)] backdrop-blur-sm rounded-[8px] flex items-center justify-center text-white cursor-pointer"
                 onClick={() => handleDeleteImage(image.genImgId)}
               >
-                <Trash2 className="w-[18px] h-[18px] text-[#000]" />
+                <Image src="/images/album/delete.svg" alt="delete" width={18} height={18} />
               </div>
             </div>
           </div>

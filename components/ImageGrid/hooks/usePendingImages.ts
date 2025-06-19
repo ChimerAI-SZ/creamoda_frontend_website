@@ -1,8 +1,8 @@
 import { useRef, useCallback } from 'react';
 
-import { refreshGenerateStatus } from '@/lib/api';
+import { generate } from '@/lib/api';
 import { useGenerationStore } from '@/stores/useGenerationStore';
-import { showErrorDialog } from '@/utils/index';
+import { useAlertStore } from '@/stores/useAlertStore';
 
 interface UsePendingImagesProps {
   onImageUpdate: (updatedImage: any) => void;
@@ -15,6 +15,8 @@ export function usePendingImages({ onImageUpdate, pollInterval = 3000 }: UsePend
 
   const { setGenerating } = useGenerationStore();
 
+  const { showAlert } = useAlertStore();
+
   const checkPendingImages = useCallback(async () => {
     if (pendingIdsRef.current.size === 0) {
       if (pollTimerRef.current) {
@@ -26,7 +28,7 @@ export function usePendingImages({ onImageUpdate, pollInterval = 3000 }: UsePend
 
     try {
       const pendingIds = Array.from(pendingIdsRef.current).join(',');
-      const data = await refreshGenerateStatus(pendingIds);
+      const data = await generate.refreshGenerateStatus(pendingIds);
 
       if (data.code === 0) {
         const updatedImages = data.data?.list || [];
@@ -54,9 +56,17 @@ export function usePendingImages({ onImageUpdate, pollInterval = 3000 }: UsePend
 
           pendingIdsRef.current = newSet;
         }
+      } else {
+        showAlert({
+          type: 'error',
+          content: data.message || 'Failed to check image status'
+        });
       }
-    } catch (error) {
-      showErrorDialog('Failed to check image status');
+    } catch (error: any) {
+      showAlert({
+        type: 'error',
+        content: error.message || 'Failed to check image status'
+      });
     }
   }, [onImageUpdate, setGenerating]);
 
@@ -70,7 +80,7 @@ export function usePendingImages({ onImageUpdate, pollInterval = 3000 }: UsePend
       // 开始定时轮询
       pollTimerRef.current = setInterval(checkPendingImages, pollInterval);
     }
-  }, [checkPendingImages, pollInterval]);
+  }, [pollInterval]);
 
   const stopPolling = useCallback(() => {
     if (pollTimerRef.current) {

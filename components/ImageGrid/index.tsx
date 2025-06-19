@@ -1,16 +1,20 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 
 import { ImageCard } from './ImageCard';
 import ImageDetail from './ImageDetail';
 
-import { showErrorDialog, deleteImage } from '@/utils/index';
+import { downloadImage } from '@/utils';
+import { useDeleteImage } from '@/hooks/useDeleteImage';
 import { usePendingImages } from './hooks/usePendingImages';
 import { useGenerationStore } from '@/stores/useGenerationStore';
 import usePersonalInfoStore from '@/stores/usePersonalInfoStore';
+import { useVariationFormStore } from '@/stores/useMagicKitStore';
 import { eventBus } from '@/utils/events';
-import { generate } from '@/lib/api';
+import { generate, album, community } from '@/lib/api';
+import { useAlertStore } from '@/stores/useAlertStore';
 
 // 图片类型接口
 export interface ImageItem {
@@ -35,6 +39,14 @@ export function ImageGrid() {
   // 查看图片详情相关state
   const [selectedImage, setSelectedImage] = useState<ImageItem | null>(null);
   const [detailVisible, setDetailVisible] = useState<boolean>(false);
+
+  const { updateImageUrl } = useVariationFormStore();
+
+  const router = useRouter();
+
+  const { showAlert } = useAlertStore();
+
+  const deleteImage = useDeleteImage();
 
   // 自定义钩子处理待生成图片
   const { pendingIdsRef, startPolling, stopPolling } = usePendingImages({
@@ -72,9 +84,19 @@ export function ImageGrid() {
           } else {
             setImages(prev => [...prev, ...imageList]);
           }
+        } else {
+          showAlert({
+            type: 'error',
+            content:
+              data.message || 'Something went wrong. Please try again later or contact support if the issue persists'
+          });
         }
-      } catch (error) {
-        showErrorDialog('Something went wrong. Please try again later or contact support if the issue persists');
+      } catch (error: any) {
+        showAlert({
+          type: 'error',
+          content:
+            error.message || 'Something went wrong. Please try again later or contact support if the issue persists'
+        });
       }
     },
     [setGenerating, pendingIdsRef, startPolling]
@@ -94,7 +116,7 @@ export function ImageGrid() {
     return () => {
       eventBus.off('imageList:generate-list', handler);
     };
-  }, [fetchImages]);
+  }, []);
 
   // 加载最近图片
   const fetchRecentImages = useCallback(async () => {
@@ -142,6 +164,70 @@ export function ImageGrid() {
     });
   }, []);
 
+  const handleActionButtonClick = async (text: string, image: ImageItem) => {
+    if (text === 'Download') {
+      downloadImage(image?.resultPic ?? '', 'image.jpg');
+    } else if (text === 'Delete') {
+      const imageId = image?.genImgId ?? 0;
+
+      deleteImage(imageId, () => {
+        setImages(prev => prev.filter(img => img.genImgId !== imageId));
+
+        setDetailVisible(false);
+      });
+    } else if (['Remove from album', 'Add to album'].includes(text)) {
+      try {
+        const res = await album.collectImage({
+          genImgId: image?.genImgId ?? 0,
+          action: text === 'Remove from album' ? 2 : 1
+        });
+
+        if (res.code === 0) {
+          showAlert({
+            type: 'success',
+            content: text === 'Remove from album' ? 'Image removed from album' : 'Image added to album'
+          });
+        } else {
+          showAlert({
+            type: 'error',
+            content: res.message || 'Failed to collect image'
+          });
+        }
+      } catch (error: any) {
+        showAlert({
+          type: 'error',
+          content: error.message || 'Failed to collect image'
+        });
+      }
+    } else if (text === 'Magic Kit') {
+      updateImageUrl(image?.resultPic ?? '');
+      router.push('/magic-kit');
+    } else if (text === 'Virtual Try-On') {
+      router.push(`/virtual-try-on?imageUrl=${encodeURIComponent(image?.resultPic ?? '')}`);
+    } else if (text === 'Share') {
+      try {
+        const res = await community.shareImage({ genImgId: image?.genImgId ?? 0 });
+
+        if (res.code === 0) {
+          showAlert({
+            type: 'success',
+            content: 'Image shared successfully'
+          });
+        } else {
+          showAlert({
+            type: 'error',
+            content: res.message || 'Failed to share image'
+          });
+        }
+      } catch (error: any) {
+        showAlert({
+          type: 'error',
+          content: error.message || 'Failed to share image'
+        });
+      }
+    }
+  };
+
   // 详情里支持切换图片，会更新在 selectedImage 上
   const handleImageChange = useCallback((image: ImageItem | null) => {
     setSelectedImage(image);
@@ -187,8 +273,10 @@ export function ImageGrid() {
 
   return (
     <>
-      <div
-        className="image-grid-container grid gap-4 z-20 bg-[#FFFDFA] auto-rows-max
+      <div className="w-full h-full p-4 z-20 bg-[#fff] rounded-[20px] overflow-hidden shadow-card-shadow">
+        <div className="h-full overflow-y-auto">
+          <div
+            className="image-grid-container grid gap-4 auto-rows-max
       grid-cols-1
       sm:grid-cols-2 
       min-[800px]:grid-cols-2 
@@ -199,15 +287,17 @@ export function ImageGrid() {
       min-[2560px]:grid-cols-7
       min-[3440px]:grid-cols-8
       min-[3840px]:grid-cols-9"
-      >
-        {images.map((image, index) => (
-          <ImageCard
-            key={image.genImgId || index}
-            image={image}
-            onClick={() => handleImageClick(image)}
-            handleDeleteImage={handleDeleteImage}
-          />
-        ))}
+          >
+            {images.map((image, index) => (
+              <ImageCard
+                key={image.genImgId || index}
+                image={image}
+                onClick={() => handleImageClick(image)}
+                handleDeleteImage={handleDeleteImage}
+              />
+            ))}
+          </div>
+        </div>
       </div>
       <ImageDetail
         imgList={images}
@@ -217,7 +307,7 @@ export function ImageGrid() {
           setDetailVisible(false);
         }}
         onImageChange={handleImageChange}
-        handleDeleteImage={handleDeleteImage}
+        handleActionButtonClick={handleActionButtonClick}
       />
     </>
   );

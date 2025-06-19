@@ -1,15 +1,6 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
-import { useErrorDialogStore } from '@/components/ErrorDialog';
-import { Modal } from '@/utils/modal';
-
-import { deleteImage as deleteImageApi } from '@/lib/api/generate';
-
-export const showErrorDialog = (message: string) => {
-  useErrorDialogStore.getState().openDialog(message);
-};
-
 export function downloadImage(url: string, filename: string) {
   fetch(url)
     .then(response => response.blob())
@@ -30,19 +21,13 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function deleteImage(imageId: number, onSuccess: () => void) {
-  Modal.confirm(
-    'Are you sure you want to delete this image?',
-    async () => {
-      const res = await deleteImageApi(imageId);
-      console.log(res);
+// 定义一个自定义日志函数
+export function log(message: string, ...optionalParams: any[]) {
+  const isClient = typeof window !== 'undefined';
 
-      if (res.code === 0) {
-        onSuccess();
-      } else {
-        Modal.error('Delete failed');
-      }
-    },
-    () => {}
-  );
+  const logging = isClient ? localStorage.getItem('LOGGING') === 'true' : process.env.NEXT_PUBLIC_LOGGING === 'true';
+
+  if (logging) {
+    console.log(message, ...optionalParams);
+  }
 }

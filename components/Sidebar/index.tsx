@@ -1,12 +1,14 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { Inter } from 'next/font/google';
-import { showErrorDialog } from '@/utils/index';
 
-import { ToggleTag } from './components/ToggleTag';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import TextToImageContent from './components/TextToImageContent';
 import ImageToImageContent from './components/ImageToImageContent/index';
+
+import { useAlertStore } from '@/stores/useAlertStore';
+
 const inter = Inter({ subsets: ['latin'] });
 
 import {
@@ -16,10 +18,13 @@ import {
   copyStyleGenerate,
   changeClothesGenerate,
   uploadImage,
-  humanModelGenerate,
   copyFabricGenerate,
   sketchToDesign,
-  mixImage
+  mixImage,
+  changeFabric,
+  changePrinting,
+  changePattern,
+  styleFusion
 } from '@/lib/api';
 import { useModelStore } from '@/stores/useModelStore';
 import { useGenerationStore } from '@/stores/useGenerationStore';
@@ -45,12 +50,15 @@ export interface ImageUploadFormData {
   referLevel: number;
   referenceImage: File | null;
   referenceImageUrl: string;
+  fabricPicUrl: string;
+  maskPicUrl: string;
 }
 
 export function Sidebar() {
-  const [activeTag, setActiveTag] = useState<'text' | 'image'>('text');
-  const { setModelSizes, setVariationTypes } = useModelStore();
+  const { setModelSizes } = useModelStore();
   const { setGenerating } = useGenerationStore();
+
+  const { showAlert } = useAlertStore();
 
   // 文生图 / 图生图 提交事件
   const handleSubmit = (data: OutfitFormData) => {
@@ -62,7 +70,10 @@ export function Sidebar() {
         setGenerating(true);
       })
       .catch(error => {
-        showErrorDialog(error.message || 'Failed to generate image');
+        showAlert({
+          type: 'error',
+          content: error.message || 'Failed to generate image'
+        });
         // 若生成失败放开拦截
         setGenerating(false);
       });
@@ -75,23 +86,101 @@ export function Sidebar() {
 
       // Validate image input (either URL or uploaded image)
       if (!data.imageUrl && !data.image) {
-        showErrorDialog('Please upload an image or provide an image URL');
+        showAlert({
+          type: 'error',
+          content: 'Please upload an image or provide an image URL'
+        });
         setGenerating(false);
         return;
       }
 
       // Validate image URL if provided
       if (data.imageUrl && !data.image && !isValidImageUrl(data.imageUrl)) {
-        showErrorDialog('Please provide a valid image URL before generating');
+        showAlert({
+          type: 'error',
+          content: 'Please provide a valid image URL before generating'
+        });
         setGenerating(false);
         return;
       }
 
-      // Validate description
-      if (!data.description.trim()) {
-        showErrorDialog('Please provide a description');
-        setGenerating(false);
-        return;
+      // Validation based on variation type
+      switch (data.variationType) {
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+          // These types require description
+          if (!data.description.trim()) {
+            showAlert({
+              type: 'error',
+              content: 'Please provide a description'
+            });
+            setGenerating(false);
+            return;
+          }
+          break;
+
+        case '5':
+          // Type 5 requires description and reference image
+          if (!data.description.trim()) {
+            showAlert({
+              type: 'error',
+              content: 'Please provide a description'
+            });
+            setGenerating(false);
+            return;
+          }
+          if (!data.referenceImageUrl && !data.referenceImage) {
+            showAlert({
+              type: 'error',
+              content: 'Please upload a reference image'
+            });
+            setGenerating(false);
+            return;
+          }
+          break;
+
+        case '6':
+        case '8':
+          // Types 6 and 8 only require main image, no description needed
+          break;
+
+        case '7':
+          // Type 7 requires fabric image
+          if (!data.fabricPicUrl) {
+            showAlert({
+              type: 'error',
+              content: 'Please upload a fabric image'
+            });
+            setGenerating(false);
+            return;
+          }
+          break;
+
+        case '10':
+          // 风格融合需要两张图片
+          if (!data.referenceImageUrl && !data.referenceImage) {
+            showAlert({
+              type: 'error',
+              content: 'Please upload a reference image'
+            });
+            setGenerating(false);
+            return;
+          }
+          break;
+
+        default:
+          // For unknown types, require description
+          if (!data.description.trim()) {
+            showAlert({
+              type: 'error',
+              content: 'Please provide a description'
+            });
+            setGenerating(false);
+            return;
+          }
+          break;
       }
 
       // If has local image but no URL, upload the image first
@@ -101,7 +190,10 @@ export function Sidebar() {
           finalImageUrl = await uploadImage(data.image);
         } catch (error) {
           console.error('Error uploading image:', error);
-          showErrorDialog('Failed to upload image. Please try again.');
+          showAlert({
+            type: 'error',
+            content: 'Failed to upload image. Please try again.'
+          });
           setGenerating(false);
           return;
         }
@@ -109,9 +201,28 @@ export function Sidebar() {
 
       // Validate final image URL
       if (!isValidImageUrl(finalImageUrl)) {
-        showErrorDialog('The image URL is invalid. Please upload a valid image.');
+        showAlert({
+          type: 'error',
+          content: 'The image URL is invalid. Please upload a valid image.'
+        });
         setGenerating(false);
         return;
+      }
+
+      // Handle reference image upload for type 5 if needed
+      let finalReferenceImageUrl = data.referenceImageUrl;
+      if (data.variationType === '5' && data.referenceImage && !data.referenceImageUrl) {
+        try {
+          finalReferenceImageUrl = await uploadImage(data.referenceImage);
+        } catch (error) {
+          console.error('Error uploading reference image:', error);
+          showAlert({
+            type: 'error',
+            content: 'Failed to upload reference image. Please try again.'
+          });
+          setGenerating(false);
+          return;
+        }
       }
 
       // Call appropriate API based on variation type
@@ -133,8 +244,20 @@ export function Sidebar() {
           data.referLevel // Convert string to number, default to female
         );
       } else if (data.variationType === '5') {
-        // Call copy fabric API
-        response = await mixImage(finalImageUrl, data.description, data.referenceImageUrl, data.referLevel);
+        // Call mix image API
+        response = await mixImage(finalImageUrl, data.description, finalReferenceImageUrl, data.referLevel);
+      } else if (data.variationType === '7') {
+        // Call change pattern API
+        response = await changePattern(finalImageUrl);
+      } else if (data.variationType === '8') {
+        // Call change fabric API
+        response = await changeFabric(finalImageUrl, data.fabricPicUrl, data.maskPicUrl);
+      } else if (data.variationType === '9') {
+        // Call change printing API
+        response = await changePrinting(finalImageUrl);
+      } else if (data.variationType === '10') {
+        // Call style fusion API
+        response = await styleFusion(finalImageUrl, finalReferenceImageUrl);
       } else {
         // Default to change clothes API if no type selected
         response = await changeClothesGenerate(finalImageUrl, data.description);
@@ -145,12 +268,18 @@ export function Sidebar() {
         // Trigger refresh of image grid
         eventBus.emit('sidebar:submit-success', void 0);
       } else {
-        showErrorDialog(response.msg || 'Failed to generate image');
+        showAlert({
+          type: 'error',
+          content: response.msg || 'Failed to generate image'
+        });
         setGenerating(false);
       }
     } catch (error) {
       console.error('Error in image-to-image generation:', error);
-      showErrorDialog((error as Error).message || 'An unexpected error occurred');
+      showAlert({
+        type: 'error',
+        content: (error as Error).message || 'An unexpected error occurred'
+      });
       // Let the ImageToImageContent component handle setting generating to false
       throw error;
     }
@@ -161,35 +290,47 @@ export function Sidebar() {
     const fetchData = async () => {
       try {
         // 并行请求两个API
-        const [modelSizes, variationTypes] = await Promise.all([getModelSizeList(), getVariationTypeList()]);
+        const [modelSizes] = await Promise.all([getModelSizeList()]);
 
         // 设置数据
         setModelSizes(modelSizes || []);
-        setVariationTypes(variationTypes || []);
       } catch (error) {
         console.error('Error fetching data:', error);
-        showErrorDialog('Something went wrong. Please try again later or contact support if the issue persists');
+        showAlert({
+          type: 'error',
+          content: 'Something went wrong. Please try again later or contact support if the issue persists'
+        });
       }
     };
 
     fetchData();
-  }, [setModelSizes, setVariationTypes]);
+  }, [setModelSizes]);
 
   return (
     <div
-      className={`w-[334px] h-[calc(100vh-56px)] flex-shrink-0 bg-white border-r box-content border-gray-200 flex flex-col z-0 ${inter.className}`}
+      className={`w-[378px] h-[calc(100vh-110px)] overflow-y-auto py-4 rounded-[20px] flex-shrink-0 bg-white shadow-card-shadow flex flex-col z-0 ${inter.className}`}
     >
-      <div className="flex justify-center items-center w-full px-3 border-b border-[#DCDCDC] gap-[46px]">
-        <ToggleTag label="Text to image" isActive={activeTag === 'text'} onClick={() => setActiveTag('text')} />
-        <ToggleTag label="Image to image" isActive={activeTag === 'image'} onClick={() => setActiveTag('image')} />
-      </div>
-      <div className="flex-1 overflow-hidden pt-4 ">
-        <div className={activeTag === 'text' ? 'block h-full' : 'hidden'}>
-          <TextToImageContent onSubmit={handleSubmit} />
-        </div>
-        <div className={activeTag === 'image' ? 'block  h-full overflow-x-hidden' : 'hidden'}>
-          <ImageToImageContent onSubmit={handleImageSubmit} />
-        </div>
+      <div className="flex justify-center items-center w-full h-full gap-[46px]">
+        <Tabs defaultValue="text" className="h-full w-full flex flex-col">
+          <div className="flex items-center justify-center">
+            <TabsList>
+              <TabsTrigger value="text">Text to image</TabsTrigger>
+              <TabsTrigger value="image">Image to image</TabsTrigger>
+            </TabsList>
+          </div>
+          <div className="flex-1 overflow-hidden pt-4 ">
+            <TabsContent value="text" className="h-full">
+              <div className={'block h-full'}>
+                <TextToImageContent onSubmit={handleSubmit} />
+              </div>
+            </TabsContent>
+            <TabsContent value="image" className="h-full">
+              <div className={'block  h-full overflow-y-auto'}>
+                <ImageToImageContent onSubmit={handleImageSubmit} />
+              </div>
+            </TabsContent>
+          </div>
+        </Tabs>
       </div>
     </div>
   );

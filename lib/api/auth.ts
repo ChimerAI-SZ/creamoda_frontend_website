@@ -120,7 +120,6 @@ export async function getGoogleCallback(code: string) {
 export async function getUserInfo() {
   try {
     const response = await api.get('/api/v1/user/info');
-    console.log('getUserInfo response:', response.data);
     // More detailed error handling
     if (response.data.code === 0 && response.data.data) {
       return response.data.data;

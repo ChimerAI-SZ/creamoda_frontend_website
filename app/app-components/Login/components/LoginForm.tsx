@@ -1,8 +1,11 @@
 import { useState, useCallback } from 'react';
+
 import { Button } from '@/components/ui/button';
 import { FormField } from './FormField';
-import { validators } from '../validators';
-import { login, saveAuthToken } from '@/lib/api/index';
+import { validators } from '../const';
+
+import { login, saveAuthToken } from '@/lib/api';
+import { cn } from '@/utils';
 
 interface LoginFormProps {
   onToggleView: () => void;
@@ -15,8 +18,7 @@ export const LoginForm = ({ onToggleView, onSuccess }: LoginFormProps) => {
     password: ''
   });
   const [errors, setErrors] = useState({
-    email: '',
-    password: ''
+    email: ''
   });
   const [isLoading, setIsLoading] = useState(false);
   const [apiError, setApiError] = useState('');
@@ -38,8 +40,6 @@ export const LoginForm = ({ onToggleView, onSuccess }: LoginFormProps) => {
     (field: 'email' | 'password') => () => {
       if (field === 'email') {
         setErrors(prev => ({ ...prev, email: validators.email(formData.email) }));
-      } else {
-        setErrors(prev => ({ ...prev, password: validators.password(formData.password) }));
       }
     },
     [formData.email, formData.password]
@@ -50,12 +50,10 @@ export const LoginForm = ({ onToggleView, onSuccess }: LoginFormProps) => {
 
     // Validate form before submission
     const emailError = validators.email(formData.email);
-    const passwordError = validators.password(formData.password);
 
-    if (emailError || passwordError) {
+    if (emailError) {
       setErrors({
-        email: emailError,
-        password: passwordError
+        email: emailError
       });
       return;
     }
@@ -94,14 +92,13 @@ export const LoginForm = ({ onToggleView, onSuccess }: LoginFormProps) => {
     }
   };
 
-  const isFormValid =
-    formData.email.trim() !== '' && formData.password.trim() !== '' && !errors.email && !errors.password;
+  const isFormValid = formData.email.trim() !== '' && formData.password.trim() !== '' && !errors.email;
 
   return (
     <form onSubmit={handleSubmit} className="mt-[6px]">
       {apiError && (
         <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
-          <p className="text-[#E50000] text-sm font-inter">{apiError}</p>
+          <p className="text-error text-sm font-inter">{apiError}</p>
         </div>
       )}
 
@@ -123,18 +120,17 @@ export const LoginForm = ({ onToggleView, onSuccess }: LoginFormProps) => {
           value={formData.password}
           onChange={handleChange('password')}
           onKeyUp={handleKeyUp('password')}
-          error={errors.password}
         />
       </div>
 
       <Button
+        variant="primary"
         type="submit"
         disabled={!isFormValid || isLoading}
-        className={`h-[52px] w-full py-[10px] px-4 flex justify-center items-center gap-[6px] rounded-[4px] ${
-          isFormValid && !isLoading
-            ? 'bg-[#F97917] hover:bg-gradient-to-r hover:from-[#F9BE60] hover:to-[#F97917] hover:shadow-[0px_4px_4px_0px_rgba(252,182,61,0.25)]'
-            : 'bg-[rgba(249,121,23,0.5)] cursor-not-allowed'
-        } text-white font-inter text-sm font-medium leading-5 transition-all`}
+        className={cn(
+          'h-[44px] w-full flex justify-center items-center gap-[6px] text-white font-inter text-base font-bold transition-all disabled:opacity-70 disabled:cursor-not-allowed',
+          !(isFormValid && !isLoading) && 'bg-primary/50 cursor-not-allowed'
+        )}
       >
         {isLoading ? 'Logging in...' : 'Login'}
       </Button>

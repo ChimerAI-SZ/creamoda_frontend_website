@@ -91,12 +91,18 @@ export async function uploadImage(file: File) {
   }
 }
 
-export async function updateUserInfo(payload: { headPic: string | null; username: string | null; pwd: string | null }) {
+export async function updateUserInfo(payload: {
+  headPic?: string | null;
+  username?: string | null;
+  pwd?: string | null;
+  billingEmail?: string | null;
+}) {
   try {
     const response = await api.post('/api/v1/user/change/user_info', {
       username: payload.username,
       pwd: payload.pwd,
-      headPic: payload.headPic
+      headPic: payload.headPic,
+      billingEmail: payload.billingEmail
     });
     return response.data;
   } catch (error) {

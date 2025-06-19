@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useDebounceFn } from 'ahooks';
 
 import { eventBus } from '@/utils/events';
+import { Button } from '../ui/button';
 
 export type GenerateButtonState = 'disabled' | 'ready' | 'generating';
 
@@ -35,16 +36,17 @@ export function GenerateButton({ onClick, state = 'disabled', className = '' }: 
 
   // Button styles based on state
   const buttonStyles = {
-    disabled: 'bg-[#CECECE] text-white cursor-not-allowed',
-    ready: 'bg-[#F97917] text-white hover:bg-[#E86806] cursor-pointer',
+    disabled: 'text-white cursor-not-allowed',
+    ready: 'text-white cursor-pointer',
     generating: 'bg-[rgba(249,121,23,0.5)] text-white cursor-not-allowed'
   };
 
   return (
     <div className="px-4">
-      <button
+      <Button
+        variant={'default'}
         type="submit"
-        className={`w-full px-4 py-2.5 flex items-center justify-center gap-1.5 rounded text-sm font-medium font-inter leading-5 ${buttonStyles[state]} ${className}`}
+        className={`w-full px-4 py-2.5 flex items-center justify-center gap-1.5 text-sm font-medium font-inter leading-5 ${buttonStyles[state]} ${className}`}
         disabled={state === 'disabled' || state === 'generating'}
         onClick={() => {
           handleClick();
@@ -52,7 +54,7 @@ export function GenerateButton({ onClick, state = 'disabled', className = '' }: 
       >
         <Image src="/images/operation/generate.svg" alt="Generate" width={16} height={16} />
         <span className="text-white font-inter text-[14px] font-medium leading-[20px]">{buttonText}</span>
-      </button>
+      </Button>
     </div>
   );
 }

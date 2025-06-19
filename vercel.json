@@ -1,0 +1,15 @@
+{
+  "buildCommand": "next build",
+  "outputDirectory": ".next",
+  "framework": "nextjs",
+  "regions": ["hkg1"],
+  "functions": {
+    "app/api/*/route.js": {
+      "maxDuration": 30
+    },
+    "app/*/page.js": {
+      "maxDuration": 30
+    }
+  },
+  "crons": []
+}

@@ -6,9 +6,11 @@ import * as token from './token';
 import * as tryOn from './tryon';
 import * as magicKit from './magicKit';
 import * as album from './album';
+import * as payment from './payment';
+import * as community from './community';
 
 // 导出为命名空间
-export { auth, common, generate, token, tryOn, album, magicKit };
+export { auth, common, generate, token, tryOn, album, magicKit, payment, community };
 
 // 也可以直接导出所有函数，但可能会导致命名冲突
 export * from './auth';
@@ -18,3 +20,5 @@ export * from './generate';
 export * from './tryon';
 export * from './magicKit';
 export * from './album';
+export * from './payment';
+export * from './community';

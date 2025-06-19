@@ -10,6 +10,8 @@ export interface VariationFormState {
       referLevel: number;
       referenceImage: File | null;
       referenceImageUrl: string;
+      fabricPicUrl: string;
+      maskPicUrl: string;
     };
   };
   // Current selected variation type
@@ -24,6 +26,8 @@ interface VariationFormActions {
   updateReferLevel: (referLevel: number) => void;
   updateReferenceImage: (image: File | null) => void;
   updateReferenceImageUrl: (imageUrl: string) => void;
+  updateFabricPicUrl: (fabricPicUrl: string) => void;
+  updateMaskPicUrl: (maskPicUrl: string) => void;
   resetFormData: (variationType: string) => void;
 }
 
@@ -41,7 +45,9 @@ const ensureVariationTypeExists = (variationData: VariationFormState['variationD
       description: '',
       referLevel: 2,
       referenceImage: null,
-      referenceImageUrl: ''
+      referenceImageUrl: '',
+      fabricPicUrl: '',
+      maskPicUrl: ''
     };
   }
 };
@@ -156,6 +162,24 @@ export const useVariationFormStore = create<VariationFormState & VariationFormAc
       };
     }),
 
+  updateFabricPicUrl: (fabricPicUrl: string) =>
+    set(state => {
+      const { currentVariationType, variationData } = state;
+      if (!currentVariationType) return state;
+
+      const newVariationData = { ...variationData };
+      ensureVariationTypeExists(newVariationData, currentVariationType);
+
+      newVariationData[currentVariationType] = {
+        ...newVariationData[currentVariationType],
+        fabricPicUrl: fabricPicUrl
+      };
+
+      return {
+        ...state,
+        variationData: newVariationData
+      };
+    }),
   updateReferenceImageUrl: (imageUrl: string) =>
     set(state => {
       const { currentVariationType, variationData } = state;
@@ -175,6 +199,25 @@ export const useVariationFormStore = create<VariationFormState & VariationFormAc
       };
     }),
 
+  updateMaskPicUrl: (maskPicUrl: string) =>
+    set(state => {
+      const { currentVariationType, variationData } = state;
+      if (!currentVariationType) return state;
+
+      const newVariationData = { ...variationData };
+      ensureVariationTypeExists(newVariationData, currentVariationType);
+
+      newVariationData[currentVariationType] = {
+        ...newVariationData[currentVariationType],
+        maskPicUrl: maskPicUrl
+      };
+
+      return {
+        ...state,
+        variationData: newVariationData
+      };
+    }),
+
   resetFormData: (variationType: string) =>
     set(state => {
       const newVariationData = { ...state.variationData };
@@ -185,7 +228,9 @@ export const useVariationFormStore = create<VariationFormState & VariationFormAc
         description: '',
         referLevel: 2,
         referenceImage: null,
-        referenceImageUrl: ''
+        referenceImageUrl: '',
+        fabricPicUrl: '',
+        maskPicUrl: ''
       };
 
       return {

@@ -1,0 +1,165 @@
+'use client';
+
+import Image from 'next/image';
+import { useState, useEffect } from 'react';
+
+import AccountSetting from './AccountSettings';
+import AvatarMenu from './AvatarMenu';
+import Membership, { PaymentType } from '@/components/Membership';
+import OrdersAndPayment from './OrdersAndPayment';
+
+import { logout } from '@/lib/api';
+import usePersonalInfoStore from '@/stores/usePersonalInfoStore';
+import { Button } from '@/components/ui/button';
+import { eventBus } from '@/utils/events';
+import { useAlertStore } from '@/stores/useAlertStore';
+
+export type AvatarActionType = 'membership' | 'payment' | 'setting';
+
+export default function Avatar() {
+  const [isMenuVisible, setIsMenuVisible] = useState(false); // 个人详情菜单弹窗是否展示
+  const [settingVisible, setSettingVisible] = useState(false); // account settings 弹窗是否展示
+  const [membershipVisible, setMembershipVisible] = useState(false); // membership 弹窗是否展示
+  const [defaultMembershipType, setDefaultMembershipType] = useState<PaymentType>('Credit'); // membership 弹窗是否展示
+  const [paymentVisible, setPaymentVisible] = useState(false); // payment 弹窗是否展示
+  // 获取用户信息
+  const { username, email, headPic, fetchUserInfo, credit } = usePersonalInfoStore();
+
+  const { showAlert } = useAlertStore();
+
+  const handleOpenMenu = () => {
+    const token = localStorage.getItem('auth_token');
+
+    // 已经登录了就打开详情，没有登录就出发登录弹窗
+    if (token) {
+      setIsMenuVisible(true);
+    } else {
+      eventBus.emit('auth:login', { isOpen: true });
+    }
+  };
+
+  // log out
+  const handleLogout = () => {
+    setIsMenuVisible(false);
+    setSettingVisible(false);
+
+    // 调用登出接口
+    logout()
+      .then(() => {
+        // 登出触发登陆弹窗
+        eventBus.emit('auth:login', { isOpen: true });
+        // 登出登出
+        eventBus.emit('auth:logout', void 0);
+
+        showAlert({
+          type: 'success',
+          content: 'Logged out successfully'
+        });
+      })
+      .catch((error: any) => {
+        showAlert({
+          type: 'error',
+          content:
+            error.message || 'Something went wrong. Please try again later or contact support if the issue persists'
+        });
+      })
+      .finally(() => {
+        localStorage.removeItem('auth_token');
+      });
+  };
+
+  const handleAction = (key: AvatarActionType) => {
+    const visibilityMap = {
+      setting: setSettingVisible,
+      membership: () => {
+        setDefaultMembershipType('Plan');
+        setMembershipVisible(true);
+      },
+      payment: setPaymentVisible
+    };
+
+    // 隐藏菜单并打开对应的 dialog
+    setIsMenuVisible(false);
+    visibilityMap[key]?.(true);
+  };
+
+  const closeMenu = () => {
+    setIsMenuVisible(false);
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem('auth_token');
+
+    // 如果已经登录了，但是没有用户信息，则获取用户信息
+    if (token && (!username || !email)) {
+      fetchUserInfo();
+    }
+  }, [username, email, fetchUserInfo]);
+
+  return (
+    <div className="relative">
+      <div className="flex items-center justify-start gap-3">
+        <div
+          onClick={() => {
+            setDefaultMembershipType('Credit');
+            setMembershipVisible(true);
+          }}
+        >
+          {credit > 0 ? (
+            <div>
+              <Button
+                variant="gradient"
+                size="md"
+                // className="flex items-center gap-1 rounded-full px-2 py-1 bg-gradient-to-r from-[rgba(0,143,247,0.40)] via-[rgba(160,144,249,0.40)] via-[42.97%] to-[rgba(249,121,23,0.40)] to-[82.53%] cursor-pointer"
+              >
+                <Image src="/images/menu/integral.svg" alt="integral" width={16} height={16} className="object-cover" />
+                <span className="text-[#FFF] text-center font-inter text-[14px] font-bold leading-[20px]">
+                  {credit} Cr
+                </span>
+              </Button>
+            </div>
+          ) : (
+            <Button variant="gradientDestructive" size="sm" className="w-fit">
+              <Image src="/images/menu/integral.svg" alt="integral" width={16} height={16} className="object-cover" />
+              <span className="text-[#FFF] text-center font-inter text-[14px] leading-[20px]">0 Cr</span>
+            </Button>
+          )}
+        </div>
+        <div
+          className="w-8 h-8 rounded-full overflow-hidden focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 cursor-pointer"
+          onClick={handleOpenMenu}
+        >
+          <Image
+            src={headPic || '/images/defaultAvatar.svg'}
+            alt="用户头像"
+            width={32}
+            height={32}
+            className="w-full h-full object-cover"
+          />
+        </div>
+      </div>
+
+      {isMenuVisible && <AvatarMenu closeMenu={closeMenu} handleAction={handleAction} handleLogout={handleLogout} />}
+
+      <AccountSetting
+        handleLogout={handleLogout}
+        open={settingVisible}
+        onOpenChange={setSettingVisible}
+        setIsMenuVisible={setIsMenuVisible}
+      />
+
+      {membershipVisible && (
+        <Membership onClose={() => setMembershipVisible(false)} defaultType={defaultMembershipType} />
+      )}
+
+      <OrdersAndPayment
+        open={paymentVisible}
+        onOpenChange={setPaymentVisible}
+        handleOpenMembership={(type: PaymentType) => {
+          setDefaultMembershipType(type);
+          setMembershipVisible(true);
+        }}
+      />
+    </div>
+  );
+}

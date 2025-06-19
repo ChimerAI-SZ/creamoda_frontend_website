@@ -20,7 +20,6 @@ export default function RandomPrompt({
 }: {
   handleQueryRandomPrompt: (prompt: string) => void;
 }) {
-  const [isRotating, setIsRotating] = useState(false); // refresh icon rotating
   const [displayedPrompt, setDisplayedPrompt] = useState('');
   const [currentFullPrompt, setCurrentFullPrompt] = useState('');
 
@@ -51,8 +50,6 @@ export default function RandomPrompt({
   }, [formatPromptForDisplay, getRandomPrompt]);
 
   const handleRefresh = useCallback(() => {
-    setIsRotating(true);
-
     const newPrompt = getRandomPrompt();
     setCurrentFullPrompt(newPrompt);
     setDisplayedPrompt(formatPromptForDisplay(newPrompt));
@@ -62,34 +59,31 @@ export default function RandomPrompt({
     handleQueryRandomPrompt(currentFullPrompt);
   }, [currentFullPrompt, handleQueryRandomPrompt]);
 
-  const handleAnimationEnd = () => {
-    setIsRotating(false);
-  };
-
   return (
     <div className="relative">
-      <div className="flex items-start justify-start">
-        <Image src="/images/generate/surprise_me.svg" alt="Surprise me" width={16} height={16} className="absolute" />
+      <div className="flex items-center justify-start gap-1">
+        <Image src="/images/generate/surprise_me.svg" alt="Surprise me" width={20} height={20} className="" />
         <span
-          style={{
-            textIndent: '20px',
-            color: '#999',
-            fontFamily: 'Inter',
-            fontSize: '14px',
-            fontStyle: 'normal',
-            fontWeight: 400,
-            lineHeight: '20px'
-          }}
           onClick={handleTextClick}
-          className="cursor-pointer"
+          className="box cursor-pointer text-[#999] font-inter text-[14px] font-normal leading-[20px] overflow-hidden text-ellipsis"
+          style={{
+            display: '-webkit-box',
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+            boxOrient: 'vertical', // Firefox fallback
+            lineClamp: 2 // Firefox fallback
+          }}
         >
-          <span className="text-[#000] font-inter text-[14px] font-normal leading-[20px] ml-[6px]">Surprise me：</span>
           {displayedPrompt}
         </span>
-        <span className="w-[16px] h-[16px] shrink-0">
-          <RotateCcw
-            className={`w-full fas fa-sync-alt cursor-pointer ${isRotating ? 'animate-rotateOneCircle' : ''}`}
-            onAnimationEnd={handleAnimationEnd}
+        <span className="w-[20px] h-[20px] shrink-0" onClick={handleRefresh}>
+          <Image
+            src="/images/generate/refresh.svg"
+            alt="Surprise me"
+            width={20}
+            height={20}
+            className="cursor-pointer"
             onClick={handleRefresh}
           />
         </span>

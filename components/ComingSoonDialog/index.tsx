@@ -39,7 +39,7 @@ const NavDialog: React.FC<NavDialogProps> = ({ trigger }) => {
               variant="outline"
               className="flex w-[142px] h-[40px] px-0 py-[10px] justify-center items-center rounded-1"
             >
-              <span className="text-[#F97917] font-inter text-sm font-medium leading-5">OK</span>
+              <span className="text-primary font-inter text-sm font-medium leading-5">OK</span>
             </Button>
           </DialogClose>
         </div>

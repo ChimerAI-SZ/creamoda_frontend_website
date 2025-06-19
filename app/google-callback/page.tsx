@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { getGoogleCallback, saveAuthToken } from '@/lib/api/index';
+import { getGoogleCallback, saveAuthToken } from '@/lib/api';
 
 // Add dynamic import to disable pre-rendering
 export const dynamic = 'force-dynamic';
@@ -75,7 +75,7 @@ export default function GoogleCallback() {
   return (
     <div className="flex items-center justify-center min-h-screen">
       <div className="text-center">
-        <div className="w-12 h-12 border-4 border-t-[#F97917] border-gray-200 rounded-full animate-spin mx-auto mb-4"></div>
+        <div className="w-12 h-12 border-4 border-t-primary border-gray-200 rounded-full animate-spin mx-auto mb-4"></div>
         <h2 className="text-xl font-medium text-gray-700">Completing Google login...</h2>
         <p className="text-gray-500 mt-2">Please wait while we process your login.</p>
       </div>

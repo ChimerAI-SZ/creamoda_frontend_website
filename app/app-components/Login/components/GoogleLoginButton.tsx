@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+
+import { Button } from '@/components/ui/button';
 import { getGoogleAuthUrl, saveAuthToken } from '@/lib/api';
+
 import google from '@/images/login/google.svg';
 
 interface GoogleLoginButtonProps {
@@ -94,20 +97,20 @@ export const GoogleLoginButton = ({ onError, onSuccess }: GoogleLoginButtonProps
   };
 
   return (
-    <button
-      type="button"
+    <Button
+      variant="primarySecondary"
       onClick={handleGoogleLogin}
       disabled={isLoading}
-      className="h-[52px] w-full py-[10px] px-4 flex items-center justify-center gap-[6px] rounded-[4px] border border-[#F97917] bg-white hover:border-[rgba(249,121,23,0.5)] transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+      className="h-[44px] w-full flex items-center justify-center gap-[6px] transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
     >
       {isLoading ? (
-        <div className="w-5 h-5 border-2 border-gray-300 border-t-[#F97917] rounded-full animate-spin" />
+        <div className="w-5 h-5 border-2 border-gray-300 border-t-primary rounded-full animate-spin" />
       ) : (
         <Image src={google.src} alt="Google Logo" width={20} height={20} className="cursor-pointer" />
       )}
       <span className="text-sm font-medium text-[#121316] font-inter">
         {isLoading ? 'Connecting...' : 'Continue with Google'}
       </span>
-    </button>
+    </Button>
   );
 };

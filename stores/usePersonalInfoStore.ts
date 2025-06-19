@@ -1,11 +1,6 @@
 import { create } from 'zustand';
-import { getUserInfo } from '@/lib/api/index';
 
-export interface BasicOptionItem {
-  id: number | string;
-  name: string;
-  [key: string]: any;
-}
+import { getUserInfo } from '@/lib/api';
 
 interface UserInfo {
   username: string;
@@ -14,6 +9,11 @@ interface UserInfo {
   headPic: string;
   emailVerified: string;
   hasPwd: boolean;
+  credit: number;
+  subscribeLevel: 1 | 2 | 3 | 0;
+  billingEmail: string;
+  renewTime: string;
+  isRenew: 0 | 1;
 }
 
 interface ModelState extends UserInfo {
@@ -43,7 +43,14 @@ export const usePersonalInfoStore = create<ModelState>((set, get) => ({
   status: '',
   headPic: '',
   emailVerified: '',
-  hasPwd: false,
+  hasPwd: false, // 用于标记可以修改密码
+
+  // subscription fields
+  credit: 0, // 积分
+  subscribeLevel: 0, // 订阅等级
+  billingEmail: '', // 账单邮箱
+  renewTime: '', // 续费时间
+  isRenew: 0, // 是否续费
 
   // Status fields
   isLoading: false,
@@ -56,9 +63,30 @@ export const usePersonalInfoStore = create<ModelState>((set, get) => ({
   updateHeadPic: headPic => set({ headPic }),
   updateEmailVerified: emailVerified => set({ emailVerified }),
   updateHasPwd: hasPwd => set({ hasPwd }),
+
+  // subscription fields
+  updateCredit: (credit: number) => set({ credit }),
+  updateSubscribeLevel: (subscribeLevel: 1 | 2 | 3 | 0) => set({ subscribeLevel }),
+  updateBillingEmail: (billingEmail: string) => set({ billingEmail }),
+  updateRenewTime: (renewTime: string) => set({ renewTime }),
+
   // Update multiple fields at once
   updateUserInfo: userInfo => set(state => ({ ...state, ...userInfo })),
-  clearUserInfo: () => set({ username: '', email: '', status: '', headPic: '', emailVerified: '', hasPwd: false }),
+  clearUserInfo: () =>
+    set({
+      username: '',
+      email: '',
+      status: '',
+      headPic: '',
+      emailVerified: '',
+      hasPwd: false,
+      credit: 0,
+      isRenew: 0,
+
+      subscribeLevel: 0,
+      billingEmail: '',
+      renewTime: ''
+    }),
 
   // Fetch user info from API
   fetchUserInfo: async () => {
@@ -72,7 +100,12 @@ export const usePersonalInfoStore = create<ModelState>((set, get) => ({
         status: userData.status || '',
         headPic: userData.headPic || '',
         emailVerified: userData.emailVerified || '',
-        hasPwd: userData.hasPwd
+        hasPwd: userData.hasPwd,
+        credit: userData.credit || 0,
+        isRenew: userData.isRenew || 0,
+        subscribeLevel: userData.subscribeLevel || 0,
+        billingEmail: userData.billingEmail || '',
+        renewTime: userData.renewTime || ''
       };
 
       set({ ...userInfo, isLoading: false });

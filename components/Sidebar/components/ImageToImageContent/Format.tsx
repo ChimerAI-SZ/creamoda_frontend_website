@@ -16,7 +16,7 @@ export function Format({ value, onChange }: FormatProps) {
           <div className="flex items-center justify-between gap-2">
             <h3 className="font-medium text-sm">Aspect Ratio</h3>
             <Select defaultValue={value} onValueChange={onChange}>
-              <SelectTrigger className="w-[171.424px]  px-2  flex items-center  rounded-[32px] border border-[#F97917] bg-white">
+              <SelectTrigger className="w-[171.424px]  px-2  flex items-center  rounded-[32px] border border-primary bg-white">
                 <SelectValue placeholder="Select ratio" />
               </SelectTrigger>
               <SelectContent>

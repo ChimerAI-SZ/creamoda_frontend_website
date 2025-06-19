@@ -1,15 +1,20 @@
 'use client';
 
 import * as React from 'react';
+
 import { GenerateButton, GenerateButtonState } from '@/components/GenerateButton/GenerateButton';
 import { MemoizedImageUploader as ImageUploader } from '@/components/ImageUploader';
 import { FormLabel } from '@/components/FormLabel/FormLabel';
-import { VariationTypeSelect } from './VariationTypeSelect';
+import { VariationTypeSelect } from '@/components/VariationTypeSelect';
 import { FidelitySlider } from '@/components/Sidebar/components/ImageToImageContent/FidelitySlider';
 import { ImageUploadFormData } from '@/components/Sidebar';
-import { useGenerationStore } from '@/stores/useGenerationStore';
 import { DescribeDesign } from '@/components/DescribeDesign';
+import { StyledLabel } from '../../../StyledLabel';
+
+import { useGenerationStore } from '@/stores/useGenerationStore';
 import { useVariationFormStore } from '@/stores/useVariationFormStore';
+import { useModelStore } from '@/stores/useModelStore';
+import { ImageUploader as ImageUploader2 } from '@/components/ImageUploader';
 
 interface ImageUploadFormProps {
   onSubmit?: (data: ImageUploadFormData) => void;
@@ -25,10 +30,16 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
     updateDescription,
     updateReferLevel,
     updateReferenceImage,
-    updateReferenceImageUrl
+    updateReferenceImageUrl,
+    updateFabricPicUrl,
+    updateMaskPicUrl
   } = useVariationFormStore();
 
   const { isGenerating, setGenerating } = useGenerationStore();
+
+  // 从 store 中获取 variationTypes，当前是图生图，对应 type 为 2
+  const { getVariationTypesByType } = useModelStore();
+  const variationTypes = getVariationTypesByType(2);
 
   // Get the current variation data based on the selected variation type
   const currentData = React.useMemo(() => {
@@ -39,7 +50,9 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
         description: '',
         referLevel: 2,
         referenceImage: null,
-        referenceImageUrl: ''
+        referenceImageUrl: '',
+        fabricPicUrl: '',
+        maskPicUrl: ''
       };
     }
     return variationData[currentVariationType];
@@ -66,6 +79,22 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
       updateReferenceImage(image);
     },
     [updateReferenceImage]
+  );
+
+  const onMaskImageUrlChange = React.useCallback(
+    (imageUrl: string, uploadedMaskUrl?: string) => {
+      if (uploadedMaskUrl) {
+        updateMaskPicUrl(uploadedMaskUrl);
+      }
+    },
+    [updateMaskPicUrl]
+  );
+
+  const handleFabricImageUrlChange = React.useCallback(
+    (imageUrl: string) => {
+      updateFabricPicUrl(imageUrl);
+    },
+    [updateFabricPicUrl]
   );
 
   const handleReferenceImageUrlChange = React.useCallback(
@@ -142,7 +171,9 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
           description: currentData.description,
           referLevel: currentData.referLevel,
           referenceImage: currentData.referenceImage,
-          referenceImageUrl: currentData.referenceImageUrl
+          referenceImageUrl: currentData.referenceImageUrl,
+          fabricPicUrl: currentData.fabricPicUrl,
+          maskPicUrl: currentData.maskPicUrl
         };
 
         // Call the parent's onSubmit function with the form data
@@ -165,133 +196,275 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
       return 'generating';
     }
 
-    if (!currentData.description.trim() || (!currentData.image && !currentData.imageUrl)) {
+    // Check if main image is provided
+    const hasMainImage = currentData.image || currentData.imageUrl;
+    if (!hasMainImage) {
       return 'disabled';
     }
 
+    // Validation based on variation type
+    switch (currentVariationType) {
+      case '1':
+      case '2':
+      case '3':
+      case '4':
+        // These types require description
+        if (!currentData.description.trim()) {
+          return 'disabled';
+        }
+        break;
+
+      case '5':
+        // Type 5 requires description and reference image
+        if (!currentData.description.trim()) {
+          return 'disabled';
+        }
+        const hasReferenceImage = currentData.referenceImage || currentData.referenceImageUrl;
+        if (!hasReferenceImage) {
+          return 'disabled';
+        }
+        break;
+
+      case '7':
+      case '9':
+        // Types 6 and 8 only require main image, no description needed
+        break;
+
+      case '8':
+        // Type 7 requires fabric image
+        if (!currentData.fabricPicUrl) {
+          return 'disabled';
+        }
+        break;
+      case '10':
+        // Type 10 requires reference image
+        if (!currentData.referenceImageUrl) {
+          return 'disabled';
+        }
+        break;
+
+      default:
+        // For unknown types, require description
+        if (!currentData.description.trim()) {
+          return 'disabled';
+        }
+        break;
+    }
+
     return 'ready';
-  }, [currentData.description, currentData.image, currentData.imageUrl, isGenerating]);
+  }, [
+    currentData.description,
+    currentData.image,
+    currentData.imageUrl,
+    currentData.referenceImage,
+    currentData.referenceImageUrl,
+    currentData.fabricPicUrl,
+    currentVariationType,
+    isGenerating
+  ]);
 
   return (
-    <div className="flex flex-col h-full overflow-x-hidden">
-      <form onSubmit={handleFormSubmit} className="flex-1 overflow-y-auto overflow-x-hidden space-y-4 pb-20 px-4">
-        <VariationTypeSelect value={currentVariationType} onChange={handleVariationTypeChange} />
-        {currentVariationType === '1' && (
-          <div className="space-y-4">
-            <div className="space-y-[10px]">
-              <FormLabel>Upload image</FormLabel>
-              <ImageUploader
-                onImageChange={handleImageChange}
-                onImageUrlChange={handleImageUrlChange}
-                imageUrl={currentData.imageUrl}
-                currentImage={currentData.image}
+    <div className="flex flex-col h-full">
+      <div className="flex-1 overflow-y-auto overflow pb-4 h-[calc(100%-52px)]">
+        <form onSubmit={handleFormSubmit} className="flex-1 overflow-y-auto overflow-x-hidden space-y-4 px-4">
+          <VariationTypeSelect
+            value={currentVariationType}
+            onChange={handleVariationTypeChange}
+            variationTypes={variationTypes}
+          />
+          {currentVariationType === '1' && (
+            <div className="space-y-4">
+              <div className="space-y-[10px]">
+                <StyledLabel content="Upload image" htmlFor="image" />
+                <ImageUploader
+                  onImageChange={handleImageChange}
+                  onImageUrlChange={handleImageUrlChange}
+                  imageUrl={currentData.imageUrl}
+                  currentImage={currentData.image}
+                />
+              </div>
+              <FidelitySlider value={currentData.referLevel} onChange={handleReferLevelChange} />
+              <DescribeDesign
+                label="Describe the final design"
+                description={currentData.description}
+                onDescriptionChange={handleDescriptionChange}
+                onFeatureSelection={handleFeatureSelection}
+                onRandomPrompt={handleQueryRandomPrompt}
+                placeholderText={getPlaceholderText()}
               />
             </div>
-            <FidelitySlider value={currentData.referLevel} onChange={handleReferLevelChange} />
-            <DescribeDesign
-              description={currentData.description}
-              onDescriptionChange={handleDescriptionChange}
-              onFeatureSelection={handleFeatureSelection}
-              onRandomPrompt={handleQueryRandomPrompt}
-              placeholderText={getPlaceholderText()}
-            />
-          </div>
-        )}
+          )}
 
-        {currentVariationType === '2' && (
-          <div className="space-y-4">
-            <div className="space-y-[10px]">
-              <FormLabel>Upload image</FormLabel>
-              <ImageUploader
-                onImageChange={handleImageChange}
-                onImageUrlChange={handleImageUrlChange}
-                imageUrl={currentData.imageUrl}
-                currentImage={currentData.image}
+          {currentVariationType === '2' && (
+            <div className="space-y-4">
+              <div className="space-y-[10px]">
+                <FormLabel>Upload image</FormLabel>
+                <ImageUploader
+                  onImageChange={handleImageChange}
+                  onImageUrlChange={handleImageUrlChange}
+                  imageUrl={currentData.imageUrl}
+                  currentImage={currentData.image}
+                />
+              </div>
+              <DescribeDesign
+                label="Describe the final design"
+                description={currentData.description}
+                onDescriptionChange={handleDescriptionChange}
+                onFeatureSelection={handleFeatureSelection}
+                onRandomPrompt={handleQueryRandomPrompt}
+                placeholderText={getPlaceholderText()}
               />
             </div>
-            <DescribeDesign
-              description={currentData.description}
-              onDescriptionChange={handleDescriptionChange}
-              onFeatureSelection={handleFeatureSelection}
-              onRandomPrompt={handleQueryRandomPrompt}
-              placeholderText={getPlaceholderText()}
-            />
-          </div>
-        )}
+          )}
 
-        {currentVariationType === '3' && (
-          <div className="space-y-4">
-            <div className="space-y-[10px]">
-              <FormLabel>Upload image</FormLabel>
-              <ImageUploader
-                onImageChange={handleImageChange}
-                onImageUrlChange={handleImageUrlChange}
-                imageUrl={currentData.imageUrl}
-                currentImage={currentData.image}
+          {currentVariationType === '3' && (
+            <div className="space-y-4">
+              <div className="space-y-[10px]">
+                <FormLabel>Upload image</FormLabel>
+                <ImageUploader
+                  onImageChange={handleImageChange}
+                  onImageUrlChange={handleImageUrlChange}
+                  imageUrl={currentData.imageUrl}
+                  currentImage={currentData.image}
+                />
+              </div>
+              <DescribeDesign
+                label="Describe the final design"
+                description={currentData.description}
+                onDescriptionChange={handleDescriptionChange}
+                onFeatureSelection={handleFeatureSelection}
+                onRandomPrompt={handleQueryRandomPrompt}
+                placeholderText={getPlaceholderText()}
               />
             </div>
-            <DescribeDesign
-              description={currentData.description}
-              onDescriptionChange={handleDescriptionChange}
-              onFeatureSelection={handleFeatureSelection}
-              onRandomPrompt={handleQueryRandomPrompt}
-              placeholderText={getPlaceholderText()}
-            />
-          </div>
-        )}
+          )}
 
-        {currentVariationType === '4' && (
-          <div className="space-y-4">
-            <div className="space-y-[10px]">
-              <FormLabel>Upload image</FormLabel>
-              <ImageUploader
-                onImageChange={handleImageChange}
-                onImageUrlChange={handleImageUrlChange}
-                imageUrl={currentData.imageUrl}
-                currentImage={currentData.image}
+          {currentVariationType === '4' && (
+            <div className="space-y-4">
+              <div className="space-y-[10px]">
+                <FormLabel>Upload image</FormLabel>
+                <ImageUploader
+                  onImageChange={handleImageChange}
+                  onImageUrlChange={handleImageUrlChange}
+                  imageUrl={currentData.imageUrl}
+                  currentImage={currentData.image}
+                />
+              </div>
+              <DescribeDesign
+                label="Describe the final design"
+                description={currentData.description}
+                onDescriptionChange={handleDescriptionChange}
+                onFeatureSelection={handleFeatureSelection}
+                onRandomPrompt={handleQueryRandomPrompt}
+                placeholderText={getPlaceholderText()}
               />
             </div>
-            <DescribeDesign
-              description={currentData.description}
-              onDescriptionChange={handleDescriptionChange}
-              onFeatureSelection={handleFeatureSelection}
-              onRandomPrompt={handleQueryRandomPrompt}
-              placeholderText={getPlaceholderText()}
-            />
-          </div>
-        )}
+          )}
 
-        {currentVariationType === '5' && (
-          <div className="space-y-4">
-            <div className="space-y-[10px]">
-              <FormLabel>Upload image</FormLabel>
-              <ImageUploader
-                onImageChange={handleImageChange}
-                onImageUrlChange={handleImageUrlChange}
-                imageUrl={currentData.imageUrl}
-                currentImage={currentData.image}
+          {currentVariationType === '5' && (
+            <div className="space-y-4">
+              <div className="space-y-[10px]">
+                <FormLabel>Upload image</FormLabel>
+                <ImageUploader
+                  onImageChange={handleImageChange}
+                  onImageUrlChange={handleImageUrlChange}
+                  imageUrl={currentData.imageUrl}
+                  currentImage={currentData.image}
+                />
+              </div>
+              <div className="space-y-[10px]">
+                <FormLabel>Upload reference image</FormLabel>
+                <ImageUploader
+                  onImageChange={handleReferenceImageChange}
+                  onImageUrlChange={handleReferenceImageUrlChange}
+                  imageUrl={currentData.referenceImageUrl}
+                  currentImage={currentData.referenceImage}
+                />
+              </div>
+              <FidelitySlider value={currentData.referLevel} onChange={handleReferLevelChange} />
+              <DescribeDesign
+                label="Describe the final design"
+                description={currentData.description}
+                onDescriptionChange={handleDescriptionChange}
+                onFeatureSelection={handleFeatureSelection}
+                onRandomPrompt={handleQueryRandomPrompt}
+                placeholderText={getPlaceholderText()}
               />
             </div>
-            <div className="space-y-[10px]">
-              <FormLabel>Upload reference image</FormLabel>
-              <ImageUploader
-                onImageChange={handleReferenceImageChange}
-                onImageUrlChange={handleReferenceImageUrlChange}
-                imageUrl={currentData.referenceImageUrl}
-                currentImage={currentData.referenceImage}
-              />
+          )}
+          {currentVariationType === '7' && (
+            <div className="space-y-4">
+              <div className="space-y-[10px]">
+                <FormLabel>Upload original image</FormLabel>
+                <ImageUploader
+                  onImageChange={handleImageChange}
+                  onImageUrlChange={handleImageUrlChange}
+                  imageUrl={currentData.imageUrl}
+                  currentImage={currentData.image}
+                />
+              </div>
             </div>
-            <FidelitySlider value={currentData.referLevel} onChange={handleReferLevelChange} />
-            <DescribeDesign
-              description={currentData.description}
-              onDescriptionChange={handleDescriptionChange}
-              onFeatureSelection={handleFeatureSelection}
-              onRandomPrompt={handleQueryRandomPrompt}
-              placeholderText={getPlaceholderText()}
-            />
-          </div>
-        )}
-      </form>
+          )}
+          {currentVariationType === '8' && (
+            <div className="space-y-4">
+              <div className="space-y-[10px]">
+                <FormLabel>Upload image</FormLabel>
+                <ImageUploader
+                  onImageChange={handleImageChange}
+                  onImageUrlChange={handleImageUrlChange}
+                  imageUrl={currentData.imageUrl}
+                  currentImage={currentData.image}
+                />
+              </div>
+              <div className="space-y-[10px]">
+                <FormLabel>Upload frabic image</FormLabel>
+                <ImageUploader2
+                  onImageUrlChange={handleFabricImageUrlChange}
+                  imageUrl={currentData.fabricPicUrl}
+                  onMaskImageUrlChange={onMaskImageUrlChange}
+                  maskImageUrl={currentData.maskPicUrl}
+                  showMaskEditor={true}
+                />
+              </div>
+            </div>
+          )}
+          {currentVariationType === '9' && (
+            <div className="space-y-4">
+              <div className="space-y-[10px]">
+                <FormLabel>Upload image</FormLabel>
+                <ImageUploader
+                  onImageChange={handleImageChange}
+                  onImageUrlChange={handleImageUrlChange}
+                  imageUrl={currentData.imageUrl}
+                  currentImage={currentData.image}
+                />
+              </div>
+            </div>
+          )}
+          {currentVariationType === '10' && (
+            <div className="space-y-4">
+              <div className="space-y-[10px]">
+                <FormLabel>Upload image</FormLabel>
+                <ImageUploader
+                  onImageChange={handleImageChange}
+                  onImageUrlChange={handleImageUrlChange}
+                  imageUrl={currentData.imageUrl}
+                  currentImage={currentData.image}
+                />
+              </div>
+              <div className="space-y-[10px]">
+                <FormLabel>Upload reference image</FormLabel>
+                <ImageUploader
+                  onImageChange={handleReferenceImageChange}
+                  onImageUrlChange={handleReferenceImageUrlChange}
+                  imageUrl={currentData.referenceImageUrl}
+                  currentImage={currentData.referenceImage}
+                />
+              </div>
+            </div>
+          )}
+        </form>
+      </div>
       <div className="sticky bottom-0 left-0 right-0 pb-4 bg-white">
         <GenerateButton onClick={handleSubmit} state={buttonState} />
       </div>
