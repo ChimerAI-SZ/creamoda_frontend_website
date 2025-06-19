@@ -179,15 +179,15 @@ export const unifiedVariationTypes: UnifiedVariationType[] = [
     name: '印花上身',
     tags: 'design, magic kit, pattern application',
     available: true
-  },
-  {
-    type: 4,
-    variationType: 8,
-    label: 'Pattern Placement',
-    name: '印花摆放',
-    tags: 'design, magic kit, pattern placement',
-    available: true
   }
+  // {
+  //   type: 4,
+  //   variationType: 8,
+  //   label: 'Pattern Placement',
+  //   name: '印花摆放',
+  //   tags: 'design, magic kit, pattern placement',
+  //   available: true
+  // }
 ];
 
 interface ModelState {

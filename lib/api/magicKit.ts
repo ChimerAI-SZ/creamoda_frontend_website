@@ -91,3 +91,30 @@ export async function upscale(originalPicUrl: string) {
     throw error;
   }
 }
+
+export async function patternExtraction(originalPicUrl: string, originalMaskUrl: string) {
+  try {
+    const response = await api.post('/api/v1/img/extract_pattern', {
+      originalPicUrl,
+      originalMaskUrl
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error getting generate list:', error);
+    throw error;
+  }
+}
+
+export async function patternApplication(originalPicUrl: string, printingPicUrl: string, fabricPicUrl: string) {
+  try {
+    const response = await api.post('/api/v1/img/dress_printing_try_on', {
+      originalPicUrl,
+      printingPicUrl,
+      fabricPicUrl
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error getting generate list:', error);
+    throw error;
+  }
+}

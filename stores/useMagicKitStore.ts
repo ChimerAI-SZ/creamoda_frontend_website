@@ -8,6 +8,7 @@ export interface VariationFormState {
     description: string;
     colorSelection: string;
     referenceImageUrl: string;
+    fabricImageUrl: string;
   };
   // Current selected variation type
   currentVariationType: string;
@@ -20,6 +21,7 @@ interface VariationFormActions {
   updateDescription: (description: string) => void;
   updateColorSelection: (colorSelection: string) => void;
   updateReferenceImageUrl: (imageUrl: string) => void;
+  updateFabricImageUrl: (fabricImageUrl: string) => void;
   resetFormData: () => void;
 }
 
@@ -28,7 +30,8 @@ const initialFormData = {
   maskUrl: '',
   description: '',
   colorSelection: '',
-  referenceImageUrl: ''
+  referenceImageUrl: '',
+  fabricImageUrl: ''
 };
 
 const initialState: VariationFormState = {
@@ -87,6 +90,15 @@ export const useVariationFormStore = create<VariationFormState & VariationFormAc
       formData: {
         ...state.formData,
         referenceImageUrl: imageUrl
+      }
+    })),
+
+  updateFabricImageUrl: (fabricImageUrl: string) =>
+    set(state => ({
+      ...state,
+      formData: {
+        ...state.formData,
+        fabricImageUrl
       }
     })),
 

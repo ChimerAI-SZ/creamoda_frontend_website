@@ -63,7 +63,7 @@ export const AlertToast = () => {
   return (
     <div
       className={cn(
-        'fixed top-8 left-1/2 -translate-x-1/2 z-50 rounded-xl shadow-xl w-[360px] flex items-center justify-start gap-3 p-4',
+        'fixed top-8 left-1/2 -translate-x-1/2 rounded-xl shadow-xl w-[360px] flex items-center justify-start gap-3 p-4 z-[10000]',
         styles.bg
       )}
     >
