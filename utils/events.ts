@@ -14,6 +14,7 @@ export type AppEvents = {
     isOpen?: boolean;
   };
   'auth:logout': void;
+  'auth:login-success': void;
 };
 
 // 创建 mitt 实例

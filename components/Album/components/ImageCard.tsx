@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import Image from 'next/image';
-import { Star, ImageDown } from 'lucide-react';
-
-import type { AlbumItem } from './Drawer';
 
 import { downloadImage, cn } from '@/utils';
+
+import type { AlbumItem } from './Drawer';
 
 export default function ImageCard({
   image,
@@ -63,7 +62,14 @@ export default function ImageCard({
             >
               <div className="flex items-center justify-center gap-4 w-full h-[28px] opacity-0 absolute group-hover:opacity-100 transition-opacity duration-300">
                 <div className="w-8 h-8 bg-gray-40 rounded-[8px] flex items-center justify-center text-white cursor-pointer">
-                  <Star className="w-[18px] h-[18px]" onClick={() => handleDislike(image.genImgId)} />
+                  {/* <Star className="w-[18px] h-[18px]" > */}
+                  <Image
+                    src={`/images/album/added_to_album.svg`}
+                    alt="download"
+                    width={18}
+                    height={18}
+                    onClick={() => handleDislike(image.genImgId)}
+                  />
                 </div>
                 <div
                   className="w-8 h-8 bg-gray-40 rounded-[8px] flex items-center justify-center text-white cursor-pointer"

@@ -29,15 +29,15 @@ export const unifiedVariationTypes: UnifiedVariationType[] = [
   {
     type: 2,
     variationType: 1,
-    label: 'Copy Style',
+    label: 'Vary style',
     name: '迁移风格',
-    tags: 'design, image to image, copy style',
+    tags: 'design, image to image, Vary style',
     available: true
   },
   {
     type: 2,
     variationType: 2,
-    label: 'Category Switcher',
+    label: 'Change clothes',
     name: '衣服换装',
     tags: 'design, image to image, change clothes',
     available: true

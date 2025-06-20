@@ -9,6 +9,7 @@ import { EmailVerification } from './components/EmailVerification';
 import { GoogleLoginButton } from './components/GoogleLoginButton';
 import { VerificationSuccess } from './components/VerificationSuccess';
 import { usePersonalInfoStore } from '@/stores/usePersonalInfoStore';
+import { AuthService } from '@/services/authService';
 
 import { eventBus } from '@/utils/events';
 
@@ -79,20 +80,17 @@ export function LoginModal() {
   };
 
   const handleLoginSuccess = async () => {
-    try {
-      // 先关闭模态框，提高用户体验
-      handleCloseModal();
-
-      eventBus.emit('imageList:generate-list', { data: {} });
-      // 然后再获取用户信息
-      await usePersonalInfoStore.getState().fetchUserInfo();
-
-      // Optional: redirect to homepage or dashboard
-      // window.location.href = '/dashboard';
-    } catch (error) {
-      console.error('Error during login process:', error);
-      // 错误处理 - 模态框已经关闭，可以考虑添加一个toast通知
-    }
+    await AuthService.handlePostLoginActions({
+      closeModal: handleCloseModal,
+      onError: error => {
+        console.error('Login post-actions failed:', error);
+        // 可以在这里添加特定的错误处理逻辑
+      },
+      onSuccess: () => {
+        console.log('Login post-actions completed successfully');
+        // 可以在这里添加成功后的特定逻辑
+      }
+    });
   };
 
   const handleGoogleLoginError = (error: string) => {

@@ -13,6 +13,7 @@ import { useDialogStore } from '@/stores/useDialogStore';
 import { useAlertStore } from '@/stores/useAlertStore';
 import { paymentList, PaymentType } from '@/components/Membership';
 import { payment, common } from '@/lib/api';
+import { eventBus } from '@/utils/events';
 
 // 邮箱验证函数
 const validateEmail = (email: string): boolean => {
@@ -56,6 +57,49 @@ const AccountSettingsDrawer = React.memo(
     const planInfo = paymentList
       .find(item => item.title === 'Plan')
       ?.type.find(item => item?.subscribeLevel === subscribeLevel);
+
+    const loadInitialHistory = useCallback(async () => {
+      try {
+        const res = await payment.queryBillingHistory(1, PAGE_SIZE);
+        if (res.code === 0) {
+          setTableData(res.data.list);
+          setPage(2);
+          setHasMore(res.data.list.length < res.data.total);
+        } else {
+          showAlert({
+            type: 'error',
+            content: res.message || 'Failed to query billing history'
+          });
+        }
+      } catch (error: any) {
+        showAlert({
+          type: 'error',
+          content: error.message || 'Failed to query billing history'
+        });
+      }
+    }, [showAlert]);
+
+    const loadMoreHistory = useCallback(async () => {
+      if (!hasMore) return;
+      try {
+        const res = await payment.queryBillingHistory(page, PAGE_SIZE);
+        if (res.code === 0) {
+          setTableData(prevData => [...prevData, ...res.data.list]);
+          setPage(prevPage => prevPage + 1);
+          setHasMore(tableData.length + res.data.list.length < res.data.total);
+        } else {
+          showAlert({
+            type: 'error',
+            content: res.message || 'Failed to query billing history'
+          });
+        }
+      } catch (error: any) {
+        showAlert({
+          type: 'error',
+          content: error.message || 'Failed to query billing history'
+        });
+      }
+    }, [page, hasMore, tableData.length, showAlert]);
 
     // 取消订阅
     const handleCancelSubscription = () => {
@@ -131,39 +175,25 @@ const AccountSettingsDrawer = React.memo(
         });
     }, []);
 
-    // 查询消费记录
-    const handleQueryBillingHistory = useCallback(async () => {
-      try {
-        const res = await payment.queryBillingHistory(page, PAGE_SIZE);
-
-        if (res.code === 0) {
-          setTableData(prevData => [...prevData, ...res.data.list]);
-
-          setPage(page + 1);
-          // 判断是否还有更多数据
-          setHasMore(tableData.length + res.data.list.length < res.data.total);
-        } else {
-          showAlert({
-            type: 'error',
-            content: res.message || 'Failed to query billing history'
-          });
-        }
-      } catch (error: any) {
-        showAlert({
-          type: 'error',
-          content: error.message || 'Failed to query billing history'
-        });
-      }
-    }, [page, tableData]);
-
+    // 组件挂载时检查登录状态并加载数据
     useEffect(() => {
       const token = localStorage.getItem('auth_token') || '';
-
       if (token) {
-        // 用户已登录，关闭模态框
-        handleQueryBillingHistory();
+        loadInitialHistory();
       }
-    }, []);
+    }, [loadInitialHistory]);
+
+    // 监听登录成功事件
+    useEffect(() => {
+      const onLoginSuccess = () => {
+        loadInitialHistory();
+      };
+
+      eventBus.on('auth:login-success', onLoginSuccess);
+      return () => {
+        eventBus.off('auth:login-success', onLoginSuccess);
+      };
+    }, [loadInitialHistory]);
 
     const sections = [
       {
@@ -293,7 +323,7 @@ const AccountSettingsDrawer = React.memo(
           <div className="space-y-2 max-h-[240px] overflow-y-auto" id="billingHistoryTable">
             <InfiniteScroll
               dataLength={tableData.length}
-              next={handleQueryBillingHistory}
+              next={loadMoreHistory}
               hasMore={hasMore}
               loader={<h4>Loading...</h4>}
               endMessage={<div className="text-center">No more data</div>}

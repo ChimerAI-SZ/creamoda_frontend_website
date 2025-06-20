@@ -13,6 +13,7 @@ import usePersonalInfoStore from '@/stores/usePersonalInfoStore';
 import { Button } from '@/components/ui/button';
 import { eventBus } from '@/utils/events';
 import { useAlertStore } from '@/stores/useAlertStore';
+import { AuthService } from '@/services/authService';
 
 export type AvatarActionType = 'membership' | 'payment' | 'setting';
 
@@ -45,11 +46,12 @@ export default function Avatar() {
 
     // 调用登出接口
     logout()
-      .then(() => {
+      .then(async () => {
+        // 使用新的服务处理登出后的操作
+        await AuthService.handlePostLogoutActions();
+
         // 登出触发登陆弹窗
         eventBus.emit('auth:login', { isOpen: true });
-        // 登出登出
-        eventBus.emit('auth:logout', void 0);
 
         showAlert({
           type: 'success',
