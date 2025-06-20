@@ -1,6 +1,4 @@
-import React, { useEffect } from 'react';
 import Image from 'next/image';
-import { X } from 'lucide-react';
 
 import { Drawer, DrawerTrigger, DrawerContent, DrawerHeader, DrawerTitle } from '@/components/ui/drawer';
 import ImageCard from './ImageCard';
@@ -49,10 +47,6 @@ export function AlbumDrawer({ children }: { children: React.ReactNode }) {
       });
     }
   };
-
-  useEffect(() => {
-    queryCollectList();
-  }, []);
 
   return (
     <Drawer onOpenChange={handleOpenChange}>

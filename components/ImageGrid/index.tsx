@@ -35,7 +35,7 @@ export function ImageGrid() {
   const [images, setImages] = useState<ImageItem[]>([]);
 
   const { setGenerating } = useGenerationStore();
-  const { clearUserInfo } = usePersonalInfoStore();
+  const { clearUserInfo, fetchUserInfo } = usePersonalInfoStore();
   // 查看图片详情相关state
   const [selectedImage, setSelectedImage] = useState<ImageItem | null>(null);
   const [detailVisible, setDetailVisible] = useState<boolean>(false);
@@ -158,6 +158,46 @@ export function ImageGrid() {
     setDetailVisible(true);
   }, []);
 
+  const handleCollectImage = useCallback(
+    (imageId: number, currentIsCollected: boolean) => {
+      const newIsCollected = !currentIsCollected;
+      // Optimistic update
+      setImages(prevImages =>
+        prevImages.map(img => (img.genImgId === imageId ? { ...img, isCollected: newIsCollected } : img))
+      );
+      if (selectedImage?.genImgId === imageId) {
+        setSelectedImage(prev => (prev ? { ...prev, isCollected: newIsCollected } : null));
+      }
+
+      const promise = album
+        .collectImage({
+          genImgId: imageId,
+          action: newIsCollected ? 1 : 2
+        })
+        .catch(error => {
+          // Ensure we return a similar structure on caught error
+          // to prevent downstream .then/.catch from breaking
+          console.error(error);
+          return { code: -1, message: error.message || 'A network error occurred' };
+        });
+
+      promise.then(res => {
+        if (res.code !== 0) {
+          // Revert on failure
+          setImages(prevImages =>
+            prevImages.map(img => (img.genImgId === imageId ? { ...img, isCollected: currentIsCollected } : img))
+          );
+          if (selectedImage?.genImgId === imageId) {
+            setSelectedImage(prev => (prev ? { ...prev, isCollected: currentIsCollected } : null));
+          }
+        }
+      });
+
+      return promise;
+    },
+    [selectedImage] // Dependency on selectedImage is needed for optimistic update of detail view
+  );
+
   const handleDeleteImage = useCallback((imageId: number) => {
     deleteImage(imageId, () => {
       setImages(prev => prev.filter(img => img.genImgId !== imageId));
@@ -177,10 +217,7 @@ export function ImageGrid() {
       });
     } else if (['Remove from album', 'Add to album'].includes(text)) {
       try {
-        const res = await album.collectImage({
-          genImgId: image?.genImgId ?? 0,
-          action: text === 'Remove from album' ? 2 : 1
-        });
+        const res = await handleCollectImage(image.genImgId, image.isCollected);
 
         if (res.code === 0) {
           showAlert({
@@ -247,6 +284,7 @@ export function ImageGrid() {
   useEffect(() => {
     const handleSubmitSuccess = () => {
       fetchRecentImages();
+      fetchUserInfo();
     };
 
     // 登出清空图片历史
@@ -294,6 +332,7 @@ export function ImageGrid() {
                 image={image}
                 onClick={() => handleImageClick(image)}
                 handleDeleteImage={handleDeleteImage}
+                handleCollectImage={handleCollectImage}
               />
             ))}
           </div>

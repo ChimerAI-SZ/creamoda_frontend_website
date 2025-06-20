@@ -11,7 +11,7 @@ export const GlobalConfirm = () => {
 
   return (
     <Dialog open={open} onOpenChange={v => !v && close()}>
-      <DialogContent className="w-[360px] p-6 rounded-xl text-center gap-0">
+      <DialogContent className="w-[360px] p-6 rounded-xl text-center gap-0 z-[9999]">
         {icon && (
           <div className="mx-auto mb-[20px] h-[40px] w-[40px] rounded-full flex items-center justify-center">
             {icon}
