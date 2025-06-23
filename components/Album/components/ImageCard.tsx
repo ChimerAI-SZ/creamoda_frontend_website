@@ -19,7 +19,7 @@ export default function ImageCard({
   };
 
   return (
-    <div className="group">
+    <div className="group will-change-transform">
       <div
         className={cn(
           'mb-3 break-inside-avoid flex flex-col items-center justify-center bg-[#FAFAFA] z-[1] rounded-[4px] border border-[#DCDCDC] overflow-hidden relative'
