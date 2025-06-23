@@ -3,7 +3,6 @@ import Image from 'next/image';
 
 import { cn } from '@/utils';
 import { downloadImage } from '@/utils';
-import { collectImage } from '@/lib/api';
 
 interface ImageCardProps {
   image: any;
@@ -24,7 +23,7 @@ export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(
     };
 
     const isGenerating = [1, 2].includes(image.status);
-    const isFailed = image.status === 4;
+    const isFailed = image.status === 4 || !/^https?:\/\/.+\..+/.test(image.resultPic);
 
     return (
       <div

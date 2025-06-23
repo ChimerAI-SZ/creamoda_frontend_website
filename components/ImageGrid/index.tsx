@@ -227,7 +227,7 @@ export function ImageGrid() {
         } else {
           showAlert({
             type: 'error',
-            content: res.message || 'Failed to collect image'
+            content: res.message || res.msg || 'Failed to collect image'
           });
         }
       } catch (error: any) {
@@ -253,7 +253,7 @@ export function ImageGrid() {
         } else {
           showAlert({
             type: 'error',
-            content: res.message || 'Failed to share image'
+            content: res.msg || 'Failed to share image'
           });
         }
       } catch (error: any) {

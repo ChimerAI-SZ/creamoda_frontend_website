@@ -172,6 +172,7 @@ export default function ImageDetail({ image, onClose, isOpen }: ImageDetailProps
                         type: 'error',
                         content:
                           res.message ||
+                          res.msg ||
                           'Something went wrong. Please try again later or contact support if the issue persists'
                       });
                     }
@@ -218,6 +219,7 @@ export default function ImageDetail({ image, onClose, isOpen }: ImageDetailProps
                         type: 'error',
                         content:
                           res.message ||
+                          res.msg ||
                           'Something went wrong. Please try again later or contact support if the issue persists'
                       });
                     }

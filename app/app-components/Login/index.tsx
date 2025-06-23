@@ -49,10 +49,8 @@ export function LoginModal() {
   useEffect(() => {
     const checkLoginStatus = () => {
       const token = localStorage.getItem('auth_token') || '';
-      if (token) {
-        // 用户已登录，关闭模态框
-        setModalVisible(false);
-      }
+      // 用户已登录，关闭模态框
+      setModalVisible(!token);
     };
     // 初始检查
     checkLoginStatus();
