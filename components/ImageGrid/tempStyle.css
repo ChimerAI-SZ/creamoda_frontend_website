@@ -1,0 +1,26 @@
+/* Keyframes for the wave animation */
+@keyframes wave-animation {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* 
+  Custom utility for the pseudo-element that creates the moving "dots".
+  These dots, when blurred and contrasted, form the wave.
+*/
+.waving-dot::before {
+  content: '';
+  position: absolute;
+  inset: 0; /* Fill the parent div */
+
+  /* 
+    Create two "dots" using radial gradients. 
+    These will be the black shapes that get "melted" together.
+  */
+  background: radial-gradient(circle at 50% 0, black 30%, transparent 30.5%) 0 0,
+    radial-gradient(circle at 50% 100%, black 30%, transparent 30.5%) 50% 0;
+
+  background-size: 200% 100%; /* The background is twice as wide as the element to allow for scrolling */
+  animation: wave-animation 1.5s infinite linear; /* Apply the animation */
+}

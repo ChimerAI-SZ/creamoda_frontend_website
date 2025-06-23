@@ -15,6 +15,7 @@ import { useVariationFormStore } from '@/stores/useMagicKitStore';
 import { eventBus } from '@/utils/events';
 import { generate, album, community } from '@/lib/api';
 import { useAlertStore } from '@/stores/useAlertStore';
+import { Item } from '@radix-ui/react-select';
 
 // 图片类型接口
 export interface ImageItem {
@@ -326,6 +327,17 @@ export function ImageGrid() {
       min-[3440px]:grid-cols-8
       min-[3840px]:grid-cols-9"
           >
+            {/* {[images[1]]
+              .map(item => ({ ...item, status: 1, resultPic: '' }))
+              .map((image, index) => (
+                <ImageCard
+                  key={image.genImgId || index}
+                  image={image}
+                  onClick={() => handleImageClick(image)}
+                  handleDeleteImage={handleDeleteImage}
+                  handleCollectImage={handleCollectImage}
+                />
+              ))} */}
             {images.map((image, index) => (
               <ImageCard
                 key={image.genImgId || index}

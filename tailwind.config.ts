@@ -117,7 +117,10 @@ export default {
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
-        spin: 'spin 1s linear infinite'
+        spin: 'spin 1s linear infinite',
+        // wave 动画
+        wave: 'wave 6s linear infinite',
+        'wave-offset': 'wave 6s linear infinite -3s'
       },
       boxShadow: {
         'card-shadow': '0px 8px 40px 0px rgba(10, 21, 50, 0.06)'
@@ -146,6 +149,14 @@ export default {
         },
         '100%': {
           transform: 'rotate(360deg)'
+        }
+      },
+      loadingWave: {
+        '0%': {
+          transform: 'translateX(0)'
+        },
+        '100%': {
+          transform: 'translateX(-50%)'
         }
       }
     }

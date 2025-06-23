@@ -1,5 +1,7 @@
-import { forwardRef, useState, useRef } from 'react';
+import { forwardRef, useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
+
+import { LoadingCard } from './LoadingCard';
 
 import { cn } from '@/utils';
 import { downloadImage } from '@/utils';
@@ -14,6 +16,9 @@ interface ImageCardProps {
 export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(
   ({ image, onClick, handleDeleteImage, handleCollectImage }, ref) => {
     const [isLoaded, setIsLoaded] = useState(false);
+
+    // const [progress, setProgress] = useState(0);
+
     // 新生成的图片的标记，如果为 true 则表示图片是新生成的
     // 新生成的图片不需要进入loading状态
     const newImageRef = useRef<boolean>([1, 2].includes(image.status));
@@ -23,7 +28,16 @@ export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(
     };
 
     const isGenerating = [1, 2].includes(image.status);
-    const isFailed = image.status === 4 || !/^https?:\/\/.+\..+/.test(image.resultPic);
+    // status 是 4 或者 是 3 但是 resultPic 不是 URL
+    const isFailed = image.status === 4 || (!/^https?:\/\/.+\..+/.test(image.resultPic) && image.status === 3);
+
+    // // simulate loading
+    // useEffect(() => {
+    //   const iv = setInterval(() => {
+    //     setProgress(p => (p < 100 ? p + 5 : (clearInterval(iv), 100)));
+    //   }, 1000);
+    //   return () => clearInterval(iv);
+    // }, []);
 
     return (
       <div
@@ -42,27 +56,33 @@ export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(
         )}
 
         {/* 生成中状态，新生成的图片在 generate 和 load 操作完成之前一直展示生成中 */}
-        {!isLoaded && isGenerating && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#FAFAFA] z-[1] rounded-[16px] border border-[#DCDCDC]">
-            <div className="relative w-[56px] h-[56px]">
-              <Image
-                src="/images/generate/generating.gif"
-                alt="Generating..."
-                fill
-                className="object-cover"
-                priority
-                unoptimized
-              />
-            </div>
-            <div className="absolute top-[10px] left-[10px] text-center">
-              <div className="inline-flex px-2 py-[2px] justify-center items-center gap-1 rounded-[9999px] border border-[#DCDCDC] bg-white">
-                <span className="inline-flex px-2 py-[2px] justify-center items-center gap-1 text-sm font-medium text-gray-700 leading-4">
-                  {isGenerating ? 'Generating' : 'Loading'}
-                </span>
+        {
+          // isGenerating && (
+          !isLoaded && isGenerating && (
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#FAFAFA] z-[1] rounded-[16px] border border-[#DCDCDC]">
+              <div className="relative w-[56px] h-[56px]">
+                <Image
+                  src="/images/generate/generating.gif"
+                  alt="Generating..."
+                  fill
+                  className="object-cover"
+                  priority
+                  unoptimized
+                />
+              </div>
+              <div className="absolute top-[10px] left-[10px] text-center">
+                <div className="inline-flex px-2 py-[2px] justify-center items-center gap-1 rounded-[9999px] border border-[#DCDCDC] bg-white">
+                  <span className="inline-flex px-2 py-[2px] justify-center items-center gap-1 text-sm font-medium text-gray-700 leading-4">
+                    {isGenerating ? 'Generating' : 'Loading'}
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
-        )}
+            // <div className="p-8 flex gap-8">
+            //   <LoadingCard progress={progress} />
+            // </div>
+          )
+        }
 
         {/* 生成失败状态 */}
         {isFailed && (

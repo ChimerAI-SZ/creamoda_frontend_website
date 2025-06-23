@@ -61,22 +61,30 @@ export function Sidebar() {
   const { showAlert } = useAlertStore();
 
   // 文生图 / 图生图 提交事件
-  const handleSubmit = (data: OutfitFormData) => {
-    textToImageGenerate(data)
-      .then(data => {
+  const handleSubmit = async (data: OutfitFormData) => {
+    try {
+      const response = await textToImageGenerate(data);
+      if (response.code === 0) {
         // 触发 iamgeGrid 里的提交回调时间（刷新生图历史图片）
         eventBus.emit('sidebar:submit-success', void 0);
         // 修改getnerating状态
         setGenerating(true);
-      })
-      .catch(error => {
+      } else {
         showAlert({
           type: 'error',
-          content: error.message || 'Failed to generate image'
+          content: response.msg || 'Failed to generate image'
         });
-        // 若生成失败放开拦截
+
         setGenerating(false);
+      }
+    } catch (error) {
+      showAlert({
+        type: 'error',
+        content: (error as Error).message || 'An unexpected error occurred'
       });
+      // Let the TextToImageContent component handle setting generating to false
+      throw error;
+    }
   };
 
   const handleImageSubmit = async (data: ImageUploadFormData) => {
@@ -142,11 +150,12 @@ export function Sidebar() {
           break;
 
         case '6':
-        case '8':
+        case '7':
+        case '9':
           // Types 6 and 8 only require main image, no description needed
           break;
 
-        case '7':
+        case '8':
           // Type 7 requires fabric image
           if (!data.fabricPicUrl) {
             showAlert({
