@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
 
 import { ImageCard } from './ImageCard';
 import ImageDetail from './ImageDetail';
@@ -15,7 +16,6 @@ import { useVariationFormStore } from '@/stores/useMagicKitStore';
 import { eventBus } from '@/utils/events';
 import { generate, album, community } from '@/lib/api';
 import { useAlertStore } from '@/stores/useAlertStore';
-import { Item } from '@radix-ui/react-select';
 
 // 图片类型接口
 export interface ImageItem {
@@ -314,22 +314,11 @@ export function ImageGrid() {
     <>
       <div className="w-full h-full p-4 z-20 bg-[#fff] rounded-[20px] overflow-hidden shadow-card-shadow">
         <div className="h-full overflow-y-auto">
-          <div
-            className="image-grid-container grid gap-4 auto-rows-max
-      grid-cols-1
-      sm:grid-cols-2 
-      min-[800px]:grid-cols-2 
-      min-[1200px]:grid-cols-3 
-      min-[1440px]:grid-cols-4 
-      min-[1680px]:grid-cols-5 
-      min-[1920px]:grid-cols-6
-      min-[2560px]:grid-cols-7
-      min-[3440px]:grid-cols-8
-      min-[3840px]:grid-cols-9"
+          <ResponsiveMasonry
+            columnsCountBreakPoints={{ 350: 1, 800: 2, 1200: 3, 1440: 4, 1680: 5, 1920: 6, 2560: 7, 3440: 8, 3840: 9 }}
           >
-            {/* {[images[1]]
-              .map(item => ({ ...item, status: 1, resultPic: '' }))
-              .map((image, index) => (
+            <Masonry>
+              {images.map((image, index) => (
                 <ImageCard
                   key={image.genImgId || index}
                   image={image}
@@ -337,17 +326,9 @@ export function ImageGrid() {
                   handleDeleteImage={handleDeleteImage}
                   handleCollectImage={handleCollectImage}
                 />
-              ))} */}
-            {images.map((image, index) => (
-              <ImageCard
-                key={image.genImgId || index}
-                image={image}
-                onClick={() => handleImageClick(image)}
-                handleDeleteImage={handleDeleteImage}
-                handleCollectImage={handleCollectImage}
-              />
-            ))}
-          </div>
+              ))}
+            </Masonry>
+          </ResponsiveMasonry>
         </div>
       </div>
       <ImageDetail

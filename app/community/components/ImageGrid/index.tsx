@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
+import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
 
 import { ImageCard } from './ImageCard';
 import ImageDetail from './ImageDetail';
@@ -109,23 +110,15 @@ export function ImageGrid() {
     <>
       <div className="w-full h-full p-4 z-20 bg-[#fff] rounded-[20px] overflow-hidden shadow-card-shadow">
         <div className="h-full overflow-y-auto">
-          <div
-            className="image-grid-container grid gap-4 auto-rows-max
-      grid-cols-1
-      sm:grid-cols-2 
-      min-[800px]:grid-cols-3 
-      min-[1200px]:grid-cols-4 
-      min-[1440px]:grid-cols-5 
-      min-[1680px]:grid-cols-6 
-      min-[1920px]:grid-cols-7
-      min-[2560px]:grid-cols-8
-      min-[3440px]:grid-cols-9
-      min-[3840px]:grid-cols-10"
+          <ResponsiveMasonry
+            columnsCountBreakPoints={{ 350: 2, 800: 3, 1200: 4, 1440: 5, 1680: 6, 1920: 7, 2560: 8, 3440: 9, 3840: 10 }}
           >
-            {images.map((image, index) => (
-              <ImageCard key={image.genImgId || index} image={image} onClick={() => handleImageClick(image)} />
-            ))}
-          </div>
+            <Masonry>
+              {images.map((image, index) => (
+                <ImageCard key={image.genImgId || index} image={image} onClick={() => handleImageClick(image)} />
+              ))}
+            </Masonry>
+          </ResponsiveMasonry>
         </div>
       </div>
       <ImageDetail
