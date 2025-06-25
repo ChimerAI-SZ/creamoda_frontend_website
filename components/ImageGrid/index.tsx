@@ -41,6 +41,8 @@ export function ImageGrid() {
   const [selectedImage, setSelectedImage] = useState<ImageItem | null>(null);
   const [detailVisible, setDetailVisible] = useState<boolean>(false);
 
+  const [mounted, setMounted] = useState(false);
+
   const { updateImageUrl } = useVariationFormStore();
 
   const router = useRouter();
@@ -310,25 +312,41 @@ export function ImageGrid() {
     };
   }, [stopPolling]);
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
     <>
       <div className="w-full h-full p-4 z-20 bg-[#fff] rounded-[20px] overflow-hidden shadow-card-shadow">
         <div className="h-full overflow-y-auto">
-          <ResponsiveMasonry
-            columnsCountBreakPoints={{ 350: 1, 800: 2, 1200: 3, 1440: 4, 1680: 5, 1920: 6, 2560: 7, 3440: 8, 3840: 9 }}
-          >
-            <Masonry>
-              {images.map((image, index) => (
-                <ImageCard
-                  key={image.genImgId || index}
-                  image={image}
-                  onClick={() => handleImageClick(image)}
-                  handleDeleteImage={handleDeleteImage}
-                  handleCollectImage={handleCollectImage}
-                />
-              ))}
-            </Masonry>
-          </ResponsiveMasonry>
+          {mounted && (
+            <ResponsiveMasonry
+              columnsCountBreakPoints={{
+                350: 1,
+                800: 2,
+                1200: 3,
+                1440: 4,
+                1680: 5,
+                1920: 6,
+                2560: 7,
+                3440: 8,
+                3840: 9
+              }}
+            >
+              <Masonry>
+                {images.map((image, index) => (
+                  <ImageCard
+                    key={image.genImgId || index}
+                    image={image}
+                    onClick={() => handleImageClick(image)}
+                    handleDeleteImage={handleDeleteImage}
+                    handleCollectImage={handleCollectImage}
+                  />
+                ))}
+              </Masonry>
+            </ResponsiveMasonry>
+          )}
         </div>
       </div>
       <ImageDetail

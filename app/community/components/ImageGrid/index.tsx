@@ -53,6 +53,8 @@ export function ImageGrid() {
   const [selectedImage, setSelectedImage] = useState<SEO_Image_Type | null>(null);
   const [detailVisible, setDetailVisible] = useState<boolean>(false);
 
+  const [mounted, setMounted] = useState(false);
+
   const { setGenerating } = useGenerationStore();
   const { showAlert } = useAlertStore();
 
@@ -104,21 +106,34 @@ export function ImageGrid() {
 
   useEffect(() => {
     fetchImages(1);
+    setMounted(true);
   }, []);
 
   return (
     <>
       <div className="w-full h-full p-4 z-20 bg-[#fff] rounded-[20px] overflow-hidden shadow-card-shadow">
         <div className="h-full overflow-y-auto">
-          <ResponsiveMasonry
-            columnsCountBreakPoints={{ 350: 2, 800: 3, 1200: 4, 1440: 5, 1680: 6, 1920: 7, 2560: 8, 3440: 9, 3840: 10 }}
-          >
-            <Masonry>
-              {images.map((image, index) => (
-                <ImageCard key={image.genImgId || index} image={image} onClick={() => handleImageClick(image)} />
-              ))}
-            </Masonry>
-          </ResponsiveMasonry>
+          {mounted && (
+            <ResponsiveMasonry
+              columnsCountBreakPoints={{
+                350: 2,
+                800: 3,
+                1200: 4,
+                1440: 5,
+                1680: 6,
+                1920: 7,
+                2560: 8,
+                3440: 9,
+                3840: 10
+              }}
+            >
+              <Masonry>
+                {images.map((image, index) => (
+                  <ImageCard key={image.genImgId || index} image={image} onClick={() => handleImageClick(image)} />
+                ))}
+              </Masonry>
+            </ResponsiveMasonry>
+          )}
         </div>
       </div>
       <ImageDetail

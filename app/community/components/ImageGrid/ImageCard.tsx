@@ -1,10 +1,13 @@
-import { forwardRef, useState, useRef } from 'react';
+import { forwardRef, useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 
 import { cn } from '@/utils';
 import { downloadImage } from '@/utils';
 import { album, community } from '@/lib/api';
+
+const WaveLoader = dynamic(() => import('@/components/LoadingCard').then(mod => mod.WaveLoader), { ssr: false });
 
 interface ImageCardProps {
   image: any;
@@ -18,6 +21,8 @@ export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(({ image, on
   const newImageRef = useRef<boolean>([1, 2].includes(image.status));
 
   const [isCollected, setIsCollected] = useState(image.isCollected);
+  const [progress, setProgress] = useState(0);
+  const directionRef = useRef(1);
 
   const onImageLoad = () => {
     setIsLoaded(true);
@@ -25,31 +30,33 @@ export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(({ image, on
 
   const isFailed = image.status === 4 || (!/^https?:\/\/.+\..+/.test(image.picUrl) && image.status === 3);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setProgress(prev => {
+        const dir = directionRef.current;
+        let next = prev + dir;
+        // 到达 80 ，反向
+        if (next >= 70) {
+          next = 70;
+          directionRef.current = -1;
+        }
+        // 到达 60 ，反向
+        else if (next <= 50) {
+          next = 50;
+          directionRef.current = 1;
+        }
+        return next;
+      });
+    }, 100); // 每 100ms 更新一次，可以根据需求调整
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div ref={ref} className="relative w-full group border-none z-50" onClick={() => !isFailed && onClick()}>
-      {/* 初次加载状态 */}
-      {!isLoaded && !newImageRef.current && (
-        <div className="aspect-[3/4] w-full z-1 inset-0 flex flex-col items-center justify-center bg-[#FAFAFA] z-[1] rounded-[16px] border border-[#DCDCDC]">
-          <div className="relative w-[48px] h-[48px]">
-            <Image src="/images/generate/loading.svg" alt="Loading..." fill className="object-cover" priority />
-          </div>
-          <div className="mt-[6px] text-[#999] font-inter text-xs font-medium leading-4">Loading</div>
-        </div>
-      )}
-
-      {/* 生成中状态，新生成的图片在 generate 和 load 操作完成之前一直展示生成中 */}
       {!isLoaded && (
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#FAFAFA] z-[1] rounded-[16px] border border-[#DCDCDC]">
-          <div className="relative w-[56px] h-[56px]">
-            <Image
-              src="/images/generate/generating.gif"
-              alt="Generating..."
-              fill
-              className="object-cover"
-              priority
-              unoptimized
-            />
-          </div>
+          <WaveLoader progress={progress} />
           <div className="absolute top-[10px] left-[10px] text-center">
             <div className="inline-flex px-2 py-[2px] justify-center items-center gap-1 rounded-[9999px] border border-[#DCDCDC] bg-white">
               <span className="inline-flex px-2 py-[2px] justify-center items-center gap-1 text-sm font-medium text-gray-700 leading-4">
@@ -62,7 +69,7 @@ export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(({ image, on
 
       {/* 生成失败状态 */}
       {isFailed && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#FAFAFA] z-[1] rounded-[16px] border border-[#DCDCDC]">
+        <div className="absolute h-[400px] inset-0 flex flex-col items-center justify-center bg-[#FAFAFA] z-[1] rounded-[16px] border border-[#DCDCDC]">
           <div className="relative w-[150px] h-[150px]">
             <Image
               src="/images/generate/failToGenerate.svg"
