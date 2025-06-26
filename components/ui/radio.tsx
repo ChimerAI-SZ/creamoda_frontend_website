@@ -26,7 +26,7 @@ const RadioGroup: React.FC<RadioGroupProps> = ({ options, name, selectedValue, o
             className="hidden"
           />
           <span
-            className={`w-full text-center p-[6px] border cursor-pointer bg-eff rounded-[8px] leading-[20px] text-[14px] font-normal ${
+            className={`whitespace-nowrap w-full text-center p-[6px] border cursor-pointer bg-eff rounded-[8px] leading-[20px] text-[14px] font-normal ${
               selectedValue === option.value ? 'border-primary text-gray' : 'text-gray-40 border-eff'
             }`}
           >

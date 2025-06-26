@@ -168,11 +168,11 @@ export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(
                 <div
                   className="w-8 h-8 bg-[rgba(255,255,255,0.40)] rounded-[8px] flex items-center justify-center text-white cursor-pointer"
                   onClick={() => {
-                    handleLikeImage(image.genImgId, image.islike);
+                    handleLikeImage(image.genImgId, image.isLike);
                   }}
                 >
                   <Image
-                    src={`/images/album/${image.islike ? 'cancel_like' : 'like'}.svg`}
+                    src={`/images/album/${image.isLike ? 'cancel_like' : 'like'}.svg`}
                     alt="like"
                     width={18}
                     height={18}
