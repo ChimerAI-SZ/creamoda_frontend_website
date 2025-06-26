@@ -101,7 +101,7 @@ const AccountSettingsDrawer = React.memo(
           } else {
             showAlert({
               type: 'error',
-              content: res.message || 'Failed to update username'
+              content: res.message || res.msg || 'Failed to update username'
             });
           }
         } catch (error: any) {

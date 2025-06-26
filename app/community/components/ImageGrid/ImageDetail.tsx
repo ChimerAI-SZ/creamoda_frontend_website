@@ -7,16 +7,17 @@ import { Overlay } from '@/components/ui/overlay';
 import { cn, downloadImage } from '@/utils';
 import type { SEO_Image_Type } from './index';
 import { StyledLabel } from '@/components/StyledLabel';
-import { album, community } from '@/lib/api';
 import { useAlertStore } from '@/stores/useAlertStore';
 
 interface ImageDetailProps {
   image: SEO_Image_Type | null;
   onClose: () => void;
   isOpen: boolean;
+  handleCollectImage: (imageId: number, isCollected: number) => void;
+  handleLikeImage: (imageId: number, isLike: number) => void;
 }
 
-export default function ImageDetail({ image, onClose, isOpen }: ImageDetailProps) {
+export default function ImageDetail({ image, onClose, isOpen, handleCollectImage, handleLikeImage }: ImageDetailProps) {
   const { showAlert } = useAlertStore();
 
   if (!isOpen) return null;
@@ -155,34 +156,7 @@ export default function ImageDetail({ image, onClose, isOpen }: ImageDetailProps
                 variant="tertiary"
                 className={cn('px-0', 'flex-grow h-[40px]')}
                 onClick={async () => {
-                  try {
-                    const res = await album.collectImage({
-                      genImgId: image?.genImgId ?? 0,
-                      action: image?.isCollected ? 2 : 1
-                    });
-                    if (res.code === 0) {
-                      showAlert({
-                        type: 'success',
-                        content: image?.isCollected
-                          ? 'Image removed from album successfully'
-                          : 'Image added to album successfully'
-                      });
-                    } else {
-                      showAlert({
-                        type: 'error',
-                        content:
-                          res.message ||
-                          'Something went wrong. Please try again later or contact support if the issue persists'
-                      });
-                    }
-                  } catch (error: any) {
-                    showAlert({
-                      type: 'error',
-                      content:
-                        error.message ||
-                        'Something went wrong. Please try again later or contact support if the issue persists'
-                    });
-                  }
+                  handleCollectImage(image.genImgId, image.isCollected);
                 }}
               >
                 <Image
@@ -199,36 +173,7 @@ export default function ImageDetail({ image, onClose, isOpen }: ImageDetailProps
                 variant="tertiary"
                 className={cn('px-0', 'flex-grow h-[40px]')}
                 onClick={async () => {
-                  try {
-                    let res;
-
-                    if (image.isLike) {
-                      res = await community.likeImage(image.genImgId);
-                    } else {
-                      res = await community.likeImage(image.genImgId);
-                    }
-
-                    if (res.code === 0) {
-                      showAlert({
-                        type: 'success',
-                        content: image.isLike ? 'Image unliked successfully' : 'Image liked successfully'
-                      });
-                    } else {
-                      showAlert({
-                        type: 'error',
-                        content:
-                          res.message ||
-                          'Something went wrong. Please try again later or contact support if the issue persists'
-                      });
-                    }
-                  } catch (error: any) {
-                    showAlert({
-                      type: 'error',
-                      content:
-                        error.message ||
-                        'Something went wrong. Please try again later or contact support if the issue persists'
-                    });
-                  }
+                  handleLikeImage(image.genImgId, image.isLike);
                 }}
               >
                 <Image

@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
 
 import { ImageCard } from './ImageCard';
 import ImageDetail from './ImageDetail';
@@ -39,6 +40,8 @@ export function ImageGrid() {
   // 查看图片详情相关state
   const [selectedImage, setSelectedImage] = useState<ImageItem | null>(null);
   const [detailVisible, setDetailVisible] = useState<boolean>(false);
+
+  const [mounted, setMounted] = useState(false);
 
   const { updateImageUrl } = useVariationFormStore();
 
@@ -227,7 +230,7 @@ export function ImageGrid() {
         } else {
           showAlert({
             type: 'error',
-            content: res.message || 'Failed to collect image'
+            content: res.message || res.msg || 'Failed to collect image'
           });
         }
       } catch (error: any) {
@@ -253,7 +256,7 @@ export function ImageGrid() {
         } else {
           showAlert({
             type: 'error',
-            content: res.message || 'Failed to share image'
+            content: res.msg || 'Failed to share image'
           });
         }
       } catch (error: any) {
@@ -309,33 +312,41 @@ export function ImageGrid() {
     };
   }, [stopPolling]);
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
     <>
       <div className="w-full h-full p-4 z-20 bg-[#fff] rounded-[20px] overflow-hidden shadow-card-shadow">
         <div className="h-full overflow-y-auto">
-          <div
-            className="image-grid-container grid gap-4 auto-rows-max
-      grid-cols-1
-      sm:grid-cols-2 
-      min-[800px]:grid-cols-2 
-      min-[1200px]:grid-cols-3 
-      min-[1440px]:grid-cols-4 
-      min-[1680px]:grid-cols-5 
-      min-[1920px]:grid-cols-6
-      min-[2560px]:grid-cols-7
-      min-[3440px]:grid-cols-8
-      min-[3840px]:grid-cols-9"
-          >
-            {images.map((image, index) => (
-              <ImageCard
-                key={image.genImgId || index}
-                image={image}
-                onClick={() => handleImageClick(image)}
-                handleDeleteImage={handleDeleteImage}
-                handleCollectImage={handleCollectImage}
-              />
-            ))}
-          </div>
+          {mounted && (
+            <ResponsiveMasonry
+              columnsCountBreakPoints={{
+                350: 1,
+                800: 2,
+                1200: 3,
+                1440: 4,
+                1680: 5,
+                1920: 6,
+                2560: 7,
+                3440: 8,
+                3840: 9
+              }}
+            >
+              <Masonry>
+                {images.map((image, index) => (
+                  <ImageCard
+                    key={image.genImgId || index}
+                    image={image}
+                    onClick={() => handleImageClick(image)}
+                    handleDeleteImage={handleDeleteImage}
+                    handleCollectImage={handleCollectImage}
+                  />
+                ))}
+              </Masonry>
+            </ResponsiveMasonry>
+          )}
         </div>
       </div>
       <ImageDetail

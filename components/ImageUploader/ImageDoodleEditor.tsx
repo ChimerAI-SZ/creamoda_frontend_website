@@ -42,6 +42,8 @@ export default function ImageDoodleEditor({
   // Reference to the ReactSketchCanvas component
   const canvasRef = useRef<ReactSketchCanvasRef>(null);
 
+  const maskGeneratingRef = useRef<boolean>(false);
+
   // Canvas for generating previews
   const maskCanvasRef = useRef<HTMLCanvasElement>(null);
   const backgroundImgRef = useRef<HTMLImageElement | null>(null);
@@ -214,6 +216,13 @@ export default function ImageDoodleEditor({
     setMaskDataUrl(null);
     setPathsChanged(false);
   }, []);
+
+  const handleSaveExecute = useCallback(() => {
+    setIsUploading(true);
+    setTimeout(() => {
+      handleSave();
+    }, 1000);
+  }, [maskDataUrl]);
 
   // Handle save action
   const handleSave = useCallback(async () => {
@@ -506,6 +515,8 @@ export default function ImageDoodleEditor({
               // This will ensure we at least have the drawing paths saved
               updateStrokesFromCanvas();
             }
+
+            maskGeneratingRef.current = false;
           }
         };
         img.onerror = e => {
@@ -663,36 +674,6 @@ export default function ImageDoodleEditor({
     };
   }, []);
 
-  // Handle pen slider hover
-  const handlePenSliderEnter = useCallback(() => {
-    if (penSliderTimeoutRef.current) {
-      clearTimeout(penSliderTimeoutRef.current);
-      penSliderTimeoutRef.current = null;
-    }
-    setShowPenSlider(true);
-  }, []);
-
-  const handlePenSliderLeave = useCallback(() => {
-    penSliderTimeoutRef.current = setTimeout(() => {
-      setShowPenSlider(false);
-    }, 300); // 300ms delay before hiding
-  }, []);
-
-  // Handle eraser slider hover
-  const handleEraserSliderEnter = useCallback(() => {
-    if (eraserSliderTimeoutRef.current) {
-      clearTimeout(eraserSliderTimeoutRef.current);
-      eraserSliderTimeoutRef.current = null;
-    }
-    setShowEraserSlider(true);
-  }, []);
-
-  const handleEraserSliderLeave = useCallback(() => {
-    eraserSliderTimeoutRef.current = setTimeout(() => {
-      setShowEraserSlider(false);
-    }, 300); // 300ms delay before hiding
-  }, []);
-
   // Clean up timeouts on unmount
   useEffect(() => {
     return () => {
@@ -770,11 +751,7 @@ export default function ImageDoodleEditor({
       strokeWidth,
       eraserWidth,
       handleStrokeWidthChange,
-      handleEraserWidthChange,
-      handlePenSliderEnter,
-      handlePenSliderLeave,
-      handleEraserSliderEnter,
-      handleEraserSliderLeave
+      handleEraserWidthChange
     ]
   );
 
@@ -931,7 +908,7 @@ export default function ImageDoodleEditor({
         <Button
           variant="default"
           size="default"
-          onClick={handleSave}
+          onClick={handleSaveExecute}
           className="bg-primary hover:bg-primary-hover hover:bg-none"
         >
           <span>Confirm</span>

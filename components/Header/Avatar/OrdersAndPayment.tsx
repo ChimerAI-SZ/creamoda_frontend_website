@@ -68,7 +68,7 @@ const AccountSettingsDrawer = React.memo(
         } else {
           showAlert({
             type: 'error',
-            content: res.message || 'Failed to query billing history'
+            content: res.message || res.msg || 'Failed to query billing history'
           });
         }
       } catch (error: any) {
@@ -90,7 +90,7 @@ const AccountSettingsDrawer = React.memo(
         } else {
           showAlert({
             type: 'error',
-            content: res.message || 'Failed to query billing history'
+            content: res.message || res.msg || 'Failed to query billing history'
           });
         }
       } catch (error: any) {
@@ -121,7 +121,7 @@ const AccountSettingsDrawer = React.memo(
             } else {
               showAlert({
                 type: 'error',
-                content: res.message || 'Failed to cancel subscription'
+                content: res.message || res.msg || 'Failed to cancel subscription'
               });
             }
           } catch (error: any) {
@@ -163,7 +163,7 @@ const AccountSettingsDrawer = React.memo(
           } else {
             showAlert({
               type: 'error',
-              content: res.message || 'Failed to update billing email'
+              content: res.message || res.msg || 'Failed to update billing email'
             });
           }
         })

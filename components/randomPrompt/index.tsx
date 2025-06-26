@@ -1,6 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
 import Image from 'next/image';
-import { RotateCcw } from 'lucide-react';
 
 const randomPrompt = [
   'A Chinese lady wears a charcoal cropped blazer and wide-leg pants, styled with a ribbed white turtleneck and sleek gold earrings—minimalist and refined.',

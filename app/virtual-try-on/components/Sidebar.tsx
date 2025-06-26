@@ -108,7 +108,9 @@ export function Sidebar() {
           showAlert({
             type: 'error',
             content:
-              res.message || 'Something went wrong. Please try again later or contact support if the issue persists'
+              res.message ||
+              res.msg ||
+              'Something went wrong. Please try again later or contact support if the issue persists'
           });
         }
       } else if (currentVariationType === '2') {
@@ -130,7 +132,9 @@ export function Sidebar() {
           showAlert({
             type: 'error',
             content:
-              res.message || 'Something went wrong. Please try again later or contact support if the issue persists'
+              res.message ||
+              res.msg ||
+              'Something went wrong. Please try again later or contact support if the issue persists'
           });
         }
       }
