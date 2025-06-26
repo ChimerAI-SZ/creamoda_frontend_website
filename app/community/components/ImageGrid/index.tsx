@@ -8,21 +8,7 @@ import ImageDetail from './ImageDetail';
 
 import { useAlertStore } from '@/stores/useAlertStore';
 import { useGenerationStore } from '@/stores/useGenerationStore';
-import { community } from '@/lib/api';
-
-// 图片类型接口
-export interface ImageItem {
-  genImgId: number;
-  genId: number;
-  genBatchId?: string | number; // 从代码中看出有这个属性
-  type: number;
-  status: number;
-  resultPic: string;
-  picUrl?: string;
-  createTime: string;
-  isCollected: boolean;
-  seoImgUid?: string;
-}
+import { album, community } from '@/lib/api';
 
 export type SEO_Image_Type = {
   genImgId: number;
@@ -36,6 +22,7 @@ export type SEO_Image_Type = {
   likeCount: number;
   isCollected: number;
   picUrl: string;
+  seoImgUid?: string;
   creator: {
     uid: number;
     name: string;
@@ -48,7 +35,7 @@ const PAGE_SIZE = 10000; // 请求的图片数量
 
 export function ImageGrid() {
   // 图片列表
-  const [images, setImages] = useState<ImageItem[]>([]);
+  const [images, setImages] = useState<SEO_Image_Type[]>([]);
   // 查看图片详情相关state
   const [selectedImage, setSelectedImage] = useState<SEO_Image_Type | null>(null);
   const [detailVisible, setDetailVisible] = useState<boolean>(false);
@@ -83,8 +70,100 @@ export function ImageGrid() {
     [setGenerating]
   );
 
+  // 收藏图片
+  const handleCollectImage = useCallback(
+    (imageId: number, currentIsCollected: number) => {
+      const newIsCollected: number = currentIsCollected === 1 ? 0 : 1;
+
+      setImages(prevImages =>
+        prevImages.map((img: SEO_Image_Type) =>
+          img.genImgId === imageId ? { ...img, isCollected: newIsCollected } : img
+        )
+      );
+      if (selectedImage?.genImgId === imageId) {
+        setSelectedImage(prev => (prev ? { ...prev, isCollected: newIsCollected } : null));
+      }
+
+      const promise = album
+        .collectImage({
+          genImgId: imageId,
+          action: newIsCollected ? 1 : 2
+        })
+        .catch(error => {
+          console.error(error);
+          return { code: -1, message: error.message || 'A network error occurred' };
+        });
+
+      promise.then(res => {
+        if (res.code !== 0) {
+          setImages(prevImages =>
+            prevImages.map((img: SEO_Image_Type) =>
+              img.genImgId === imageId ? { ...img, isCollected: currentIsCollected } : img
+            )
+          );
+          if (selectedImage?.genImgId === imageId) {
+            setSelectedImage(prev => (prev ? { ...prev, isCollected: currentIsCollected ? 1 : 0 } : null));
+          }
+        } else {
+          showAlert({
+            type: 'success',
+            content: `${newIsCollected ? 'Add to' : 'Remove from'} album successfully`
+          });
+        }
+      });
+
+      return promise;
+    },
+    [selectedImage]
+  );
+
+  // 点赞图片
+  const handleLikeImage = useCallback(
+    async (imageId: number, currentIsLike: number) => {
+      // 乐观更新
+      setImages(prevImages =>
+        prevImages.map(img => (img.genImgId === imageId ? { ...img, isLike: currentIsLike === 1 ? 0 : 1 } : img))
+      );
+      if (selectedImage?.genImgId === imageId) {
+        setSelectedImage(prev => (prev ? { ...prev, isLike: currentIsLike === 1 ? 0 : 1 } : null));
+      }
+      try {
+        let res;
+
+        if (currentIsLike) {
+          res = await community.cancelLikeImage(imageId);
+        } else {
+          res = await community.likeImage(imageId);
+        }
+
+        if (res.code !== 0) {
+          // 失败回滚
+          setImages(prevImages =>
+            prevImages.map(img => (img.genImgId === imageId ? { ...img, isLike: currentIsLike } : img))
+          );
+          if (selectedImage?.genImgId === imageId) {
+            setSelectedImage(prev => (prev ? { ...prev, isLike: currentIsLike } : null));
+          }
+        } else {
+          showAlert({
+            type: 'success',
+            content: currentIsLike ? 'Image unliked successfully' : 'Image liked successfully'
+          });
+        }
+      } catch (error: any) {
+        setImages(prevImages =>
+          prevImages.map(img => (img.genImgId === imageId ? { ...img, isLike: currentIsLike } : img))
+        );
+        if (selectedImage?.genImgId === imageId) {
+          setSelectedImage(prev => (prev ? { ...prev, isLike: currentIsLike } : null));
+        }
+      }
+    },
+    [selectedImage]
+  );
+
   // 图片点击事件，标记当前点击的图片，然后打开详情
-  const handleImageClick = useCallback(async (image: ImageItem) => {
+  const handleImageClick = useCallback(async (image: SEO_Image_Type) => {
     try {
       const data = await community.queryImageDetail(image.seoImgUid as string);
 
@@ -129,7 +208,13 @@ export function ImageGrid() {
             >
               <Masonry>
                 {images.map((image, index) => (
-                  <ImageCard key={image.genImgId || index} image={image} onClick={() => handleImageClick(image)} />
+                  <ImageCard
+                    key={image.genImgId || index}
+                    image={image}
+                    onClick={() => handleImageClick(image)}
+                    handleCollectImage={(id, isCollected) => handleCollectImage(id, isCollected)}
+                    handleLikeImage={(id, isLike) => handleLikeImage(id, isLike)}
+                  />
                 ))}
               </Masonry>
             </ResponsiveMasonry>
@@ -142,6 +227,8 @@ export function ImageGrid() {
         onClose={() => {
           setDetailVisible(false);
         }}
+        handleCollectImage={(id, isCollected) => handleCollectImage(id, isCollected)}
+        handleLikeImage={(id, isLike) => handleLikeImage(id, isLike)}
       />
     </>
   );
