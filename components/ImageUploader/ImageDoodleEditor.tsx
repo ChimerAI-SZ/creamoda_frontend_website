@@ -221,7 +221,7 @@ export default function ImageDoodleEditor({
     setIsUploading(true);
     setTimeout(() => {
       handleSave();
-    }, 1000);
+    }, 3000);
   }, [maskDataUrl]);
 
   // Handle save action

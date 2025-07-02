@@ -31,7 +31,8 @@ const dotLeftOffset = [
 ];
 
 export function FidelitySlider({ value, onChange, label = 'Reference Level', className = '' }: FidelitySliderProps) {
-  const [sliderValue, setSliderValue] = React.useState([50]);
+  console.log(value);
+  const [sliderValue, setSliderValue] = React.useState([value]);
 
   return (
     <div className={cn('space-y-4', className)}>
@@ -39,7 +40,18 @@ export function FidelitySlider({ value, onChange, label = 'Reference Level', cla
         <StyledLabel content={label} htmlFor="fidelity" />
       </div>
       <div className="relative items-center">
-        <Slider min={0} max={100} step={50} value={sliderValue} onValueChange={setSliderValue} className="mb-4" />
+        <Slider
+          min={0}
+          max={100}
+          step={50}
+          value={sliderValue}
+          onValueChange={value => {
+            console.log(value);
+            setSliderValue(value);
+            onChange(value[0]);
+          }}
+          className="mb-4"
+        />
         {/* dot 状态层 */}
         <div className="absolute top-1/2 left-1/2 w-full h-0 translate-x-[-50%] translate-y-[-50%] pointer-events-none">
           <div className="relative w-full h-2">

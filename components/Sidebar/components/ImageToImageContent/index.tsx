@@ -48,7 +48,7 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
         image: null,
         imageUrl: '',
         description: '',
-        referLevel: 2,
+        referLevel: 50,
         referenceImage: null,
         referenceImageUrl: '',
         fabricPicUrl: '',
@@ -409,21 +409,21 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
             <div className="space-y-4">
               <div className="space-y-[10px]">
                 <FormLabel>Upload image</FormLabel>
-                <ImageUploader
-                  onImageChange={handleImageChange}
+                <ImageUploader2
                   onImageUrlChange={handleImageUrlChange}
                   imageUrl={currentData.imageUrl}
-                  currentImage={currentData.image}
+                  onMaskImageUrlChange={onMaskImageUrlChange}
+                  maskImageUrl={currentData.maskPicUrl}
+                  showMaskEditor={true}
                 />
               </div>
               <div className="space-y-[10px]">
                 <FormLabel>Upload frabic image</FormLabel>
-                <ImageUploader2
+                <ImageUploader
+                  onImageChange={handleImageChange}
                   onImageUrlChange={handleFabricImageUrlChange}
                   imageUrl={currentData.fabricPicUrl}
-                  onMaskImageUrlChange={onMaskImageUrlChange}
-                  maskImageUrl={currentData.maskPicUrl}
-                  showMaskEditor={true}
+                  currentImage={currentData.image}
                 />
               </div>
             </div>
