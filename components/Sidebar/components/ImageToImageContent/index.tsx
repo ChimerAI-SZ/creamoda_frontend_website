@@ -48,7 +48,7 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
         image: null,
         imageUrl: '',
         description: '',
-        referLevel: 2,
+        referLevel: 50,
         referenceImage: null,
         referenceImageUrl: '',
         fabricPicUrl: '',

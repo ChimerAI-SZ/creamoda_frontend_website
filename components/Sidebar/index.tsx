@@ -54,6 +54,13 @@ export interface ImageUploadFormData {
   maskPicUrl: string;
 }
 
+// slider 的值和后端传的值的映射关系
+const levelMap = new Map([
+  [0, 1],
+  [50, 2],
+  [100, 3]
+]);
+
 export function Sidebar() {
   const { setModelSizes } = useModelStore();
   const { setGenerating } = useGenerationStore();
@@ -238,7 +245,7 @@ export function Sidebar() {
       let response;
       if (data.variationType === '1') {
         // Call copy style API
-        response = await copyStyleGenerate(finalImageUrl, data.description, data.referLevel);
+        response = await copyStyleGenerate(finalImageUrl, data.description, levelMap.get(data.referLevel) || 1);
       } else if (data.variationType === '2') {
         // Call change clothes API
         response = await changeClothesGenerate(finalImageUrl, data.description);
@@ -247,14 +254,15 @@ export function Sidebar() {
         response = await copyFabricGenerate(finalImageUrl, data.description);
       } else if (data.variationType === '4') {
         // Call copy fabric API
-        response = await sketchToDesign(
-          finalImageUrl,
-          data.description,
-          data.referLevel // Convert string to number, default to female
-        );
+        response = await sketchToDesign(finalImageUrl, data.description, levelMap.get(data.referLevel) || 1);
       } else if (data.variationType === '5') {
         // Call mix image API
-        response = await mixImage(finalImageUrl, data.description, finalReferenceImageUrl, data.referLevel);
+        response = await mixImage(
+          finalImageUrl,
+          data.description,
+          finalReferenceImageUrl,
+          levelMap.get(data.referLevel) || 1
+        );
       } else if (data.variationType === '7') {
         // Call change pattern API
         response = await changePattern(finalImageUrl);
