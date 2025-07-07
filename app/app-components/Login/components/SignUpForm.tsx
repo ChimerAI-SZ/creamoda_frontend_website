@@ -139,10 +139,12 @@ export const SignUpForm = ({ onToggleView, onSignupSuccess }: SignUpFormProps) =
     formData.password.trim() !== '' &&
     formData.confirmPassword.trim() !== '' &&
     formData.password === formData.confirmPassword &&
-    !errors.name &&
+    errors.name.length === 0 &&
     !errors.email &&
-    !errors.password &&
+    errors.password.length === 0 &&
     !errors.confirmPassword;
+
+  console.log('isFormValid', isFormValid, formData);
 
   return (
     <form onSubmit={handleSubmit} className="overflow-y-visible">
@@ -161,7 +163,7 @@ export const SignUpForm = ({ onToggleView, onSignupSuccess }: SignUpFormProps) =
           value={formData.name}
           onChange={handleChange('name')}
           onBlur={() => handleBlur('name')}
-          error={errors.name}
+          error={`errors.name`}
           description={
             <div>
               <Tooltip>
