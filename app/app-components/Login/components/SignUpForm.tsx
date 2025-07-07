@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { FormField } from './FormField';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { useAlertStore } from '@/stores/useAlertStore';
 
 import { validators, verificationRules } from '../const';
 import { register } from '@/lib/api';
@@ -16,6 +17,8 @@ interface SignUpFormProps {
 }
 
 export const SignUpForm = ({ onToggleView, onSignupSuccess }: SignUpFormProps) => {
+  const { showAlert } = useAlertStore();
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -69,7 +72,7 @@ export const SignUpForm = ({ onToggleView, onSignupSuccess }: SignUpFormProps) =
     const passwordError = validators.password(formData.password);
     const confirmPasswordError = validators.confirmPassword(formData.confirmPassword, formData.password);
 
-    if (nameError || emailError || passwordError || confirmPasswordError) {
+    if (nameError.length > 0 || emailError || passwordError.length > 0 || confirmPasswordError) {
       setErrors({
         name: nameError,
         email: emailError,
@@ -87,7 +90,6 @@ export const SignUpForm = ({ onToggleView, onSignupSuccess }: SignUpFormProps) =
       if (data.code === 0 || data.code === 402) {
         // Registration successful or email not verified (both cases proceed to next step)
         setRegistrationSuccess(true);
-        console.log('Registration process:', data);
 
         // Call the success callback with the email
         if (onSignupSuccess) {
@@ -98,9 +100,19 @@ export const SignUpForm = ({ onToggleView, onSignupSuccess }: SignUpFormProps) =
             onToggleView();
           }, 3000);
         }
+      } else {
+        showAlert({
+          title: 'Registration failed',
+          content: data.msg,
+          type: 'error'
+        });
       }
     } catch (error) {
-      console.error('Registration error:', error);
+      showAlert({
+        title: 'Registration failed',
+        content: 'Please try again later',
+        type: 'error'
+      });
     } finally {
       setIsLoading(false);
     }

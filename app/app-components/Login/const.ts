@@ -85,13 +85,15 @@ export const verificationRules = [
       },
       {
         label: 'Letters (A-Z, a-z), numbers, underscore (_), hyphen (-), dot (.)',
-        formula: (value: string) => USERNAME_REGEX.test(value),
+        formula: (value: string) => !USERNAME_REGEX.test(value),
         key: 2
       },
       {
         // 恒定为 true
         label: 'Unicode characters allowed (e.g., Chinese, Japanese)',
-        formula: () => {},
+        formula: () => {
+          return false;
+        },
         key: 3
       }
     ]
