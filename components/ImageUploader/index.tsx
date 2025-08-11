@@ -391,6 +391,7 @@ export function ImageUploader({
           />
           <Button
             variant="outline"
+            type="button"
             disabled={!(isUploading || isLoadingImageUrl) && !!previewUrl}
             onClick={handleAddImage}
             className="h-[36px] px-[12px] text-[14px] font-normal leading-5 rounded-[4px] border-input"

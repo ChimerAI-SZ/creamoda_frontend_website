@@ -102,7 +102,7 @@ export function ImageGrid() {
         });
       }
     },
-    [setGenerating, pendingIdsRef, startPolling]
+    [setGenerating, pendingIdsRef, startPolling, showAlert]
   );
 
   // 监听图片列表生成事件
@@ -119,7 +119,7 @@ export function ImageGrid() {
     return () => {
       eventBus.off('imageList:generate-list', handler);
     };
-  }, []);
+  }, [fetchImages]);
 
   // 加载最近图片
   const fetchRecentImages = useCallback(async () => {
@@ -205,7 +205,7 @@ export function ImageGrid() {
     deleteImage(imageId, () => {
       setImages(prev => prev.filter(img => img.genImgId !== imageId));
     });
-  }, []);
+  }, [deleteImage]);
 
   const handleActionButtonClick = async (text: string, image: ImageItem) => {
     if (text === 'Download') {
@@ -281,7 +281,7 @@ export function ImageGrid() {
     if (token) {
       fetchImages(1);
     }
-  }, []);
+  }, [fetchImages]);
 
   // 监听提交成功事件，加载最近图片
   useEffect(() => {
@@ -303,7 +303,7 @@ export function ImageGrid() {
       eventBus.off('sidebar:submit-success', handleSubmitSuccess);
       eventBus.off('auth:logout', handleLogout);
     };
-  }, [fetchRecentImages, clearUserInfo]);
+  }, [fetchRecentImages, clearUserInfo, fetchUserInfo]);
 
   // 清理轮询定时器
   useEffect(() => {

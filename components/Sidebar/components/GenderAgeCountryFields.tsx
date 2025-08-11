@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { StyledLabel } from '../../StyledLabel';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import RadioGroup from '@/components/ui/radio';
+import { Switch } from '@/components/ui/switch';
 
 import { COUNTRIES_LIST, RatioList, AGE_OPTIONS } from '../constant';
 
@@ -29,6 +30,10 @@ interface GenderAgeCountryFieldsProps {
   onModelSizeChange?: (value: string) => void;
   // Optional title prop
   title?: string;
+  // Toggle control
+  withHumanModel?: boolean;
+  onWithHumanModelChange?: (checked: boolean) => void;
+  collapseWhenOff?: boolean;
 }
 
 export const GenderAgeCountryFields: React.FC<GenderAgeCountryFieldsProps> = ({
@@ -45,74 +50,86 @@ export const GenderAgeCountryFields: React.FC<GenderAgeCountryFieldsProps> = ({
   onModelSizeChange,
   title,
   onRatioChange,
-  selectedRatio
+  selectedRatio,
+  withHumanModel = true,
+  onWithHumanModelChange,
+  collapseWhenOff = true
 }) => {
   // Convert modelSize to string for Select component
   const modelSizeValue = modelSize?.toString() || '';
 
   return (
     <div className="mt-6">
-      {title && <h3 className="text-[#121316] font-inter text-[14px] font-bold leading-5 py-[6px]">{title}</h3>}
+      {title && (
+        <div className="flex items-center justify-between py-[6px]">
+          <h3 className="text-[#121316] font-inter text-[14px] font-bold leading-5">{title}</h3>
+          <Switch checked={withHumanModel} onCheckedChange={onWithHumanModelChange} />
+        </div>
+      )}
 
       <div className="flex flex-col gap-2">
-        <div className="flex flex-col gap-2 items-start">
-          <StyledLabel htmlFor="gender_field" content="Gender" />
-          <RadioGroup
-            options={[
-              { label: 'Male', value: '1' },
-              { label: 'Female', value: '2' }
-            ]}
-            name="gender"
-            selectedValue={gender}
-            onChange={onGenderChange}
-          />
-        </div>
+        {(!collapseWhenOff || withHumanModel) && (
+          <>
+            <div className="flex flex-col gap-2 items-start">
+              <StyledLabel htmlFor="gender_field" content="Gender" />
+              <RadioGroup
+                options={[
+                  { label: 'Male', value: '1' },
+                  { label: 'Female', value: '2' }
+                ]}
+                name="gender"
+                selectedValue={gender}
+                onChange={onGenderChange}
+              />
+            </div>
 
-        <div className="flex flex-col gap-2 items-start">
-          <StyledLabel content="Age" />
+            <div className="flex flex-col gap-2 items-start">
+              <StyledLabel content="Age" />
 
-          <Select value={age} onValueChange={onAgeChange}>
-            <SelectTrigger className="rounded-sm">
-              <SelectValue placeholder="Select age" />
-            </SelectTrigger>
-            <SelectContent>
-              {AGE_OPTIONS.map(age => (
-                <SelectItem key={age} value={age.toString()}>
-                  {age}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+              <Select value={age} onValueChange={onAgeChange}>
+                <SelectTrigger className="rounded-sm">
+                  <SelectValue placeholder="Select age" />
+                </SelectTrigger>
+                <SelectContent>
+                  {AGE_OPTIONS.map(age => (
+                    <SelectItem key={age} value={age.toString()}>
+                      {age}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
-        <div className="flex flex-col gap-2 items-start">
-          <StyledLabel content="Country" />
+            <div className="flex flex-col gap-2 items-start">
+              <StyledLabel content="Country" />
 
-          <Select value={country} onValueChange={onCountryChange}>
-            <SelectTrigger className="rounded-sm">
-              <SelectValue placeholder="Select country" />
-            </SelectTrigger>
-            <SelectContent className="max-h-[300px]">
-              {COUNTRIES_LIST.map(country => (
-                <SelectItem key={country.value} value={country.value}>
-                  {country.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+              <Select value={country} onValueChange={onCountryChange}>
+                <SelectTrigger className="rounded-sm">
+                  <SelectValue placeholder="Select country" />
+                </SelectTrigger>
+                <SelectContent className="max-h-[300px]">
+                  {COUNTRIES_LIST.map(country => (
+                    <SelectItem key={country.value} value={country.value}>
+                      {country.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
-        {showModelSizeField && onModelSizeChange && (
-          <div className="flex flex-col gap-2 items-start">
-            <StyledLabel content="Type" />
+            {showModelSizeField && onModelSizeChange && (
+              <div className="flex flex-col gap-2 items-start">
+                <StyledLabel content="Body size" />
 
-            <RadioGroup
-              options={modelSizes.map(item => ({ label: item.name, value: item.code }))}
-              name="modelSize"
-              selectedValue={modelSizeValue}
-              onChange={onModelSizeChange}
-            />
-          </div>
+                <RadioGroup
+                  options={modelSizes.map(item => ({ label: item.name, value: item.code }))}
+                  name="modelSize"
+                  selectedValue={modelSizeValue}
+                  onChange={onModelSizeChange}
+                />
+              </div>
+            )}
+          </>
         )}
 
         <h3 className="text-[#121316] font-inter text-[14px] font-bold leading-5 pt-[24px]">Format</h3>

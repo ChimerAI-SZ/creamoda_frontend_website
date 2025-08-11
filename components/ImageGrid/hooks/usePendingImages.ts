@@ -68,7 +68,7 @@ export function usePendingImages({ onImageUpdate, pollInterval = 3000 }: UsePend
         content: error.message || 'Failed to check image status'
       });
     }
-  }, [onImageUpdate, setGenerating]);
+  }, [onImageUpdate, setGenerating, showAlert]);
 
   const startPolling = useCallback(() => {
     if (!pollTimerRef.current && pendingIdsRef.current.size > 0) {
@@ -80,7 +80,7 @@ export function usePendingImages({ onImageUpdate, pollInterval = 3000 }: UsePend
       // 开始定时轮询
       pollTimerRef.current = setInterval(checkPendingImages, pollInterval);
     }
-  }, [pollInterval]);
+  }, [pollInterval, checkPendingImages]);
 
   const stopPolling = useCallback(() => {
     if (pollTimerRef.current) {

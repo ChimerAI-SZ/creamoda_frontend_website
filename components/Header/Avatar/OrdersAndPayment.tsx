@@ -173,7 +173,7 @@ const AccountSettingsDrawer = React.memo(
             content: error.message || 'Failed to update billing email'
           });
         });
-    }, []);
+    }, [showAlert]);
 
     // 组件挂载时检查登录状态并加载数据
     useEffect(() => {
@@ -331,10 +331,12 @@ const AccountSettingsDrawer = React.memo(
             >
               <table className="w-full">
                 <thead className="text-[#0A1532] font-inter text-sm font-medium text-left">
-                  <th className="pb-4">Due Date</th>
-                  <th className="pb-4">Description</th>
-                  <th className="pb-4">Status</th>
-                  <th className="pb-4">Invoice</th>
+                  <tr>
+                    <th className="pb-4 text-left">Due Date</th>
+                    <th className="pb-4 text-left">Description</th>
+                    <th className="pb-4 text-left">Status</th>
+                    <th className="pb-4 text-left">Invoice</th>
+                  </tr>
                 </thead>
                 <tbody>
                   {tableData.map((item, index) => (

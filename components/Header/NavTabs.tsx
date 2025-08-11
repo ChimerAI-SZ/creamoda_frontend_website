@@ -13,7 +13,7 @@ const navItems: NavItem[] = [
   { text: 'Design', href: '/' },
   { text: 'Virtual Try-on', href: '/virtual-try-on' },
   { text: 'Magic Kit', href: '/magic-kit' },
-  { text: 'Community', href: '/community' }
+  // { text: 'Community', href: '/community' }
 ];
 
 function NavItem({ text, href }: NavItem) {

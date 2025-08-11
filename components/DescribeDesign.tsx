@@ -4,6 +4,7 @@ import * as React from 'react';
 import Image from 'next/image';
 
 import { Textarea } from '@/components/ui/textarea';
+import { PROMPT_MAX_LEN } from '@/utils';
 import FeatureModal from '@/components/FeatureModal';
 import RandomPrompt from '@/components/randomPrompt';
 import { StyledLabel } from './StyledLabel';
@@ -43,7 +44,9 @@ export function DescribeDesign({
         className="min-h-[180px] resize-none placeholder:text-[#D5D5D5] font-inter text-sm font-normal leading-5 rounded-[4px] border border-[#DCDCDC]"
         value={description}
         onChange={onDescriptionChange}
+        maxLength={PROMPT_MAX_LEN}
       />
+      <div className="text-right text-xs text-gray-40 font-inter">{description.length}/{PROMPT_MAX_LEN}</div>
       <RandomPrompt handleQueryRandomPrompt={onRandomPrompt} />
     </div>
   );
