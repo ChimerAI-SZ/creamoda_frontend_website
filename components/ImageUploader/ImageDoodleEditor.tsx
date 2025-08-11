@@ -232,7 +232,7 @@ export default function ImageDoodleEditor({
         // 创建新Image对象来加载mask数据
         const img = new Image();
         // Add crossOrigin attribute to prevent canvas tainting
-        img.crossOrigin = 'anonymous';
+        // img.crossOrigin = 'anonymous';
         img.onload = async () => {
           // 使用原始图像尺寸
           const actualWidth = originalImageSize?.width || width;

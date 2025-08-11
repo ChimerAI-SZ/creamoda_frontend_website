@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
+import { PROMPT_MAX_LEN } from '@/utils';
 import Image from 'next/image';
 
 const randomPrompt = [
@@ -29,7 +30,7 @@ export default function RandomPrompt({
 
   // Approximately 45-50 characters per line, 3 lines = ~150 characters
   const formatPromptForDisplay = useCallback((prompt: string) => {
-    const maxChars = 100;
+    const maxChars = Math.min(100, PROMPT_MAX_LEN);
 
     if (prompt.length <= maxChars) {
       return prompt;
@@ -55,7 +56,7 @@ export default function RandomPrompt({
   }, [getRandomPrompt, formatPromptForDisplay]);
 
   const handleTextClick = useCallback(() => {
-    handleQueryRandomPrompt(currentFullPrompt);
+    handleQueryRandomPrompt(currentFullPrompt.slice(0, PROMPT_MAX_LEN));
   }, [currentFullPrompt, handleQueryRandomPrompt]);
 
   return (

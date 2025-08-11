@@ -231,8 +231,8 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
         break;
 
       case '8':
-        // Type 7 requires fabric image
-        if (!currentData.fabricPicUrl) {
+        // Change fabric requires both fabric image and a saved mask URL
+        if (!currentData.fabricPicUrl || !currentData.maskPicUrl) {
           return 'disabled';
         }
         break;
