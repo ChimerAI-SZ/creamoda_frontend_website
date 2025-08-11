@@ -331,7 +331,7 @@ export function Sidebar() {
     };
 
     fetchData();
-  }, [setModelSizes]);
+  }, [setModelSizes, showAlert]);
 
   return (
     <div

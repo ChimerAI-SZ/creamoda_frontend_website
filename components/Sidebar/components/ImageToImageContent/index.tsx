@@ -259,6 +259,7 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
     currentData.referenceImage,
     currentData.referenceImageUrl,
     currentData.fabricPicUrl,
+    currentData.maskPicUrl,
     currentVariationType,
     isGenerating
   ]);

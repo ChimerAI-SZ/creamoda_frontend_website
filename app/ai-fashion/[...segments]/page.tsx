@@ -135,9 +135,11 @@ export default async function ImageDetailPage(props: { params: tParams }) {
           <div className="flex flex-col gap-4 h-full">
             <div className="border-b pt-4">
               <div className="flex items-center mb-3">
-                <img
+                <Image
                   src={image.creator.headPic || '/images/defaultAvatar.svg'}
                   alt={image.creator.name}
+                  width={48}
+                  height={48}
                   className="w-12 h-12 rounded-full mr-3"
                 />
                 <div>

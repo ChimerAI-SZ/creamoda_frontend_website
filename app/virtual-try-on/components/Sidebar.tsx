@@ -83,7 +83,7 @@ export function Sidebar() {
       setReferencePoseImage({ image: null, imageUrl: '' });
       setTargetPoseImage({ image: null, imageUrl: '' });
     }
-  }, [currentVariationType]);
+  }, [currentVariationType, searchParams]);
 
   // 文生图 / 图生图 提交事件
   const handleSubmit = async () => {

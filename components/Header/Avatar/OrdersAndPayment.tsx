@@ -173,7 +173,7 @@ const AccountSettingsDrawer = React.memo(
             content: error.message || 'Failed to update billing email'
           });
         });
-    }, []);
+    }, [showAlert]);
 
     // 组件挂载时检查登录状态并加载数据
     useEffect(() => {

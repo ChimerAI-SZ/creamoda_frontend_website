@@ -84,7 +84,7 @@ export function ColorPicker({ value = '#ffffff', onChange }: ColorPickerProps) {
   };
 
   // Convert Hex to RGB
-  const hexToRgb = (hex: string) => {
+  const hexToRgb = useCallback((hex: string) => {
     // Remove # if present
     hex = hex.replace(/^#/, '');
 
@@ -101,10 +101,10 @@ export function ColorPicker({ value = '#ffffff', onChange }: ColorPickerProps) {
     }
 
     return { r, g, b };
-  };
+  }, []);
 
   // Convert RGB to HSV
-  const rgbToHsv = (r: number, g: number, b: number) => {
+  const rgbToHsv = useCallback((r: number, g: number, b: number) => {
     r /= 255;
     g /= 255;
     b /= 255;
@@ -131,13 +131,13 @@ export function ColorPicker({ value = '#ffffff', onChange }: ColorPickerProps) {
     if (h < 0) h += 360;
 
     return { h, s, v };
-  };
+  }, []);
 
   // Convert Hex to HSV
-  const hexToHsv = (hex: string) => {
+  const hexToHsv = useCallback((hex: string) => {
     const { r, g, b } = hexToRgb(hex);
     return rgbToHsv(r, g, b);
-  };
+  }, [hexToRgb, rgbToHsv]);
 
   // Update positions based on current color - memoize this function to prevent infinite updates
   const updatePositionsFromColor = useCallback((color: string) => {
@@ -154,7 +154,7 @@ export function ColorPicker({ value = '#ffffff', onChange }: ColorPickerProps) {
     const y = (1 - v) * height;
 
     setPosition({ x, y });
-  }, []); // Empty dependency array as these functions are stable
+  }, [hexToHsv]);
 
   // Update color based on position in color panel
   const updateColorFromPosition = (x: number, y: number) => {
@@ -250,14 +250,14 @@ export function ColorPicker({ value = '#ffffff', onChange }: ColorPickerProps) {
     if (isOpen) {
       updatePositionsFromColor(value);
     }
-  }, [value, isOpen, updatePositionsFromColor]);
+  }, [value, isOpen, updatePositionsFromColor, onChange]);
 
   // Update positions when picker is opened - remove currentColor from dependencies to prevent loop
   useEffect(() => {
     if (isOpen) {
       updatePositionsFromColor(currentColor);
     }
-  }, [isOpen, updatePositionsFromColor]); // Removed currentColor from dependencies
+  }, [isOpen, updatePositionsFromColor, currentColor]);
 
   const { r, g, b } = hsvToRgb(hue / 360, 1, 1);
   const sliderColor = rgbToHex(r, g, b);

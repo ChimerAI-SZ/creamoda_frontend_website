@@ -60,7 +60,7 @@ export const SignUpForm = ({ onToggleView, onSignupSuccess }: SignUpFormProps) =
         }));
       }
     },
-    [formData.password, formData.confirmPassword, errors.password]
+    [formData.password, formData.confirmPassword]
   );
 
   const handleSubmit = async (e: React.FormEvent) => {

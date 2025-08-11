@@ -111,7 +111,7 @@ const AccountSettingsDrawer = React.memo(
           });
         }
       },
-      []
+      [newUsername, showAlert, updateUsername]
     );
 
     const navigateAndCloseDialogs = (path: string) => {

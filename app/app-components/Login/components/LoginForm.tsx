@@ -42,7 +42,7 @@ export const LoginForm = ({ onToggleView, onSuccess }: LoginFormProps) => {
         setErrors(prev => ({ ...prev, email: validators.email(formData.email) }));
       }
     },
-    [formData.email, formData.password]
+    [formData.email]
   );
 
   const handleSubmit = async (e: React.FormEvent) => {

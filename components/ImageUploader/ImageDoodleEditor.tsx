@@ -167,7 +167,7 @@ export default function ImageDoodleEditor({
       const width = strokeWidth + 5 > 50 ? 50 : strokeWidth + 5;
       setStrokeWidth(width);
     }
-  }, [eraserWidth, strokeWidth]);
+  }, [eraseMode, eraserWidth, strokeWidth]);
   const handleZoomOut = useCallback(() => {
     // setEraseMode(false);
     // canvasRef.current?.eraseMode(false);
@@ -178,7 +178,7 @@ export default function ImageDoodleEditor({
       const width = strokeWidth - 5 < 0 ? 0 : strokeWidth - 5;
       setStrokeWidth(width);
     }
-  }, []);
+  }, [eraseMode, eraserWidth, strokeWidth]);
 
   // Handle eraser tool selection
   const handleEraserClick = useCallback(() => {
@@ -216,13 +216,6 @@ export default function ImageDoodleEditor({
     setMaskDataUrl(null);
     setPathsChanged(false);
   }, []);
-
-  const handleSaveExecute = useCallback(() => {
-    setIsUploading(true);
-    setTimeout(() => {
-      handleSave();
-    }, 3000);
-  }, [maskDataUrl]);
 
   // Handle save action
   const handleSave = useCallback(async () => {
@@ -364,6 +357,13 @@ export default function ImageDoodleEditor({
       }
     }
   }, [maskDataUrl, onSave, strokes, width, height, originalImageSize]);
+
+  const handleSaveExecute = useCallback(() => {
+    setIsUploading(true);
+    setTimeout(() => {
+      handleSave();
+    }, 3000);
+  }, [handleSave]);
 
   // Function to continuously update preview during drawing
   const updatePreviewContinuously = useCallback(() => {
@@ -676,12 +676,14 @@ export default function ImageDoodleEditor({
 
   // Clean up timeouts on unmount
   useEffect(() => {
+    const penTimeout = penSliderTimeoutRef.current;
+    const eraserTimeout = eraserSliderTimeoutRef.current;
     return () => {
-      if (penSliderTimeoutRef.current) {
-        clearTimeout(penSliderTimeoutRef.current);
+      if (penTimeout) {
+        clearTimeout(penTimeout);
       }
-      if (eraserSliderTimeoutRef.current) {
-        clearTimeout(eraserSliderTimeoutRef.current);
+      if (eraserTimeout) {
+        clearTimeout(eraserTimeout);
       }
     };
   }, []);
@@ -739,20 +741,7 @@ export default function ImageDoodleEditor({
         </div>
       </div>
     ),
-    [
-      eraseMode,
-      handleEraserClick,
-      handlePenClick,
-      handleRedo,
-      handleReset,
-      handleUndo,
-      showPenSlider,
-      showEraserSlider,
-      strokeWidth,
-      eraserWidth,
-      handleStrokeWidthChange,
-      handleEraserWidthChange
-    ]
+    [handleEraserClick, handlePenClick, handleRedo, handleReset, handleUndo, handleZoomIn, handleZoomOut]
   );
 
   // 窗口调整或容器尺寸变化时重新计算
@@ -812,15 +801,12 @@ export default function ImageDoodleEditor({
             >
               {/* Background image */}
               {imageUrl && (
-                <img
+                <NextImage
                   src={imageUrl}
                   alt="Background"
+                  fill
+                  sizes="100vw"
                   style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    height: '100%',
                     objectFit: 'contain',
                     zIndex: 0
                   }}
@@ -880,9 +866,11 @@ export default function ImageDoodleEditor({
 
               {/* Real-time transparent doodle */}
               {transparentDoodleUrl && (
-                <img
+                <NextImage
                   src={transparentDoodleUrl}
                   alt="Doodle Preview"
+                  fill
+                  sizes="100vw"
                   className="absolute inset-0 z-10"
                   style={{ objectFit: 'contain' }}
                 />
