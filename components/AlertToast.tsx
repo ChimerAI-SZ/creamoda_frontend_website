@@ -50,7 +50,7 @@ export const AlertToast = () => {
       const timeout = setTimeout(() => close(), 4000);
       return () => clearTimeout(timeout);
     }
-  }, [open]);
+  }, [open, close]);
 
   if (!open) return null;
 

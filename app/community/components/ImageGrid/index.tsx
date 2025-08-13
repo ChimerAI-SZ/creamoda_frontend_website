@@ -67,7 +67,7 @@ export function ImageGrid() {
         });
       }
     },
-    [setGenerating]
+    [showAlert]
   );
 
   // 收藏图片
@@ -114,7 +114,7 @@ export function ImageGrid() {
 
       return promise;
     },
-    [selectedImage]
+    [selectedImage, showAlert]
   );
 
   // 点赞图片
@@ -159,7 +159,7 @@ export function ImageGrid() {
         }
       }
     },
-    [selectedImage]
+    [selectedImage, showAlert]
   );
 
   // 图片点击事件，标记当前点击的图片，然后打开详情
@@ -181,12 +181,12 @@ export function ImageGrid() {
           error.message || 'Something went wrong. Please try again later or contact support if the issue persists'
       });
     }
-  }, []);
+  }, [showAlert]);
 
   useEffect(() => {
     fetchImages(1);
     setMounted(true);
-  }, []);
+  }, [fetchImages]);
 
   return (
     <>

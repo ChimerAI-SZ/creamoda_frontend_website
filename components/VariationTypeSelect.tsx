@@ -18,7 +18,7 @@ export function VariationTypeSelect({
   value,
   onChange,
   variationTypes,
-  label = 'Variation Type',
+  label = 'Generation Mode',
   placeholder = 'Category Switcher'
 }: VariationTypeSelectProps) {
   const [isLoading, setIsLoading] = useState(true);

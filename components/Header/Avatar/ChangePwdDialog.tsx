@@ -82,7 +82,7 @@ const ChangePwd = React.memo(
             </div>
           </div>
           <div className="flex items-center justify-center gap-3">
-            <DialogTrigger className="flex-1">
+            <DialogTrigger asChild className="flex-1">
               <Button className="w-full text-[rgba(10,21,50,0.80)]" variant="primarySecondary" onClick={handleConfirm}>
                 Cancel
               </Button>

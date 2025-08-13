@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { PROMPT_MAX_LEN } from '@/utils';
 
 import { GenerateButton } from '@/components/GenerateButton/GenerateButton';
 import { GenderAgeCountryFields } from '@/components/Sidebar/components/GenderAgeCountryFields';
@@ -41,7 +42,8 @@ function OutfitForm({ onSubmit }: OutfitFormProps) {
   }, [onSubmit, formData, setGenerating]);
 
   const handlePromptChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setFormData(prev => ({ ...prev, prompt: e.target.value }));
+    const value = e.target.value;
+    setFormData(prev => ({ ...prev, prompt: value.slice(0, PROMPT_MAX_LEN) }));
   }, []);
 
   const handleGenderChange = useCallback((value: string) => {
@@ -64,18 +66,27 @@ function OutfitForm({ onSubmit }: OutfitFormProps) {
     setFormData(prev => ({ ...prev, format: value as '1:1' | '2:3' | '3:4' | '9:16' }));
   }, []);
 
+  // toggle withHumanModel
+  const handleWithHumanModelChange = useCallback((checked: boolean) => {
+    setFormData(prev => ({ ...prev, withHumanModel: checked ? 1 : 0 }));
+  }, []);
+
   // reset prompt after confirm design features
   const handleConfirm = useCallback((features: string[]) => {
-    setFormData(prev => ({ ...prev, prompt: features.join(', ') }));
+    const joined = features.join(', ');
+    setFormData(prev => ({ ...prev, prompt: joined.slice(0, PROMPT_MAX_LEN) }));
   }, []);
   // reset prompt after get random prompt
   const handleQueryRandomPrompt = useCallback((prompt: string) => {
-    setFormData(prev => ({ ...prev, prompt }));
+    setFormData(prev => ({ ...prev, prompt: prompt.slice(0, PROMPT_MAX_LEN) }));
   }, []);
 
   // 验证表单并更新按钮状态
   useEffect(() => {
-    const isFormValid = Boolean(formData.prompt.length > 0 && formData.age && formData.country && formData.modelSize);
+    const baseValid = formData.prompt.length > 0;
+    const needHuman = formData.withHumanModel === 1;
+    const extraValid = !needHuman || (Boolean(formData.age) && Boolean(formData.country) && Boolean(formData.modelSize));
+    const isFormValid = Boolean(baseValid && extraValid);
     setBtnState(isGenerating ? 'generating' : isFormValid ? 'ready' : 'disabled');
   }, [formData, isGenerating]);
 
@@ -109,6 +120,8 @@ function OutfitForm({ onSubmit }: OutfitFormProps) {
               selectedRatio={formData.format}
               onModelSizeChange={handleModelSizeChange}
               title="With human model"
+              withHumanModel={formData.withHumanModel === 1}
+              onWithHumanModelChange={handleWithHumanModelChange}
             />
           </div>
         </form>

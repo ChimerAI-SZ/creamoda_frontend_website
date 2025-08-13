@@ -163,11 +163,21 @@ export function Sidebar() {
           break;
 
         case '8':
-          // Type 7 requires fabric image
+          // Change fabric requires both fabric image and a saved mask URL
           if (!data.fabricPicUrl) {
             showAlert({
               type: 'error',
               content: 'Please upload a fabric image'
+            });
+            setGenerating(false);
+            return;
+          }
+          // Ensure the user has saved the mask (we only store URL after successful upload)
+          if (!data.maskPicUrl || data.maskPicUrl.trim() === '') {
+            showAlert({
+              type: 'error',
+              content:
+                'Please save the mask area first. Click on the mask editor, draw the area to change, then press Confirm to upload the mask.'
             });
             setGenerating(false);
             return;
@@ -321,7 +331,7 @@ export function Sidebar() {
     };
 
     fetchData();
-  }, [setModelSizes]);
+  }, [setModelSizes, showAlert]);
 
   return (
     <div

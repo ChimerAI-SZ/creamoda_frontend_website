@@ -47,8 +47,8 @@ export default function FeatureModal({
   const [showAfter, setShowAfter] = useState(false);
 
   // 选中的一级
-  const [activeCategory, setActiveCategory] = useState('Style'); // 一级分类选中状态
-  const [activeSubcategory, setActiveSubcategory] = useState('Style'); // 二级分类选中状态
+  const [activeCategory, setActiveCategory] = useState('Items'); // 一级分类选中状态
+  const [activeSubcategory, setActiveSubcategory] = useState('Jacket'); // 二级分类选中状态
   const [activeFeature, setActiveFeature] = useState<string[]>([]); // 选中的词条
 
   const [showAllFeatures, setShowAllFeatures] = useState(false);
@@ -208,7 +208,7 @@ export default function FeatureModal({
 
           <div className="w-full grid grid-cols-12 gap-x-[24px] overflow-y-auto pt-4 pl-[24px]">
             <div className="col-span-3 h-full flex flex-col gap-4">
-              {Object.keys((designFeatures as DesignFeaturesType)[activeCategory]).map(subcategory => (
+              {(designFeatures as DesignFeaturesType)[activeCategory] && Object.keys((designFeatures as DesignFeaturesType)[activeCategory]).map(subcategory => (
                 <div
                   key={subcategory}
                   className={cn(
@@ -229,7 +229,7 @@ export default function FeatureModal({
             </div>
             <div className="col-span-9 h-full pr-[24px]">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {(designFeatures as DesignFeaturesType)[activeCategory][activeSubcategory]?.map((feature, index) => (
+                {(designFeatures as DesignFeaturesType)[activeCategory]?.[activeSubcategory]?.map((feature, index) => (
                   <div
                     key={feature}
                     className={cn(
@@ -268,6 +268,7 @@ export default function FeatureModal({
         </div>
         <DialogFooter className="justify-center sm:justify-center pt-4">
           <DialogClose
+            asChild
             className={cn(
               'rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground',
               'focus-visible:outline-none focus-visible:ring-0'

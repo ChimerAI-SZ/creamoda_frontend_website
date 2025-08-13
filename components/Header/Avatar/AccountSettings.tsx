@@ -111,7 +111,7 @@ const AccountSettingsDrawer = React.memo(
           });
         }
       },
-      []
+      [newUsername, showAlert, updateUsername]
     );
 
     const navigateAndCloseDialogs = (path: string) => {
@@ -153,7 +153,7 @@ const AccountSettingsDrawer = React.memo(
                   <span>Username</span>
                   {isEditingUsername && (
                     <div>
-                      <Tooltip>
+                      <Tooltip delayDuration={100}>
                         <TooltipTrigger asChild>
                           <Info className={cn('w-4 h-4 cursor-pointer', usernameErrors.length > 0 && 'text-error')} />
                         </TooltipTrigger>
@@ -164,7 +164,9 @@ const AccountSettingsDrawer = React.memo(
                               ?.rule.map((r, index) => (
                                 <div className="flex items-center gap-2" key={r.key + index}>
                                   <Image
-                                    src={`/images/login/${usernameErrors.includes(r.key) ? 'error' : 'correct'}.svg`}
+                                    src={`/images/login/${
+                                      usernameErrors.includes(r.key) ? 'error_mark' : 'correct_mark'
+                                    }.svg`}
                                     alt="username-requirements"
                                     width={16}
                                     height={16}

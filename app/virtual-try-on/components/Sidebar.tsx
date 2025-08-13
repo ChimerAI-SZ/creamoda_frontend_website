@@ -83,7 +83,7 @@ export function Sidebar() {
       setReferencePoseImage({ image: null, imageUrl: '' });
       setTargetPoseImage({ image: null, imageUrl: '' });
     }
-  }, [currentVariationType]);
+  }, [currentVariationType, searchParams]);
 
   // 文生图 / 图生图 提交事件
   const handleSubmit = async () => {
@@ -259,7 +259,7 @@ export function Sidebar() {
                   />
                 </div>
                 <div className="space-y-2" key={`target-pose-uploader-${currentVariationType}`}>
-                  <StyledLabel htmlFor="target-pose-uploader" content="Upload target pose image" />
+                  <StyledLabel htmlFor="target-pose-uploader" content="Upload target image" />
                   <ImageUploader
                     key={`target-pose-uploader-${currentVariationType}-target`}
                     onImageChange={(image: File | null) => {
@@ -270,7 +270,7 @@ export function Sidebar() {
                     }}
                     imageUrl={targetPoseImage.imageUrl}
                     currentImage={targetPoseImage.image}
-                    imageType="Target Pose Image"
+                    imageType="Target Image"
                   />
                 </div>
               </div>

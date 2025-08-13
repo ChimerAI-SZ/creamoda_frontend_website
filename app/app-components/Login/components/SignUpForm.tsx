@@ -60,7 +60,7 @@ export const SignUpForm = ({ onToggleView, onSignupSuccess }: SignUpFormProps) =
         }));
       }
     },
-    [formData.password, formData.confirmPassword, errors.password]
+    [formData.password, formData.confirmPassword]
   );
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -187,7 +187,7 @@ export const SignUpForm = ({ onToggleView, onSignupSuccess }: SignUpFormProps) =
                       ?.rule.map((r, index) => (
                         <div className="flex items-center gap-2" key={r.key + index}>
                           <Image
-                            src={`/images/login/${errors.name.includes(r.key) ? 'error' : 'correct'}.svg`}
+                            src={`/images/login/${errors.name.includes(r.key) ? 'error_mark' : 'correct_mark'}.svg`}
                             alt="username-requirements"
                             width={16}
                             height={16}
@@ -228,7 +228,7 @@ export const SignUpForm = ({ onToggleView, onSignupSuccess }: SignUpFormProps) =
           error={errors.password}
           description={
             <div>
-              <Tooltip>
+              <Tooltip delayDuration={100}>
                 <TooltipTrigger asChild>
                   <Info className={cn('w-4 h-4 cursor-pointer', errors.password.length > 0 && 'text-error')} />
                 </TooltipTrigger>
@@ -239,7 +239,7 @@ export const SignUpForm = ({ onToggleView, onSignupSuccess }: SignUpFormProps) =
                       ?.rule.map((r, index) => (
                         <div className="flex items-center gap-2" key={r.key + index}>
                           <Image
-                            src={`/images/login/${errors.password.includes(r.key) ? 'error' : 'correct'}.svg`}
+                            src={`/images/login/${errors.password.includes(r.key) ? 'error_mark' : 'correct_mark'}.svg`}
                             alt="username-requirements"
                             width={16}
                             height={16}

@@ -97,6 +97,13 @@ export default function ImageDetail({
               Quick action
             </div>
             <div>
+            <ActionButton variant="tertiary" text="Download" iconName="download_black" />
+            <ActionButton
+                variant="tertiary"
+                text={image?.isCollected ? 'Remove from favorites' : 'Add to favorites'}
+                iconName={image?.isCollected ? 'added_to_album' : 'add_to_album_black'}
+              />
+               <ActionButton variant="tertiary" text="Delete" iconName="delete_black" />
               {['/', '/virtual-try-on', '/magic-kit'].includes(pathname) && (
                 <>
                   {pathname !== '/virtual-try-on' && (
@@ -111,14 +118,7 @@ export default function ImageDetail({
                   )}
                 </>
               )}
-              <ActionButton
-                variant="tertiary"
-                text={image?.isCollected ? 'Remove from album' : 'Add to album'}
-                iconName={image?.isCollected ? 'added_to_album' : 'add_to_album_black'}
-              />
-              <ActionButton variant="tertiary" text="Download" iconName="download_black" />
-              <ActionButton variant="tertiary" text="Delete" iconName="delete_black" />
-              <ActionButton variant="tertiary" text="Share" iconName="share" />
+              {/* <ActionButton variant="tertiary" text="Share" iconName="share" /> */}
             </div>
           </div>
         )}
