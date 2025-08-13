@@ -228,7 +228,7 @@ export const SignUpForm = ({ onToggleView, onSignupSuccess }: SignUpFormProps) =
           error={errors.password}
           description={
             <div>
-              <Tooltip>
+              <Tooltip delayDuration={100}>
                 <TooltipTrigger asChild>
                   <Info className={cn('w-4 h-4 cursor-pointer', errors.password.length > 0 && 'text-error')} />
                 </TooltipTrigger>

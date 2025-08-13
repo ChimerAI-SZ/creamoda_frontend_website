@@ -153,7 +153,7 @@ const AccountSettingsDrawer = React.memo(
                   <span>Username</span>
                   {isEditingUsername && (
                     <div>
-                      <Tooltip>
+                      <Tooltip delayDuration={100}>
                         <TooltipTrigger asChild>
                           <Info className={cn('w-4 h-4 cursor-pointer', usernameErrors.length > 0 && 'text-error')} />
                         </TooltipTrigger>
