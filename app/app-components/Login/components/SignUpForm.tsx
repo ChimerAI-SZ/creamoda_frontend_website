@@ -187,7 +187,7 @@ export const SignUpForm = ({ onToggleView, onSignupSuccess }: SignUpFormProps) =
                       ?.rule.map((r, index) => (
                         <div className="flex items-center gap-2" key={r.key + index}>
                           <Image
-                            src={`/images/login/${errors.name.includes(r.key) ? 'error' : 'correct'}.svg`}
+                            src={`/images/login/${errors.name.includes(r.key) ? 'error_mark' : 'correct_mark'}.svg`}
                             alt="username-requirements"
                             width={16}
                             height={16}
@@ -239,7 +239,7 @@ export const SignUpForm = ({ onToggleView, onSignupSuccess }: SignUpFormProps) =
                       ?.rule.map((r, index) => (
                         <div className="flex items-center gap-2" key={r.key + index}>
                           <Image
-                            src={`/images/login/${errors.password.includes(r.key) ? 'error' : 'correct'}.svg`}
+                            src={`/images/login/${errors.password.includes(r.key) ? 'error_mark' : 'correct_mark'}.svg`}
                             alt="username-requirements"
                             width={16}
                             height={16}
