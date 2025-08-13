@@ -270,7 +270,7 @@ export function Sidebar() {
                     }}
                     imageUrl={targetPoseImage.imageUrl}
                     currentImage={targetPoseImage.image}
-                    imageType="Target Pose Image"
+                    imageType="Target Image"
                   />
                 </div>
               </div>

@@ -73,7 +73,7 @@ export function ImageUploader({
    * 否则清除预览
    */
   useEffect(() => {
-    if (imageUrl) {
+    if (imageUrl && imageUrl.trim() !== '') {
       setPreviewUrl(imageUrl);
     } else if (currentImage) {
       const objectUrl = URL.createObjectURL(currentImage);
@@ -290,20 +290,24 @@ export function ImageUploader({
                 {/* 上面：图片预览（50%） */}
                 <div className="h-1/2 flex-1 flex items-center justify-center bg-[#EFF3F6] relative p-[1px] border border-border rounded-[18px] w-full bg-gradient-primary">
                   <div className="h-full w-full flex items-center justify-center border border-[#DCDCDC] bg-[#EFF3F6] rounded-[16px]">
-                    <Image
-                      src={imageUrl}
-                      alt="Uploaded image"
-                      fill
-                      style={{ objectFit: 'contain' }}
-                      onError={() => {
-                        onImageUrlChange('');
-                        showAlert({
-                          type: 'error',
-                          content:
-                            'Failed to load image. The URL might be invalid or the image format is not supported.'
-                        });
-                      }}
-                    />
+                    {imageUrl && imageUrl.trim() !== '' ? (
+                      <Image
+                        src={imageUrl}
+                        alt="Uploaded image"
+                        fill
+                        style={{ objectFit: 'contain' }}
+                        onError={() => {
+                          onImageUrlChange('');
+                          showAlert({
+                            type: 'error',
+                            content:
+                              'Failed to load image. The URL might be invalid or the image format is not supported.'
+                          });
+                        }}
+                      />
+                    ) : (
+                      <div className="text-gray-400 text-sm">No image available</div>
+                    )}
                     {/* 删除按钮，点击后删除图片并恢复上传区域 */}
                     <button onClick={handleRemoveImage} className="absolute top-4 right-4" type="button">
                       <X className="h-5 w-5 text-black" />
@@ -328,22 +332,26 @@ export function ImageUploader({
               // 图片预览模式
               <div className="relative w-full h-full">
                 <div className="absolute inset-0 flex items-center justify-center p-4">
-                  <Image
-                    src={previewUrl}
-                    alt="Uploaded image"
-                    fill
-                    className="object-contain"
-                    onError={() => {
-                      // 图片加载错误时清除预览
-                      setPreviewUrl(null);
-                      onImageUrlChange('');
+                  {previewUrl && previewUrl.trim() !== '' ? (
+                    <Image
+                      src={previewUrl}
+                      alt="Uploaded image"
+                      fill
+                      className="object-contain"
+                      onError={() => {
+                        // 图片加载错误时清除预览
+                        setPreviewUrl(null);
+                        onImageUrlChange('');
 
                       showAlert({
                         type: 'error',
                         content: 'Failed to load image. The URL might be invalid or the image format is not supported.'
                       });
                     }}
-                  />
+                    />
+                  ) : (
+                    <div className="text-gray-400 text-sm">No image available</div>
+                  )}
                 </div>
                 <button onClick={handleRemoveImage} className="absolute top-4 right-4" type="button">
                   <X className="h-5 w-5 text-black" />

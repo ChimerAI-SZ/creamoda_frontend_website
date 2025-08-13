@@ -13,7 +13,7 @@ const buttonVariants = cva(
           'rounded-[100px] px-[40px] bg-gradient-to-r from-[#D0C4FF] to-[#5F44F7] text-primary-foreground shadow hover:bg-[linear-gradient(0deg,_rgba(10,21,50,0.20)_0%,_rgba(10,21,50,0.20)_100%),_linear-gradient(90deg,_#D0C4FF_0%,_#5F44F7_70%)] disabled:bg-[rgba(10,21,50,0.20)] disabled:bg-none',
 
         primary:
-          'bg-primary text-primary-foreground rounded-[8px] px-[6px] py-[5px] shadow-sm hover:bg-primary-hover disabled:bg-primary-disabled',
+          'bg-primary text-primary-foreground rounded-full px-[6px] py-[5px] shadow-sm hover:bg-primary-hover disabled:bg-primary-disabled',
         primarySecondary:
           'bg-white border border-gray-20 rounded-[8px] text-gray-80 px-[6px] py-[5px] shadow-sm hover:bg-[#e6e8ea] hover:border-primary hover:text-primary disabled:bg-white disabled:border-gray-10 disabled:text-gray-20',
         primaryTertiary:

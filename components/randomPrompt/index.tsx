@@ -8,11 +8,11 @@ const randomPrompt = [
   'A man in a silver puffer jacket and black cargo pants stands on a rooftop. The futuristic cut and reflective finish make a bold statement.',
   'A woman wears a dove-gray oversized coat over a slate turtleneck dress. Tonal, minimal, and elegant.',
   'In studio light, a young lady wears a mesh top with constellation embroidery and a midnight blue satin skirt—cosmic and mysterious.',
-  'A stylish young man leans casually against a concrete wall, wearing a sage green utility jacket with oversized pockets and a belted waist. His cream trousers are cropped just above the ankle, revealing a pair of vintage-inspired loafers. The overall aesthetic blends modern tailoring with workwear nostalgia.',
-  "A woman with curly hair walks across a crosswalk in Tokyo at dusk, wearing a neon pink trench coat that glows under the city lights. The coat's glossy surface and cinched waist create a bold silhouette, effortlessly grabbing attention among the muted tones of the street.",
-  'Inside an empty greenhouse, a model in an ethereal sheer white blouse with puff sleeves and hand-stitched floral accents moves delicately between beams of filtered sunlight. The mood is soft, romantic, and slightly surreal, evoking classic European countryside nostalgia.',
-  'A high-fashion editorial shot features a close-up of a model wearing a sharply tailored beige wool suit. The jacket has exaggerated lapels and is paired with no shirt underneath, offering a bold reinterpretation of traditional menswear. The lighting is moody, casting soft shadows on her angular features.',
-  'A street-style snapshot of a fashion-forward woman in Berlin. She wears a cropped leather biker jacket over a graphic tee, paired with metallic silver pants and knee-high boots. Her asymmetrical bob and statement sunglasses complete the edgy, rebellious look.'
+  'A stylish young man against a wall wears a sage green utility jacket with oversized pockets and belted waist. His cream cropped trousers reveal vintage loafers.',
+  "A woman with curly hair walks across a Tokyo crosswalk at dusk, wearing a neon pink trench coat that glows under city lights. Bold and striking silhouette.",
+  'Inside a greenhouse, a model in an ethereal sheer white blouse with puff sleeves moves between beams of sunlight. Soft, romantic, and surreal.',
+  'A high-fashion close-up of a model wearing a sharply tailored beige wool suit. The jacket has exaggerated lapels with no shirt underneath.',
+  'A street-style woman in Berlin wears a cropped leather biker jacket over a graphic tee, paired with metallic silver pants and knee-high boots. Edgy and rebellious.'
 ];
 
 export default function RandomPrompt({
@@ -28,9 +28,9 @@ export default function RandomPrompt({
     return randomPrompt[randomIndex];
   }, []);
 
-  // Approximately 45-50 characters per line, 3 lines = ~150 characters
+  // Format prompt for display, using the full PROMPT_MAX_LEN limit
   const formatPromptForDisplay = useCallback((prompt: string) => {
-    const maxChars = Math.min(100, PROMPT_MAX_LEN);
+    const maxChars = PROMPT_MAX_LEN;
 
     if (prompt.length <= maxChars) {
       return prompt;
