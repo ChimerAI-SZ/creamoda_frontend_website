@@ -21,10 +21,9 @@ export function Format({ value, onChange }: FormatProps) {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="1:1">1:1</SelectItem>
+                <SelectItem value="2:3">2:3</SelectItem>
                 <SelectItem value="3:4">3:4</SelectItem>
-                <SelectItem value="4:3">4:3</SelectItem>
                 <SelectItem value="9:16">9:16</SelectItem>
-                <SelectItem value="16:9">16:9</SelectItem>
               </SelectContent>
             </Select>
           </div>

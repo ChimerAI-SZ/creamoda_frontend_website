@@ -198,6 +198,28 @@ export async function mixImage(originalPicUrl: string, prompt: string, reference
 }
 
 /**
+ * 风格变换图片生成
+ * @param originalPicUrl 原始图片URL
+ * @param prompt 提示词
+ * @param referenceImageUrl 参考图片URL
+ * @param styleStrengthLevel 风格强度级别 (low/middle/high)
+ */
+export async function varyStyleImage(originalPicUrl: string, prompt: string, referenceImageUrl: string, styleStrengthLevel: string = 'middle') {
+  try {
+    const response = await api.post('/api/v1/img/vary_style_image', {
+      originalPicUrl,
+      referPicUrl: referenceImageUrl,
+      prompt,
+      styleStrengthLevel
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error in vary style image:', error);
+    throw error;
+  }
+}
+
+/**
  * 删除图片
  * @param genImgId 图片ID
  */
@@ -274,6 +296,44 @@ export async function styleFusion(originalPicUrl: string, referPicUrl: string) {
     return response.data;
   } catch (error) {
     console.error('Error fusing styles:', error);
+    throw error;
+  }
+}
+
+/**
+ * 扩图接口
+ * @param originalPicUrl 原始图片URL
+ * @param topPadding 上边距
+ * @param rightPadding 右边距
+ * @param bottomPadding 下边距
+ * @param leftPadding 左边距
+ * @param seed 随机种子（可选）
+ */
+export async function extendImage(
+  originalPicUrl: string, 
+  topPadding: number, 
+  rightPadding: number, 
+  bottomPadding: number, 
+  leftPadding: number,
+  seed?: number
+) {
+  try {
+    const payload: any = {
+      originalPicUrl,
+      topPadding,
+      rightPadding,
+      bottomPadding,
+      leftPadding
+    };
+    
+    if (seed !== undefined) {
+      payload.seed = seed;
+    }
+    
+    const response = await api.post('/api/v1/img/extend_image', payload);
+    return response.data;
+  } catch (error) {
+    console.error('Error extending image:', error);
     throw error;
   }
 }

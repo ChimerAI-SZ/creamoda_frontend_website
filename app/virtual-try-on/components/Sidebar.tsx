@@ -75,6 +75,17 @@ export function Sidebar() {
   });
   // change pose end
 
+  // virtual try-on manual begins
+  const [originalImage, setOriginalImage] = useState({
+    image: null as File | null,
+    imageUrl: ''
+  });
+  const [referenceImage, setReferenceImage] = useState({
+    image: null as File | null,
+    imageUrl: ''
+  });
+  // virtual try-on manual ends
+
   useEffect(() => {
     if (currentVariationType === '1') {
       setModelImage({ image: null, imageUrl: '' });
@@ -82,6 +93,9 @@ export function Sidebar() {
     } else if (currentVariationType === '2') {
       setReferencePoseImage({ image: null, imageUrl: '' });
       setTargetPoseImage({ image: null, imageUrl: '' });
+    } else if (currentVariationType === '3') {
+      setOriginalImage({ image: null, imageUrl: '' });
+      setReferenceImage({ image: null, imageUrl: '' });
     }
   }, [currentVariationType, searchParams]);
 
@@ -135,8 +149,16 @@ export function Sidebar() {
               res.message ||
               res.msg ||
               'Something went wrong. Please try again later or contact support if the issue persists'
-          });
+                      });
         }
+      } else if (currentVariationType === '3') {
+        // Virtual Try-on (Manual) logic
+        // TODO: Implement API call for manual virtual try-on
+        showAlert({
+          type: 'info',
+          content: 'Virtual Try-on (Manual) functionality will be implemented soon.'
+        });
+        setGenerating(false);
       }
     } catch (error: any) {
       showAlert({
@@ -149,7 +171,9 @@ export function Sidebar() {
 
   useEffect(() => {
     const isFormValid = Boolean(
-      (modelImage.imageUrl && clothingImage.imageUrl) || (referencePoseImage.imageUrl && targetPoseImage.imageUrl)
+      (modelImage.imageUrl && clothingImage.imageUrl) || 
+      (referencePoseImage.imageUrl && targetPoseImage.imageUrl) ||
+      (originalImage.imageUrl && referenceImage.imageUrl)
     );
 
     setBtnState(isGenerating ? 'generating' : isFormValid ? 'ready' : 'disabled');
@@ -158,7 +182,9 @@ export function Sidebar() {
     modelImage.imageUrl,
     clothingImage.imageUrl,
     referencePoseImage.imageUrl,
-    targetPoseImage.imageUrl
+    targetPoseImage.imageUrl,
+    originalImage.imageUrl,
+    referenceImage.imageUrl
   ]);
 
   return (
@@ -271,6 +297,53 @@ export function Sidebar() {
                     imageUrl={targetPoseImage.imageUrl}
                     currentImage={targetPoseImage.image}
                     imageType="Target Image"
+                  />
+                </div>
+              </div>
+            )}
+
+            {currentVariationType === '3' && (
+              <div key={`virtual-try-on-manual-${currentVariationType}`}>
+                <div className="space-y-2" key={`original-image-uploader-${currentVariationType}`}>
+                  <StyledLabel htmlFor="original-image-uploader" content="Upload original image" />
+                  <div className="space-y-2">
+                    <ImageUploader
+                      key={`original-image-uploader-${currentVariationType}-original`}
+                      onImageChange={(image: File | null) => {
+                        setOriginalImage(prev => ({ ...prev, image }));
+                      }}
+                      onImageUrlChange={(imageUrl: string) => {
+                        setOriginalImage(prev => ({ ...prev, imageUrl }));
+                      }}
+                      imageUrl={originalImage.imageUrl}
+                      currentImage={originalImage.image}
+                      imageType="Click or drag to upload"
+                    />
+                    {/* Select region to be modified area */}
+                    {originalImage.imageUrl && (
+                      <div className="relative p-[1px] rounded-md w-full bg-gradient-to-b from-[#704DFF] via-[#599EFF] to-[#6EFABB]">
+                        <div className="relative w-full h-[180px] rounded-[4px] transition-colors border border-[#DCDCDC] bg-[#FAFAFA] flex items-center justify-center">
+                          <span className="text-sm font-normal text-[#121316] font-inter leading-5">
+                            Select the region to be modified
+                          </span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className="space-y-2" key={`reference-image-uploader-${currentVariationType}`}>
+                  <StyledLabel htmlFor="reference-image-uploader" content="Upload reference image" />
+                  <ImageUploader
+                    key={`reference-image-uploader-${currentVariationType}-reference`}
+                    onImageChange={(image: File | null) => {
+                      setReferenceImage(prev => ({ ...prev, image }));
+                    }}
+                    onImageUrlChange={(imageUrl: string) => {
+                      setReferenceImage(prev => ({ ...prev, imageUrl }));
+                    }}
+                    imageUrl={referenceImage.imageUrl}
+                    currentImage={referenceImage.image}
+                    imageType="Click or drag to upload"
                   />
                 </div>
               </div>

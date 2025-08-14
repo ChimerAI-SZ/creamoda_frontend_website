@@ -24,7 +24,8 @@ import {
   changeFabric,
   changePrinting,
   changePattern,
-  styleFusion
+  styleFusion,
+  varyStyleImage
 } from '@/lib/api';
 import { useModelStore } from '@/stores/useModelStore';
 import { useGenerationStore } from '@/stores/useGenerationStore';
@@ -52,6 +53,7 @@ export interface ImageUploadFormData {
   referenceImageUrl: string;
   fabricPicUrl: string;
   maskPicUrl: string;
+  styleStrengthLevel: string;
 }
 
 // slider 的值和后端传的值的映射关系
@@ -196,6 +198,18 @@ export function Sidebar() {
           }
           break;
 
+        case '11':
+          // Vary style 需要参考图片
+          if (!data.referenceImageUrl && !data.referenceImage) {
+            showAlert({
+              type: 'error',
+              content: 'Please upload a reference image'
+            });
+            setGenerating(false);
+            return;
+          }
+          break;
+
         default:
           // For unknown types, require description
           if (!data.description.trim()) {
@@ -235,9 +249,9 @@ export function Sidebar() {
         return;
       }
 
-      // Handle reference image upload for type 5 if needed
+      // Handle reference image upload for types that need it
       let finalReferenceImageUrl = data.referenceImageUrl;
-      if (data.variationType === '5' && data.referenceImage && !data.referenceImageUrl) {
+      if ((data.variationType === '5' || data.variationType === '10' || data.variationType === '11') && data.referenceImage && !data.referenceImageUrl) {
         try {
           finalReferenceImageUrl = await uploadImage(data.referenceImage);
         } catch (error) {
@@ -285,6 +299,9 @@ export function Sidebar() {
       } else if (data.variationType === '10') {
         // Call style fusion API
         response = await styleFusion(finalImageUrl, finalReferenceImageUrl);
+      } else if (data.variationType === '11') {
+        // Call vary style image API
+        response = await varyStyleImage(finalImageUrl, data.description || '', finalReferenceImageUrl, data.styleStrengthLevel);
       } else {
         // Default to change clothes API if no type selected
         response = await changeClothesGenerate(finalImageUrl, data.description);

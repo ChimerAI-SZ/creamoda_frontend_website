@@ -181,6 +181,14 @@ export function Sidebar() {
               formData.fabricImageUrl!
             );
             break;
+          case '9': // Extend image
+            // TODO: Add API call for extend image functionality
+            showAlert({
+              type: 'warning',
+              content: 'Extend image functionality will be implemented soon.'
+            });
+            setGenerating(false);
+            return;
 
           default:
             console.error('Unknown variation type');
@@ -238,6 +246,9 @@ export function Sidebar() {
           break;
         case '7': // Pattern application
           isFormValid = hasMainImage && Boolean(formData.referenceImageUrl) && Boolean(formData.fabricImageUrl);
+          break;
+        case '9': // Extend image
+          isFormValid = hasMainImage;
           break;
         default:
           isFormValid = hasMainImage;
@@ -421,6 +432,22 @@ export function Sidebar() {
               maskImageUrl=""
               showMaskEditor={false}
             />
+          </div>
+        );
+
+      case '9': // Extend image
+        return (
+          <div className="space-y-2">
+            <div className="space-y-2">
+              <StyledLabel content="Upload original image" />
+              <MemoizedImageUploader
+                imageUrl={formData.imageUrl || ''}
+                onImageUrlChange={updateImageUrl}
+                onMaskImageUrlChange={(dataUrl, uploadedUrl) => updateMaskUrl(uploadedUrl || '')}
+                maskImageUrl={formData.maskUrl || ''}
+                showMaskEditor={false}
+              />
+            </div>
           </div>
         );
 
