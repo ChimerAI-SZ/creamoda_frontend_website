@@ -535,6 +535,7 @@ export default function ImageDoodleEditor({
             console.log('📊 开始处理像素数据，总像素数:', data.length / 4);
             
             let whitePixelCount = 0;
+            
             const totalPixelCount = data.length / 4;
 
             // Convert to black and white mask with inverted colors
