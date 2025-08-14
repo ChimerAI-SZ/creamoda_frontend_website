@@ -155,7 +155,7 @@ export function Sidebar() {
         // Virtual Try-on (Manual) logic
         // TODO: Implement API call for manual virtual try-on
         showAlert({
-          type: 'info',
+          type: 'warning',
           content: 'Virtual Try-on (Manual) functionality will be implemented soon.'
         });
         setGenerating(false);
