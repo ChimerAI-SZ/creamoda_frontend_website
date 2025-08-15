@@ -182,13 +182,14 @@ export function Sidebar() {
             );
             break;
           case '9': // Extend image
-            // TODO: Add API call for extend image functionality
-            showAlert({
-              type: 'warning',
-              content: 'Extend image functionality will be implemented soon.'
-            });
-            setGenerating(false);
-            return;
+            response = await magicKit.extendImage(
+              formData.imageUrl!,
+              100, // 默认上边距
+              100, // 默认右边距
+              100, // 默认下边距
+              100  // 默认左边距
+            );
+            break;
 
           default:
             console.error('Unknown variation type');

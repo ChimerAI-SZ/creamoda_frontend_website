@@ -48,7 +48,6 @@ export interface ImageUploadFormData {
   imageUrl: string;
   variationType: string;
   description: string;
-  referLevel: number;
   referenceImage: File | null;
   referenceImageUrl: string;
   fabricPicUrl: string;
@@ -56,12 +55,7 @@ export interface ImageUploadFormData {
   styleStrengthLevel: string;
 }
 
-// slider 的值和后端传的值的映射关系
-const levelMap = new Map([
-  [0, 1],
-  [50, 2],
-  [100, 3]
-]);
+
 
 export function Sidebar() {
   const { setModelSizes } = useModelStore();
@@ -269,7 +263,7 @@ export function Sidebar() {
       let response;
       if (data.variationType === '1') {
         // Call copy style API
-        response = await copyStyleGenerate(finalImageUrl, data.description, levelMap.get(data.referLevel) || 1);
+        response = await copyStyleGenerate(finalImageUrl, data.description, 2);
       } else if (data.variationType === '2') {
         // Call change clothes API
         response = await changeClothesGenerate(finalImageUrl, data.description);
@@ -278,14 +272,28 @@ export function Sidebar() {
         response = await copyFabricGenerate(finalImageUrl, data.description);
       } else if (data.variationType === '4') {
         // Call copy fabric API
-        response = await sketchToDesign(finalImageUrl, data.description, levelMap.get(data.referLevel) || 1);
+        response = await sketchToDesign(finalImageUrl, data.description, 2);
       } else if (data.variationType === '5') {
+        // Convert style strength level to numeric value for API
+        const getReferLevel = (level: string): number => {
+          switch (level) {
+            case 'low':
+              return 0;
+            case 'middle':
+              return 50;
+            case 'high':
+              return 100;
+            default:
+              return 50;
+          }
+        };
+        
         // Call mix image API
         response = await mixImage(
           finalImageUrl,
           data.description,
           finalReferenceImageUrl,
-          levelMap.get(data.referLevel) || 1
+          getReferLevel(data.styleStrengthLevel)
         );
       } else if (data.variationType === '7') {
         // Call change pattern API

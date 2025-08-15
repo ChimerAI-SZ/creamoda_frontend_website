@@ -9,6 +9,11 @@ export interface VariationFormState {
     colorSelection: string;
     referenceImageUrl: string;
     fabricImageUrl: string;
+    // Extend image padding values
+    topPadding: number;
+    rightPadding: number;
+    bottomPadding: number;
+    leftPadding: number;
   };
   // Current selected variation type
   currentVariationType: string;
@@ -22,6 +27,7 @@ interface VariationFormActions {
   updateColorSelection: (colorSelection: string) => void;
   updateReferenceImageUrl: (imageUrl: string) => void;
   updateFabricImageUrl: (fabricImageUrl: string) => void;
+  updatePadding: (padding: { top?: number; right?: number; bottom?: number; left?: number }) => void;
   resetFormData: () => void;
 }
 
@@ -31,7 +37,11 @@ const initialFormData = {
   description: '',
   colorSelection: '',
   referenceImageUrl: '',
-  fabricImageUrl: ''
+  fabricImageUrl: '',
+  topPadding: 0,
+  rightPadding: 0,
+  bottomPadding: 0,
+  leftPadding: 0
 };
 
 const initialState: VariationFormState = {
@@ -99,6 +109,18 @@ export const useVariationFormStore = create<VariationFormState & VariationFormAc
       formData: {
         ...state.formData,
         fabricImageUrl
+      }
+    })),
+
+  updatePadding: (padding: { top?: number; right?: number; bottom?: number; left?: number }) =>
+    set(state => ({
+      ...state,
+      formData: {
+        ...state.formData,
+        topPadding: padding.top ?? state.formData.topPadding,
+        rightPadding: padding.right ?? state.formData.rightPadding,
+        bottomPadding: padding.bottom ?? state.formData.bottomPadding,
+        leftPadding: padding.left ?? state.formData.leftPadding
       }
     })),
 

@@ -17,7 +17,7 @@ import { eventBus } from '@/utils/events';
 import useModelStore from '@/stores/useModelStore';
 import { useAlertStore } from '@/stores/useAlertStore';
 
-import type { TryOnFormData, ChangePoseFormData } from '@/types/virtualTryOn';
+import type { TryOnFormData, ChangePoseFormData, VirtualTryOnManualFormData } from '@/types/virtualTryOn';
 type ClothingType = 'top' | 'bottom' | 'one-piece';
 
 const clothingTypeList = [
@@ -78,11 +78,13 @@ export function Sidebar() {
   // virtual try-on manual begins
   const [originalImage, setOriginalImage] = useState({
     image: null as File | null,
-    imageUrl: ''
+    imageUrl: '',
+    maskUrl: ''
   });
   const [referenceImage, setReferenceImage] = useState({
     image: null as File | null,
-    imageUrl: ''
+    imageUrl: '',
+    maskUrl: ''
   });
   // virtual try-on manual ends
 
@@ -94,8 +96,8 @@ export function Sidebar() {
       setReferencePoseImage({ image: null, imageUrl: '' });
       setTargetPoseImage({ image: null, imageUrl: '' });
     } else if (currentVariationType === '3') {
-      setOriginalImage({ image: null, imageUrl: '' });
-      setReferenceImage({ image: null, imageUrl: '' });
+      setOriginalImage({ image: null, imageUrl: '', maskUrl: '' });
+      setReferenceImage({ image: null, imageUrl: '', maskUrl: '' });
     }
   }, [currentVariationType, searchParams]);
 
@@ -153,12 +155,34 @@ export function Sidebar() {
         }
       } else if (currentVariationType === '3') {
         // Virtual Try-on (Manual) logic
-        // TODO: Implement API call for manual virtual try-on
-        showAlert({
-          type: 'warning',
-          content: 'Virtual Try-on (Manual) functionality will be implemented soon.'
-        });
-        setGenerating(false);
+        const data: VirtualTryOnManualFormData = {
+          modelPicUrl: originalImage.imageUrl,
+          modelMaskUrl: originalImage.maskUrl,
+          garmentPicUrl: referenceImage.imageUrl,
+          garmentMaskUrl: referenceImage.maskUrl,
+          modelMargin: 0, // 可以后续添加UI控制
+          garmentMargin: 0, // 可以后续添加UI控制
+          seed: undefined // 可选参数
+        };
+
+        const res = await tryOn.virtualTryOnManualGenerate(data);
+
+        if (res.code === 0) {
+          // 触发 iamgeGrid 里的提交回调时间（刷新生图历史图片）
+          eventBus.emit('sidebar:submit-success', void 0);
+          // 修改getnerating状态
+          setGenerating(true);
+        } else {
+          setGenerating(false);
+
+          showAlert({
+            type: 'error',
+            content:
+              res.message ||
+              res.msg ||
+              'Something went wrong. Please try again later or contact support if the issue persists'
+          });
+        }
       }
     } catch (error: any) {
       showAlert({
@@ -173,7 +197,7 @@ export function Sidebar() {
     const isFormValid = Boolean(
       (modelImage.imageUrl && clothingImage.imageUrl) || 
       (referencePoseImage.imageUrl && targetPoseImage.imageUrl) ||
-      (originalImage.imageUrl && referenceImage.imageUrl)
+      (originalImage.imageUrl && referenceImage.imageUrl && originalImage.maskUrl && referenceImage.maskUrl)
     );
 
     setBtnState(isGenerating ? 'generating' : isFormValid ? 'ready' : 'disabled');
@@ -184,7 +208,9 @@ export function Sidebar() {
     referencePoseImage.imageUrl,
     targetPoseImage.imageUrl,
     originalImage.imageUrl,
-    referenceImage.imageUrl
+    originalImage.maskUrl,
+    referenceImage.imageUrl,
+    referenceImage.maskUrl
   ]);
 
   return (
@@ -306,43 +332,37 @@ export function Sidebar() {
               <div key={`virtual-try-on-manual-${currentVariationType}`}>
                 <div className="space-y-2" key={`original-image-uploader-${currentVariationType}`}>
                   <StyledLabel htmlFor="original-image-uploader" content="Upload original image" />
-                  <div className="space-y-2">
-                    <ImageUploader
-                      key={`original-image-uploader-${currentVariationType}-original`}
-                      onImageChange={(image: File | null) => {
-                        setOriginalImage(prev => ({ ...prev, image }));
-                      }}
-                      onImageUrlChange={(imageUrl: string) => {
-                        setOriginalImage(prev => ({ ...prev, imageUrl }));
-                      }}
-                      imageUrl={originalImage.imageUrl}
-                      currentImage={originalImage.image}
-                      imageType="Click or drag to upload"
-                    />
-                    {/* Select region to be modified area */}
-                    {originalImage.imageUrl && (
-                      <div className="relative p-[1px] rounded-md w-full bg-gradient-to-b from-[#704DFF] via-[#599EFF] to-[#6EFABB]">
-                        <div className="relative w-full h-[180px] rounded-[4px] transition-colors border border-[#DCDCDC] bg-[#FAFAFA] flex items-center justify-center">
-                          <span className="text-sm font-normal text-[#121316] font-inter leading-5">
-                            Select the region to be modified
-                          </span>
-                        </div>
-                      </div>
-                    )}
-                  </div>
+                  <ImageUploader
+                    key={`original-image-uploader-${currentVariationType}-original`}
+                    onImageUrlChange={(imageUrl: string) => {
+                      setOriginalImage(prev => ({ ...prev, imageUrl }));
+                    }}
+                    onMaskImageUrlChange={(maskUrl: string, uploadedMaskUrl?: string) => {
+                      if (uploadedMaskUrl) {
+                        setOriginalImage(prev => ({ ...prev, maskUrl: uploadedMaskUrl }));
+                      }
+                    }}
+                    imageUrl={originalImage.imageUrl}
+                    maskImageUrl={originalImage.maskUrl}
+                    showMaskEditor={true}
+                    imageType="Click or drag to upload"
+                  />
                 </div>
-                <div className="space-y-2" key={`reference-image-uploader-${currentVariationType}`}>
+                <div className="space-y-2 mt-6" key={`reference-image-uploader-${currentVariationType}`}>
                   <StyledLabel htmlFor="reference-image-uploader" content="Upload reference image" />
                   <ImageUploader
                     key={`reference-image-uploader-${currentVariationType}-reference`}
-                    onImageChange={(image: File | null) => {
-                      setReferenceImage(prev => ({ ...prev, image }));
-                    }}
                     onImageUrlChange={(imageUrl: string) => {
                       setReferenceImage(prev => ({ ...prev, imageUrl }));
                     }}
+                    onMaskImageUrlChange={(maskUrl: string, uploadedMaskUrl?: string) => {
+                      if (uploadedMaskUrl) {
+                        setReferenceImage(prev => ({ ...prev, maskUrl: uploadedMaskUrl }));
+                      }
+                    }}
                     imageUrl={referenceImage.imageUrl}
-                    currentImage={referenceImage.image}
+                    maskImageUrl={referenceImage.maskUrl}
+                    showMaskEditor={true}
                     imageType="Click or drag to upload"
                   />
                 </div>
