@@ -275,16 +275,17 @@ export function Sidebar() {
         response = await sketchToDesign(finalImageUrl, data.description, 2);
       } else if (data.variationType === '5') {
         // Convert style strength level to numeric value for API
+        // Backend REFER_LEVEL_MAP expects: 1->0.3, 2->0.5, 3->0.9
         const getReferLevel = (level: string): number => {
           switch (level) {
             case 'low':
-              return 0;
+              return 1;  // Maps to 0.3 in backend
             case 'middle':
-              return 50;
+              return 2;  // Maps to 0.5 in backend
             case 'high':
-              return 100;
+              return 3;  // Maps to 0.9 in backend
             default:
-              return 50;
+              return 2;  // Default to middle
           }
         };
         
