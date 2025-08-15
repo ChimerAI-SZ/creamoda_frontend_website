@@ -11,7 +11,7 @@ import { DescribeDesign } from '@/components/DescribeDesign';
 import { ColorPicker } from './ColorPicker';
 import { MemoizedImageUploader } from '@/components/ImageUploader';
 
-import { magicKit } from '@/lib/api';
+import { magicKit, extendImage } from '@/lib/api';
 import { eventBus } from '@/utils/events';
 import useModelStore from '@/stores/useModelStore';
 import { useAlertStore } from '@/stores/useAlertStore';
@@ -182,7 +182,7 @@ export function Sidebar() {
             );
             break;
           case '9': // Extend image
-            response = await magicKit.extendImage(
+            response = await extendImage(
               formData.imageUrl!,
               100, // 默认上边距
               100, // 默认右边距

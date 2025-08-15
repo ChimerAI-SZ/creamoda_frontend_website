@@ -119,35 +119,4 @@ export async function patternApplication(originalPicUrl: string, printingPicUrl:
   }
 }
 
-/**
- * 扩图功能
- * @param originalPicUrl 原图url
- * @param topPadding 上边距
- * @param rightPadding 右边距  
- * @param bottomPadding 下边距
- * @param leftPadding 左边距
- * @param seed 随机种子(可选)
- */
-export async function extendImage(
-  originalPicUrl: string, 
-  topPadding: number,
-  rightPadding: number, 
-  bottomPadding: number,
-  leftPadding: number,
-  seed?: number
-) {
-  try {
-    const response = await api.post('/api/v1/img/extend_image', {
-      originalPicUrl,
-      topPadding,
-      rightPadding,
-      bottomPadding,
-      leftPadding,
-      seed
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Error extending image:', error);
-    throw error;
-  }
-}
+
