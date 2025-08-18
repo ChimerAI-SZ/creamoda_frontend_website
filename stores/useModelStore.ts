@@ -28,7 +28,7 @@ export const unifiedVariationTypes: UnifiedVariationType[] = [
   },
   {
     type: 2,
-    variationType: 1,
+    variationType: 11,
     label: 'Vary style',
     name: '迁移风格',
     tags: 'design, image to image, Vary style',
@@ -115,14 +115,14 @@ export const unifiedVariationTypes: UnifiedVariationType[] = [
     tags: 'design, virtual try on, change pose',
     available: true
   },
-  // {
-  //   type: 3,
-  //   variationType: 3,
-  //   label: 'Model Three-View',
-  //   name: '模特三视图',
-  //   tags: 'design, virtual try on, model three-view',
-  //   available: false
-  // },
+  {
+    type: 3,
+    variationType: 3,
+    label: 'Virtual Try-on (Manual)',
+    name: '虚拟试穿（手动）',
+    tags: 'design, virtual try on, manual',
+    available: true
+  },
 
   {
     type: 4,
@@ -178,6 +178,14 @@ export const unifiedVariationTypes: UnifiedVariationType[] = [
     label: 'Pattern Application',
     name: '印花上身',
     tags: 'design, magic kit, pattern application',
+    available: true
+  },
+  {
+    type: 4,
+    variationType: 9,
+    label: 'Extend image',
+    name: '扩展图像',
+    tags: 'design, magic kit, extend image',
     available: true
   }
   // {

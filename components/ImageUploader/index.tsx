@@ -34,6 +34,7 @@ interface ImageUploaderProps {
   currentImage?: File | null;
   imageType?: string;
   showMaskEditor?: boolean; // 涂鸦编辑器
+  showUrlInput?: boolean; // 是否显示URL输入框，默认为true
 }
 
 // 后端API前缀 - 移除@字符
@@ -55,7 +56,8 @@ export function ImageUploader({
   currentImage,
   imageType = 'Click or drag to upload',
   maskImageUrl = '',
-  showMaskEditor = false
+  showMaskEditor = false,
+  showUrlInput = true
 }: ImageUploaderProps) {
   const { showAlert } = useAlertStore();
 
@@ -384,30 +386,32 @@ export function ImageUploader({
           )}
         </div>
       </div>
-      <div className="w-full">
-        <div className="text-black text-[14px] font-medium mb-2">Or upload image from URL</div>
-        <div className="flex items-center justify-center gap-4">
-          <Input
-            type="text"
-            placeholder="Or paste image address"
-            value={newImageUrl || ''}
-            onChange={handleUrlChange}
-            className={cn(
-              'bg-white w-full h-[36px] px-[12px] text-[14px] font-normal leading-5 placeholder:text-[#d5d5d5] rounded-sm',
-              'bottom-[12px]'
-            )}
-          />
-          <Button
-            variant="outline"
-            type="button"
-            disabled={!(isUploading || isLoadingImageUrl) && !!previewUrl}
-            onClick={handleAddImage}
-            className="h-[36px] px-[12px] text-[14px] font-normal leading-5 rounded-[4px] border-input"
-          >
-            Add
-          </Button>
+      {showUrlInput && (
+        <div className="w-full">
+          <div className="text-black text-[14px] font-medium mb-2">Or upload image from URL</div>
+          <div className="flex items-center justify-center gap-4">
+            <Input
+              type="text"
+              placeholder="Or paste image address"
+              value={newImageUrl || ''}
+              onChange={handleUrlChange}
+              className={cn(
+                'bg-white w-full h-[36px] px-[12px] text-[14px] font-normal leading-5 placeholder:text-[#d5d5d5] rounded-sm',
+                'bottom-[12px]'
+              )}
+            />
+            <Button
+              variant="outline"
+              type="button"
+              disabled={!(isUploading || isLoadingImageUrl) && !!previewUrl}
+              onClick={handleAddImage}
+              className="h-[36px] px-[12px] text-[14px] font-normal leading-5 rounded-[4px] border-input"
+            >
+              Add
+            </Button>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
@@ -417,6 +421,7 @@ export const MemoizedImageUploader = memo(ImageUploader, (prevProps, nextProps) 
   return (
     prevProps.imageUrl === nextProps.imageUrl &&
     prevProps.maskImageUrl === nextProps.maskImageUrl &&
-    prevProps.showMaskEditor === nextProps.showMaskEditor
+    prevProps.showMaskEditor === nextProps.showMaskEditor &&
+    prevProps.showUrlInput === nextProps.showUrlInput
   );
 });

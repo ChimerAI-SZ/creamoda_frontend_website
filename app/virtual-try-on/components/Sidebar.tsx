@@ -17,7 +17,7 @@ import { eventBus } from '@/utils/events';
 import useModelStore from '@/stores/useModelStore';
 import { useAlertStore } from '@/stores/useAlertStore';
 
-import type { TryOnFormData, ChangePoseFormData } from '@/types/virtualTryOn';
+import type { TryOnFormData, ChangePoseFormData, VirtualTryOnManualFormData } from '@/types/virtualTryOn';
 type ClothingType = 'top' | 'bottom' | 'one-piece';
 
 const clothingTypeList = [
@@ -75,6 +75,19 @@ export function Sidebar() {
   });
   // change pose end
 
+  // virtual try-on manual begins
+  const [originalImage, setOriginalImage] = useState({
+    image: null as File | null,
+    imageUrl: '',
+    maskUrl: ''
+  });
+  const [referenceImage, setReferenceImage] = useState({
+    image: null as File | null,
+    imageUrl: '',
+    maskUrl: ''
+  });
+  // virtual try-on manual ends
+
   useEffect(() => {
     if (currentVariationType === '1') {
       setModelImage({ image: null, imageUrl: '' });
@@ -82,6 +95,9 @@ export function Sidebar() {
     } else if (currentVariationType === '2') {
       setReferencePoseImage({ image: null, imageUrl: '' });
       setTargetPoseImage({ image: null, imageUrl: '' });
+    } else if (currentVariationType === '3') {
+      setOriginalImage({ image: null, imageUrl: '', maskUrl: '' });
+      setReferenceImage({ image: null, imageUrl: '', maskUrl: '' });
     }
   }, [currentVariationType, searchParams]);
 
@@ -135,6 +151,36 @@ export function Sidebar() {
               res.message ||
               res.msg ||
               'Something went wrong. Please try again later or contact support if the issue persists'
+                      });
+        }
+      } else if (currentVariationType === '3') {
+        // Virtual Try-on (Manual) logic
+        const data: VirtualTryOnManualFormData = {
+          modelPicUrl: originalImage.imageUrl,
+          modelMaskUrl: originalImage.maskUrl,
+          garmentPicUrl: referenceImage.imageUrl,
+          garmentMaskUrl: referenceImage.maskUrl,
+          modelMargin: 0, // 可以后续添加UI控制
+          garmentMargin: 0, // 可以后续添加UI控制
+          seed: undefined // 可选参数
+        };
+
+        const res = await tryOn.virtualTryOnManualGenerate(data);
+
+        if (res.code === 0) {
+          // 触发 iamgeGrid 里的提交回调时间（刷新生图历史图片）
+          eventBus.emit('sidebar:submit-success', void 0);
+          // 修改getnerating状态
+          setGenerating(true);
+        } else {
+          setGenerating(false);
+
+          showAlert({
+            type: 'error',
+            content:
+              res.message ||
+              res.msg ||
+              'Something went wrong. Please try again later or contact support if the issue persists'
           });
         }
       }
@@ -149,7 +195,9 @@ export function Sidebar() {
 
   useEffect(() => {
     const isFormValid = Boolean(
-      (modelImage.imageUrl && clothingImage.imageUrl) || (referencePoseImage.imageUrl && targetPoseImage.imageUrl)
+      (modelImage.imageUrl && clothingImage.imageUrl) || 
+      (referencePoseImage.imageUrl && targetPoseImage.imageUrl) ||
+      (originalImage.imageUrl && referenceImage.imageUrl && originalImage.maskUrl && referenceImage.maskUrl)
     );
 
     setBtnState(isGenerating ? 'generating' : isFormValid ? 'ready' : 'disabled');
@@ -158,7 +206,11 @@ export function Sidebar() {
     modelImage.imageUrl,
     clothingImage.imageUrl,
     referencePoseImage.imageUrl,
-    targetPoseImage.imageUrl
+    targetPoseImage.imageUrl,
+    originalImage.imageUrl,
+    originalImage.maskUrl,
+    referenceImage.imageUrl,
+    referenceImage.maskUrl
   ]);
 
   return (
@@ -271,6 +323,47 @@ export function Sidebar() {
                     imageUrl={targetPoseImage.imageUrl}
                     currentImage={targetPoseImage.image}
                     imageType="Target Image"
+                  />
+                </div>
+              </div>
+            )}
+
+            {currentVariationType === '3' && (
+              <div key={`virtual-try-on-manual-${currentVariationType}`}>
+                <div className="space-y-2" key={`original-image-uploader-${currentVariationType}`}>
+                  <StyledLabel htmlFor="original-image-uploader" content="Upload original image" />
+                  <ImageUploader
+                    key={`original-image-uploader-${currentVariationType}-original`}
+                    onImageUrlChange={(imageUrl: string) => {
+                      setOriginalImage(prev => ({ ...prev, imageUrl }));
+                    }}
+                    onMaskImageUrlChange={(maskUrl: string, uploadedMaskUrl?: string) => {
+                      if (uploadedMaskUrl) {
+                        setOriginalImage(prev => ({ ...prev, maskUrl: uploadedMaskUrl }));
+                      }
+                    }}
+                    imageUrl={originalImage.imageUrl}
+                    maskImageUrl={originalImage.maskUrl}
+                    showMaskEditor={true}
+                    imageType="Click or drag to upload"
+                  />
+                </div>
+                <div className="space-y-2 mt-6" key={`reference-image-uploader-${currentVariationType}`}>
+                  <StyledLabel htmlFor="reference-image-uploader" content="Upload reference image" />
+                  <ImageUploader
+                    key={`reference-image-uploader-${currentVariationType}-reference`}
+                    onImageUrlChange={(imageUrl: string) => {
+                      setReferenceImage(prev => ({ ...prev, imageUrl }));
+                    }}
+                    onMaskImageUrlChange={(maskUrl: string, uploadedMaskUrl?: string) => {
+                      if (uploadedMaskUrl) {
+                        setReferenceImage(prev => ({ ...prev, maskUrl: uploadedMaskUrl }));
+                      }
+                    }}
+                    imageUrl={referenceImage.imageUrl}
+                    maskImageUrl={referenceImage.maskUrl}
+                    showMaskEditor={true}
+                    imageType="Click or drag to upload"
                   />
                 </div>
               </div>

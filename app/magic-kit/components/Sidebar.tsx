@@ -11,7 +11,7 @@ import { DescribeDesign } from '@/components/DescribeDesign';
 import { ColorPicker } from './ColorPicker';
 import { MemoizedImageUploader } from '@/components/ImageUploader';
 
-import { magicKit } from '@/lib/api';
+import { magicKit, extendImage } from '@/lib/api';
 import { eventBus } from '@/utils/events';
 import useModelStore from '@/stores/useModelStore';
 import { useAlertStore } from '@/stores/useAlertStore';
@@ -181,6 +181,15 @@ export function Sidebar() {
               formData.fabricImageUrl!
             );
             break;
+          case '9': // Extend image
+            response = await extendImage(
+              formData.imageUrl!,
+              100, // 默认上边距
+              100, // 默认右边距
+              100, // 默认下边距
+              100  // 默认左边距
+            );
+            break;
 
           default:
             console.error('Unknown variation type');
@@ -238,6 +247,9 @@ export function Sidebar() {
           break;
         case '7': // Pattern application
           isFormValid = hasMainImage && Boolean(formData.referenceImageUrl) && Boolean(formData.fabricImageUrl);
+          break;
+        case '9': // Extend image
+          isFormValid = hasMainImage;
           break;
         default:
           isFormValid = hasMainImage;
@@ -421,6 +433,22 @@ export function Sidebar() {
               maskImageUrl=""
               showMaskEditor={false}
             />
+          </div>
+        );
+
+      case '9': // Extend image
+        return (
+          <div className="space-y-2">
+            <div className="space-y-2">
+              <StyledLabel content="Upload original image" />
+              <MemoizedImageUploader
+                imageUrl={formData.imageUrl || ''}
+                onImageUrlChange={updateImageUrl}
+                onMaskImageUrlChange={(dataUrl, uploadedUrl) => updateMaskUrl(uploadedUrl || '')}
+                maskImageUrl={formData.maskUrl || ''}
+                showMaskEditor={false}
+              />
+            </div>
           </div>
         );
 

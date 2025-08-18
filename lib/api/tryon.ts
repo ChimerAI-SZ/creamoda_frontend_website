@@ -1,6 +1,6 @@
 import { api } from '@/lib/axios';
 
-import { ChangePoseFormData, TryOnFormData } from '@/types/virtualTryOn';
+import { ChangePoseFormData, TryOnFormData, VirtualTryOnManualFormData } from '@/types/virtualTryOn';
 
 /**
  * 获取生成图片列表
@@ -19,6 +19,15 @@ export async function tryOnGenerate(data: TryOnFormData) {
 export async function changePoseGenerate(data: ChangePoseFormData) {
   try {
     const response = await api.post(`/api/v1/img/change_pose`, data);
+    return response.data;
+  } catch (error: any) {
+    throw error;
+  }
+}
+
+export async function virtualTryOnManualGenerate(data: VirtualTryOnManualFormData) {
+  try {
+    const response = await api.post(`/api/v1/img/virtual_try_on_manual`, data);
     return response.data;
   } catch (error: any) {
     throw error;

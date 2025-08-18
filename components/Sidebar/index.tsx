@@ -24,7 +24,8 @@ import {
   changeFabric,
   changePrinting,
   changePattern,
-  styleFusion
+  styleFusion,
+  varyStyleImage
 } from '@/lib/api';
 import { useModelStore } from '@/stores/useModelStore';
 import { useGenerationStore } from '@/stores/useGenerationStore';
@@ -47,19 +48,14 @@ export interface ImageUploadFormData {
   imageUrl: string;
   variationType: string;
   description: string;
-  referLevel: number;
   referenceImage: File | null;
   referenceImageUrl: string;
   fabricPicUrl: string;
   maskPicUrl: string;
+  styleStrengthLevel: string;
 }
 
-// slider 的值和后端传的值的映射关系
-const levelMap = new Map([
-  [0, 1],
-  [50, 2],
-  [100, 3]
-]);
+
 
 export function Sidebar() {
   const { setModelSizes } = useModelStore();
@@ -196,6 +192,18 @@ export function Sidebar() {
           }
           break;
 
+        case '11':
+          // Vary style 需要参考图片
+          if (!data.referenceImageUrl && !data.referenceImage) {
+            showAlert({
+              type: 'error',
+              content: 'Please upload a reference image'
+            });
+            setGenerating(false);
+            return;
+          }
+          break;
+
         default:
           // For unknown types, require description
           if (!data.description.trim()) {
@@ -235,9 +243,9 @@ export function Sidebar() {
         return;
       }
 
-      // Handle reference image upload for type 5 if needed
+      // Handle reference image upload for types that need it
       let finalReferenceImageUrl = data.referenceImageUrl;
-      if (data.variationType === '5' && data.referenceImage && !data.referenceImageUrl) {
+      if ((data.variationType === '5' || data.variationType === '10' || data.variationType === '11') && data.referenceImage && !data.referenceImageUrl) {
         try {
           finalReferenceImageUrl = await uploadImage(data.referenceImage);
         } catch (error) {
@@ -255,7 +263,7 @@ export function Sidebar() {
       let response;
       if (data.variationType === '1') {
         // Call copy style API
-        response = await copyStyleGenerate(finalImageUrl, data.description, levelMap.get(data.referLevel) || 1);
+        response = await copyStyleGenerate(finalImageUrl, data.description, 2);
       } else if (data.variationType === '2') {
         // Call change clothes API
         response = await changeClothesGenerate(finalImageUrl, data.description);
@@ -264,14 +272,29 @@ export function Sidebar() {
         response = await copyFabricGenerate(finalImageUrl, data.description);
       } else if (data.variationType === '4') {
         // Call copy fabric API
-        response = await sketchToDesign(finalImageUrl, data.description, levelMap.get(data.referLevel) || 1);
+        response = await sketchToDesign(finalImageUrl, data.description, 2);
       } else if (data.variationType === '5') {
+        // Convert style strength level to numeric value for API
+        // Backend REFER_LEVEL_MAP expects: 1->0.3, 2->0.5, 3->0.9
+        const getReferLevel = (level: string): number => {
+          switch (level) {
+            case 'low':
+              return 1;  // Maps to 0.3 in backend
+            case 'middle':
+              return 2;  // Maps to 0.5 in backend
+            case 'high':
+              return 3;  // Maps to 0.9 in backend
+            default:
+              return 2;  // Default to middle
+          }
+        };
+        
         // Call mix image API
         response = await mixImage(
           finalImageUrl,
           data.description,
           finalReferenceImageUrl,
-          levelMap.get(data.referLevel) || 1
+          getReferLevel(data.styleStrengthLevel)
         );
       } else if (data.variationType === '7') {
         // Call change pattern API
@@ -285,6 +308,9 @@ export function Sidebar() {
       } else if (data.variationType === '10') {
         // Call style fusion API
         response = await styleFusion(finalImageUrl, finalReferenceImageUrl);
+      } else if (data.variationType === '11') {
+        // Call vary style image API
+        response = await varyStyleImage(finalImageUrl, data.description || '', finalReferenceImageUrl, data.styleStrengthLevel);
       } else {
         // Default to change clothes API if no type selected
         response = await changeClothesGenerate(finalImageUrl, data.description);

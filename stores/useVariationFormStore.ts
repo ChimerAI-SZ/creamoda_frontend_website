@@ -12,6 +12,7 @@ export interface VariationFormState {
       referenceImageUrl: string;
       fabricPicUrl: string;
       maskPicUrl: string;
+      styleStrengthLevel: string;
     };
   };
   // Current selected variation type
@@ -28,6 +29,7 @@ interface VariationFormActions {
   updateReferenceImageUrl: (imageUrl: string) => void;
   updateFabricPicUrl: (fabricPicUrl: string) => void;
   updateMaskPicUrl: (maskPicUrl: string) => void;
+  updateStyleStrengthLevel: (styleStrengthLevel: string) => void;
   resetFormData: (variationType: string) => void;
 }
 
@@ -47,7 +49,8 @@ const ensureVariationTypeExists = (variationData: VariationFormState['variationD
       referenceImage: null,
       referenceImageUrl: '',
       fabricPicUrl: '',
-      maskPicUrl: ''
+      maskPicUrl: '',
+      styleStrengthLevel: 'middle'
     };
   }
 };
@@ -218,6 +221,25 @@ export const useVariationFormStore = create<VariationFormState & VariationFormAc
       };
     }),
 
+  updateStyleStrengthLevel: (styleStrengthLevel: string) =>
+    set(state => {
+      const { currentVariationType, variationData } = state;
+      if (!currentVariationType) return state;
+
+      const newVariationData = { ...variationData };
+      ensureVariationTypeExists(newVariationData, currentVariationType);
+
+      newVariationData[currentVariationType] = {
+        ...newVariationData[currentVariationType],
+        styleStrengthLevel
+      };
+
+      return {
+        ...state,
+        variationData: newVariationData
+      };
+    }),
+
   resetFormData: (variationType: string) =>
     set(state => {
       const newVariationData = { ...state.variationData };
@@ -230,7 +252,8 @@ export const useVariationFormStore = create<VariationFormState & VariationFormAc
         referenceImage: null,
         referenceImageUrl: '',
         fabricPicUrl: '',
-        maskPicUrl: ''
+        maskPicUrl: '',
+        styleStrengthLevel: 'middle'
       };
 
       return {
