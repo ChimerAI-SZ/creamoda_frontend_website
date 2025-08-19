@@ -133,7 +133,7 @@ export function Sidebar() {
           break;
 
         case '5':
-          // Type 5 requires description and reference image
+          // Type 5 (Mix 2 Images) requires reference image only
           if (!data.referenceImageUrl && !data.referenceImage) {
             showAlert({
               type: 'error',
