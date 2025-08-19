@@ -256,13 +256,12 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
         break;
 
       case '5':
-        // Type 5 requires description and reference image
-        if (!currentData.description.trim()) {
-          return 'disabled';
-        }
-        const hasReferenceImage = currentData.referenceImage || currentData.referenceImageUrl;
-        if (!hasReferenceImage) {
-          return 'disabled';
+        // Type 5 requires reference image only
+        {
+          const hasReferenceImage = currentData.referenceImage || currentData.referenceImageUrl;
+          if (!hasReferenceImage) {
+            return 'disabled';
+          }
         }
         break;
 
@@ -382,7 +381,9 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
           )}
 
           {/* Description field for variation types that need it */}
+
           {(['1', '2', '3', '4', '5'].includes(currentVariationType)) && (
+
             <DescribeDesign
               label="Describe the final design"
               description={currentData.description}
