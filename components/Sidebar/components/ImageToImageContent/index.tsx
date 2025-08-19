@@ -381,7 +381,9 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
           )}
 
           {/* Description field for variation types that need it */}
-          {(['1', '2', '3', '4'].includes(currentVariationType)) && (
+
+          {(['1', '2', '3', '4', '5'].includes(currentVariationType)) && (
+
             <DescribeDesign
               label="Describe the final design"
               description={currentData.description}
