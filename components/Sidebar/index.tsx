@@ -134,14 +134,6 @@ export function Sidebar() {
 
         case '5':
           // Type 5 requires description and reference image
-          if (!data.description.trim()) {
-            showAlert({
-              type: 'error',
-              content: 'Please provide a description'
-            });
-            setGenerating(false);
-            return;
-          }
           if (!data.referenceImageUrl && !data.referenceImage) {
             showAlert({
               type: 'error',
@@ -292,7 +284,7 @@ export function Sidebar() {
         // Call mix image API
         response = await mixImage(
           finalImageUrl,
-          data.description,
+          '',
           finalReferenceImageUrl,
           getReferLevel(data.styleStrengthLevel)
         );
