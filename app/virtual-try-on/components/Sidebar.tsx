@@ -35,7 +35,11 @@ const clothingTypeList = [
   }
 ];
 
-export function Sidebar() {
+interface SidebarProps {
+  externalImageUrl?: string;
+}
+
+export function Sidebar({ externalImageUrl = '' }: SidebarProps) {
   // 上传的样衣类型
   const [btnState, setBtnState] = useState<'disabled' | 'ready' | 'generating'>('disabled');
   const [currentVariationType, setCurrentVariationType] = useState<string>('1');
@@ -54,7 +58,7 @@ export function Sidebar() {
   // 上传的模特图片
   const [modelImage, setModelImage] = useState({
     image: null as File | null,
-    imageUrl: searchParams.get('imageUrl') as string || ''
+    imageUrl: ''
   });
   // 上传的服饰图片
   const [clothingImage, setClothingImage] = useState({
@@ -89,19 +93,17 @@ export function Sidebar() {
   // virtual try-on manual ends
 
   useEffect(() => {
-    const imageUrlFromParams = searchParams.get('imageUrl') as string || '';
-    
     if (currentVariationType === '1') {
-      setModelImage({ image: null, imageUrl: imageUrlFromParams });
+      setModelImage({ image: null, imageUrl: externalImageUrl });
       setClothingImage({ image: null, imageUrl: '' });
     } else if (currentVariationType === '2') {
-      setReferencePoseImage({ image: null, imageUrl: '' });
+      setReferencePoseImage({ image: null, imageUrl: externalImageUrl });
       setTargetPoseImage({ image: null, imageUrl: '' });
     } else if (currentVariationType === '3') {
-      setOriginalImage({ image: null, imageUrl: '', maskUrl: '' });
+      setOriginalImage({ image: null, imageUrl: externalImageUrl, maskUrl: '' });
       setReferenceImage({ image: null, imageUrl: '', maskUrl: '' });
     }
-  }, [currentVariationType, searchParams]);
+  }, [currentVariationType, externalImageUrl]);
 
   // 文生图 / 图生图 提交事件
   const handleSubmit = async () => {
