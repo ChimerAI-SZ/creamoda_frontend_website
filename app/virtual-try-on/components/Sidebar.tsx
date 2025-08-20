@@ -54,12 +54,12 @@ export function Sidebar() {
   // 上传的模特图片
   const [modelImage, setModelImage] = useState({
     image: null as File | null,
-    imageUrl: ''
+    imageUrl: searchParams.get('imageUrl') as string || ''
   });
   // 上传的服饰图片
   const [clothingImage, setClothingImage] = useState({
     image: null as File | null,
-    imageUrl: searchParams.get('imageUrl') as string
+    imageUrl: ''
   });
   // virtual try on ends
 
@@ -89,9 +89,11 @@ export function Sidebar() {
   // virtual try-on manual ends
 
   useEffect(() => {
+    const imageUrlFromParams = searchParams.get('imageUrl') as string || '';
+    
     if (currentVariationType === '1') {
-      setModelImage({ image: null, imageUrl: '' });
-      setClothingImage({ image: null, imageUrl: searchParams.get('imageUrl') as string });
+      setModelImage({ image: null, imageUrl: imageUrlFromParams });
+      setClothingImage({ image: null, imageUrl: '' });
     } else if (currentVariationType === '2') {
       setReferencePoseImage({ image: null, imageUrl: '' });
       setTargetPoseImage({ image: null, imageUrl: '' });
@@ -331,7 +333,7 @@ export function Sidebar() {
             {currentVariationType === '3' && (
               <div key={`virtual-try-on-manual-${currentVariationType}`}>
                 <div className="space-y-2" key={`original-image-uploader-${currentVariationType}`}>
-                  <StyledLabel htmlFor="original-image-uploader" content="Upload original image" />
+                  <StyledLabel htmlFor="original-image-uploader" content="Upload model image" />
                   <ImageUploader
                     key={`original-image-uploader-${currentVariationType}-original`}
                     onImageUrlChange={(imageUrl: string) => {
@@ -349,7 +351,7 @@ export function Sidebar() {
                   />
                 </div>
                 <div className="space-y-2 mt-6" key={`reference-image-uploader-${currentVariationType}`}>
-                  <StyledLabel htmlFor="reference-image-uploader" content="Upload reference image" />
+                  <StyledLabel htmlFor="reference-image-uploader" content="Upload clothing image" />
                   <ImageUploader
                     key={`reference-image-uploader-${currentVariationType}-reference`}
                     onImageUrlChange={(imageUrl: string) => {

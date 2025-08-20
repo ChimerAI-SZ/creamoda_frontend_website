@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Inter } from 'next/font/google';
 
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
@@ -60,8 +61,21 @@ export interface ImageUploadFormData {
 export function Sidebar() {
   const { setModelSizes } = useModelStore();
   const { setGenerating } = useGenerationStore();
-
   const { showAlert } = useAlertStore();
+  const searchParams = useSearchParams();
+  
+  // Tab 状态管理
+  const [activeTab, setActiveTab] = useState('text');
+
+  // 处理URL参数来设置默认Tab
+  useEffect(() => {
+    const tab = searchParams.get('tab');
+    if (tab === 'image-to-image') {
+      setActiveTab('image');
+    } else if (tab === 'text-to-image') {
+      setActiveTab('text');
+    }
+  }, [searchParams]);
 
   // 文生图 / 图生图 提交事件
   const handleSubmit = async (data: OutfitFormData) => {
@@ -356,7 +370,7 @@ export function Sidebar() {
       className={`w-[378px] h-[calc(100vh-110px)] overflow-y-auto py-4 rounded-[20px] flex-shrink-0 bg-white shadow-card-shadow flex flex-col z-0 ${inter.className}`}
     >
       <div className="flex justify-center items-center w-full h-full gap-[46px]">
-        <Tabs defaultValue="text" className="h-full w-full flex flex-col">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full w-full flex flex-col">
           <div className="flex items-center justify-center">
             <TabsList>
               <TabsTrigger value="text">Text to image</TabsTrigger>

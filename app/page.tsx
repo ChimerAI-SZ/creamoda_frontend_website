@@ -2,10 +2,29 @@
 
 import { Sidebar } from '@/components/Sidebar';
 import { ImageGrid } from '../components/ImageGrid/index';
-
 import { Album as AlbumDrawer } from '@/components/Album';
+import { useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
+import { useVariationFormStore } from '@/stores/useVariationFormStore';
 
 export default function Page() {
+  const searchParams = useSearchParams();
+  const { setCurrentVariationType, updateImageUrl } = useVariationFormStore();
+
+  useEffect(() => {
+    // 检查URL参数
+    const imageUrl = searchParams.get('imageUrl');
+    const variationType = searchParams.get('variationType');
+    const tab = searchParams.get('tab');
+
+    // 如果有图片URL和变型类型，设置到store中
+    if (imageUrl && variationType) {
+      console.log('Setting homepage params:', { imageUrl, variationType, tab });
+      setCurrentVariationType(variationType);
+      updateImageUrl(decodeURIComponent(imageUrl));
+    }
+  }, [searchParams, setCurrentVariationType, updateImageUrl]);
+
   return (
     <div className="flex p-6 pt-[30px] z-0">
       <Sidebar />
