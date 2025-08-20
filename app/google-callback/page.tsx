@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { getGoogleCallback, saveAuthToken } from '@/lib/api';
 
@@ -9,7 +9,8 @@ export const dynamic = 'force-dynamic';
 // Specify runtime as edge only
 export const runtime = 'edge';
 
-export default function GoogleCallback() {
+// 包裹 useSearchParams 的组件
+function CallbackHandler() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -72,8 +73,20 @@ export default function GoogleCallback() {
     handleCallback();
   }, [searchParams, router]);
 
+  return null; // 这个组件只处理副作用，不渲染任何内容
+}
+
+export default function GoogleCallback() {
   return (
     <div className="flex items-center justify-center min-h-screen">
+      <Suspense fallback={
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-t-primary border-gray-200 rounded-full animate-spin mx-auto mb-4"></div>
+          <h2 className="text-xl font-medium text-gray-700">Loading...</h2>
+        </div>
+      }>
+        <CallbackHandler />
+      </Suspense>
       <div className="text-center">
         <div className="w-12 h-12 border-4 border-t-primary border-gray-200 rounded-full animate-spin mx-auto mb-4"></div>
         <h2 className="text-xl font-medium text-gray-700">Completing Google login...</h2>

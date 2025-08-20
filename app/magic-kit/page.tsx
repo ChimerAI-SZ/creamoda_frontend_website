@@ -1,13 +1,14 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { ImageGrid } from '@/components/ImageGrid';
 import { Sidebar } from '@/app/magic-kit/components/Sidebar';
 import { Album as AlbumDrawer } from '@/components/Album';
 import { useVariationFormStore } from '@/stores/useMagicKitStore';
 
-export default function Page() {
+// 包裹 useSearchParams 的组件
+function SearchParamsHandler() {
   const searchParams = useSearchParams();
   const { setCurrentVariationType, updateImageUrl } = useVariationFormStore();
 
@@ -29,8 +30,15 @@ export default function Page() {
     }
   }, [searchParams, setCurrentVariationType, updateImageUrl]);
 
+  return null; // 这个组件只处理副作用，不渲染任何内容
+}
+
+export default function Page() {
   return (
     <div className="flex p-6 pt-[30px] z-0">
+      <Suspense fallback={<div>Loading...</div>}>
+        <SearchParamsHandler />
+      </Suspense>
       <Sidebar />
       <main className="flex-1 pl-6 h-[calc(100vh-110px)] overflow-y-auto bg-transparent">
         <ImageGrid />
