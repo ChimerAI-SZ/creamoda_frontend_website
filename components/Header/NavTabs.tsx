@@ -10,9 +10,9 @@ type NavItem = {
 
 // 将导航项抽取为配置数组
 const navItems: NavItem[] = [
-  { text: 'Design', href: '/' },
-  { text: 'Virtual Try-on', href: '/virtual-try-on' },
-  { text: 'Magic Kit', href: '/magic-kit' },
+  { text: 'Design', href: '/fashion-design/create' },
+  { text: 'Virtual Try-on', href: '/virtual-try-on/create' },
+  { text: 'Magic Kit', href: '/magic-kit/create' },
   // { text: 'Community', href: '/community' }
 ];
 

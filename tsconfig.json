@@ -25,6 +25,7 @@
     "typeRoots": ["./types", "./node_modules/@types"],
     "paths": {
       "@/*": ["./*"],
+      "@/src/*": ["./src/*"],
       "@/images/*": ["./public/images/*"],
       "@/lib/*": ["./lib/*"],
       "@/utils/*": ["./utils/*"],

@@ -35,6 +35,12 @@ export default function ImageDetail({
 }: ImageDetailProps) {
   const pathname = usePathname();
 
+  // 兼容迁移后的 create 路径与旧路径
+  const isVirtualTryOn = pathname.startsWith('/virtual-try-on');
+  const isMagicKit = pathname.startsWith('/magic-kit');
+  const isDesign = pathname === '/' || pathname.startsWith('/fashion-design');
+  const shouldShowQuickActions = isDesign || isVirtualTryOn || isMagicKit;
+
   if (!isOpen) return null;
 
   const ActionButton: React.FC<ActionButtonProps> = ({ variant, text, content, className, iconName }) => (
@@ -104,14 +110,14 @@ export default function ImageDetail({
                 iconName={image?.isCollected ? 'added_to_album' : 'add_to_album_black'}
               />
                <ActionButton variant="tertiary" text="Delete" iconName="delete_black" />
-              {['/', '/virtual-try-on', '/magic-kit'].includes(pathname) && (
+              {shouldShowQuickActions && (
                 <>
-                  {pathname !== '/virtual-try-on' && (
+                  {!isVirtualTryOn && (
                     <ActionButton variant="primary" text="Virtual Try-On" iconName="virtual_try_on" />
                   )}
-                  {pathname !== '/magic-kit' && (
+                  {!isMagicKit && (
                     <ActionButton
-                      variant={pathname === '/virtual-try-on' ? 'primary' : 'secondary'}
+                      variant={isVirtualTryOn ? 'primary' : 'secondary'}
                       text="Magic Kit"
                       iconName="magic_kit"
                     />

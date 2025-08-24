@@ -2,7 +2,7 @@ import type React from 'react';
 import type { Metadata } from 'next';
 
 import { Analytics } from '@vercel/analytics/react';
-import { Header } from '@/components/Header';
+import { ConditionalHeader } from '@/components/ConditionalHeader';
 import { LoginModal } from '@/app/app-components/Login';
 
 import { TooltipProvider } from '@/components/ui/tooltip';
@@ -23,7 +23,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className="min-h-screen flex flex-col bg-[url('/images/bg.png')] bg-cover">
         <TooltipProvider>
-          <Header />
+          <ConditionalHeader />
           {children}
           <Analytics />
           <LoginModal />

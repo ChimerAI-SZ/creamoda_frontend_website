@@ -241,9 +241,9 @@ export function ImageGrid() {
       }
     } else if (text === 'Magic Kit') {
       updateImageUrl(image?.resultPic ?? '');
-      router.push('/magic-kit');
+      router.push('/magic-kit/create');
     } else if (text === 'Virtual Try-On') {
-      router.push(`/virtual-try-on?imageUrl=${encodeURIComponent(image?.resultPic ?? '')}`);
+      router.push(`/virtual-try-on/create?imageUrl=${encodeURIComponent(image?.resultPic ?? '')}`);
     } else if (text === 'Share') {
       try {
         const res = await community.shareImage({ genImgId: image?.genImgId ?? 0 });
