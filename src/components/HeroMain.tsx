@@ -393,7 +393,7 @@ export default function HeroMain() {
               <div className="beta-insight-card">
                 <div className="beta-insight-content">
                   <p className="beta-insight-text">
-                  "CREAMODA has been an invaluable partner for Hellotalk Knitted Hats. Their ability to offer a high variety of SKUs with low MOQs has allowed us to maintain product diversity while keeping production costs manageable. Their flexible and efficient design solutions, combined with their ability to deliver varied styles, have made them a trusted partner for our brand. We are confident in CREAMODA's capabilities and look forward to a long-term partnership with them. Their all-in-one design and production services have been a huge asset to our business."
+                  &ldquo;CREAMODA has been an invaluable partner for Hellotalk Knitted Hats. Their ability to offer a high variety of SKUs with low MOQs has allowed us to maintain product diversity while keeping production costs manageable. Their flexible and efficient design solutions, combined with their ability to deliver varied styles, have made them a trusted partner for our brand. We are confident in CREAMODA&rsquo;s capabilities and look forward to a long-term partnership with them. Their all-in-one design and production services have been a huge asset to our business.&rdquo;
                   </p>
                 </div>
               </div>
@@ -402,7 +402,7 @@ export default function HeroMain() {
               <div className="beta-insight-card">
                 <div className="beta-insight-content">
                   <p className="beta-insight-text">
-                    "Working with CREAMODA has set Hubble Pet Clothing to new heights. Their fast design delivery and comprehensive one-stop services have allowed us to focus on growing our brand while they handle the complexities of design and production. CREAMODA's value-added solutions, such as sourcing affordable fabrics and assisting with international e-commerce certifications, have been incredibly helpful. Their efficiency and holistic support have strengthened our partnership, and we are excited to renew our contract with them for 2025. CREAMODA has truly earned our trust and loyalty."
+                    &ldquo;Working with CREAMODA has set Hubble Pet Clothing to new heights. Their fast design delivery and comprehensive one-stop services have allowed us to focus on growing our brand while they handle the complexities of design and production. CREAMODA&rsquo;s value-added solutions, such as sourcing affordable fabrics and assisting with international e-commerce certifications, have been incredibly helpful. Their efficiency and holistic support have strengthened our partnership, and we are excited to renew our contract with them for 2025. CREAMODA has truly earned our trust and loyalty.&rdquo;
                   </p>
                 </div>
               </div>
@@ -411,7 +411,7 @@ export default function HeroMain() {
               <div className="beta-insight-card">
                 <div className="beta-insight-content">
                   <p className="beta-insight-text">
-                    "CREAMODA has consistently impressed us with their high standard of design flexibility and precision. Every sample they create meets our expectations and is production-ready, which has streamlined our manufacturing process significantly. Their commitment to excellence in both design and sample quality has made it easy for us to bring our products to market with confidence. We highly recommend CREAMODA for their professionalism, attention to detail, and ability to deliver exceptional results."
+                    &ldquo;CREAMODA has consistently impressed us with their high standard of design flexibility and precision. Every sample they create meets our expectations and is production-ready, which has streamlined our manufacturing process significantly. Their commitment to excellence in both design and sample quality has made it easy for us to bring our products to market with confidence. We highly recommend CREAMODA for their professionalism, attention to detail, and ability to deliver exceptional results.&rdquo;
                   </p>
                 </div>
               </div>
@@ -420,7 +420,7 @@ export default function HeroMain() {
               <div className="beta-insight-card">
                 <div className="beta-insight-content">
                   <p className="beta-insight-text">
-                  "CREAMODA has been an absolute game-changer for my brand. It is now an indispensable tool in my workflow, helping me stay ahead in the fast-paced world of fashion. I highly recommend it to any designer looking to boost efficiency and innovation!"
+                  &ldquo;CREAMODA has been an absolute game-changer for my brand. It is now an indispensable tool in my workflow, helping me stay ahead in the fast-paced world of fashion. I highly recommend it to any designer looking to boost efficiency and innovation!&rdquo;
                    
                   </p>
                 </div>
