@@ -43,19 +43,19 @@ export default function HeroMain() {
     // 根据当前域名判断环境
     if (currentHost === 'localhost' || currentHost === '127.0.0.1') {
       // 本地开发：默认跳转测试环境，避免本地未启动或端口冲突
-      return 'https://test-mvp.creamoda.ai';
-    } else if (currentHost.includes('test-mvp.creamoda.ai')) {
+      return 'https://test-official.creamoda.ai';
+    } else if (currentHost.includes('test-official.creamoda.ai')) {
       // 测试环境
-      return 'https://test-mvp.creamoda.ai';
+      return 'https://test-official.creamoda.ai';
     } else if (currentHost.includes('create.creamoda.ai')) {
       // 生产环境
       return 'https://create.creamoda.ai';
     } else if (currentHost.includes('vercel.app')) {
       // Vercel 预览部署环境，跳转到测试环境
-      return 'https://test-mvp.creamoda.ai';
+      return 'https://test-official.creamoda.ai';
     } else {
       // 默认回退到测试环境
-      return 'https://test-mvp.creamoda.ai';
+      return 'https://test-official.creamoda.ai';
     }
   }, []);
 
@@ -118,7 +118,7 @@ export default function HeroMain() {
   }, [currentTheme.id, getSaasBaseUrl]);
 
   // 首页公共状态（放在顶层，避免 Hook 顺序变化）
-  const [saasBaseUrl, setSaasBaseUrl] = useState('https://test-mvp.creamoda.ai');
+  const [saasBaseUrl, setSaasBaseUrl] = useState('https://test-official.creamoda.ai');
   useEffect(() => {
     setSaasBaseUrl(getSaasBaseUrl());
   }, [getSaasBaseUrl]);
