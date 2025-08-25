@@ -59,9 +59,9 @@ export function SearchParamsHandler({
   // 显示处理状态
   if (isProcessingImage && showProcessingIndicator) {
     return (
-      <div className="fixed top-4 right-4 bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg z-50 flex items-center space-x-2">
+      <div className="fixed top-4 right-4  px-4 py-2 rounded-lg shadow-lg z-50 flex items-center space-x-2">
         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-        <span>正在处理外部图片...</span>
+        {/* <span>正在处理外部图片...</span> */}
       </div>
     );
   }
