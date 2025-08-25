@@ -8,9 +8,9 @@ export function ConditionalLoginModal() {
   
   // 只在SAAS路径中显示登录模态框
   const isSaasRoute = pathname.startsWith('/create') || 
-                     pathname.startsWith('/magic-kit') || 
-                     pathname.startsWith('/virtual-try-on') ||
-                     pathname.startsWith('/fashion-design') ||
+                     pathname.startsWith('/magic-kit/create') || 
+                     pathname.startsWith('/virtual-try-on/create') ||
+                     pathname.startsWith('/fashion-design/create') ||
                      pathname.startsWith('/community');
   
   // 营销页面不显示登录模态框

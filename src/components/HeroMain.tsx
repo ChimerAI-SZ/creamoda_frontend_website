@@ -9,18 +9,18 @@ import { getSaasUrlByRoute } from '../config/routes';
 // 主题ID到SaaS页面和功能类型的映射
 const themeToSaasConfigMap: Record<string, { page: string; variationType?: string; tab?: string }> = {
   // Magic Kit 相关功能
-  'background_remove': { page: 'magic-kit', variationType: '3' },    // Remove Background
-  'background_change': { page: 'magic-kit', variationType: '2' },    // Change Background
-  'image_enhance': { page: 'magic-kit', variationType: '5' },        // Upscale
-  'color_change': { page: 'magic-kit', variationType: '1' },         // Change Color
-  'partial_modify': { page: 'magic-kit', variationType: '4' },       // Partial Modification
+  'background_remove': { page: 'magic-kit/create', variationType: '3' },    // Remove Background
+  'background_change': { page: 'magic-kit/create', variationType: '2' },    // Change Background
+  'image_enhance': { page: 'magic-kit/create', variationType: '5' },        // Upscale
+  'color_change': { page: 'magic-kit/create', variationType: '1' },         // Change Color
+  'partial_modify': { page: 'magic-kit/create', variationType: '4' },       // Partial Modification
   
   // Virtual Try-On 相关功能
-  'virtual_try': { page: 'virtual-try-on' },                        // Virtual Try-On
+  'virtual_try': { page: 'virtual-try-on/create' },                        // Virtual Try-On
   
-  // 首页 Image to Image 相关功能
-  'outfit_generator': { page: '', variationType: '11', tab: 'image-to-image' },  // Vary style (首页)
-  'sketch_convert': { page: '', variationType: '4', tab: 'image-to-image' },     // Sketch to Design (首页)
+  // Fashion Design 相关功能
+  'outfit_generator': { page: 'fashion-design/create', variationType: '11', tab: 'image-to-image' },  // Vary style
+  'sketch_convert': { page: 'fashion-design/create', variationType: '10', tab: 'image-to-image' },     // Sketch to Design
 };
 
 export default function HeroMain() {
