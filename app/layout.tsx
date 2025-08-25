@@ -1,5 +1,6 @@
 import type React from 'react';
 import type { Metadata } from 'next';
+import './globals.css';
 
 import { Analytics } from '@vercel/analytics/react';
 import { ConditionalHeader } from '@/components/ConditionalHeader';
@@ -34,4 +35,3 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     </html>
   );
 }
-import './globals.css';
