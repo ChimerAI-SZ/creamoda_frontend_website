@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, Suspense } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { useTheme } from '@/src/context/ThemeContext';
 import Hero from '@/src/components/Hero';
@@ -11,10 +11,10 @@ interface ThemeAwarePageProps {
   initialTheme?: string;
 }
 
-export default function ThemeAwarePage({ initialTheme }: ThemeAwarePageProps) {
+// 将使用 useSearchParams 的逻辑抽离到单独组件
+function ThemeHandler({ initialTheme }: { initialTheme?: string }) {
   const searchParams = useSearchParams();
   const { setTheme, themeId } = useTheme();
-  const pathname = usePathname();
 
   useEffect(() => {
     // 优先使用路径参数传入的主题
@@ -30,8 +30,22 @@ export default function ThemeAwarePage({ initialTheme }: ThemeAwarePageProps) {
     }
   }, [initialTheme, searchParams, setTheme, themeId]);
 
+  return null;
+}
+
+// Loading fallback for Suspense
+function ThemeHandlerFallback() {
+  return null;
+}
+
+export default function ThemeAwarePage({ initialTheme }: ThemeAwarePageProps) {
+  const pathname = usePathname();
+
   return (
     <div className="min-h-screen">
+      <Suspense fallback={<ThemeHandlerFallback />}>
+        <ThemeHandler initialTheme={initialTheme} />
+      </Suspense>
       {/* <ThemeSwitcher /> */}
       <Hero />
       {pathname !== '/' && <FAQ />}
