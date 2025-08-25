@@ -3,7 +3,6 @@ import type { Metadata } from 'next';
 
 import { Analytics } from '@vercel/analytics/react';
 import { ConditionalHeader } from '@/components/ConditionalHeader';
-import { LoginModal } from '@/app/app-components/Login';
 
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { GlobalConfirm } from '@/components/GlobalConfirm';
@@ -26,7 +25,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <ConditionalHeader />
           {children}
           <Analytics />
-          <LoginModal />
           <GlobalConfirm />
         </TooltipProvider>
         <AlertToast />
