@@ -219,10 +219,12 @@ export default function HeroMain() {
 
         {/* Decorative hollow circle below Feature Overview */}
         <section className="circle-deco-section">
-          <h3 className="circle-deco-title">
-            <span>General</span>
-            <span>Workflow</span>
-          </h3>
+          <div className="circle-deco-title-container">
+            <h3 className="circle-deco-title">
+              <span>General</span>
+              <span>Workflow</span>
+            </h3>
+          </div>
           <div className="circle-deco-row">
             <div className="circle-deco-wrap">
               <div className="circle-deco-left" />
@@ -305,6 +307,7 @@ export default function HeroMain() {
           </div>
         </section>
 
+
         {/* Fashion Showcase Section */}
         <section className="fashion-showcase-section">
           <h2 className="fashion-showcase-title">
@@ -380,84 +383,46 @@ export default function HeroMain() {
           </div>
         </section>
 
-        {/* Beta Insights Section */}
-        <section className="beta-insights-section">
-          <h2 className="beta-insights-title">
+        {/* Insights from Our Beta Testers Section */}
+        <section className="beta-testers-section">
+          <h2 className="beta-testers-title">
             <span>Insights from</span>
             <span>Our Beta Testers</span>
           </h2>
-          
-          <div className="beta-insights-slider">
-            <div className="beta-insights-track">
-              {/* Beta Insight Card 1 */}
-              <div className="beta-insight-card">
-                <div className="beta-insight-content">
-                  <p className="beta-insight-text">
-                  &ldquo;CREAMODA has been an invaluable partner for Hellotalk Knitted Hats. Their ability to offer a high variety of SKUs with low MOQs has allowed us to maintain product diversity while keeping production costs manageable. Their flexible and efficient design solutions, combined with their ability to deliver varied styles, have made them a trusted partner for our brand. We are confident in CREAMODA&rsquo;s capabilities and look forward to a long-term partnership with them. Their all-in-one design and production services have been a huge asset to our business.&rdquo;
+          <div className="beta-testers-slider">
+            <div className="beta-testers-track">
+              {/* Beta Tester Card 1 */}
+              <div className="beta-tester-card">
+                <div className="beta-tester-content">
+                  <p className="beta-tester-text">
+                  "CREAMODA has been an invaluable partner for Hellotalk Knitted Hats. Their ability to offer a high variety of SKUs with low MOQs has allowed us to maintain product diversity while keeping production costs manageable. Their flexible and efficient design solutions, combined with their ability to deliver varied styles, have made them a trusted partner for our brand. We are confident in CREAMODA's capabilities and look forward to a long-term partnership with them. Their all-in-one design and production services have been a huge asset to our business."
+                    
                   </p>
                 </div>
               </div>
 
-              {/* Beta Insight Card 2 */}
-              <div className="beta-insight-card">
-                <div className="beta-insight-content">
-                  <p className="beta-insight-text">
-                    &ldquo;Working with CREAMODA has set Hubble Pet Clothing to new heights. Their fast design delivery and comprehensive one-stop services have allowed us to focus on growing our brand while they handle the complexities of design and production. CREAMODA&rsquo;s value-added solutions, such as sourcing affordable fabrics and assisting with international e-commerce certifications, have been incredibly helpful. Their efficiency and holistic support have strengthened our partnership, and we are excited to renew our contract with them for 2025. CREAMODA has truly earned our trust and loyalty.&rdquo;
+              {/* Beta Tester Card 2 */}
+              <div className="beta-tester-card">
+                <div className="beta-tester-content">
+                  <p className="beta-tester-text">
+                    "CREAMODA has consistently impressed us with their high standard of design flexibility and precision. Every sample they create meets our expectations and is production-ready, which has streamlined our manufacturing process significantly. Their commitment to excellence in both design and sample quality has made it easy for us to bring our products to market with confidence. We highly recommend CREAMODA for their professionalism, attention to detail, and ability to deliver exceptional results."
                   </p>
                 </div>
               </div>
 
-              {/* Beta Insight Card 3 */}
-              <div className="beta-insight-card">
-                <div className="beta-insight-content">
-                  <p className="beta-insight-text">
-                    &ldquo;CREAMODA has consistently impressed us with their high standard of design flexibility and precision. Every sample they create meets our expectations and is production-ready, which has streamlined our manufacturing process significantly. Their commitment to excellence in both design and sample quality has made it easy for us to bring our products to market with confidence. We highly recommend CREAMODA for their professionalism, attention to detail, and ability to deliver exceptional results.&rdquo;
+              {/* Beta Tester Card 3 */}
+              <div className="beta-tester-card">
+                <div className="beta-tester-content">
+                  <p className="beta-tester-text">
+                  "CREAMODA has been an absolute game-changer for my brand. It is now an indispensable tool in my workflow, helping me stay ahead in the fast-paced world of fashion. I highly recommend it to any designer looking to boost efficiency and innovation!"
                   </p>
                 </div>
               </div>
-
-              {/* Beta Insight Card 4 */}
-              <div className="beta-insight-card">
-                <div className="beta-insight-content">
-                  <p className="beta-insight-text">
-                  &ldquo;CREAMODA has been an absolute game-changer for my brand. It is now an indispensable tool in my workflow, helping me stay ahead in the fast-paced world of fashion. I highly recommend it to any designer looking to boost efficiency and innovation!&rdquo;
-                   
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* 滑动导航按钮 */}
-            <div className="insights-slider-nav">
-              <button 
-                className="insights-slider-btn"
-                onClick={() => {
-                  const track = document.querySelector('.beta-insights-track');
-                  if (track) {
-                    track.scrollBy({ left: -400, behavior: 'smooth' });
-                  }
-                }}
-              >
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
-                </svg>
-              </button>
-              <button 
-                className="insights-slider-btn"
-                onClick={() => {
-                  const track = document.querySelector('.beta-insights-track');
-                  if (track) {
-                    track.scrollBy({ left: 400, behavior: 'smooth' });
-                  }
-                }}
-              >
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                </svg>
-              </button>
             </div>
           </div>
         </section>
+
+       
           {/* Trend CTA Section */}
           <section className="trend-cta-section">
           <h2 className="trend-cta-title">
@@ -492,8 +457,8 @@ export default function HeroMain() {
           <Image
             src={heroMain.mainImage}
             alt="Main sample image"
-            width={500}
-            height={750}
+            width={600}
+            height={900}
             className="sample-img"
           />
         </div>

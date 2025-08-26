@@ -624,6 +624,14 @@ body {
   padding: 60px 4px 12px 96px; /* 更大左侧内边距，给首卡叠加图留出空间 */
   scroll-padding-left: 108px; /* 吸附预留空间 */
   scroll-snap-type: x mandatory;
+  /* 隐藏滚动条但保留滚动功能 */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+/* 隐藏 webkit 浏览器的滚动条 */
+.feature-overview-track::-webkit-scrollbar {
+  display: none;
 }
 
 .feature-card {
@@ -710,29 +718,40 @@ body {
 /* Circle Decorative Section */
 .circle-deco-section {
   width: 100vw;
-  padding: 24px 60px 24px 96px; /* 与 Feature Overview 左基线 96px 对齐 */
+  padding: 24px 60px;
   position: relative;
-  min-height: 150px; /* 保证有可视高度 */
+  min-height: 150px;
   z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 恢复整个section的居中对齐 */
+}
+
+.circle-deco-title-container {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%; /* 占满宽度但内容左对齐 */
+  max-width: 1200px; /* 限制最大宽度与内容区域一致 */
 }
 
 .circle-deco-title {
   font-family: 'Neue Machina Regular', 'Neue Machina', system-ui, -apple-system, sans-serif;
-  font-weight: 600; /* 使用 Regular 的合成粗体，较 800 更细 */
+  font-weight: 600;
   font-synthesis: weight;
   color: #ffffff;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  padding-left: 0; /* 统一左基线 */
+  align-items: flex-start; /* 左对齐 */
+  padding-left: 0; /* 移除左边距，依靠容器定位 */
   margin: 0 0 8px 0;
   font-size: clamp(36px, 6vw, 80px);
   line-height: 1.05;
 }
 
 @media (min-width: 1024px) {
-  .circle-deco-title { padding-left: 104px; }
-  .circle-deco-wrap { margin-left: -300px; }
+  .circle-deco-title { padding-left: 0; }
+  .circle-deco-wrap { left: -500px; } /* 大屏幕继续使用绝对定位 */
 }
 
 @media (max-width: 900px) {
@@ -741,9 +760,17 @@ body {
   .feature-overview-title { padding-left: 0; margin-left: 0; }
   .feature-overview-title { padding-left: 0; }
 
-  .circle-deco-section { padding-left: 24px; padding-right: 16px; }
-  .circle-deco-title { padding-left: 24px; font-size: clamp(28px, 7vw, 52px); }
-  .circle-deco-row { flex-direction: column; gap: 20px; align-items: center; }
+  .circle-deco-section { padding: 24px 60px 24px 60px; } /* 移动端左右对称但保持适当边距 */
+  .circle-deco-title { padding-left: 60px; font-size: clamp(28px, 7vw, 52px); } /* 保持左对齐 */
+  .circle-deco-row { 
+    position: static; /* 移动端使用静态定位 */
+    display: flex;
+    flex-direction: column; 
+    gap: 20px; 
+    align-items: center;
+    height: auto; /* 移动端高度自适应 */
+    margin-top: 20px;
+  }
   /* 移动端：隐藏圆圈与桌面内容，仅展示简化步骤卡片 */
   .circle-deco-wrap { display: none !important; }
   .circle-content { display: none !important; }
@@ -786,26 +813,28 @@ body {
 }
 
 .circle-deco-row { /* 新增：横向容器，左圆+右内容 并排 */
-  display: flex;
-  align-items: flex-start;
-  justify-content: flex-start; /* 不再撑满到最右 */
-  gap: 300px; /* 稍微向右回退一些 */
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  height: 900px; /* 设置固定高度来容纳圆圈 */
+  margin-top: 80px;
 }
 
 .circle-deco-wrap {
-  margin-top: 80px;
-  position: relative;
+  position: absolute;
+  left: -500px; /* 使用绝对定位替代margin-left，固定在左侧 */
+  top: 0;
   width: 900px;
   height: 900px;
-  margin-left: -350px; /* 向右微调 */
 }
 
 /* 右侧内容区域（随点位切换） */
 .circle-content {
-  margin-top: 80px;
-  position: relative; /* 回到常规流 */
+  position: absolute; /* 使用绝对定位，完全独立于左侧圆圈 */
+  right: 0; /* 固定在容器右侧 */
+  top: 0;
   max-width: 680px;
-  padding-left: 16px; /* 与圆保持适度间距 */
+  width: 680px;
   display: flex;
   flex-direction: column;
   gap: 28px;
@@ -823,21 +852,21 @@ body {
 
 .circle-content-title {
   font-family: 'Neue Machina Regular', 'Neue Machina', system-ui, -apple-system, sans-serif;
-  font-weight: 700; /* 标题略粗 */
+  font-weight: 700;
   font-synthesis: weight;
-  font-size: clamp(22px, 3.2vw, 44px);
+  font-size: clamp(18px, 2.8vw, 36px); /* 减小字体，从3.2vw, 44px改为2.8vw, 36px */
   color: #ffffff;
   margin: 0;
-  margin-top: 100px; /* 增加标题上边距 */
+  margin-top: 100px;
   line-height: 1.35;
-  white-space: nowrap; /* 标题不换行 */
+  white-space: nowrap;
   text-align: right;
 }
 
 .circle-content-desc {
   font-family: 'Neue Machina Regular', 'Neue Machina', system-ui, -apple-system, sans-serif;
   font-weight: 400;
-  font-size: clamp(20px, 3vw, 32px);
+  font-size: clamp(16px, 2.4vw, 26px); /* 减小字体，从3vw, 32px改为2.4vw, 26px */
   color: rgba(255, 255, 255, 0.85);
   margin: 0;
   line-height: 1.7;
@@ -875,7 +904,7 @@ body {
   position: absolute;
   left: 50%;
   top: 50%;
-  --r: 450px; /* 与 .circle-deco-left 半径一致 - 4px 描边 */
+  --r: 446px; /* 调整半径，让点直接贴在圆圈边框上 (450px - 4px) */
   width: 18px;
   height: 18px;
   border-radius: 50%;
@@ -2933,6 +2962,190 @@ body {
 
   .beta-insight-content {
     padding: 16px;
+  }
+}
+
+/* Beta Testers Section */
+.beta-testers-section {
+  margin: 120px 0 200px 0;
+  padding: 0;
+  position: relative;
+  width: 120%; /* 占满整个页面宽度 */
+}
+
+.beta-testers-title {
+  font-family: 'Neue Machina Regular', 'Neue Machina', system-ui, -apple-system, sans-serif;
+  font-weight: 600;
+  font-synthesis: weight;
+  font-size: clamp(36px, 6vw, 80px);
+  color: white;
+  margin: 0 0 80px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-left: 0;
+  line-height: 1.05;
+}
+
+.beta-testers-title span {
+  display: block;
+  line-height: 1.1; /* 增加行高，从0.9增加到1.1 */
+}
+
+.beta-testers-title span + span {
+  margin-top: -0.05em; /* 减少负边距，从-0.18em调整到-0.05em */
+}
+
+.beta-testers-slider {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  padding: 0;
+}
+
+.beta-testers-track {
+  display: flex;
+  gap: 25px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 20px 0 40px 0;
+  scroll-snap-type: x mandatory;
+  
+  /* 隐藏滚动条但保持功能 */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.beta-testers-track::-webkit-scrollbar {
+  display: none;
+}
+
+.beta-tester-card {
+  flex: 1; /* 让卡片自适应宽度 */
+  min-width: 800px; /* 大幅增加最小宽度 */
+  max-width: 1200px; /* 大幅增加最大宽度 */
+  width: auto; /* 根据内容自适应 */
+  height: auto; /* 改为自适应高度 */
+  min-height: 180px; /* 保持最小高度 */
+  border-radius: 41px;
+  padding: 4px;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 1) 39%, rgba(255, 255, 255, 1) 100%);
+  scroll-snap-align: start;
+  transition: transform 0.3s ease;
+  position: relative;
+}
+
+.beta-tester-card:hover {
+  transform: translateY(-5px);
+}
+
+.beta-tester-card::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  right: 4px;
+  bottom: 4px;
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 37px;
+  z-index: 1;
+}
+
+.beta-tester-content {
+  position: relative;
+  z-index: 2;
+  padding: 36px;
+  height: calc(100% - 8px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 4px;
+  border-radius: 37px;
+}
+
+.beta-tester-text {
+  font-family: 'Neue Machina', sans-serif;
+  font-weight: 300;
+  font-size: 16px;
+  color: white;
+  line-height: 1.875;
+  margin: 0;
+  text-align: center;
+}
+
+/* 响应式设计 */
+@media (max-width: 900px) {
+  .beta-testers-section {
+    padding: 0 20px;
+    margin: 80px 0;
+  }
+
+  .beta-testers-title { 
+    padding-left: 44px; /* 移动端标题左边距，与滑动区域对齐 */
+    font-size: clamp(28px, 7vw, 52px); 
+  }
+
+  .beta-testers-slider {
+    padding: 0 20px; /* 移动端减少内边距 */
+  }
+
+  .beta-testers-track {
+    flex-direction: column; /* 移动端卡片垂直排列 */
+    align-items: center;
+    gap: 18px;
+    overflow-x: visible; /* 移除水平滚动 */
+  }
+
+  .beta-tester-card {
+    min-width: 320px;
+    max-width: 400px;
+    width: 90%; /* 占满容器宽度 */
+    border: 2px solid #fff;
+    background: rgba(0, 0, 0, 0.8) !important;
+    padding: 0;
+  }
+
+  .beta-tester-card::before {
+    display: none;
+  }
+
+  .beta-tester-content {
+    padding: 24px 20px;
+    position: static;
+    text-align: left;
+    height: auto;
+    margin: 0;
+    border-radius: 0;
+  }
+
+  .beta-tester-text {
+    font-size: 14px;
+    text-align: left;
+  }
+}
+
+@media (max-width: 600px) {
+  .beta-testers-title {
+    padding-left: 30px; /* 超小屏幕标题左边距 */
+  }
+
+  .beta-testers-slider {
+    padding: 0 10px; /* 超小屏幕进一步减少边距 */
+  }
+
+  .beta-tester-card {
+    min-width: 280px;
+    max-width: 320px;
+    width: 95%;
+  }
+
+  .beta-tester-content {
+    padding: 20px 16px;
+  }
+
+  .beta-tester-text {
+    font-size: 13px;
+    line-height: 1.6;
   }
 }
 
