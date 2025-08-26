@@ -80,7 +80,7 @@ export default function ClientOfferMoreInteractions({ currentRoute = '' }: Clien
         rightButton.removeEventListener('click', scrollRight);
       }
     };
-  }, [canScrollLeft, canScrollRight]);
+  }, [canScrollLeft, canScrollRight, scrollLeft, scrollRight]);
 
   // 处理卡片点击事件（增强原生链接）
   useEffect(() => {
