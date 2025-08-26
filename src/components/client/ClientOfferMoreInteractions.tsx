@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { handleNavigation } from '../../utils/navigation';
 
@@ -37,7 +37,7 @@ export default function ClientOfferMoreInteractions({ currentRoute = '' }: Clien
     }
   }, []);
 
-  const scrollLeft = () => {
+  const scrollLeft = useCallback(() => {
     const container = document.querySelector('.offer-more-cards') as HTMLElement;
     if (container && canScrollLeft) {
       container.scrollBy({
@@ -45,9 +45,9 @@ export default function ClientOfferMoreInteractions({ currentRoute = '' }: Clien
         behavior: 'smooth'
       });
     }
-  };
+  }, [canScrollLeft]);
 
-  const scrollRight = () => {
+  const scrollRight = useCallback(() => {
     const container = document.querySelector('.offer-more-cards') as HTMLElement;
     if (container && canScrollRight) {
       container.scrollBy({
@@ -55,7 +55,7 @@ export default function ClientOfferMoreInteractions({ currentRoute = '' }: Clien
         behavior: 'smooth'
       });
     }
-  };
+  }, [canScrollRight]);
 
   // 应用滚动按钮状态和事件
   useEffect(() => {

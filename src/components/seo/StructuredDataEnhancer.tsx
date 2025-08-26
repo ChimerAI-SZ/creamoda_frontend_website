@@ -57,7 +57,7 @@ export default function StructuredDataEnhancer({
   const generateProductStructuredData = () => {
     if (!productData) return null;
 
-    const baseProductData = {
+    const baseProductData: any = {
       '@context': 'https://schema.org',
       '@type': 'Product',
       'name': productData.name,
@@ -84,12 +84,12 @@ export default function StructuredDataEnhancer({
 
     // 添加图片数据（如果有）
     if (productData.images && productData.images.length > 0) {
-      baseProductData['image'] = productData.images;
+      baseProductData.image = productData.images;
     }
 
     // 添加评价数据（如果有）
     if (reviewData) {
-      baseProductData['aggregateRating'] = {
+      baseProductData.aggregateRating = {
         '@type': 'AggregateRating',
         'ratingValue': reviewData.ratingValue,
         'reviewCount': reviewData.reviewCount,
