@@ -395,7 +395,7 @@ export default function HeroMain() {
               <div className="beta-tester-card">
                 <div className="beta-tester-content">
                   <p className="beta-tester-text">
-                  "CREAMODA has been an invaluable partner for Hellotalk Knitted Hats. Their ability to offer a high variety of SKUs with low MOQs has allowed us to maintain product diversity while keeping production costs manageable. Their flexible and efficient design solutions, combined with their ability to deliver varied styles, have made them a trusted partner for our brand. We are confident in CREAMODA's capabilities and look forward to a long-term partnership with them. Their all-in-one design and production services have been a huge asset to our business."
+                  &quot;CREAMODA has been an invaluable partner for Hellotalk Knitted Hats. Their ability to offer a high variety of SKUs with low MOQs has allowed us to maintain product diversity while keeping production costs manageable. Their flexible and efficient design solutions, combined with their ability to deliver varied styles, have made them a trusted partner for our brand. We are confident in CREAMODA&apos;s capabilities and look forward to a long-term partnership with them. Their all-in-one design and production services have been a huge asset to our business.&quot;
                     
                   </p>
                 </div>
@@ -405,7 +405,7 @@ export default function HeroMain() {
               <div className="beta-tester-card">
                 <div className="beta-tester-content">
                   <p className="beta-tester-text">
-                    "CREAMODA has consistently impressed us with their high standard of design flexibility and precision. Every sample they create meets our expectations and is production-ready, which has streamlined our manufacturing process significantly. Their commitment to excellence in both design and sample quality has made it easy for us to bring our products to market with confidence. We highly recommend CREAMODA for their professionalism, attention to detail, and ability to deliver exceptional results."
+                    &quot;CREAMODA has consistently impressed us with their high standard of design flexibility and precision. Every sample they create meets our expectations and is production-ready, which has streamlined our manufacturing process significantly. Their commitment to excellence in both design and sample quality has made it easy for us to bring our products to market with confidence. We highly recommend CREAMODA for their professionalism, attention to detail, and ability to deliver exceptional results.&quot;
                   </p>
                 </div>
               </div>
@@ -414,7 +414,7 @@ export default function HeroMain() {
               <div className="beta-tester-card">
                 <div className="beta-tester-content">
                   <p className="beta-tester-text">
-                  "CREAMODA has been an absolute game-changer for my brand. It is now an indispensable tool in my workflow, helping me stay ahead in the fast-paced world of fashion. I highly recommend it to any designer looking to boost efficiency and innovation!"
+                  &quot;CREAMODA has been an absolute game-changer for my brand. It is now an indispensable tool in my workflow, helping me stay ahead in the fast-paced world of fashion. I highly recommend it to any designer looking to boost efficiency and innovation!&quot;
                   </p>
                 </div>
               </div>
