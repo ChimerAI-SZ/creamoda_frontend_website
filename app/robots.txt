@@ -1,0 +1,23 @@
+User-agent: *
+Allow: /
+Allow: /image-background-remover
+Allow: /image-background-changer
+Allow: /image-enhancer
+Allow: /image-changer
+Allow: /image-color-changer
+Allow: /virtual-try-on
+Allow: /outfit-generator
+Allow: /sketch-to-image
+Allow: /community
+Allow: /privacy-policy
+Allow: /terms-of-service
+
+# Disallow app pages (interactive tools)
+Disallow: /create/*
+Disallow: /api/*
+
+# Allow images for indexing
+Allow: /marketing/images/*
+Allow: /images/*
+
+Sitemap: https://creamoda.ai/sitemap.xml

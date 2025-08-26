@@ -1,8 +1,15 @@
-import { useTheme } from '../context/ThemeContext';
+import { ThemeConfig } from '../../types/theme';
 
-export default function WhyChoose() {
-  const { currentTheme } = useTheme();
-  const { whyChoose } = currentTheme;
+interface StaticWhyChooseProps {
+  theme: ThemeConfig;
+}
+
+export default function StaticWhyChoose({ theme }: StaticWhyChooseProps) {
+  const { whyChoose } = theme;
+
+  if (!whyChoose || !whyChoose.cards) {
+    return null;
+  }
 
   return (
     <div className="why-choose-section">

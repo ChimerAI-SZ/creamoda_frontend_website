@@ -36,7 +36,7 @@ const EnvIndicator = () => {
   };
 
   return (
-    <div className={`fixed top-4 right-4 z-50 px-3 py-1 rounded-full text-white text-sm font-medium ${getEnvColor()}`}>
+    <div className={`fixed top-4 right-4 z-50 px-3 py-1 font-medium `}>
       {getEnvText()}
     </div>
   );

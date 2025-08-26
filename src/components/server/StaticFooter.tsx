@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-export default function Footer() {
+export default function StaticFooter() {
   return (
     <footer className="footer-section">
       <div className="footer-container">
@@ -78,12 +78,12 @@ export default function Footer() {
             <h3 className="footer-section-title">AI Features</h3>
             <div className="footer-features">
               <div className="feature-group">
-                <a href="https://create.creamoda.ai/" className="feature-item">Text to Image</a>
+                <Link href="/outfit-generator" className="feature-item">Text to Image</Link>
                 <a href="https://create.creamoda.ai/" className="feature-item">Copy Style</a>
                 <a href="https://create.creamoda.ai/" className="feature-item">Mix 2 Images</a>
                 <a href="https://create.creamoda.ai/" className="feature-item">Change Clothes</a>
                 <a href="https://create.creamoda.ai/" className="feature-item">Fabric to Design</a>
-                <a href="https://create.creamoda.ai/" className="feature-item">Sketch to Design</a>
+                <Link href="/sketch-to-image" className="feature-item">Sketch to Design</Link>
               </div>
               
               <div className="feature-group">
@@ -94,16 +94,16 @@ export default function Footer() {
               </div>
               
               <div className="feature-group">
-                <a href="https://create.creamoda.ai/virtual-try-on" className="feature-item">Virtual Try-on</a>
+                <Link href="/virtual-try-on" className="feature-item">Virtual Try-on</Link>
                 <a href="https://create.creamoda.ai/virtual-try-on" className="feature-item">Change Pose</a>
               </div>
 
               <div className="feature-group">
-                <a href="https://create.creamoda.ai/magic-kit" className="feature-item">Change Color</a>
-                <a href="https://create.creamoda.ai/magic-kit" className="feature-item">Change Background</a>
-                <a href="https://create.creamoda.ai/magic-kit" className="feature-item">Remove Background</a>
-                <a href="https://create.creamoda.ai/magic-kit" className="feature-item">Partial Modification</a>
-                <a href="https://create.creamoda.ai/magic-kit" className="feature-item">Upscale</a>
+                <Link href="/image-color-changer" className="feature-item">Change Color</Link>
+                <Link href="/image-background-changer" className="feature-item">Change Background</Link>
+                <Link href="/image-background-remover" className="feature-item">Remove Background</Link>
+                <Link href="/image-changer" className="feature-item">Partial Modification</Link>
+                <Link href="/image-enhancer" className="feature-item">Upscale</Link>
                 <a href="https://create.creamoda.ai/magic-kit" className="feature-item">Pattern Extraction</a>
                 <a href="https://create.creamoda.ai/magic-kit" className="feature-item">Pattern Application</a>
               </div>
@@ -112,15 +112,6 @@ export default function Footer() {
           
           {/* Other Links Section */}
           <div className="footer-other-links">
-            {/* TOS & PP Column */}
-            {/* <div className="footer-column">
-              <h3 className="footer-section-title">TOS & PP</h3>
-              <div className="footer-links">
-                <a href="#" className="footer-link">Terms of Service</a>
-                <a href="#" className="footer-link">Privacy Policy</a>
-              </div>
-            </div> */}
-            
             {/* Contact Us Column */}
             <div className="footer-column">
               <h3 className="footer-section-title">Contact Us</h3>

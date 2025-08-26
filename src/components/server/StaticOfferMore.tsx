@@ -1,30 +1,19 @@
-'use client';
-
 import Image from 'next/image';
-import { useRef, useState, useEffect } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
-import { handleNavigation } from '../utils/navigation';
+import { ThemeConfig } from '../../types/theme';
 
-export default function OfferMore() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const cardsContainerRef = useRef<HTMLDivElement>(null);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(true);
+interface StaticOfferMoreProps {
+  theme: ThemeConfig;
+  currentRoute?: string;
+}
 
-  // 卡片标题到路由的映射
-  const cardRouteMapping: Record<string, string> = {
-    'Image Background Remover': 'image-background-remover',
-    'Image Background Changer': 'image-background-changer',
-    'Image Enhancer': 'image-enhancer',
-    'AI Image Changer': 'image-changer',
-    'Image Color Changer': 'image-color-changer',
-    'AI Virtual Try-On': 'virtual-try-on',
-    'AI Outfit Generator': 'outfit-generator',
-    'AI Sketch to Image Converter': 'sketch-to-image'
-  };
+export default function StaticOfferMore({ theme, currentRoute = '' }: StaticOfferMoreProps) {
+  const { offerMore } = theme;
 
-  // 所有卡片配置
+  if (!offerMore || !offerMore.cards) {
+    return null;
+  }
+
+  // 所有卡片配置，包含完整的路由映射
   const allCards = [
     {
       title: 'Image Background Remover',
@@ -104,84 +93,31 @@ export default function OfferMore() {
   ];
 
   // 过滤掉当前页面对应的卡片
-  const filteredCards = allCards.filter(card => {
-    const currentRoute = pathname.replace('/', '');
-    return card.route !== currentRoute;
-  });
-
-  // 处理卡片点击事件
-  const handleCardClick = (cardTitle: string) => {
-    const route = cardRouteMapping[cardTitle];
-    if (route) {
-      handleNavigation(route, router);
-    }
-  };
-
-  const checkScrollPosition = () => {
-    if (cardsContainerRef.current) {
-      const { scrollLeft, scrollWidth, clientWidth } = cardsContainerRef.current;
-      
-      setCanScrollLeft(scrollLeft > 0);
-      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 1);
-    }
-  };
-
-  useEffect(() => {
-    const container = cardsContainerRef.current;
-    if (container) {
-      checkScrollPosition();
-      container.addEventListener('scroll', checkScrollPosition);
-      window.addEventListener('resize', checkScrollPosition);
-      
-      return () => {
-        container.removeEventListener('scroll', checkScrollPosition);
-        window.removeEventListener('resize', checkScrollPosition);
-      };
-    }
-  }, []);
-
-  const scrollLeft = () => {
-    if (cardsContainerRef.current && canScrollLeft) {
-      cardsContainerRef.current.scrollBy({
-        left: -350, // 滚动一个卡片的宽度
-        behavior: 'smooth'
-      });
-    }
-  };
-
-  const scrollRight = () => {
-    if (cardsContainerRef.current && canScrollRight) {
-      cardsContainerRef.current.scrollBy({
-        left: 350, // 滚动一个卡片的宽度
-        behavior: 'smooth'
-      });
-    }
-  };
+  const filteredCards = allCards.filter(card => card.route !== currentRoute);
 
   return (
     <div className="offer-more-section">
       <div className="offer-more-header">
-        <h2 className="offer-more-title">We Offer More</h2>
+        <h2 className="offer-more-title">{offerMore.title}</h2>
         <div className="offer-more-navigation">
-          <button className={`nav-arrow nav-arrow-left ${!canScrollLeft ? 'nav-arrow-disabled' : ''}`} onClick={scrollLeft}>
+          <button className="nav-arrow nav-arrow-left">
             <svg width="10" height="18" viewBox="0 0 10 18" fill="none">
               <path d="M8 2L2 9L8 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </button>
-          <button className={`nav-arrow nav-arrow-right ${!canScrollRight ? 'nav-arrow-disabled' : ''}`} onClick={scrollRight}>
+          <button className="nav-arrow nav-arrow-right">
             <svg width="10" height="18" viewBox="0 0 10 18" fill="none">
               <path d="M2 2L8 9L2 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </button>
         </div>
       </div>
-      <div className="offer-more-cards" ref={cardsContainerRef}>
+      <div className="offer-more-cards">
         {filteredCards.map((card, index) => (
-          <div 
+          <a 
             key={card.route}
+            href={`/${card.route}`}
             className={`offer-card ${card.hasCorner ? 'offer-card-with-corner' : ''} ${card.hasEnhance ? 'offer-card-with-enhance' : ''} ${card.hasColor ? 'offer-card-with-color' : ''}`} 
-            onClick={() => handleCardClick(card.title)} 
-            style={{ cursor: 'pointer' }}
           >
             {card.hasCorner && (
               <div className="corner-image">
@@ -229,7 +165,7 @@ export default function OfferMore() {
               <h3 className="offer-card-title">{card.title}</h3>
               <p className="offer-card-desc">{card.description}</p>
             </div>
-          </div>
+          </a>
         ))}
       </div>
     </div>

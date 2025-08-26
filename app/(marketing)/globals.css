@@ -68,10 +68,10 @@ body {
 
 .hero-background {
   position: absolute;
-  top: 0;
+  top: -80px;
   left: 0;
   right: 0;
-  height: 100vh;
+  height: calc(100vh + 80px);
   background: url('/marketing/images/background.png');
   background-size: cover, cover;
   background-position: center top, center top;
@@ -103,11 +103,12 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: min(2.5vw, 20px) min(5vw, 40px);
-  background: rgba(255, 255, 255, 0.20);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  padding: min(2vw, 15px) min(5vw, 40px);
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(15px) saturate(100%) brightness(100%);
+  -webkit-backdrop-filter: blur(15px) saturate(100%) brightness(100%);
   /* border-bottom: 1px solid rgba(255, 255, 255, 0.1); */
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1);
   position: fixed;
   top: 0;
   left: 0;
@@ -117,9 +118,10 @@ body {
 
 /* 滚动后固定为黑色并提升可读性 */
 .hero-nav.scrolled {
-  background: rgba(0, 0, 0, 0.92);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.88);
+  backdrop-filter: blur(10px) saturate(100%) brightness(100%);
+  -webkit-backdrop-filter: blur(10px) saturate(100%) brightness(100%);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 /* 滚动后黑底下文字和箭头变白，按钮也适配 */
@@ -137,7 +139,37 @@ body {
   color: white;
 }
 
-/* Logo保持原有颜色（黑色），无需额外样式 */
+/* Logo切换逻辑 */
+.hero-logo {
+  position: relative;
+  height: 40px; /* 确保容器有合适的高度 */
+  width: clamp(80px, 12vw, 140px);
+  margin-top: 15px; /* 向下移动logo */
+}
+
+.logo-default,
+.logo-light {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: opacity 0.3s ease;
+}
+
+.logo-default {
+  opacity: 1;
+}
+
+.logo-light {
+  opacity: 0;
+}
+
+.hero-nav.scrolled .logo-default {
+  opacity: 0;
+}
+
+.hero-nav.scrolled .logo-light {
+  opacity: 1;
+}
 
 .placeholder-image {
   width: 100%;
@@ -479,9 +511,9 @@ body {
 /* 主要内容 */
 .hero-main {
   text-align: center;
-  padding: 100px 20px 20px;
-  min-height: calc(100vh - 160px);
-  margin-top: 200px;
+  padding: calc(var(--hero-nav-height, 75px) + 100px) 20px 20px;
+  min-height: calc(100vh - 80px);
+  margin-top: 0;
 }
 
 /* Homepage centered hero */
@@ -491,6 +523,7 @@ body {
   align-items: center;
   justify-content: center;
   gap: 40px;
+  padding-top: calc(var(--hero-nav-height, 75px) + 60px);
   min-height: calc(100vh - 160px);
 }
 
@@ -1275,7 +1308,7 @@ body {
 
 .testimonial-card-1 {
   top: 20px;
-  left: 50px;
+  left: 80px;
   width: 700px;
   height: 200px;
   background: linear-gradient(90deg, rgba(0, 0, 0, 1) 39%, rgba(255, 255, 255, 1) 100%);
@@ -1287,7 +1320,7 @@ body {
 
 .testimonial-card-2 {
   bottom: 20px;
-  left: 20px;
+  left: 50px;
   width: 700px;
   height: 200px;
   background: linear-gradient(90deg, rgba(255, 255, 255, 1), rgba(0, 0, 0, 1) 40% 100%);
@@ -1299,7 +1332,7 @@ body {
 
 .testimonial-card-3 {
   top: 40px;
-  right: 50px;
+  right: 80px;
   width: 320px;
   height: 400px;
   background: linear-gradient(49deg, rgba(0, 0, 0, 1) 33%, rgba(255, 255, 255, 1) 100%);
@@ -1568,7 +1601,7 @@ body {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 15px;
+    padding: 8px 15px;
     gap: 10px;
   }
   
@@ -1601,7 +1634,7 @@ body {
   }
   
   .hero-main {
-    padding: 50px 10px 40px 10px;
+    padding: calc(var(--hero-nav-height, 60px) + 60px) 10px 40px 10px;
     min-height: auto;
   }
   
@@ -1872,11 +1905,11 @@ body {
   
   .hero-main {
     min-height: auto;
-    padding: 60px 20px 60px 20px;
+    padding: calc(var(--hero-nav-height, 75px) + 90px) 20px 60px 20px;
   }
   
   .hero-nav {
-    padding: 18px 30px;
+    padding: 12px 30px;
   }
   
   .hero-nav-links {
@@ -1950,21 +1983,21 @@ body {
   .testimonial-card-1 {
     width: 360px;
     height: 170px;
-    left: 40px;
+    left: 60px;
     top: 15px;
   }
 
   .testimonial-card-2 {
     width: 360px;
     height: 170px;
-    left: 15px;
+    left: 40px;
     bottom: 15px;
   }
 
   .testimonial-card-3 {
     width: 280px;
     height: 350px;
-    right: 40px;
+    right: 60px;
     top: 35px;
   }
 
@@ -2436,14 +2469,24 @@ body {
 
 .faq-item-wrapper {
   margin-bottom: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.faq-item-wrapper:last-child {
+  border-bottom: none;
 }
 
 .faq-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  width: 100%;
+  background: transparent;
+  border: none;
+  text-align: left;
   padding: 24px 0;
   cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
   transition: opacity 0.3s ease;
 }
 
@@ -2459,23 +2502,21 @@ body {
   margin: 0;
   line-height: 1.366;
   flex: 1;
+  text-align: left;
 }
 
 .faq-toggle {
-  background: none;
-  border: none;
-  color: white;
-  cursor: pointer;
-  padding: 0;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  transition: transform 0.3s ease;
+  margin-top: 2px;
+  flex-shrink: 0;
 }
 
 .faq-arrow {
   width: 18px;
   height: 10px;
+  color: white;
   transition: transform 0.3s ease;
 }
 
@@ -2486,12 +2527,14 @@ body {
 .faq-answer {
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.3s ease, padding 0.3s ease;
-  padding: 0 0 0 0;
+  transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .faq-answer-open {
-  max-height: 200px;
+  max-height: 300px;
+}
+
+.faq-answer-content {
   padding: 0 0 24px 0;
 }
 
