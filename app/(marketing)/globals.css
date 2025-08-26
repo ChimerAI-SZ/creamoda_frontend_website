@@ -1498,6 +1498,7 @@ body {
   height: 100%;
   object-fit: cover;
   border-radius: 24px 24px 0 0;
+  z-index: -1;
 }
 
 .offer-card-content {
@@ -1529,7 +1530,7 @@ body {
   left: -30px;
   width: 120px;
   height: 180px;
-  z-index: 20;
+  z-index: 3;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   border-radius: 12px;
   overflow: hidden;
@@ -1566,7 +1567,7 @@ body {
   height: 80px;
   border-radius: 12px;
   overflow: hidden;
-  z-index: 15;
+  /* z-index: 2; */
   pointer-events: none;
 }
 
@@ -1585,7 +1586,7 @@ body {
   height: 120px; /* 增大高度 */
   border-radius: 16px;
   overflow: hidden;
-  z-index: 15;
+  /* z-index: 2; */
   pointer-events: none;
 }
 

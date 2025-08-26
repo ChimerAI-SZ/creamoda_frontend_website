@@ -1,7 +1,5 @@
-'use client';
-
-import { ImageGrid } from './components/ImageGrid';
-import { Album as AlbumDrawer } from '@/components/Album';
+import { Suspense } from 'react';
+import CommunityClient from './client-page';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -17,11 +15,8 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <div className="flex p-6 pt-[30px] z-0">
-      <main className="flex-1 h-[calc(100vh-110px)] overflow-y-auto bg-transparent">
-        <ImageGrid />
-      </main>
-      <AlbumDrawer />
-    </div>
+    <Suspense fallback={<div>Loading...</div>}>
+      <CommunityClient />
+    </Suspense>
   );
 }
