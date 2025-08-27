@@ -3408,13 +3408,18 @@ body {
   transform: translateY(-5px);
 }
 
-/* 第二张卡片水平翻转 */
+/* 第二张卡片背景翻转，但内容不翻转 */
 .beta-tester-card:nth-child(2) {
   transform: scaleX(-1);
 }
 
 .beta-tester-card:nth-child(2):hover {
   transform: scaleX(-1) translateY(-5px);
+}
+
+/* 第二张卡片内容反向翻转以抵消父元素的翻转效果 */
+.beta-tester-card:nth-child(2) .beta-tester-content {
+  transform: scaleX(-1);
 }
 
 .beta-tester-card::before {
