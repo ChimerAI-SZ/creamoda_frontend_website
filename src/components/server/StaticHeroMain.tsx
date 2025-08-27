@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { ThemeConfig } from '../../types/theme';
+import HeroSliderDrag from '../client/HeroSliderDrag';
 
 interface StaticHeroMainProps {
   theme: ThemeConfig;
@@ -243,30 +244,28 @@ export default function StaticHeroMain({ theme, saasUrl, isHomepage = false }: S
           <div className="fashion-showcase-gallery">
             <div className="fashion-showcase-column">
               <div className="fashion-showcase-item">
-                <Image src="/marketing/images/pubu/six.png" alt="Fashion showcase 1" width={450} height={340} className="fashion-showcase-img" />
+                <Image src="/marketing/images/pubu/ones.png" alt="Fashion showcase 1" width={450} height={340} className="fashion-showcase-img" />
               </div>
               <div className="fashion-showcase-item">
-                <Image src="/marketing/images/pubu/five.png" alt="Fashion showcase 2" width={450} height={470} className="fashion-showcase-img" />
-              </div>
-            </div>
-            <div className="fashion-showcase-column">
-              <div className="fashion-showcase-item">
-                <Image src="/marketing/images/pubu/four.png" alt="Fashion showcase 3" width={450} height={580} className="fashion-showcase-img" />
-              </div>
-              <div className="fashion-showcase-item">
-                <Image src="/marketing/images/pubu/three.png" alt="Fashion showcase 4" width={450} height={410} className="fashion-showcase-img" />
+                <Image src="/marketing/images/pubu/twos.png" alt="Fashion showcase 2" width={450} height={470} className="fashion-showcase-img" />
               </div>
             </div>
             <div className="fashion-showcase-column">
               <div className="fashion-showcase-item">
-                <Image src="/marketing/images/pubu/one.png" alt="Fashion showcase 5" width={450} height={360} className="fashion-showcase-img" />
+                <Image src="/marketing/images/pubu/fours.png" alt="Fashion showcase 3" width={450} height={580} className="fashion-showcase-img" />
+              </div>
+              <div className="fashion-showcase-item">
+                <Image src="/marketing/images/pubu/threes.png" alt="Fashion showcase 4" width={450} height={410} className="fashion-showcase-img" />
+              </div>
+            </div>
+            <div className="fashion-showcase-column">
+              <div className="fashion-showcase-item">
+                <Image src="/marketing/images/pubu/fives.png" alt="Fashion showcase 5" width={450} height={360} className="fashion-showcase-img" />
               </div>
               <div className="fashion-showcase-item fashion-showcase-item-last">
-                <Image src="/marketing/images/pubu/two.png" alt="Fashion showcase 6" width={450} height={530} className="fashion-showcase-img" />
-                <div className="fashion-showcase-caption">
-                  <p>From idea to bestseller in 24 hours</p>
-                </div>
+                <Image src="/marketing/images/pubu/sixes.png" alt="Fashion showcase 6" width={450} height={530} className="fashion-showcase-img" />
               </div>
+              <p className="fashion-showcase-item-caption">From idea to bestseller in 24 hours</p>
             </div>
           </div>
         </section>
@@ -321,6 +320,9 @@ export default function StaticHeroMain({ theme, saasUrl, isHomepage = false }: S
             </Link>
           </div>
         </section>
+        
+        {/* 添加鼠标拖拽滑动功能 */}
+        <HeroSliderDrag />
       </div>
     );
   }

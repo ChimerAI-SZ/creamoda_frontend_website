@@ -630,11 +630,11 @@ body {
 /* 新的独立视觉图（不裁切，覆盖左下区域） */
 .hero-visual {
   position: absolute;
-  left: -300px;
-  bottom: -160px;
+  left: clamp(-400px, -25vw, -300px);
+  bottom: clamp(-200px, -12vw, -160px);
   z-index: 3;
   pointer-events: none;
-  height: 110vh;
+  height: clamp(60vh, 15vw + 80vh, 110vh);
   aspect-ratio: 7 / 9;
 }
 .hero-visual-img {
@@ -689,6 +689,15 @@ body {
   border-radius: 32px;
   font-family: 'Montserrat Alternates SemiBold', system-ui, -apple-system, sans-serif;
   font-weight: 600;
+}
+
+/* 中等屏幕响应式调整 */
+@media (max-width: 1200px) {
+  .hero-visual {
+    height: clamp(70vh, 12vw + 70vh, 95vh);
+    left: clamp(-350px, -22vw, -250px);
+    bottom: clamp(-180px, -10vw, -140px);
+  }
 }
 
 @media (max-width: 900px) {
@@ -974,9 +983,10 @@ body {
   margin-top: 12px;
 }
 
-/* Image Color Changer 卡片的文字往上移动 */
+/* Image Color Changer 卡片的文字往上移动和稍微往左移动 */
 .feature-overview-track .feature-card:nth-child(3) .feature-card-caption {
   margin-top: -4px;
+  transform: translateX(-38px);
 }
 
 @media (min-width: 1024px) {
@@ -2930,7 +2940,7 @@ body {
 
 /* Fashion Showcase Section */
 .fashion-showcase-section {
-  margin: 100px 0 20px 0;
+  margin: 100px 0;
   padding: 0 100px;
   position: relative;
 }
@@ -2956,7 +2966,7 @@ body {
 }
 
 .fashion-showcase-title span + span {
-  margin-top: 0em;
+  margin-bottom: 0em;
 }
 
 .fashion-showcase-gallery {
@@ -3016,20 +3026,35 @@ body {
 }
 
 .fashion-showcase-caption {
-  position: absolute;
-  bottom: 20px;
-  left: 20px;
-  right: 20px;
+  position: static;
+  margin: 12px 0 0 0;
   color: white;
   font-family: 'Avenir Black 3', 'Neue Machina', system-ui, -apple-system, sans-serif;
   font-weight: 600;
   font-size: clamp(16px, 2.5vw, 24px);
   line-height: 1.2;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+  text-align: center;
+  text-shadow: none;
 }
 
 .fashion-showcase-caption p {
   margin: 0;
+}
+
+.fashion-showcase-item-caption {
+  position: static;
+  margin: 8px 0 0 0;
+  color: white;
+  font-family: 'Avenir Black 3', 'Neue Machina', system-ui, -apple-system, sans-serif;
+  font-weight: 600;
+  font-size: clamp(16px, 2.5vw, 22px);
+  line-height: 1.2;
+  text-align: center;
+  text-shadow: none;
+}
+
+.fashion-showcase-item-last {
+  margin-bottom: 60px;
 }
 
 /* 响应式设计 */
@@ -3070,7 +3095,7 @@ body {
   }
   .fashion-showcase-img {
     border-radius: 20px;
-    width: 60%;
+    width: 80%;
     height: auto;
     margin: 0 auto;
     display: block;
@@ -3078,10 +3103,19 @@ body {
 
   /* 移动端文字样式调整 */
   .fashion-showcase-caption {
-    bottom: 10px;
-    left: 10px;
-    right: 10px;
+    margin-top: 8px;
     font-size: clamp(12px, 3.5vw, 16px);
+    text-align: center;
+  }
+
+  .fashion-showcase-item-caption {
+    margin-top: 6px;
+    font-size: clamp(14px, 4vw, 18px);
+    text-align: center;
+  }
+
+  .fashion-showcase-item-last {
+    margin-bottom: 40px;
   }
 }
 
@@ -3100,6 +3134,21 @@ body {
   .fashion-showcase-column:nth-child(2),
   .fashion-showcase-column:nth-child(3) {
     margin-top: 0;
+  }
+
+  /* 小屏幕上的图片和文字调整 */
+  .fashion-showcase-img {
+    width: 90%;
+  }
+
+  .fashion-showcase-item-caption {
+    margin-top: 8px;
+    font-size: clamp(16px, 4.5vw, 20px);
+    padding: 0 20px;
+  }
+
+  .fashion-showcase-item-last {
+    margin-bottom: 30px;
   }
 }
 
