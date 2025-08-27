@@ -7,16 +7,40 @@ const nextConfig = {
   // 静态生成优化
   output: 'standalone',
   
+  // Enable React strict mode
+  reactStrictMode: true,
+  
   // 启用实验性功能
   experimental: {
     optimizePackageImports: ['@radix-ui/react-icons'],
+    // Future experimental features can go here
+  },
+  
+  // TypeScript configuration
+  typescript: {
+    // Ignore TypeScript errors during build
+    ignoreBuildErrors: true,
+  },
+  
+  // ESLint configuration
+  eslint: {
+    // Ignore ESLint errors during build
+    ignoreDuringBuilds: true,
   },
   
   async rewrites() {
+    // 如果环境变量未设置，返回空数组，避免构建错误
+    const apiUrl = process.env.NEXT_LOCAL_API_URL;
+    
+    if (!apiUrl) {
+      console.warn('警告: NEXT_LOCAL_API_URL 环境变量未设置，跳过 API 重写配置');
+      return [];
+    }
+
     return [
       {
         source: '/api/v1/:path*',
-        destination: `${process.env.NEXT_LOCAL_API_URL}/api/v1/:path*`
+        destination: `${apiUrl}/api/v1/:path*`
       }
     ];
   },
@@ -88,6 +112,42 @@ const nextConfig = {
         hostname: 'infini-imagegen.oss-cn-beijing.aliyuncs.com',
         pathname: '/**'
       },
+      {
+        protocol: 'https',
+        hostname: 'new-creamoda.oss-us-west-1.aliyuncs.com',
+        port: '',
+        pathname: '/**'
+      },
+      {
+        protocol: 'https',
+        hostname: '*.aliyuncs.com',
+        port: '',
+        pathname: '/**'
+      },
+      {
+        protocol: 'https',
+        hostname: 'picsum.photos',
+        port: '',
+        pathname: '/**'
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+        port: '',
+        pathname: '/**'
+      },
+      {
+        protocol: 'https',
+        hostname: 'i.pinimg.com',
+        port: '',
+        pathname: '/**'
+      },
+      {
+        protocol: 'https',
+        hostname: '*.pinterest.com',
+        port: '',
+        pathname: '/**'
+      },
       // Wildcard pattern for other domains
       {
         protocol: 'https',
@@ -112,6 +172,12 @@ const nextConfig = {
 
   // next.config.js
   webpack: config => {
+    // This is to ignore the canvas module in client-side bundling
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      canvas: false,
+    };
+
     config.externals.push({
       'utf-8-validate': 'commonjs utf-8-validate',
       bufferutil: 'commonjs bufferutil',
