@@ -219,23 +219,23 @@ export default function ImageDoodleEditor({
 
   // Handle save action
   const handleSave = useCallback(async () => {
-    console.log('🔍 handleSave 开始执行');
-    console.log('maskDataUrl 存在:', !!maskDataUrl);
-    console.log('strokes 长度:', strokes.length);
-    console.log('当前 maskDataUrl:', maskDataUrl?.substring(0, 100) + '...');
+    // console.log('🔍 handleSave 开始执行');
+    // console.log('maskDataUrl 存在:', !!maskDataUrl);
+    // console.log('strokes 长度:', strokes.length);
+    // console.log('当前 maskDataUrl:', maskDataUrl?.substring(0, 100) + '...');
     
     if (maskDataUrl && onSave) {
       try {
         setIsUploading(true);
-        console.log('✅ 开始处理现有的 maskDataUrl');
+        // console.log('✅ 开始处理现有的 maskDataUrl');
         // 创建新Image对象来加载mask数据
         const img = new Image();
         // Add crossOrigin attribute to prevent canvas tainting
         // img.crossOrigin = 'anonymous';
         img.onload = async () => {
-          console.log('✅ Mask图像加载成功');
-          console.log('图像尺寸:', img.width, 'x', img.height);
-          console.log('原始图像尺寸:', originalImageSize);
+          // console.log('✅ Mask图像加载成功');
+          // console.log('图像尺寸:', img.width, 'x', img.height);
+          // console.log('原始图像尺寸:', originalImageSize);
           
           // 使用原始图像尺寸
           const actualWidth = originalImageSize?.width || width;
@@ -284,9 +284,9 @@ export default function ImageDoodleEditor({
                 quality = 0.7;
                 compressedDataUrl = tempCanvas.toDataURL('image/png', quality);
 
-                console.log(
-                  `Mask image resized from ${actualWidth}x${actualHeight} to ${scaledWidth}x${scaledHeight} to stay under 10MB limit`
-                );
+                // console.log(
+                //   `Mask image resized from ${actualWidth}x${actualHeight} to ${scaledWidth}x${scaledHeight} to stay under 10MB limit`
+                // );
               }
 
               // 将 dataURL 转换为 Blob/File 对象以便上传
@@ -310,13 +310,13 @@ export default function ImageDoodleEditor({
                 onSave(compressedDataUrl, strokes, uploadedMaskUrl);
                 setIsUploading(false);
               } catch (error) {
-                console.error('Failed to upload mask image:', error);
+                // console.error('Failed to upload mask image:', error);
                 // 如果上传失败，仍然使用本地数据URL
                 onSave(compressedDataUrl, strokes);
                 setIsUploading(false);
               }
             } catch (error) {
-              console.error('Canvas tainted error:', error);
+              // console.error('Canvas tainted error:', error);
               // 当canvas被污染时，我们仍然可以使用原始maskDataUrl
               onSave(maskDataUrl, strokes);
               setIsUploading(false);
@@ -328,22 +328,22 @@ export default function ImageDoodleEditor({
           }
         };
         img.onerror = () => {
-          console.error('Error loading mask image');
+          // console.error('Error loading mask image');
           // 出错时使用原始数据
           onSave(maskDataUrl, strokes);
           setIsUploading(false);
         };
         img.src = maskDataUrl;
       } catch (error) {
-        console.error('Error processing mask image:', error);
+        // console.error('Error processing mask image:', error);
         // 出错时也尝试使用原始数据
         onSave(maskDataUrl, strokes);
         setIsUploading(false);
       }
     } else if (onSave) {
-      console.log('⚠️ 没有 maskDataUrl，创建全黑 mask');
-      console.log('strokes 长度:', strokes.length);
-      console.log('originalImageSize:', originalImageSize);
+      // console.log('⚠️ 没有 maskDataUrl，创建全黑 mask');
+      // console.log('strokes 长度:', strokes.length);
+      // console.log('originalImageSize:', originalImageSize);
       
       // 即使没有涂鸦，也要调用onSave
       setIsUploading(true);
@@ -421,9 +421,9 @@ export default function ImageDoodleEditor({
 
   // Generate black and white mask image from the canvas drawing
   const generateMaskFromCanvas = useCallback(async () => {
-    console.log('🎨 generateMaskFromCanvas 开始执行');
-    console.log('maskCanvasRef 存在:', !!maskCanvasRef.current);
-    console.log('originalImageSize:', originalImageSize);
+    // console.log('🎨 generateMaskFromCanvas 开始执行');
+    // console.log('maskCanvasRef 存在:', !!maskCanvasRef.current);
+    // console.log('originalImageSize:', originalImageSize);
     
     if (!maskCanvasRef.current) {
       console.log('❌ maskCanvasRef.current 不存在，退出');
@@ -435,18 +435,18 @@ export default function ImageDoodleEditor({
     const actualHeight = originalImageSize?.height || containerHeight;
     
     if (actualWidth <= 0 || actualHeight <= 0) {
-      console.log('❌ 无效的尺寸，退出 generateMaskFromCanvas');
+      // console.log('❌ 无效的尺寸，退出 generateMaskFromCanvas');
       return;
     }
 
     const canvas = maskCanvasRef.current;
     const ctx = canvas.getContext('2d');
     if (!ctx) {
-      console.log('❌ 无法获取 canvas context');
+      // console.log('❌ 无法获取 canvas context');
       return;
     }
 
-    console.log('📏 使用尺寸:', actualWidth, 'x', actualHeight, originalImageSize ? '(原始)' : '(容器)');
+    // console.log('📏 使用尺寸:', actualWidth, 'x', actualHeight, originalImageSize ? '(原始)' : '(容器)');
 
     // 确保canvas尺寸与图像一致
     canvas.width = actualWidth;
@@ -455,7 +455,7 @@ export default function ImageDoodleEditor({
     // Clear canvas and set black background (inverting the colors)
     ctx.fillStyle = '#000000';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    console.log('⚫ 设置黑色背景完成');
+    // console.log('⚫ 设置黑色背景完成');
 
     if (canvasRef.current) {
       try {
@@ -468,10 +468,10 @@ export default function ImageDoodleEditor({
         // Add crossOrigin attribute to prevent canvas tainting
         img.crossOrigin = 'anonymous';
         img.onload = () => {
-          console.log('✅ 导出的图像加载成功');
-          console.log('导出图像尺寸:', img.width, 'x', img.height);
-          console.log('容器尺寸:', containerWidth, 'x', containerHeight);
-          console.log('图片渲染区域:', imageRenderRect);
+          // console.log('✅ 导出的图像加载成功');
+          // console.log('导出图像尺寸:', img.width, 'x', img.height);
+          // console.log('容器尺寸:', containerWidth, 'x', containerHeight);
+          // console.log('图片渲染区域:', imageRenderRect);
           
           // 创建两个临时canvas:
           // 1. 用于处理原始绘画
@@ -491,9 +491,9 @@ export default function ImageDoodleEditor({
             tempDrawingCtx.drawImage(img, 0, 0, containerWidth, containerHeight);
 
             // 记录调试信息
-            console.log('Canvas尺寸:', containerWidth, 'x', containerHeight);
-            console.log('图片渲染区域:', imageRenderRect);
-            console.log('目标尺寸:', actualWidth, 'x', actualHeight);
+            // console.log('Canvas尺寸:', containerWidth, 'x', containerHeight);
+            // console.log('图片渲染区域:', imageRenderRect);
+            // console.log('目标尺寸:', actualWidth, 'x', actualHeight);
 
             // 步骤2: 计算正确的映射
             // 如果没有原始图像尺寸，使用整个画布区域
@@ -526,13 +526,13 @@ export default function ImageDoodleEditor({
               actualHeight // 目标尺寸
             );
             
-            console.log('🖼️ 图像映射完成');
+            // console.log('🖼️ 图像映射完成');
 
             // 步骤3: 获取图像数据并转换为黑白
             const imgData = tempMaskCtx.getImageData(0, 0, actualWidth, actualHeight);
             const data = imgData.data;
             
-            console.log('📊 开始处理像素数据，总像素数:', data.length / 4);
+            // console.log('📊 开始处理像素数据，总像素数:', data.length / 4);
             
             let whitePixelCount = 0;
             
@@ -558,9 +558,9 @@ export default function ImageDoodleEditor({
               }
             }
             
-            console.log('🎨 像素处理完成');
-            console.log('白色像素数量:', whitePixelCount);
-            console.log('白色像素占比:', ((whitePixelCount / totalPixelCount) * 100).toFixed(2) + '%');
+            // console.log('🎨 像素处理完成');
+            // console.log('白色像素数量:', whitePixelCount);
+            // console.log('白色像素占比:', ((whitePixelCount / totalPixelCount) * 100).toFixed(2) + '%');
             
             if (whitePixelCount === 0) {
               console.warn('⚠️ 警告：没有检测到任何绘画内容，mask将是全黑的');
@@ -575,8 +575,8 @@ export default function ImageDoodleEditor({
             try {
               // 步骤6: 保存mask图像数据
               const finalMaskUrl = canvas.toDataURL('image/png');
-              console.log('💾 Mask生成成功，长度:', finalMaskUrl.length);
-              console.log('Mask URL 前缀:', finalMaskUrl.substring(0, 50) + '...');
+              // console.log('💾 Mask生成成功，长度:', finalMaskUrl.length);
+              // console.log('Mask URL 前缀:', finalMaskUrl.substring(0, 50) + '...');
               setMaskDataUrl(finalMaskUrl);
             } catch (error) {
               console.error('Canvas tainted error in mask generation:', error);
@@ -670,8 +670,8 @@ export default function ImageDoodleEditor({
       img.crossOrigin = 'anonymous';
       img.src = imageUrl;
       img.onload = () => {
-        console.log('✅ 背景图片加载成功');
-        console.log('图片自然尺寸:', img.naturalWidth, 'x', img.naturalHeight);
+        // console.log('✅ 背景图片加载成功');
+        // console.log('图片自然尺寸:', img.naturalWidth, 'x', img.naturalHeight);
         
         backgroundImgRef.current = img;
 
@@ -680,7 +680,7 @@ export default function ImageDoodleEditor({
           width: img.naturalWidth,
           height: img.naturalHeight
         };
-        console.log('💾 设置 originalImageSize:', originalSize);
+        // console.log('💾 设置 originalImageSize:', originalSize);
         setOriginalImageSize(originalSize);
 
         // 计算图片的渲染尺寸和位置
