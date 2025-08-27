@@ -18,7 +18,7 @@ export const themes: Record<string, ThemeConfig> = {
       ]
     },
     fusionGuide: {
-      title: 'How to Remove Image Background in One Step?',
+      title: 'How to Remove Image<br/>Background in One Step?',
       cards: [
         {
           icon: '/marketing/images/feature/picture.png',
@@ -142,7 +142,7 @@ export const themes: Record<string, ThemeConfig> = {
       ]
     },
     fusionGuide: {
-      title: 'How to Change Image Background Using AI?',
+      title: 'How to Change Image<br/>Background Using AI?',
       cards: [
         {
           icon: '/marketing/images/feature/picture.png',
@@ -266,7 +266,7 @@ export const themes: Record<string, ThemeConfig> = {
       ]
     },
     fusionGuide: {
-      title: 'How to Upscale Images Without Any Quality Loss?',
+      title: 'How to Upscale Images Without<br/>Any Quality Loss?',
       cards: [
         {
           icon: '/marketing/images/feature/picture.png',
@@ -515,7 +515,7 @@ export const themes: Record<string, ThemeConfig> = {
       ]
     },
     fusionGuide: {
-      title: 'How to Generate Model Try-on Images From Apparel?',
+      title: 'How to Generate Model Try-on<br/>Images From Apparel?',
       cards: [
         {
           icon: '/marketing/images/feature/picture.png',
@@ -764,7 +764,7 @@ export const themes: Record<string, ThemeConfig> = {
       ]
     },
     fusionGuide: {
-      title: 'How to Tranfrom Sketch Images to Real Design?',
+      title: 'How to Tranfrom Sketch Images<br/>to Real Design?',
       cards: [
         {
           icon: '/marketing/images/feature/picture.png',
@@ -888,7 +888,7 @@ export const themes: Record<string, ThemeConfig> = {
       ]
     },
     fusionGuide: {
-      title: 'How to Change Images Easily With One Click?',
+      title: 'How to Change Images Easily<br/>With One Click?',
       cards: [
         {
           icon: '/marketing/images/feature/picture.png',

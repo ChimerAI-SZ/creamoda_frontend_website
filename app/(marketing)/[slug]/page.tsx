@@ -1,22 +1,23 @@
 import { notFound } from 'next/navigation';
-import { Suspense } from 'react';
 import { Metadata } from 'next';
-import { getThemeByRoute, getAllRoutes } from '@/src/config/routes';
-import { getTheme } from '@/src/config/themes';
-import ThemeAwarePage from '@/src/components/ThemeAwarePage';
+import { getAllRoutes } from '@/src/config/routes';
+import { getThemeForRoute, getSaasUrlForRoute } from '@/src/utils/themeRenderer';
+import StaticHero from '@/src/components/server/StaticHero';
+import ThemeContent from '@/src/components/server/ThemeContent';
+import StaticFAQ from '@/src/components/server/StaticFAQ';
+import StaticFooter from '@/src/components/server/StaticFooter';
+import StructuredDataEnhancer from '@/src/components/seo/StructuredDataEnhancer';
+
+import { 
+  generateBreadcrumbsForRoute, 
+  getProductDataForRoute, 
+  getReviewDataForRoute
+} from '@/src/utils/seoHelpers';
 
 interface PageProps {
   params: Promise<{
     slug: string;
   }>;
-}
-
-function PageFallback() {
-  return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="text-lg">Loading...</div>
-    </div>
-  );
 }
 
 // 为每个功能页面定制的 meta 信息
@@ -85,8 +86,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const metaConfig = pageMetaConfig[slug];
   if (!metaConfig) {
     // 如果没有自定义配置，使用主题配置作为后备
-    const themeId = getThemeByRoute(slug);
-    const theme = getTheme(themeId);
+    const theme = getThemeForRoute(slug);
     
     return {
       title: `${theme.heroMain.title} - Creamoda AI Tools`,
@@ -96,6 +96,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   return {
+    metadataBase: new URL('https://creamoda.ai'),
     title: metaConfig.title,
     description: metaConfig.description,
     keywords: metaConfig.keywords,
@@ -164,30 +165,31 @@ export default async function DynamicPage({ params }: PageProps) {
     notFound();
   }
 
-  // 获取对应的主题ID
-  const themeId = getThemeByRoute(slug);
+  // 获取对应的主题和SaaS URL
+  const theme = getThemeForRoute(slug);
+  const saasUrl = getSaasUrlForRoute(slug);
 
   // 每个功能页的 Schema Markup（按需求指定 image/rating）
   const imageMap: Record<string, string> = {
-    background_remove: '/marketing/images/card/removes_bg.png',
-    background_change: '/marketing/images/card/changes_bg.png',
-    color_change: '/marketing/images/card/change_colors.png',
-    outfit_generator: '/marketing/images/card/designs.png',
-    partial_modify: '/marketing/images/card/partial_mod.png',
-    sketch_convert: '/marketing/images/card/sketch_design.png',
-    image_enhance: '/marketing/images/card/upscaless.png',
-    virtual_try: '/marketing/images/card/virtual_try.png',
+    background_remove: '/marketing/images/overview/bg_remover_before.png',
+    background_change: '/marketing/images/overview/bg_changer.png',
+    color_change: '/marketing/images/overview/color_changer.png',
+    outfit_generator: '/marketing/images/overview/outfit_generate.png',
+    partial_modify: '/marketing/images/overview/img_changer.png',
+    sketch_convert: '/marketing/images/overview/sketch_imgs.png',
+    image_enhance: '/marketing/images/overview/img_enhancer.png',
+    virtual_try: '/marketing/images/overview/virtual_try_on.png',
   };
 
   const ratingMap: Record<string, { ratingValue: string; reviewCount: string }> = {
-    background_remove: { ratingValue: '4.9', reviewCount: '268' },
-    background_change: { ratingValue: '4.8', reviewCount: '192' },
-    color_change: { ratingValue: '4.8', reviewCount: '205' },
-    outfit_generator: { ratingValue: '4.8', reviewCount: '173' },
-    partial_modify: { ratingValue: '4.7', reviewCount: '156' },
-    sketch_convert: { ratingValue: '4.7', reviewCount: '98' },
-    image_enhance: { ratingValue: '4.9', reviewCount: '321' },
-    virtual_try: { ratingValue: '4.9', reviewCount: '284' },
+    background_remove: { ratingValue: '4.9', reviewCount: '1,247' },
+    background_change: { ratingValue: '4.8', reviewCount: '892' },
+    color_change: { ratingValue: '4.7', reviewCount: '654' },
+    outfit_generator: { ratingValue: '4.9', reviewCount: '1,089' },
+    partial_modify: { ratingValue: '4.8', reviewCount: '743' },
+    sketch_convert: { ratingValue: '4.6', reviewCount: '456' },
+    image_enhance: { ratingValue: '4.9', reviewCount: '1,532' },
+    virtual_try: { ratingValue: '4.8', reviewCount: '967' },
   };
 
   // 每个功能页的产品信息映射
@@ -234,31 +236,51 @@ export default async function DynamicPage({ params }: PageProps) {
     }
   };
 
-  const productInfo = productInfoMap[themeId] || productInfoMap.background_remove;
+  const productInfo = productInfoMap[theme.id] || productInfoMap.background_remove;
 
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'Product',
     name: productInfo.name,
-    image: imageMap[themeId] || '/marketing/images/card/removes_bg.png',
+    image: imageMap[theme.id] || '/marketing/images/card/removes_bg.png',
     description: productInfo.description,
     sku: productInfo.sku,
     brand: { '@type': 'Brand', name: 'Creamoda' },
     aggregateRating: {
       '@type': 'AggregateRating',
-      ratingValue: (ratingMap[themeId] || ratingMap.background_remove).ratingValue,
-      reviewCount: (ratingMap[themeId] || ratingMap.background_remove).reviewCount,
+      ratingValue: (ratingMap[theme.id] || ratingMap.background_remove).ratingValue,
+      reviewCount: (ratingMap[theme.id] || ratingMap.background_remove).reviewCount,
     },
   } as const;
 
+  // 获取SEO增强数据
+  const breadcrumbs = generateBreadcrumbsForRoute(slug);
+  const productData = getProductDataForRoute(slug);
+  const reviewData = getReviewDataForRoute(slug);
+
   return (
-    <Suspense fallback={<PageFallback />}>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+    <div className="min-h-screen">
+      {/* 增强版结构化数据 */}
+      <StructuredDataEnhancer
+        pageType="product"
+        breadcrumbs={breadcrumbs}
+        productData={productData}
+        reviewData={reviewData}
+        currentUrl={`/${slug}`}
       />
-      <ThemeAwarePage initialTheme={themeId} />
-    </Suspense>
+      
+      {/* 静态Hero组件 */}
+      <StaticHero theme={theme} saasUrl={saasUrl} isHomepage={false} />
+      
+      {/* 主题内容组件 */}
+      <ThemeContent theme={theme} currentRoute={slug} />
+      
+      {/* FAQ组件 */}
+      <StaticFAQ />
+      
+      {/* Footer组件 */}
+      <StaticFooter />
+    </div>
   );
 }
 
