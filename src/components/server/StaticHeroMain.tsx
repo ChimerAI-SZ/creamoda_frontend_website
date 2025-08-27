@@ -261,8 +261,11 @@ export default function StaticHeroMain({ theme, saasUrl, isHomepage = false }: S
               <div className="fashion-showcase-item">
                 <Image src="/marketing/images/pubu/one.png" alt="Fashion showcase 5" width={450} height={360} className="fashion-showcase-img" />
               </div>
-              <div className="fashion-showcase-item">
+              <div className="fashion-showcase-item fashion-showcase-item-last">
                 <Image src="/marketing/images/pubu/two.png" alt="Fashion showcase 6" width={450} height={530} className="fashion-showcase-img" />
+                <div className="fashion-showcase-caption">
+                  <p>From idea to bestseller in 24 hours</p>
+                </div>
               </div>
             </div>
           </div>
@@ -362,7 +365,9 @@ export default function StaticHeroMain({ theme, saasUrl, isHomepage = false }: S
           </div>
           
           <div className="demo-suggestions">
-            <p>No image? Try one of these:</p>
+            <p>
+
+No image? Try one of these:</p>
             <div className="demo-thumbnails">
               {heroMain.demoImages.map((imageSrc, index) => (
                 <div key={index} className="demo-thumb">
