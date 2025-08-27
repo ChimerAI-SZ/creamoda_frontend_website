@@ -667,6 +667,15 @@ body {
   line-height: 1.05;
 }
 
+.homepage-hero-cards .hero-title span {
+  display: block;
+  line-height: 0.95;
+}
+
+.homepage-hero-cards .hero-title span + span {
+  margin-top: -0.1em;
+}
+
 .homepage-hero-cards .hero-subtitle {
   margin: 4px 0 24px 0;
 }

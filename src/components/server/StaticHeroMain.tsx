@@ -138,9 +138,9 @@ export default function StaticHeroMain({ theme, saasUrl, isHomepage = false }: S
               { href: '/image-color-changer', img: '/marketing/images/overview/color_changer.png', title: 'Image Color Changer' },
               { href: '/image-changer', img: '/marketing/images/overview/img_changer.png', title: 'AI Image Changer' },
               { href: '/image-enhancer', img: '/marketing/images/overview/img_enhancer.png', title: 'Image Enhancer' },
-              { href: '/outfit-generator', img: '/marketing/images/overview/outfit_generate.png', title: 'Outfit Generator' },
-              { href: '/sketch-to-image', img: '/marketing/images/overview/sketch_imgs.png', title: 'Sketch to Image' },
-              { href: '/virtual-try-on', img: '/marketing/images/overview/virtual_try_on.png', title: 'Virtual Try-on' },
+              { href: '/outfit-generator', img: '/marketing/images/overview/outfit_generate.png', title: 'AI Outfit Generator' },
+              { href: '/sketch-to-image', img: '/marketing/images/overview/sketch_imgs.png', title: 'AI Sketch to Image Converter' },
+              { href: '/virtual-try-on', img: '/marketing/images/overview/virtual_try_on.png', title: 'AI Virtual Try-On' },
             ].map((card, index) => (
               <div key={card.href} className={`feature-card ${index === 0 ? 'feature-card-remover' : ''}`}>
                 <Link href={card.href} className="feature-card-link">
@@ -314,7 +314,7 @@ export default function StaticHeroMain({ theme, saasUrl, isHomepage = false }: S
               rel="noopener noreferrer"
               className="homepage-cta-button"
             >
-              Create Now
+              Design Now
             </Link>
           </div>
         </section>

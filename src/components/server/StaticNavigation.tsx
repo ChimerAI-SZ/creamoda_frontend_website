@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 
 interface StaticNavigationProps {
   currentSaasUrl?: string;
@@ -7,7 +8,7 @@ interface StaticNavigationProps {
 export default function StaticNavigation({ currentSaasUrl = 'https://create.creamoda.ai/' }: StaticNavigationProps) {
   return (
     <nav className="hero-nav">
-      <div className="hero-logo">
+      <Link href="/" className="hero-logo">
         <Image
           src="/marketing/images/logo.png"
           alt="CREAMODA"
@@ -22,7 +23,7 @@ export default function StaticNavigation({ currentSaasUrl = 'https://create.crea
           height={45}
           className="logo-image logo-light"
         />
-      </div>
+      </Link>
       
       <div className="hero-nav-links">
         {/* Fashion Design 静态导航 */}
