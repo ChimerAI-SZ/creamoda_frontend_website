@@ -15,32 +15,66 @@ export default function StaticHeroMain({ theme, saasUrl, isHomepage = false }: S
   if (isHomepage) {
     return (
       <div className="hero-main homepage-hero-center">
-        <div className="homepage-hero-logo">
-          <Image
-            src="/marketing/images/hero/official_hero.svg"
-            alt="CREAMODA"
-            width={900}
-            height={280}
-            className="homepage-hero-logo-img"
-          />
-        </div>
-        <div className="homepage-tagline">
-          <p>Reimagine Fashion with All-in-One</p>
-          <p>AI-powered Solution</p>
-        </div>
-        <div className="homepage-cta">
-          <Link
-            href="https://create.creamoda.ai/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="homepage-cta-button"
-          >
-            Create Now
-          </Link>
+        <div className="homepage-hero-cards" aria-label="homepage-hero-cards">
+          <div className="hero-card hero-card-top">
+            <div className="hero-card-content">
+              <h1 className="hero-title">
+                <span>From Idea to Bestseller</span>
+                <span>in 24 Hours</span>
+              </h1>
+              <div className="hero-subtitle">
+                <p className="subtitle-main">Reimagine Fashion with All-in-One AI-powered Solution</p>
+              </div>
+              <div>
+                <Link
+                  href="https://create.creamoda.ai/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="upload-demo-btn"
+                >
+                  Design Now
+                </Link>
+              </div>
+            </div>
+          </div>
+          <div className="hero-visual" aria-hidden="true">
+            <Image
+              src="/marketing/images/hero/official_hero/official_girl.png"
+              alt="Fashion girl"
+              fill
+              quality={100}
+              priority
+              className="hero-visual-img"
+            />
+          </div>
+          <div className="hero-card hero-card-bottom-right">
+            <div className="hero-slider" aria-label="official-hero-slider">
+              {[
+                'one.png',
+                'two.png',
+                'three.png',
+                'four.png',
+                'five.png',
+                'six.png',
+                'seven.png',
+              ].map((name) => (
+                <div key={name} className="hero-slide">
+                  <Image
+                    src={`/marketing/images/hero/official_hero/${name}`}
+                    alt={`official hero ${name}`}
+                    fill
+                    sizes="(max-width: 900px) 200px, 240px"
+                    quality={100}
+                    className="hero-slide-image"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* Stacked Cards Section */}
-        <section className="stacked-cards-section">
+        {/* <section className="stacked-cards-section">
           <div className="stacked-cards-container">
             <div className="stacked-card stacked-card-1">
               <Image 
@@ -89,7 +123,7 @@ export default function StaticHeroMain({ theme, saasUrl, isHomepage = false }: S
             </div>
           </div>
           <p className="stacked-cards-caption">From idea to bestseller in 24 hours</p>
-        </section>
+        </section> */}
         
         {/* Feature Overview */}
         <section className="feature-overview-section">
