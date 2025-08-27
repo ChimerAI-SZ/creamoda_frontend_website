@@ -171,25 +171,25 @@ export default async function DynamicPage({ params }: PageProps) {
 
   // 每个功能页的 Schema Markup（按需求指定 image/rating）
   const imageMap: Record<string, string> = {
-    background_remove: '/marketing/images/card/removes_bg.png',
-    background_change: '/marketing/images/card/changes_bg.png',
-    color_change: '/marketing/images/card/change_colors.png',
-    outfit_generator: '/marketing/images/card/designs.png',
-    partial_modify: '/marketing/images/card/partial_mod.png',
-    sketch_convert: '/marketing/images/card/sketch_design.png',
-    image_enhance: '/marketing/images/card/upscaless.png',
-    virtual_try: '/marketing/images/card/virtual_try.png',
+    background_remove: '/marketing/images/overview/bg_remover_before.png',
+    background_change: '/marketing/images/overview/bg_changer.png',
+    color_change: '/marketing/images/overview/color_changer.png',
+    outfit_generator: '/marketing/images/overview/outfit_generate.png',
+    partial_modify: '/marketing/images/overview/img_changer.png',
+    sketch_convert: '/marketing/images/overview/sketch_imgs.png',
+    image_enhance: '/marketing/images/overview/img_enhancer.png',
+    virtual_try: '/marketing/images/overview/virtual_try_on.png',
   };
 
   const ratingMap: Record<string, { ratingValue: string; reviewCount: string }> = {
-    background_remove: { ratingValue: '4.9', reviewCount: '268' },
-    background_change: { ratingValue: '4.8', reviewCount: '192' },
-    color_change: { ratingValue: '4.8', reviewCount: '205' },
-    outfit_generator: { ratingValue: '4.8', reviewCount: '173' },
-    partial_modify: { ratingValue: '4.7', reviewCount: '156' },
-    sketch_convert: { ratingValue: '4.7', reviewCount: '98' },
-    image_enhance: { ratingValue: '4.9', reviewCount: '321' },
-    virtual_try: { ratingValue: '4.9', reviewCount: '284' },
+    background_remove: { ratingValue: '4.9', reviewCount: '1,247' },
+    background_change: { ratingValue: '4.8', reviewCount: '892' },
+    color_change: { ratingValue: '4.7', reviewCount: '654' },
+    outfit_generator: { ratingValue: '4.9', reviewCount: '1,089' },
+    partial_modify: { ratingValue: '4.8', reviewCount: '743' },
+    sketch_convert: { ratingValue: '4.6', reviewCount: '456' },
+    image_enhance: { ratingValue: '4.9', reviewCount: '1,532' },
+    virtual_try: { ratingValue: '4.8', reviewCount: '967' },
   };
 
   // 每个功能页的产品信息映射

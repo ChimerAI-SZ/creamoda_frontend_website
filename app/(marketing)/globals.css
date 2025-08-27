@@ -1202,7 +1202,7 @@ body {
   .feature-overview-track .feature-card:first-child { scroll-margin-left: 84px; }
   .feature-overview-track .feature-card:nth-child(3) { flex-basis: 66vw; max-width: 66vw; transform: translateY(-4px); }
   .feature-overview-track .feature-card:nth-last-child(2) { flex-basis: 62vw; max-width: 62vw; transform: none; }
-  .feature-overlay { left: -16px; top: -16px; width: 56%; }
+  .feature-overlay { left: -12px; top: -12px; width: 42%; }
   .circle-deco-left { width: 90px; height: 90px; margin-left: 72px; }
 }
 @media (max-width: 900px) {
