@@ -171,14 +171,14 @@ export default async function DynamicPage({ params }: PageProps) {
 
   // 每个功能页的 Schema Markup（按需求指定 image/rating）
   const imageMap: Record<string, string> = {
-    background_remove: '/marketing/images/overview/bg_remover_beforess.png',
-    background_change: '/marketing/images/overview/bg_changers.png',
-    color_change: '/marketing/images/overview/color_changers.png',
-    outfit_generator: '/marketing/images/overview/outfit_generates.png',
-    partial_modify: '/marketing/images/overview/img_changers.png',
-    sketch_convert: '/marketing/images/overview/sketch_imges.png',
-    image_enhance: '/marketing/images/overview/img_enhancers.png',
-    virtual_try: '/marketing/images/overview/virtual_try_ons.png',
+    background_remove: '/marketing/images/overview/bg_remover_before.png',
+    background_change: '/marketing/images/overview/bg_changer.png',
+    color_change: '/marketing/images/overview/color_changer.png',
+    outfit_generator: '/marketing/images/overview/outfit_generate.png',
+    partial_modify: '/marketing/images/overview/img_changer.png',
+    sketch_convert: '/marketing/images/overview/sketch_imgs.png',
+    image_enhance: '/marketing/images/overview/img_enhancer.png',
+    virtual_try: '/marketing/images/overview/virtual_try_on.png',
   };
 
   const ratingMap: Record<string, { ratingValue: string; reviewCount: string }> = {
