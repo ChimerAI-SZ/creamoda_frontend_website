@@ -5,7 +5,7 @@ export const themes: Record<string, ThemeConfig> = {
     id: 'background_remove',
     name: 'AI背景移除',
     heroMain: {
-      title: 'AI Background Remover',
+      title: 'Image Background Remover',
       subtitle: 'One-click professional background removal powered by AI - get pixel-perfect results in seconds.',
       mainImage: '/marketing/images/hero/background_remover/remove_backgrounds.png',
       uploadText: 'Try Now',
@@ -103,7 +103,7 @@ export const themes: Record<string, ThemeConfig> = {
       items: [
         {
           question: 'Is the background remover free to use?',
-          answer: "Every new user gets 5 free credits to explore Creamoda's AI tools. Each feature, like AI Background Remover, uses credits — and you can easily buy more in flexible packages to keep creating without limits."
+          answer: "Every new user gets 5 free credits to explore Creamoda's AI tools. Each feature, like Image Background Remover, uses credits — and you can easily buy more in flexible packages to keep creating without limits."
         },
         {
           question: 'Will the processed images be stored in my account?',
@@ -115,7 +115,7 @@ export const themes: Record<string, ThemeConfig> = {
         },
         {
           question: 'Can I customize the background after removal (e.g., change colors)?',
-          answer: 'Yes — while background removal exports only transparent PNG or white backgrounds, you can use our AI Background Changer tool to add any color, image, or custom design you want.'
+          answer: 'Yes — while background removal exports only transparent PNG or white backgrounds, you can use our Image Background Changer tool to add any color, image, or custom design you want.'
         },
         {
           question: 'How long does the background remover take to process an image?',
@@ -999,7 +999,7 @@ export const themes: Record<string, ThemeConfig> = {
     id: 'free_nano_banana',
     name: 'AI纳米香蕉设计器',
     heroMain: {
-      title: 'Free Nano Banana Generator',
+      title: 'Free Nano-Banana Generator',
       subtitle: 'Discover Google’s Gemini 2.5 Flash Image, and see how it powers next-generation fashion design.',
       mainImage: '/marketing/images/hero/banana/banana.png',
       uploadText: 'Try Now',
@@ -1032,7 +1032,7 @@ export const themes: Record<string, ThemeConfig> = {
       ]
     },
     whyChoose: {
-      title: 'Why Choose Our Nano Banana Tech?',
+      title: 'Why Choose Creamoda?',
       cards: [
         {
           title: 'Seamless Integration',
@@ -1049,7 +1049,7 @@ export const themes: Record<string, ThemeConfig> = {
       ]
     },
     offerMore: {
-      title: 'Complete Nano Design Suite',
+      title: 'We Offer More',
       cards: [
         {
           image: '/images/card/remove_bg.png',

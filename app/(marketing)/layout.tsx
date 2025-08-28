@@ -16,8 +16,8 @@ export default function RootLayout({
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    'name': 'Creamoda AI Tools',
-    'description': 'AI-Powered Fashion Design Platform with comprehensive tools for fashion creation',
+    'name': 'Creamoda | AI-Powered Fashion Design Platform',
+    'description': 'Reimagine Fashion with All-in-One AI-powered Solution. Create, design, and transform fashion with our comprehensive AI tools: background removal, virtual try-on, outfit generation, and more.',
     'url': 'https://creamoda.ai',
     'potentialAction': {
       '@type': 'SearchAction',

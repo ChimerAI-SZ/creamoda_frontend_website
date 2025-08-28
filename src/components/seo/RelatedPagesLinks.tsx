@@ -24,14 +24,14 @@ export default function RelatedPagesLinks({
   // 所有页面的配置
   const allPages: RelatedPage[] = [
     {
-      title: 'AI Background Remover',
+      title: 'Image Background Remover',
       description: 'Remove backgrounds from images instantly with AI',
       url: '/image-background-remover',
       image: '/marketing/images/card/removes_bg.png',
       category: 'Image Tools'
     },
     {
-      title: 'AI Background Changer',
+      title: 'Image Background Changer',
       description: 'Change image backgrounds with AI precision',
       url: '/image-background-changer', 
       image: '/marketing/images/card/changes_bg.png',
