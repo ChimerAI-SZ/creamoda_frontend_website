@@ -14,6 +14,7 @@ export function useExternalImageHandler() {
       const urlObj = new URL(url);
       // 检查是否为外部域名（非后端OSS域名）
       const hostname = urlObj.hostname;
+      console.log('检查URL hostname:', hostname);
       
       // 如果包含以下域名，认为是外部URL
       const externalDomains = [
@@ -30,22 +31,29 @@ export function useExternalImageHandler() {
         'aliyuncs.com',
         'oss-',
         'cos.ap-', // 腾讯云
-        'imgproxy.creamoda.ai' // 我们的图片代理
+        'imgproxy.creamoda.ai', // 我们的图片代理
+        'creamoda.ai' // 我们的主域名（会匹配 www.creamoda.ai 和 creamoda.ai）
       ];
       
+      // 如果是localhost或IP地址，认为是内部
+      if (hostname === 'localhost' || hostname === '127.0.0.1' || /^\d+\.\d+\.\d+\.\d+$/.test(hostname)) {
+        return false;
+      }
+      
       // 先检查是否为内部域名
-      if (internalDomains.some(domain => hostname.includes(domain))) {
+      const isInternalMatch = internalDomains.some(domain => {
+        const matches = hostname.includes(domain);
+        console.log(`检查内部域名 '${domain}' 是否匹配 '${hostname}':`, matches);
+        return matches;
+      });
+      if (isInternalMatch) {
+        console.log('识别为内部URL');
         return false;
       }
       
       // 再检查是否为外部域名
       if (externalDomains.some(domain => hostname.includes(domain))) {
         return true;
-      }
-      
-      // 如果是localhost或IP地址，认为是内部
-      if (hostname === 'localhost' || hostname === '127.0.0.1' || /^\d+\.\d+\.\d+\.\d+$/.test(hostname)) {
-        return false;
       }
       
       // 其他情况默认认为是外部URL
@@ -100,10 +108,15 @@ export function useExternalImageHandler() {
 
   // 处理图片URL，如果是外部URL则重新上传
   const processImageUrl = useCallback(async (imageUrl: string): Promise<string> => {
-    if (isExternalUrl(imageUrl)) {
+    console.log('processImageUrl 收到URL:', imageUrl);
+    const isExternal = isExternalUrl(imageUrl);
+    console.log('isExternalUrl 判断结果:', isExternal);
+    
+    if (isExternal) {
       console.log('检测到外部URL，正在处理...');
       return await downloadAndReuploadImage(imageUrl);
     } else {
+      console.log('检测到内部URL，直接使用');
       return imageUrl;
     }
   }, [isExternalUrl, downloadAndReuploadImage]);

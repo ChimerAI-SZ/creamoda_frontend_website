@@ -603,6 +603,7 @@ body {
 }
 
 .hero-slide-image {
+  border-radius: 16px;
   object-fit: contain;
   object-position: center;
 }
@@ -755,9 +756,22 @@ body {
     margin-left: 0;
     margin-right: 0;
     margin-top: 16px; /* 避免与上方按钮重叠 */
+    width: 100%;
+  }
+
+  /* 移动端：清除左侧卡片的负外边距，避免覆盖右侧滑动区 */
+  .hero-card-bottom-left {
+    margin-top: 0;
+    margin-left: 0;
+    z-index: 1;
+  }
+  /* 确保右侧滑动卡片在上层，便于触摸滚动 */
+  .hero-card-bottom-right {
+    z-index: 2;
   }
 
   .hero-visual {
+    display: none !important; /* 移动端隐藏独立视觉图 */
     transform: translateX(-100%); /* 小屏幕更往左偏移 */
     bottom: 10px; /* 继续往上移动 */
     height: 60vh;
@@ -769,9 +783,9 @@ body {
   }
 
   /* 移动端滑动卡片略小，避免溢出 */
-  .hero-slider { gap: 0; padding: 12px; }
-  .hero-slide { width: 200px; height: 280px; }
-  .hero-slide + .hero-slide { margin-left: -16px; }
+  .hero-slider { gap: 0; padding: 12px; -webkit-overflow-scrolling: touch; overflow-x: auto; touch-action: pan-x; scroll-snap-type: x proximity; }
+  .hero-slide { width: 100px; height: 280px; }
+  .hero-slide + .hero-slide { margin-left: 8px; }
 
   /* 移动端 logo 往下移动 */
   .hero-logo {
@@ -794,6 +808,52 @@ body {
     max-height: 320px;
     bottom: 20px; /* 继续往上移动 */
   }
+}
+
+/* 小视窗高度下：缩小滑动图片并确保圆角不丢失 */
+@media (max-height: 600px) {
+  /* 矮屏：同样避免左卡覆盖右卡 */
+  .hero-card-bottom-left {
+    margin-top: 0;
+    margin-left: 0;
+    z-index: 1;
+  }
+  .hero-card-bottom-right {
+    z-index: 2;
+  }
+  .hero-slider { -webkit-overflow-scrolling: touch; overflow-x: auto; }
+  .hero-slide-image {
+    width: auto !important;
+    height: auto !important;
+    max-width: 70% !important;
+    max-height: 60% !important;
+    margin: auto !important; /* 居中 */
+    border-radius: 16px; /* 强制保留圆角 */
+  }
+  /* 缩窄滑动区域与卡片，避免小分辨率下过宽 */
+  .hero-card-bottom-right {
+    margin-left: 0;
+    margin-right: 0;
+    width: 100%;
+    margin-top: 16px;
+  }
+  .hero-slider { 
+    padding: 12px; 
+    touch-action: pan-x; 
+    scroll-snap-type: x proximity; 
+  }
+  .hero-slide { 
+    width: 120px; 
+    height: 260px; 
+  }
+  .hero-slide + .hero-slide { 
+    margin-left: 8px; 
+  }
+}
+
+/* 更矮的视窗才隐藏独立视觉图，避免 1024x600 被误伤 */
+@media (max-height: 560px) {
+  .hero-visual { display: none !important; }
 }
 
 .homepage-hero-logo-img {

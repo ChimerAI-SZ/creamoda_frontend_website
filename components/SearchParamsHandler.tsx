@@ -46,10 +46,26 @@ export function SearchParamsHandler({
       if (imageUrl && onImageUrl) {
         const decodedUrl = decodeURIComponent(imageUrl);
         console.log('接收到图片URL:', decodedUrl);
+        console.log('=== SearchParamsHandler 新版本代码已生效 ===');
         
-        // 处理外部URL（如果需要重新上传）
-        const processedUrl = await processImageUrl(decodedUrl);
-        onImageUrl(processedUrl);
+        // 检查是否为本站图片，如果是则直接使用，避免跨域问题
+        try {
+          const urlObj = new URL(decodedUrl);
+          const isOwnDomain = urlObj.hostname.includes('creamoda.ai');
+          
+          if (isOwnDomain) {
+            console.log('检测到本站图片，直接使用');
+            onImageUrl(decodedUrl);
+          } else {
+            console.log('检测到外部图片，处理后使用');
+            // 处理外部URL（如果需要重新上传）
+            const processedUrl = await processImageUrl(decodedUrl);
+            onImageUrl(processedUrl);
+          }
+        } catch (error) {
+          console.error('URL解析失败，直接使用原URL:', error);
+          onImageUrl(decodedUrl);
+        }
       }
     };
 

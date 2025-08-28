@@ -12,8 +12,10 @@ export default function HeroSliderDrag({ selectors = ['hero-slider', 'feature-ov
     const setupDragForSlider = (slider: HTMLElement) => {
 
       let isDown = false;
-      let startX: number;
-      let scrollLeft: number;
+      let startX = 0;
+      let scrollLeft = 0;
+      let startY = 0;
+      let isHorizontalGesture = false;
 
       const handleMouseDown = (e: MouseEvent) => {
         isDown = true;
@@ -47,12 +49,52 @@ export default function HeroSliderDrag({ selectors = ['hero-slider', 'feature-ov
         slider.scrollLeft = scrollLeft - walk;
       };
 
+      // Touch events for mobile dragging
+      const handleTouchStart = (e: TouchEvent) => {
+        if (!e.touches || e.touches.length === 0) return;
+        const touch = e.touches[0];
+        isDown = true;
+        isHorizontalGesture = false;
+        startX = touch.pageX - slider.offsetLeft;
+        startY = touch.pageY;
+        scrollLeft = slider.scrollLeft;
+      };
+
+      const handleTouchMove = (e: TouchEvent) => {
+        if (!isDown || !e.touches || e.touches.length === 0) return;
+        const touch = e.touches[0];
+        const deltaX = touch.pageX - slider.offsetLeft - startX;
+        const deltaY = touch.pageY - startY;
+        // Detect horizontal intent to avoid blocking vertical page scroll
+        if (!isHorizontalGesture) {
+          if (Math.abs(deltaX) > Math.abs(deltaY)) {
+            isHorizontalGesture = true;
+          } else {
+            return; // let vertical scrolling happen
+          }
+        }
+        // Prevent vertical scroll when horizontally dragging the slider
+        e.preventDefault();
+        slider.scrollLeft = scrollLeft - deltaX * 2;
+      };
+
+      const handleTouchEnd = () => {
+        isDown = false;
+      };
+
       // 设置样式和监听
       slider.style.cursor = 'grab';
+      slider.style.setProperty('-webkit-overflow-scrolling', 'touch');
+      slider.style.overflowX = 'auto';
+      slider.style.setProperty('touch-action', 'pan-x');
       slider.addEventListener('mousedown', handleMouseDown);
       slider.addEventListener('mouseleave', handleMouseLeave);
       slider.addEventListener('mouseup', handleMouseUp);
       slider.addEventListener('mousemove', handleMouseMove);
+      slider.addEventListener('touchstart', handleTouchStart, { passive: true } as AddEventListenerOptions);
+      slider.addEventListener('touchmove', handleTouchMove, { passive: false } as AddEventListenerOptions);
+      slider.addEventListener('touchend', handleTouchEnd);
+      slider.addEventListener('touchcancel', handleTouchEnd);
 
       // 阻止图片拖拽
       const images = slider.querySelectorAll('img');
@@ -67,6 +109,10 @@ export default function HeroSliderDrag({ selectors = ['hero-slider', 'feature-ov
         slider.removeEventListener('mouseleave', handleMouseLeave);
         slider.removeEventListener('mouseup', handleMouseUp);
         slider.removeEventListener('mousemove', handleMouseMove);
+        slider.removeEventListener('touchstart', handleTouchStart as any);
+        slider.removeEventListener('touchmove', handleTouchMove as any);
+        slider.removeEventListener('touchend', handleTouchEnd as any);
+        slider.removeEventListener('touchcancel', handleTouchEnd as any);
         slider.style.cursor = 'auto';
       };
     };

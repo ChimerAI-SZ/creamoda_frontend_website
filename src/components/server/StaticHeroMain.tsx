@@ -366,15 +366,32 @@ export default function StaticHeroMain({ theme, saasUrl, isHomepage = false }: S
 
 No image? Try one of these:</p>
             <div className="demo-thumbnails">
-              {heroMain.demoImages.map((imageSrc, index) => (
-                <DemoThumbnail 
-                  key={index}
-                  imageSrc={imageSrc}
-                  index={index}
-                  title={heroMain.title}
-                  saasUrl={saasUrl}
-                />
-              ))}
+              {heroMain.demoImages.map((imageSrc, index) => {
+                let thumbSaasUrl = saasUrl;
+                try {
+                  // 当所在主题为背景移除时，为每个缩略图拼接变体类型和图片URL，便于SaaS端自动填充上传
+                  if (theme.id === 'background_remove') {
+                    const base = new URL(saasUrl);
+                    const absImageUrl = imageSrc.startsWith('http') ? imageSrc : `${base.origin}${imageSrc}`;
+                    const url = new URL(saasUrl);
+                    url.searchParams.set('variationType', '3'); // Remove background
+                    url.searchParams.set('imageUrl', absImageUrl);
+                    thumbSaasUrl = url.toString();
+                  }
+                } catch (e) {
+                  // ignore
+                }
+
+                return (
+                  <DemoThumbnail 
+                    key={index}
+                    imageSrc={imageSrc}
+                    index={index}
+                    title={heroMain.title}
+                    saasUrl={thumbSaasUrl}
+                  />
+                );
+              })}
             </div>
           </div>
         </div>
