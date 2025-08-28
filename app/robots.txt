@@ -8,6 +8,7 @@ Allow: /image-color-changer
 Allow: /virtual-try-on
 Allow: /outfit-generator
 Allow: /sketch-to-image
+Allow: /free-nano-banana
 Allow: /community
 Allow: /privacy-policy
 Allow: /terms-of-service

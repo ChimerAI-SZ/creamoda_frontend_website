@@ -7,7 +7,8 @@ export const routeToThemeMap: Record<string, string> = {
   'image-color-changer': 'color_change',
   'virtual-try-on': 'virtual_try',
   'outfit-generator': 'outfit_generator',
-  'sketch-to-image': 'sketch_convert'
+  'sketch-to-image': 'sketch_convert',
+  'free-nano-banana': 'free_nano_banana'
 };
 
 // 主题ID到路由路径的映射（反向映射）
@@ -19,7 +20,8 @@ export const themeToRouteMap: Record<string, string> = {
   'color_change': 'image-color-changer',
   'virtual_try': 'virtual-try-on',
   'outfit_generator': 'outfit-generator',
-  'sketch_convert': 'sketch-to-image'
+  'sketch_convert': 'sketch-to-image',
+  'free_nano_banana': 'free-nano-banana'
 };
 
 // 获取主题ID by 路由路径
@@ -34,19 +36,20 @@ export function getRouteByTheme(themeId: string): string {
 
 // 路由到SaaS URL的映射
 export const routeToSaasUrlMap: Record<string, string> = {
-  'image-background-remover': 'https://create.creamoda.ai/magic-kit',
-  'image-background-changer': 'https://create.creamoda.ai/magic-kit',
-  'image-enhancer': 'https://create.creamoda.ai/magic-kit',
-  'image-changer': 'https://create.creamoda.ai/magic-kit',
-  'image-color-changer': 'https://create.creamoda.ai/magic-kit',
-  'virtual-try-on': 'https://create.creamoda.ai/virtual-try-on',
-  'outfit-generator': 'https://create.creamoda.ai/',
-  'sketch-to-image': 'https://create.creamoda.ai/'
+  'image-background-remover': 'https://www.creamoda.ai/fashion-design/create',
+  'image-background-changer': 'https://www.creamoda.ai/fashion-design/create',
+  'image-enhancer': 'https://www.creamoda.ai/fashion-design/create',
+  'image-changer': 'https://www.creamoda.ai/fashion-design/create',
+  'image-color-changer': 'https://www.creamoda.ai/fashion-design/create',
+  'virtual-try-on': 'https://www.creamoda.ai/fashion-design/create',
+  'outfit-generator': 'https://www.creamoda.ai/fashion-design/create',
+  'sketch-to-image': 'https://www.creamoda.ai/fashion-design/create',
+  'free-nano-banana': 'https://www.creamoda.ai/fashion-design/create'
 };
 
 // 根据路由获取SaaS URL
 export function getSaasUrlByRoute(route: string): string {
-  return routeToSaasUrlMap[route] || 'https://create.creamoda.ai/magic-kit';
+  return routeToSaasUrlMap[route] || 'https://www.creamoda.ai/fashion-design/create';
 }
 
 // 获取所有可用路由

@@ -627,20 +627,22 @@ body {
   object-position: center;
 }
 
-/* 新的独立视觉图（不裁切，覆盖左下区域） */
+/* 新的独立视觉图（响应式居中定位） */
 .hero-visual {
   position: absolute;
-  left: clamp(-400px, -25vw, -300px);
-  bottom: clamp(-200px, -12vw, -160px);
+  left: 50%;
+  bottom: clamp(-50px, -5vw, -20px); /* 继续往上移动 */
+  transform: translateX(-110%); /* 更往左偏移 */
   z-index: 3;
   pointer-events: none;
-  height: clamp(60vh, 15vw + 80vh, 110vh);
+  height: clamp(60vh, 8vw + 60vh, 85vh);
+  max-height: 800px; /* 限制最大高度 */
   aspect-ratio: 7 / 9;
 }
 .hero-visual-img {
   display: block;
   object-fit: contain;
-  object-position: left bottom;
+  object-position: center bottom;
 }
 
 /* 第一张卡片完全透明背景 */
@@ -691,12 +693,42 @@ body {
   font-weight: 600;
 }
 
+/* 超高分辨率屏幕优化 */
+@media (min-width: 3840px) {
+  .hero-visual {
+    height: 60vh;
+    max-height: 650px;
+    bottom: -20px; /* 继续往上移动 */
+    transform: translateX(-115%); /* 更往左 */
+  }
+}
+
+@media (min-width: 2560px) and (max-width: 3839px) {
+  .hero-visual {
+    height: 70vh;
+    max-height: 700px;
+    bottom: -30px; /* 继续往上移动 */
+    transform: translateX(-112%); /* 更往左 */
+  }
+}
+
+/* 大屏幕基础优化 */
+@media (min-width: 1920px) and (max-width: 2559px) {
+  .hero-visual {
+    height: clamp(60vh, 6vw + 65vh, 80vh);
+    max-height: 750px;
+    bottom: clamp(-80px, -5vw, -40px); /* 继续往上移动 */
+    transform: translateX(-112%); /* 更往左 */
+  }
+}
+
 /* 中等屏幕响应式调整 */
 @media (max-width: 1200px) {
   .hero-visual {
-    height: clamp(70vh, 12vw + 70vh, 95vh);
-    left: clamp(-350px, -22vw, -250px);
-    bottom: clamp(-180px, -10vw, -140px);
+    height: clamp(70vh, 10vw + 65vh, 80vh);
+    max-height: 600px;
+    transform: translateX(-105%); /* 中屏更往左调整 */
+    bottom: clamp(-80px, -5vw, -40px); /* 继续往上移动 */
   }
 }
 
@@ -726,13 +758,14 @@ body {
   }
 
   .hero-visual {
-    left: -100px;
-    bottom: -28px;
-    height: 72vh;
-    display: none;
+    transform: translateX(-100%); /* 小屏幕更往左偏移 */
+    bottom: 10px; /* 继续往上移动 */
+    height: 60vh;
+    max-height: 400px;
   }
   .hero-visual-img {
     object-fit: contain;
+    object-position: center center;
   }
 
   /* 移动端滑动卡片略小，避免溢出 */
@@ -750,6 +783,16 @@ body {
   }
   .homepage-hero-cards .subtitle-main {
     font-size: clamp(12px, 3.6vw, 14px);
+  }
+}
+
+/* 超小屏幕进一步调整 */
+@media (max-width: 600px) {
+  .hero-visual {
+    transform: translateX(-105%); /* 超小屏幕更往左 */
+    height: 50vh;
+    max-height: 320px;
+    bottom: 20px; /* 继续往上移动 */
   }
 }
 
@@ -1587,7 +1630,7 @@ body {
 
 .testimonial-card-1 {
   top: 20px;
-  left: 80px;
+  left: 150px;
   width: 700px;
   height: 200px;
   background: linear-gradient(90deg, rgba(0, 0, 0, 1) 39%, rgba(255, 255, 255, 1) 100%);
@@ -1599,7 +1642,7 @@ body {
 
 .testimonial-card-2 {
   bottom: 20px;
-  left: 50px;
+  left: 120px;
   width: 700px;
   height: 200px;
   background: linear-gradient(90deg, rgba(255, 255, 255, 1), rgba(0, 0, 0, 1) 40% 100%);
@@ -1611,7 +1654,7 @@ body {
 
 .testimonial-card-3 {
   top: 40px;
-  right: 80px;
+  right: 100px;
   width: 320px;
   height: 400px;
   background: linear-gradient(49deg, rgba(0, 0, 0, 1) 33%, rgba(255, 255, 255, 1) 100%);
@@ -2277,21 +2320,21 @@ body {
   .testimonial-card-1 {
     width: 360px;
     height: 170px;
-    left: 60px;
+    left: 90px;
     top: 15px;
   }
 
   .testimonial-card-2 {
     width: 360px;
     height: 170px;
-    left: 40px;
+    left: 70px;
     bottom: 15px;
   }
 
   .testimonial-card-3 {
     width: 280px;
     height: 350px;
-    right: 60px;
+    right: 70px;
     top: 35px;
   }
 
@@ -3054,7 +3097,7 @@ body {
 }
 
 .fashion-showcase-item-last {
-  margin-bottom: 60px;
+  margin-bottom: 0px;
 }
 
 /* 响应式设计 */

@@ -46,6 +46,9 @@ export default function NotFound() {
               <Link href="/image-changer" className="block text-blue-600 hover:underline">
                 AI局部编辑
               </Link>
+              <Link href="/free-nano-banana" className="block text-blue-600 hover:underline">
+                AI纳米香蕉设计器
+              </Link>
             </div>
           </div>
         </div>

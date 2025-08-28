@@ -5,7 +5,7 @@ interface StaticNavigationProps {
   currentSaasUrl?: string;
 }
 
-export default function StaticNavigation({ currentSaasUrl = 'https://create.creamoda.ai/' }: StaticNavigationProps) {
+export default function StaticNavigation({ currentSaasUrl = 'https://www.creamoda.ai/fashion-design/create' }: StaticNavigationProps) {
   return (
     <nav className="hero-nav">
       <Link href="/" className="hero-logo">

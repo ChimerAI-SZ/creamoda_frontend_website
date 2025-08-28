@@ -1,11 +1,17 @@
 import React from 'react';
+import { FAQConfig } from '@/src/types/theme';
 
 interface FAQItem {
   question: string;
   answer: string;
 }
 
-const faqData: FAQItem[] = [
+interface StaticFAQProps {
+  faqData?: FAQConfig;
+}
+
+// 默认FAQ数据作为后备
+const defaultFaqData: FAQItem[] = [
   {
     question: "Why does my output sometimes differ from my prompt?",
     answer: "AI interprets creatively. For closer matches, add more specific keywords or choose one or more of the design features we have pre-set that best meet your needs."
@@ -28,7 +34,9 @@ const faqData: FAQItem[] = [
   }
 ];
 
-export default function StaticFAQ() {
+export default function StaticFAQ({ faqData }: StaticFAQProps) {
+  // 使用传入的FAQ数据，如果没有则使用默认数据
+  const faqItems = faqData?.items || defaultFaqData;
   return (
     <section className="py-12 md:py-16 px-4 md:px-6 bg-black">
       <div className="max-w-7xl mx-auto">
@@ -50,7 +58,7 @@ export default function StaticFAQ() {
           
           {/* 右侧问题列表 */}
           <div className="space-y-0">
-            {faqData.map((item, index) => (
+            {faqItems.map((item, index) => (
               <FAQItem key={index} question={item.question} answer={item.answer} />
             ))}
           </div>

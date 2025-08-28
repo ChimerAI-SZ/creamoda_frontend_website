@@ -55,7 +55,7 @@ export const metadata: Metadata = {
 export default function Home() {
   // 获取默认主题（首页使用background_remove主题）
   const theme = getThemeForRoute('background_remove');
-  const saasUrl = 'https://create.creamoda.ai/';
+  const saasUrl = 'https://www.creamoda.ai/fashion-design/create';
 
   // 首页的结构化数据
   const structuredData = {

@@ -79,23 +79,23 @@ export default function StaticFooter() {
             <div className="footer-features">
               <div className="feature-group">
                 <Link href="/outfit-generator" className="feature-item">Text to Image</Link>
-                <a href="https://create.creamoda.ai/" className="feature-item">Copy Style</a>
-                <a href="https://create.creamoda.ai/" className="feature-item">Mix 2 Images</a>
-                <a href="https://create.creamoda.ai/" className="feature-item">Change Clothes</a>
-                <a href="https://create.creamoda.ai/" className="feature-item">Fabric to Design</a>
+                <a href="https://www.creamoda.ai/fashion-design/create" className="feature-item">Copy Style</a>
+                <a href="https://www.creamoda.ai/fashion-design/create" className="feature-item">Mix 2 Images</a>
+                <a href="https://www.creamoda.ai/fashion-design/create" className="feature-item">Change Clothes</a>
+                <a href="https://www.creamoda.ai/fashion-design/create" className="feature-item">Fabric to Design</a>
                 <Link href="/sketch-to-image" className="feature-item">Sketch to Design</Link>
               </div>
               
               <div className="feature-group">
-                <a href="https://create.creamoda.ai/" className="feature-item">Change Style</a>
-                <a href="https://create.creamoda.ai/" className="feature-item">Change Fabric</a>
-                <a href="https://create.creamoda.ai/" className="feature-item">Change Printing</a>
-                <a href="https://create.creamoda.ai/" className="feature-item">Style Fusion</a>
+                <a href="https://www.creamoda.ai/fashion-design/create" className="feature-item">Change Style</a>
+                <a href="https://www.creamoda.ai/fashion-design/create" className="feature-item">Change Fabric</a>
+                <a href="https://www.creamoda.ai/fashion-design/create" className="feature-item">Change Printing</a>
+                <a href="https://www.creamoda.ai/fashion-design/create" className="feature-item">Style Fusion</a>
               </div>
               
               <div className="feature-group">
                 <Link href="/virtual-try-on" className="feature-item">Virtual Try-on</Link>
-                <a href="https://create.creamoda.ai/virtual-try-on" className="feature-item">Change Pose</a>
+                <a href="https://www.creamoda.ai/fashion-design/create" className="feature-item">Change Pose</a>
               </div>
 
               <div className="feature-group">
@@ -104,8 +104,8 @@ export default function StaticFooter() {
                 <Link href="/image-background-remover" className="feature-item">Remove Background</Link>
                 <Link href="/image-changer" className="feature-item">Partial Modification</Link>
                 <Link href="/image-enhancer" className="feature-item">Upscale</Link>
-                <a href="https://create.creamoda.ai/magic-kit" className="feature-item">Pattern Extraction</a>
-                <a href="https://create.creamoda.ai/magic-kit" className="feature-item">Pattern Application</a>
+                <a href="https://www.creamoda.ai/fashion-design/create" className="feature-item">Pattern Extraction</a>
+                <a href="https://www.creamoda.ai/fashion-design/create" className="feature-item">Pattern Application</a>
               </div>
             </div>
           </div>

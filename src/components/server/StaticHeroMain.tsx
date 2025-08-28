@@ -28,9 +28,7 @@ export default function StaticHeroMain({ theme, saasUrl, isHomepage = false }: S
               </div>
               <div>
                 <Link
-                  href="https://create.creamoda.ai/"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href="https://www.creamoda.ai/fashion-design/create"
                   className="upload-demo-btn"
                 >
                   Design Now
@@ -260,7 +258,7 @@ export default function StaticHeroMain({ theme, saasUrl, isHomepage = false }: S
             </div>
             <div className="fashion-showcase-column">
               <div className="fashion-showcase-item">
-                <Image src="/marketing/images/pubu/fives.png" alt="Fashion showcase 5" width={450} height={360} className="fashion-showcase-img" />
+                <Image src="/marketing/images/pubu/fiv.png" alt="Fashion showcase 5" width={450} height={360} className="fashion-showcase-img" />
               </div>
               <div className="fashion-showcase-item fashion-showcase-item-last">
                 <Image src="/marketing/images/pubu/sixes.png" alt="Fashion showcase 6" width={450} height={530} className="fashion-showcase-img" />
@@ -311,9 +309,7 @@ export default function StaticHeroMain({ theme, saasUrl, isHomepage = false }: S
           </h2>
           <div className="trend-cta-actions">
             <Link
-              href="https://create.creamoda.ai/"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="https://www.creamoda.ai/fashion-design/create"
               className="homepage-cta-button"
             >
               Design Now
@@ -351,8 +347,6 @@ export default function StaticHeroMain({ theme, saasUrl, isHomepage = false }: S
           <div className="upload-demo-area">
             <Link 
               href={saasUrl} 
-              target="_blank" 
-              rel="noopener noreferrer" 
               className="upload-demo-btn"
             >
               <Image
