@@ -16,7 +16,8 @@ export function ConditionalHeader() {
     '/image-color-changer',
     '/virtual-try-on',
     '/outfit-generator',
-    '/sketch-to-image'
+    '/sketch-to-image',
+    '/free-nano-banana'
   ];
   
   // 如果是营销页路由，不显示 SaaS Header

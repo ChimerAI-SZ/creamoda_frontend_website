@@ -20,6 +20,7 @@ export function getThemeForRoute(slug: string): ThemeConfig {
     'virtual-try-on': 'virtual_try',
     'outfit-generator': 'outfit_generator',
     'sketch-to-image': 'sketch_convert',
+    'free-nano-banana': 'free_nano_banana',
   };
 
   const themeId = routeToThemeMap[slug] || 'background_remove';

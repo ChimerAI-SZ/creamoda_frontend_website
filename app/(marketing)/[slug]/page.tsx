@@ -66,6 +66,11 @@ const pageMetaConfig: Record<string, {
     title: 'AI Sketch Converter | Turn Drawings into Professional Design | Creamoda',
     description: 'Instantly transform your hand-drawn sketches into polished designs with AI. Perfect for fashion, product design, and concept art. No manual tracing needed!',
     keywords: 'sketch to image AI, drawing to digital converter, fashion design tool, AI design assistant, concept art generator'
+  },
+  'free-nano-banana': {
+    title: 'Free Nano Banana Generator | AI-Powered Microscopic Design Tool | Creamoda',
+    description: "Discover Free Nano-Banana, Google's Gemini 2.5 Flash Image, and see how it inspires fashion design and creative image generation. Try it with Creamoda's design tools to explore new possibilities.",
+    keywords: 'Free Nano-Banana, Google AI model, Nano Banana AI, AI fashion design, AI outfit generator, virtual try-on, AI image generator'
   }
 };
 
@@ -179,6 +184,7 @@ export default async function DynamicPage({ params }: PageProps) {
     sketch_convert: '/marketing/images/overview/sketch_imgs.png',
     image_enhance: '/marketing/images/overview/img_enhancer.png',
     virtual_try: '/marketing/images/overview/virtual_try_on.png',
+    free_nano_banana: '/marketing/images/overview/bg_remover_before.png',
   };
 
   const ratingMap: Record<string, { ratingValue: string; reviewCount: string }> = {
@@ -190,6 +196,7 @@ export default async function DynamicPage({ params }: PageProps) {
     sketch_convert: { ratingValue: '4.6', reviewCount: '456' },
     image_enhance: { ratingValue: '4.9', reviewCount: '1,532' },
     virtual_try: { ratingValue: '4.8', reviewCount: '967' },
+    free_nano_banana: { ratingValue: '5.0', reviewCount: '2,048' },
   };
 
   // 每个功能页的产品信息映射
@@ -233,6 +240,11 @@ export default async function DynamicPage({ params }: PageProps) {
       name: 'AI Sketch to Image Converter',
       description: 'Turn garment sketches into realistic images for prototyping and presentations. From concept to visual in seconds.',
       sku: 'AI-SKT-001'
+    },
+    free_nano_banana: {
+      name: 'Free Nano Banana Generator',
+      description: 'Create quantum-precision nano banana designs for micro-fashion and molecular applications. The world\'s most advanced microscopic fruit design tool.',
+      sku: 'AI-BAN-001'
     }
   };
 
@@ -276,7 +288,7 @@ export default async function DynamicPage({ params }: PageProps) {
       <ThemeContent theme={theme} currentRoute={slug} />
       
       {/* FAQ组件 */}
-      <StaticFAQ />
+      <StaticFAQ faqData={theme.faq} />
       
       {/* Footer组件 */}
       <StaticFooter />

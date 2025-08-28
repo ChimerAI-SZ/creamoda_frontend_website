@@ -111,7 +111,7 @@ export const themes: Record<string, ThemeConfig> = {
         },
         {
           question: 'How does the background remover handle complex edges like hair or transparent objects?',
-          answer: "Our AI automatically detects edges with high precision, though results may vary with low-contrast images—high-resolution inputs yield the best outcomes."
+          answer: 'Our AI automatically detects edges with high precision, though results may vary with low-contrast images—high-resolution inputs yield the best outcomes.'
         },
         {
           question: 'Can I customize the background after removal (e.g., change colors)?',
@@ -990,6 +990,130 @@ export const themes: Record<string, ThemeConfig> = {
         {
           question: 'Can I modify multiple parts of an image at once?',
           answer: 'Of course, you can show us the final image you want to obtain through text description, or you can choose our preset design features, supporting multiple selections.'
+        }
+      ]
+    }
+  },
+
+  free_nano_banana: {
+    id: 'free_nano_banana',
+    name: 'AI纳米香蕉设计器',
+    heroMain: {
+      title: 'Free Nano Banana Generator',
+      subtitle: 'Discover Google’s Gemini 2.5 Flash Image, and see how it powers next-generation fashion design.',
+      mainImage: '/marketing/images/hero/banana/banana.png',
+      uploadText: 'Try Now',
+      uploadSubText: 'Or drop a banana sketch, paste banana URL',
+      demoImages: [
+        '/marketing/images/hero/banana/one.png',
+        '/marketing/images/hero/banana/two.png',
+        '/marketing/images/hero/banana/three.png',
+        '/marketing/images/hero/banana/four.png'
+      ]
+    },
+    fusionGuide: {
+      title: 'How to Generate Fashion Images<br/>with Free Nano-Banana?',
+      cards: [
+        {
+          icon: '/marketing/images/feature/picture.png',
+          title: 'Visit Outfit Generator Feature',
+          description: 'Access our Free Nano-Banana integration and explore pre-built templates tailored for fashion design and creative testing.'
+        },
+        {
+          icon: '/marketing/images/feature/water.png',
+          title: 'Enter Your Prompt',
+          description: 'Describe your fashion idea — from outfit style and fabric to mood and background — and let AI interpret it.'
+        },
+        {
+          icon: '/marketing/images/feature/download.png',
+          title: 'Generate & Export Instantly',
+          description: 'Receive high-quality visuals in seconds and download them for prototyping, presentations, or campaigns.'
+        }
+      ]
+    },
+    whyChoose: {
+      title: 'Why Choose Our Nano Banana Tech?',
+      cards: [
+        {
+          title: 'Seamless Integration',
+          description: "Unlike standalone demos, Creamoda integrates Google's Gemini 2.5 Flash Image directly into a complete design workflow for apparel brands and designers."
+        },
+        {
+          title: 'Fashion-Focused Features',
+          description: 'Beyond image generation, our platform supports outfit variation, virtual try-on, and sketch-to-image workflows tailored to fashion.'
+        },
+        {
+          title: 'Scalable for Business',
+          description: "From solo designers to global brands, we provide credit-based flexibility to fit your growth."
+        }
+      ]
+    },
+    offerMore: {
+      title: 'Complete Nano Design Suite',
+      cards: [
+        {
+          image: '/images/card/remove_bg.png',
+          title: 'Nano Banana Background Remover',
+          description: 'Isolate your nano bananas from any background with atomic-level precision.'
+        },
+        {
+          image: '/images/card/change_bg.png',
+          title: 'Micro Environment Changer',
+          description: 'Place your nano bananas in exotic micro-environments like inside raindrops or on butterfly wings.'
+        },
+        {
+          image: '/images/card/upscale.png',
+          title: 'Nano Banana Enhancer',
+          description: 'Enhance nano banana resolution up to quantum clarity without losing microscopic detail.'
+        },
+        {
+          image: '/marketing/images/card/partial_mod.png',
+          title: 'Selective Nano Editor',
+          description: 'Edit individual nano banana segments - adjust peel thickness, add micro-spots, or modify curvature.'
+        },
+        {
+          image: '/images/card/change_color.png',
+          title: 'Nano Banana Colorizer',
+          description: 'Transform your nano bananas into rainbow variants, metallic finishes, or translucent crystal bananas.'
+        },
+        {
+          image: '/marketing/images/card/virtual_try.png',
+          title: 'Virtual Nano Try-On',
+          description: 'See how nano bananas look when integrated into clothing fibers or accessories.'
+        },
+        {
+          image: '/images/card/design.png',
+          title: 'Nano Fashion Generator',
+          description: 'Generate complete nano-banana-inspired fashion items and micro-textile patterns.'
+        },
+        {
+          image: '/images/card/sketch_design.png',
+          title: 'Banana Sketch to Nano',
+          description: 'Convert hand-drawn banana sketches into precise nano-scale 3D models.'
+        }
+      ]
+    },
+    faq: {
+      items: [
+        {
+          question: 'What is Nano-Banana?',
+          answer: 'Nano-Banana is Google’s latest image model, known for high-quality, efficient image generation across creative tasks.'
+        },
+        {
+          question: 'How does Creamoda use Nano-Banana?',
+          answer: 'We integrate the model into our fashion design suite, enabling designers to generate outfits, fabrics, and marketing visuals with speed and accuracy.'
+        },
+        {
+          question: 'Do I need technical skills to use it?',
+          answer: 'No — our interface is designed for creative professionals. Simply upload sketches or ideas, and let AI handle the generation.'
+        },
+        {
+          question: 'Is Nano-Banana free to use in Creamoda?',
+          answer: 'We offer free credits for new users, after which you can purchase credit packages for extended use.'
+        },
+        {
+          question: 'Can I use these AI-generated designs commercially?',
+          answer: 'Yes, designs generated with Creamoda can be used for design development, marketing, and client presentations, subject to our licensing terms.'
         }
       ]
     }
