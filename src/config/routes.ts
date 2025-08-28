@@ -36,15 +36,15 @@ export function getRouteByTheme(themeId: string): string {
 
 // 路由到SaaS URL的映射
 export const routeToSaasUrlMap: Record<string, string> = {
-  'image-background-remover': 'https://www.creamoda.ai/fashion-design/create',
-  'image-background-changer': 'https://www.creamoda.ai/fashion-design/create',
-  'image-enhancer': 'https://www.creamoda.ai/fashion-design/create',
-  'image-changer': 'https://www.creamoda.ai/fashion-design/create',
-  'image-color-changer': 'https://www.creamoda.ai/fashion-design/create',
-  'virtual-try-on': 'https://www.creamoda.ai/fashion-design/create',
+  'image-background-remover': 'https://www.creamoda.ai/magic-kit/create',
+  'image-background-changer': 'https://www.creamoda.ai/magic-kit/create', 
+  'image-enhancer': 'https://www.creamoda.ai/magic-kit/create',
+  'image-changer': 'https://www.creamoda.ai/magic-kit/create',
+  'image-color-changer': 'https://www.creamoda.ai/magic-kit/create',
+  'virtual-try-on': 'https://www.creamoda.ai/virtual-try-on/create',
   'outfit-generator': 'https://www.creamoda.ai/fashion-design/create',
   'sketch-to-image': 'https://www.creamoda.ai/fashion-design/create',
-  'free-nano-banana': 'https://www.creamoda.ai/fashion-design/create'
+  'free-nano-banana': 'https://www.creamoda.ai/magic-kit/create'
 };
 
 // 根据路由获取SaaS URL
