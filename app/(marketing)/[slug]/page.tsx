@@ -28,12 +28,12 @@ const pageMetaConfig: Record<string, {
   ogImage?: string;
 }> = {
   'image-background-remover': {
-    title: 'AI Background Remover | Professional Quality | Creamoda',
+    title: 'Image Background Remover | Professional Quality | Creamoda',
     description: 'Use AI to immediately delete the image background. 100% automatic, simple, and fast, very suitable for e-commerce, design, and social media. Try it now!',
     keywords: 'free background remover, AI background removal, professional photo editing, credit-based image tool, e-commerce photo editor, high-quality background removal'
   },
   'image-background-changer': {
-    title: 'AI Background Changer | Customize Your Image Background Instantly | Creamoda',
+    title: 'Image Background Changer | Customize Your Image Background Instantly | Creamoda',
     description: 'Use AI to change the background of your images, support inputting reference images or selecting design features, and you can also use language to describe the final generated image you want - no need for manual editing!',
     keywords: 'AI background replacement, remove and change background, AI design tool, background changer, credit-based image tool, high-quality background editing',
   },
@@ -60,7 +60,7 @@ const pageMetaConfig: Record<string, {
   'outfit-generator': {
     title: 'AI Image Generator | Text-to-Image & Image-to-Image Creation Tool | Creamoda',
     description: 'Create stunning AI-generated images from text prompts or transform existing photos with our powerful AI image generator. Perfect for designers, marketers & content creators - generate unique visuals, enhance photos, or reimagine existing images in seconds. No design skills needed!',
-    keywords: 'AI image generator, text to image AI, image to image AI, AI art generator, AI photo generator, free AI image creator, AI for social media, e-commerce image generator, AI design tool, virtual try-on AI, high-quality AI images, fast AI art generator, AI image enhancer, AI background remover, copyright-free AI images online, AI photo to cartoon, AI model generator, custom AI artwork, professional AI art tool',
+    keywords: 'AI image generator, text to image AI, image to image AI, AI art generator, AI photo generator, free AI image creator, AI for social media, e-commerce image generator, AI design tool, virtual try-on AI, high-quality AI images, fast AI art generator, AI image enhancer, Image Background Remover, copyright-free AI images online, AI photo to cartoon, AI model generator, custom AI artwork, professional AI art tool',
   },
   'sketch-to-image': {
     title: 'AI Sketch Converter | Turn Drawings into Professional Design | Creamoda',
@@ -68,7 +68,7 @@ const pageMetaConfig: Record<string, {
     keywords: 'sketch to image AI, drawing to digital converter, fashion design tool, AI design assistant, concept art generator'
   },
   'free-nano-banana': {
-    title: 'Free Nano Banana Generator | AI-Powered Microscopic Design Tool | Creamoda',
+    title: "Free Nano-Banana Generator | Explore Google's Trending Model for Image Editing",
     description: "Discover Free Nano-Banana, Google's Gemini 2.5 Flash Image, and see how it inspires fashion design and creative image generation. Try it with Creamoda's design tools to explore new possibilities.",
     keywords: 'Free Nano-Banana, Google AI model, Nano Banana AI, AI fashion design, AI outfit generator, virtual try-on, AI image generator'
   }
@@ -202,12 +202,12 @@ export default async function DynamicPage({ params }: PageProps) {
   // 每个功能页的产品信息映射
   const productInfoMap: Record<string, { name: string; description: string; sku: string }> = {
     background_remove: {
-      name: 'AI Background Remover',
+      name: 'Image Background Remover',
       description: 'Instantly cut out subjects and get a clean, transparent PNG in seconds. Professional quality background removal powered by AI.',
       sku: 'AI-BGR-001'
     },
     background_change: {
-      name: 'AI Background Changer', 
+      name: 'Image Background Changer', 
       description: 'Replace any background with custom colors, images, or scenes. AI-powered background replacement made simple.',
       sku: 'AI-BGC-001'
     },

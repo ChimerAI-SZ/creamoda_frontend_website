@@ -38,14 +38,14 @@ export function generateBreadcrumbsForRoute(route: string): BreadcrumbItem[] {
 export function getProductDataForRoute(route: string) {
   const productDataMap: Record<string, any> = {
     'image-background-remover': {
-      name: 'AI Background Remover',
+      name: 'Image Background Remover',
       description: 'Instantly cut out subjects and get a clean, transparent PNG in seconds. Professional quality background removal powered by AI.',
       sku: 'AI-BGR-001',
       category: 'AI Image Tools',
       images: ['/marketing/images/card/removes_bg.png'],
     },
     'image-background-changer': {
-      name: 'AI Background Changer',
+      name: 'Image Background Changer',
       description: 'Replace any background with custom colors, images, or scenes. AI-powered background replacement made simple.',
       sku: 'AI-BGC-001',
       category: 'AI Image Tools',
@@ -120,7 +120,7 @@ export function generateImageAlt(imagePath: string, context: string): string {
   
   const altMapping: Record<string, string> = {
     'removes_bg': 'AI background removal tool demonstration showing before and after results',
-    'changes_bg': 'AI background changer tool showing various background replacement options',
+    'changes_bg': 'Image Background Changer tool showing various background replacement options',
     'upscaless': 'AI image enhancer improving image resolution and clarity',
     'partial_mod': 'AI image editor for selective area modification and enhancement',
     'change_colors': 'AI color changer tool demonstrating product color variations',

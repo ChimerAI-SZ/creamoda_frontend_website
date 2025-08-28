@@ -6,7 +6,7 @@ import StructuredDataEnhancer from '@/src/components/seo/StructuredDataEnhancer'
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://creamoda.ai'),
-  title: 'Creamoda AI Tools | AI-Powered Fashion Design Platform',
+  title: 'Creamoda | AI-Powered Fashion Design Platform',
   description: 'Reimagine Fashion with All-in-One AI-powered Solution. Create, design, and transform fashion with our comprehensive AI tools: background removal, virtual try-on, outfit generation, and more.',
   keywords: 'AI fashion design, outfit generator, virtual try-on, background remover, image enhancer, sketch to image, fashion AI tools',
   authors: [{ name: 'Creamoda AI' }],
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_US',
     url: 'https://creamoda.ai/',
-    title: 'Creamoda AI Tools | AI-Powered Fashion Design Platform',
+    title: 'Creamoda | AI-Powered Fashion Design Platform',
     description: 'Reimagine Fashion with All-in-One AI-powered Solution. Create stunning fashion designs with our comprehensive AI toolkit.',
     siteName: 'Creamoda AI Tools',
     images: [
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Creamoda AI Tools | AI-Powered Fashion Design Platform',
+    title: 'Creamoda | AI-Powered Fashion Design Platform',
     description: 'Reimagine Fashion with All-in-One AI-powered Solution',
     images: ['/marketing/images/hero/official_hero.svg'],
     creator: '@creamoda_ai',
@@ -61,8 +61,8 @@ export default function Home() {
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    'name': 'Creamoda AI Tools',
-    'description': 'AI-Powered Fashion Design Platform with comprehensive tools for fashion creation',
+    'name': 'Creamoda | AI-Powered Fashion Design Platform',
+    'description': 'Reimagine Fashion with All-in-One AI-powered Solution. Create, design, and transform fashion with our comprehensive AI tools: background removal, virtual try-on, outfit generation, and more.',
     'url': 'https://creamoda.ai',
     'potentialAction': {
       '@type': 'SearchAction',

@@ -162,7 +162,7 @@ export default function StructuredDataEnhancer({
         'name': 'Creamoda AI'
       },
       'featureList': [
-        'AI Background Remover',
+        'Image Background Remover',
         'Virtual Try-On',
         'Outfit Generator',
         'Image Enhancer',
