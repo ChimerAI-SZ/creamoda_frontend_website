@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ThemeConfig } from '../../types/theme';
 import HeroSliderDrag from '../client/HeroSliderDrag';
+import DemoThumbnail from '../client/DemoThumbnail';
 
 interface StaticHeroMainProps {
   theme: ThemeConfig;
@@ -366,15 +367,13 @@ export default function StaticHeroMain({ theme, saasUrl, isHomepage = false }: S
 No image? Try one of these:</p>
             <div className="demo-thumbnails">
               {heroMain.demoImages.map((imageSrc, index) => (
-                <div key={index} className="demo-thumb">
-                  <Image
-                    src={imageSrc}
-                    alt={`Demo image ${index + 1} for ${heroMain.title}`}
-                    width={50}
-                    height={50}
-                    className="demo-img"
-                  />
-                </div>
+                <DemoThumbnail 
+                  key={index}
+                  imageSrc={imageSrc}
+                  index={index}
+                  title={heroMain.title}
+                  saasUrl={saasUrl}
+                />
               ))}
             </div>
           </div>
