@@ -47,7 +47,7 @@ export default function StaticOfferMore({ theme, currentRoute = '' }: StaticOffe
     {
       title: 'AI Image Changer',
       route: 'image-changer',
-      image: '/marketing/images/card/partial_mod.png',
+      image: '/marketing/images/card/changer.png',
       description: 'Edit or replace only the areas you select, keeping the rest untouched.',
       hasCorner: false,
       hasEnhance: false,

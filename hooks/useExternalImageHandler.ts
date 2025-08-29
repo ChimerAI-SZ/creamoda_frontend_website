@@ -30,7 +30,7 @@ export function useExternalImageHandler() {
         'aliyuncs.com',
         'oss-',
         'cos.ap-', // 腾讯云
-        'imgproxy.creamoda.ai' // 我们的图片代理
+        'creamoda.ai' // 我们的图片代理域名
       ];
       
       // 先检查是否为内部域名

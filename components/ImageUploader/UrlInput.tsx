@@ -12,8 +12,8 @@ interface UrlInputProps {
   disabled?: boolean;
 }
 
-// 后端API前缀 - 移除@字符
-const apiPrefix = 'https://imgproxy.creamoda.ai/sig';
+// 后端API前缀 - 移除@字符，使用主域名避免子域名DNS问题
+const apiPrefix = 'https://creamoda.ai/imgproxy/sig';
 
 export function UrlInput({ onImageUrlChange, disabled = false }: UrlInputProps) {
   const { showAlert } = useAlertStore();

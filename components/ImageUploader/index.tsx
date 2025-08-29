@@ -37,8 +37,8 @@ interface ImageUploaderProps {
   showUrlInput?: boolean; // 是否显示URL输入框，默认为true
 }
 
-// 后端API前缀 - 移除@字符
-const apiPrefix = 'https://imgproxy.creamoda.ai/sig';
+// 后端API前缀 - 移除@字符，使用主域名避免子域名DNS问题
+const apiPrefix = 'https://creamoda.ai/imgproxy/sig';
 
 /**
  * 图片上传组件
