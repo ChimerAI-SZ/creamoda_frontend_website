@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
-
+import { useExternalImageHandler } from '@/hooks/useExternalImageHandler';
 
 interface SearchParamsHandlerProps {
   onImageUrl?: (url: string) => void;
@@ -23,7 +23,7 @@ export function SearchParamsHandler({
   showProcessingIndicator = true 
 }: SearchParamsHandlerProps) {
   const searchParams = useSearchParams();
-
+  const { isProcessingImage, processImageUrl } = useExternalImageHandler();
 
   useEffect(() => {
     const handleParams = async () => {
@@ -48,16 +48,16 @@ export function SearchParamsHandler({
         console.log('接收到图片URL:', decodedUrl);
         
         // 处理外部URL（如果需要重新上传）
-        const processedUrl = decodedUrl;
+        const processedUrl = await processImageUrl(decodedUrl);
         onImageUrl(processedUrl);
       }
     };
 
     handleParams();
-  }, [searchParams, onImageUrl, onVariationType, onTab]);
+  }, [searchParams, onImageUrl, onVariationType, onTab, processImageUrl]);
 
   // 显示处理状态
-  if (false && showProcessingIndicator) {
+  if (isProcessingImage && showProcessingIndicator) {
     return (
       <div className="fixed top-4 right-4 px-4 py-2 rounded-lg shadow-lg z-50 flex items-center space-x-2">
         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
