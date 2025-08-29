@@ -18,7 +18,14 @@ export async function GET() {
     changefreq: 'monthly'
   }));
   
-  const allPages = [...staticPages, ...toolPages];
+  // SaaS 创建页面
+  const createPages = [
+    { url: '/magic-kit/create', priority: '0.9', changefreq: 'weekly' },
+    { url: '/virtual-try-on/create', priority: '0.9', changefreq: 'weekly' },
+    { url: '/fashion-design/create', priority: '0.9', changefreq: 'weekly' }
+  ];
+  
+  const allPages = [...staticPages, ...toolPages, ...createPages];
   
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
