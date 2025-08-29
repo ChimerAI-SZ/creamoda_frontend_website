@@ -76,7 +76,6 @@ export function ImageUploader({
    */
   useEffect(() => {
     if (imageUrl && imageUrl.trim() !== '') {
-      // 对于外部URL或已处理的URL，直接使用
       setPreviewUrl(imageUrl);
     } else if (currentImage) {
       const objectUrl = URL.createObjectURL(currentImage);
@@ -182,61 +181,42 @@ export function ImageUploader({
         try {
           setIsLoadingImageUrl(true);
 
-          // 检查是否是外部完整URL（从其他域名传递过来的图片）
-          const isExternalUrl = newImageUrl.startsWith('http://') || newImageUrl.startsWith('https://');
-          
-          if (isExternalUrl) {
-            // 对于外部URL，直接使用，不进行Base64编码
-            console.log('External URL detected, using directly:', newImageUrl);
-            onImageUrlChange(newImageUrl);
-            
-            // 测试图片是否能正确加载
-            const img = new (window.Image as any)();
-            img.onload = () => {
-              setIsLoadingImageUrl(false);
-            };
-            img.onerror = () => {
-              setIsLoadingImageUrl(false);
-              showAlert({
-                type: 'error',
-                content: 'Unable to load the image from this URL. Please try another image URL.'
-              });
-              onImageUrlChange('');
-            };
-            img.src = newImageUrl;
-          } else {
-            // 对于非外部URL，使用原有的Base64编码逻辑
-            // 使用UTF-8编码并转换为Base64
-            const encoder = new TextEncoder();
-            const bytes = encoder.encode(newImageUrl);
+          // 使用UTF-8编码并转换为Base64
+          // 使用TextEncoder将字符串转换为UTF-8编码的字节数组
+          const encoder = new TextEncoder();
+          const bytes = encoder.encode(newImageUrl);
 
-            let binaryString = '';
-            bytes.forEach(byte => {
-              binaryString += String.fromCharCode(byte);
+          // 将UTF-8字节数组转换为Base64字符串
+          // 这里我们需要通过一个临时字符串来处理
+          let binaryString = '';
+          bytes.forEach(byte => {
+            binaryString += String.fromCharCode(byte);
+          });
+
+          // 将二进制字符串转换为Base64
+          const base64Url = btoa(binaryString);
+
+          // 添加API前缀并设置为图片URL
+          const processedUrl = `${apiPrefix}/${base64Url}`;
+          console.log('processedUrl', processedUrl);
+          onImageUrlChange(processedUrl);
+
+          // 测试图片是否能正确加载
+          const img = new (window.Image as any)();
+          img.onload = () => {
+            setIsLoadingImageUrl(false);
+          };
+          img.onerror = () => {
+            setIsLoadingImageUrl(false);
+            showAlert({
+              type: 'error',
+              content: 'Unable to load the image from this URL. Please try another image URL.'
             });
-
-            const base64Url = btoa(binaryString);
-            const processedUrl = `${apiPrefix}/${base64Url}`;
-            console.log('processedUrl', processedUrl);
-            onImageUrlChange(processedUrl);
-
-            // 测试图片是否能正确加载
-            const img = new (window.Image as any)();
-            img.onload = () => {
-              setIsLoadingImageUrl(false);
-            };
-            img.onerror = () => {
-              setIsLoadingImageUrl(false);
-              showAlert({
-                type: 'error',
-                content: 'Unable to load the image from this URL. Please try another image URL.'
-              });
-              onImageUrlChange('');
-            };
-            img.src = processedUrl;
-          }
+            onImageUrlChange('');
+          };
+          img.src = processedUrl;
         } catch (error) {
-          console.error('Error processing URL:', error);
+          console.error('Error converting URL to base64:', error);
           showAlert({
             type: 'error',
             content: 'Failed to process the image URL. Please try a different URL.'
