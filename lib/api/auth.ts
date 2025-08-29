@@ -126,9 +126,15 @@ export async function getUserInfo() {
     } else {
       throw new Error(response.data.msg || 'Failed to get user info');
     }
-  } catch (error) {
-    // Check if it's an axios error with a response
-    console.error('Error getting user info:', error);
+  } catch (error: any) {
+    // Handle specific auth errors more gracefully
+    if (error?.message?.includes('Invalid or expired token')) {
+      // Token expired - this is expected behavior, don't spam console
+      console.warn('Authentication token expired, please login again');
+    } else {
+      // Other errors should be logged
+      console.error('Error getting user info:', error);
+    }
     throw error;
   }
 }

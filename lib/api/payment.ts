@@ -60,8 +60,13 @@ export async function queryBillingHistory(page: number = 1, pageSize: number = 5
     const response = await api.get(`/api/v1/pay/billing_history?page=${page}&page_size=${pageSize}`);
 
     return response.data;
-  } catch (error) {
-    console.error('Error getting variation type list:', error);
+  } catch (error: any) {
+    // Handle auth errors more gracefully
+    if (error?.message?.includes('Invalid or expired token') || error?.code === 401) {
+      console.warn('Please login to view billing history');
+      return { code: 401, data: [], msg: 'Authentication required' };
+    }
+    console.error('Error getting billing history:', error);
     throw error;
   }
 }

@@ -73,6 +73,11 @@ export default function StaticNavigation({ currentSaasUrl = 'https://www.creamod
             </svg>
           </button>
         </div>
+
+        {/* Design 静态导航 - 无下拉菜单 */}
+        <Link href="/design" className="nav-link">
+          Design
+        </Link>
       </div>
       
       <a 

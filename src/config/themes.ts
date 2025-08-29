@@ -1118,6 +1118,126 @@ export const themes: Record<string, ThemeConfig> = {
       ]
     }
   },
+
+  design_page: {
+    id: 'design_page',
+    name: 'Design Hub',
+    heroMain: {
+      title: 'Design Hub',
+      subtitle: 'Explore our comprehensive design tools and create stunning fashion designs with AI-powered solutions.',
+      mainImage: '/marketing/images/hero/design/design_hub.png',
+      uploadText: 'Get Started',
+      uploadSubText: 'Start designing with our powerful tools',
+      demoImages: [
+        '/marketing/images/hero/design/demo1.png',
+        '/marketing/images/hero/design/demo2.png',
+        '/marketing/images/hero/design/demo3.png',
+        '/marketing/images/hero/design/demo4.png'
+      ]
+    },
+    fusionGuide: {
+      title: 'How to Use Our Design Tools?',
+      cards: [
+        {
+          icon: '/marketing/images/feature/picture.png',
+          title: 'Choose Your Tool',
+          description: 'Select from our comprehensive suite of AI-powered design tools tailored for fashion and creative professionals.'
+        },
+        {
+          icon: '/marketing/images/feature/water.png',
+          title: 'Design & Create',
+          description: 'Use intuitive interfaces and AI assistance to bring your creative vision to life with professional results.'
+        },
+        {
+          icon: '/marketing/images/feature/download.png',
+          title: 'Export & Share',
+          description: 'Download high-quality results and share your creations directly from our platform.'
+        }
+      ]
+    },
+    whyChoose: {
+      title: 'Why Choose Our Design Platform?',
+      cards: [
+        {
+          title: 'Comprehensive Tool Suite',
+          description: 'Access all the design tools you need in one integrated platform, from image editing to AI generation.'
+        },
+        {
+          title: 'AI-Powered Innovation',
+          description: 'Leverage cutting-edge AI technology to enhance your creative process and achieve professional results faster.'
+        },
+        {
+          title: 'User-Friendly Interface',
+          description: 'Intuitive design makes our tools accessible to both beginners and professionals, no technical skills required.'
+        }
+      ]
+    },
+    offerMore: {
+      title: 'Explore Our Design Tools',
+      cards: [
+        {
+          image: '/images/card/design.png',
+          title: 'AI Outfit Generator',
+          description: 'Generate and customize fashion outfits — swap fabrics, tweak styles, redesign patterns, all in one tool.'
+        },
+        {
+          image: '/marketing/images/card/virtual_try.png',
+          title: 'AI Virtual Try-On',
+          description: 'Generate lifelike model images wearing your products, cutting shoot costs and boosting sales.'
+        },
+        {
+          image: '/images/card/remove_bg.png',
+          title: 'Magic Kit Tools',
+          description: 'Professional image editing tools including background removal, color changing, and image enhancement.'
+        },
+        {
+          image: '/images/card/change_bg.png',
+          title: 'Background Editor',
+          description: 'Replace any background with custom colors, images, or scenes using AI technology.'
+        },
+        {
+          image: '/images/card/upscale.png',
+          title: 'Image Enhancer',
+          description: 'Boost image resolution up to 2× without losing sharpness or detail.'
+        },
+        {
+          image: '/images/card/change_color.png',
+          title: 'Color Changer',
+          description: 'Instantly swap product or object colors with realistic results.'
+        },
+        {
+          image: '/images/card/sketch_design.png',
+          title: 'Sketch to Image',
+          description: 'Turn garment sketches into realistic images for prototyping and presentations.'
+        },
+        {
+          image: '/marketing/images/card/partial_mod.png',
+          title: 'AI Image Editor',
+          description: 'Edit or replace only the areas you select, keeping the rest untouched.'
+        }
+      ]
+    },
+    faq: {
+      items: [
+        {
+          question: 'What design tools are available?',
+          answer: 'Our platform includes AI outfit generation, virtual try-on, background editing, image enhancement, and many more creative tools.'
+        },
+        {
+          question: 'Do I need design experience?',
+          answer: 'No, our tools are designed for users of all skill levels. The AI-powered interface makes professional design accessible to everyone.'
+        },
+        {
+          question: 'Can I use designs commercially?',
+          answer: 'Yes, designs created with our tools can be used for commercial purposes according to our licensing terms.'
+        },
+        {
+          question: 'How do I get started?',
+          answer: 'Simply choose a tool that fits your needs and start creating. Most tools offer free trials to help you get started.'
+        }
+      ]
+    }
+  },
   
 };
 
