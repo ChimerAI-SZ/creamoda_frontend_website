@@ -39,59 +39,84 @@ export function getProductDataForRoute(route: string) {
   const productDataMap: Record<string, any> = {
     'image-background-remover': {
       name: 'Image Background Remover',
-      description: 'Instantly cut out subjects and get a clean, transparent PNG in seconds. Professional quality background removal powered by AI.',
-      sku: 'AI-BGR-001',
-      category: 'AI Image Tools',
-      images: ['/marketing/images/card/removes_bg.png'],
+      description: 'Instantly cut out subjects and get a clean, transparent PNG in seconds.',
+      sku: 'image-background-remover',
+      category: 'ImageEditingApplication',
+      operatingSystem: 'Web',
+      softwareVersion: '1.0',
+      image: '/marketing/images/hero/background_remover/remove_backgrounds.png',
     },
     'image-background-changer': {
       name: 'Image Background Changer',
-      description: 'Replace any background with custom colors, images, or scenes. AI-powered background replacement made simple.',
-      sku: 'AI-BGC-001',
-      category: 'AI Image Tools',
-      images: ['/marketing/images/card/changes_bg.png'],
+      description: 'Replace any background in seconds—no skills needed.',
+      sku: 'image-background-changer',
+      category: 'ImageEditingApplication',
+      operatingSystem: 'Web',
+      softwareVersion: '1.0',
+      image: '/marketing/images/hero/background_changer/change_backgrounds.png',
     },
     'image-enhancer': {
-      name: 'AI Image Enhancer',
-      description: 'Boost image resolution up to 2x without losing sharpness or detail. Transform blurry photos into crystal clear images.',
-      sku: 'AI-ENH-001',
-      category: 'AI Image Tools',
-      images: ['/marketing/images/card/upscaless.png'],
+      name: 'Image Enhancer',
+      description: 'Boost image resolution up to 2× without losing sharpness or detail.',
+      sku: 'image-enhancer',
+      category: 'ImageEditingApplication',
+      operatingSystem: 'Web',
+      softwareVersion: '1.0',
+      image: '/marketing/images/hero/enhance/enhance.png',
     },
     'image-changer': {
       name: 'AI Image Changer',
-      description: 'Edit or replace only the areas you select, keeping the rest untouched. Precise AI-powered selective editing.',
-      sku: 'AI-CHG-001',
-      category: 'AI Image Tools',
-      images: ['/marketing/images/card/partial_mod.png'],
+      description: 'Edit or replace only the areas you select, keeping the rest untouched.',
+      sku: 'image-changer',
+      category: 'ImageEditingApplication',
+      operatingSystem: 'Web',
+      softwareVersion: '1.0',
+      image: '/marketing/images/hero/changer/changer.png',
     },
     'image-color-changer': {
-      name: 'AI Color Changer',
-      description: 'Instantly swap product or object colors with realistic results. Perfect for fashion and product photography.',
-      sku: 'AI-COL-001',
-      category: 'AI Image Tools',
-      images: ['/marketing/images/card/change_colors.png'],
+      name: 'Image Color Changer',
+      description: 'Instantly swap product or object colors with realistic results.',
+      sku: 'image-color-changer',
+      category: 'ImageEditingApplication',
+      operatingSystem: 'Web',
+      softwareVersion: '1.0',
+      image: '/marketing/images/hero/color_changer/color_changer.png',
     },
     'virtual-try-on': {
       name: 'AI Virtual Try-On',
       description: 'Generate lifelike model images wearing your products, cutting shoot costs and boosting sales.',
-      sku: 'AI-VTO-001',
-      category: 'AI Fashion Tools',
-      images: ['/marketing/images/card/virtual_try.png'],
+      sku: 'virtual-try-on',
+      category: 'ImageEditingApplication',
+      operatingSystem: 'Web',
+      softwareVersion: '1.0',
+      image: '/marketing/images/hero/virtual_try/virtuals_trye.png',
     },
     'outfit-generator': {
       name: 'AI Outfit Generator',
       description: 'Generate and customize fashion outfits — swap fabrics, tweak styles, redesign patterns, all in one tool.',
-      sku: 'AI-OFG-001',
-      category: 'AI Fashion Tools',
-      images: ['/marketing/images/card/designs.png'],
+      sku: 'text-to-design',
+      category: 'ImageEditingApplication',
+      operatingSystem: 'Web',
+      softwareVersion: '1.0',
+      image: '/marketing/images/hero/outfit_generator/outfit_generatorss.png',
     },
     'sketch-to-image': {
       name: 'AI Sketch to Image Converter',
       description: 'Turn garment sketches into realistic images for prototyping and presentations.',
-      sku: 'AI-STI-001',
-      category: 'AI Fashion Tools',
-      images: ['/marketing/images/card/sketch_design.png'],
+      sku: 'sketch-to-design',
+      category: 'ImageEditingApplication',
+      operatingSystem: 'Web',
+      softwareVersion: '1.0',
+      image: '/marketing/images/hero/sketch_convert/sketch_convert.png',
+    },
+    'free-nano-banana': {
+      name: 'Free Nano-Banana Generator',
+      description: 'Discover Free Nano-Banana, Google\'s Gemini 2.5 Flash Image, and see how it inspires fashion design and creative image generation.',
+      sku: 'text-to-design',
+      category: 'ImageEditingApplication',
+      operatingSystem: 'Web',
+      softwareVersion: '1.0',
+      image: '/marketing/images/hero/banana/banana.png',
     }
   };
 
@@ -101,51 +126,16 @@ export function getProductDataForRoute(route: string) {
 // 根据路由获取评价数据
 export function getReviewDataForRoute(route: string) {
   const reviewDataMap: Record<string, any> = {
-    'image-background-remover': { ratingValue: '4.8', reviewCount: '247' },
-    'image-background-changer': { ratingValue: '4.7', reviewCount: '189' },
-    'image-color-changer': { ratingValue: '4.6', reviewCount: '134' },
-    'outfit-generator': { ratingValue: '4.8', reviewCount: '173' },
-    'image-changer': { ratingValue: '4.7', reviewCount: '156' },
-    'sketch-to-image': { ratingValue: '4.7', reviewCount: '98' },
-    'image-enhancer': { ratingValue: '4.9', reviewCount: '321' },
-    'virtual-try-on': { ratingValue: '4.9', reviewCount: '284' },
+    'image-background-remover': { ratingValue: '4.9', reviewCount: '2680' },
+    'image-background-changer': { ratingValue: '4.7', reviewCount: '3890' },
+    'image-color-changer': { ratingValue: '4.5', reviewCount: '3228' },
+    'outfit-generator': { ratingValue: '4.8', reviewCount: '8769' },
+    'image-changer': { ratingValue: '4.8', reviewCount: '6777' },
+    'sketch-to-image': { ratingValue: '4.9', reviewCount: '5378' },
+    'image-enhancer': { ratingValue: '4.6', reviewCount: '5328' },
+    'virtual-try-on': { ratingValue: '4.6', reviewCount: '4586' },
+    'free-nano-banana': { ratingValue: '4.5', reviewCount: '2699' },
   };
 
   return reviewDataMap[route] || null;
-}
-
-// 生成优化的图片alt属性
-export function generateImageAlt(imagePath: string, context: string): string {
-  const filename = imagePath.split('/').pop()?.split('.')[0] || '';
-  
-  const altMapping: Record<string, string> = {
-    'removes_bg': 'AI background removal tool demonstration showing before and after results',
-    'changes_bg': 'Image Background Changer tool showing various background replacement options',
-    'upscaless': 'AI image enhancer improving image resolution and clarity',
-    'partial_mod': 'AI image editor for selective area modification and enhancement',
-    'change_colors': 'AI color changer tool demonstrating product color variations',
-    'virtual_try': 'AI virtual try-on technology showing clothing on different models',
-    'designs': 'AI outfit generator creating custom fashion designs and patterns',
-    'sketch_design': 'AI sketch to image converter transforming drawings into realistic garments'
-  };
-
-  return altMapping[filename] || `${context} - Creamoda AI tool demonstration`;
-}
-
-// 生成页面级别的关键词
-export function generateKeywords(route: string): string[] {
-  const baseKeywords = ['AI fashion tools', 'creamoda ai', 'fashion design', 'AI image editing'];
-
-  const routeKeywords: Record<string, string[]> = {
-    'image-background-remover': ['background remover', 'remove background', 'transparent PNG', 'photo cutout'],
-    'image-background-changer': ['background changer', 'replace background', 'background replacement', 'photo editing'],
-    'image-enhancer': ['image enhancer', 'upscale image', 'improve image quality', 'AI enhancement'],
-    'image-changer': ['image editor', 'partial modification', 'selective editing', 'AI photo editor'],
-    'image-color-changer': ['color changer', 'recolor products', 'change object colors', 'color replacement'],
-    'virtual-try-on': ['virtual try-on', 'AI model', 'fashion photography', 'product modeling'],
-    'outfit-generator': ['outfit generator', 'fashion design', 'AI clothing design', 'style creation'],
-    'sketch-to-image': ['sketch to image', 'design converter', 'fashion sketches', 'garment visualization']
-  };
-
-  return [...baseKeywords, ...(routeKeywords[route] || [])];
 }

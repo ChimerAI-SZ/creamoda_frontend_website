@@ -17,8 +17,10 @@ interface ProductData {
   description: string;
   sku: string;
   category?: string;
+  operatingSystem?: string;
+  softwareVersion?: string;
+  image?: string;
   brand?: string;
-  images?: string[];
 }
 
 interface StructuredDataEnhancerProps {
@@ -53,132 +55,72 @@ export default function StructuredDataEnhancer({
     };
   };
 
-  // 生成产品结构化数据（增强版）
+  // 生成产品结构化数据（SoftwareApplication格式）
   const generateProductStructuredData = () => {
     if (!productData) return null;
 
     const baseProductData: any = {
       '@context': 'https://schema.org',
-      '@type': 'Product',
+      '@type': 'SoftwareApplication',
       'name': productData.name,
+      'image': productData.image,
       'description': productData.description,
+      'operatingSystem': productData.operatingSystem || 'Web',
+      'applicationCategory': productData.category || 'ImageEditingApplication',
+      'softwareVersion': productData.softwareVersion || '1.0',
       'sku': productData.sku,
       'brand': {
         '@type': 'Brand',
-        'name': productData.brand || 'Creamoda AI'
+        'name': 'Creamoda'
       },
-      'category': productData.category || 'AI Tools',
-      'url': `https://creamoda.ai${currentUrl}`,
       'offers': {
         '@type': 'Offer',
-        'availability': 'https://schema.org/InStock',
         'price': '0',
         'priceCurrency': 'USD',
-        'priceValidUntil': '2025-12-31',
-        'seller': {
-          '@type': 'Organization',
-          'name': 'Creamoda AI'
-        }
+        'availability': 'https://schema.org/InStock'
       }
     };
-
-    // 添加图片数据（如果有）
-    if (productData.images && productData.images.length > 0) {
-      baseProductData.image = productData.images;
-    }
 
     // 添加评价数据（如果有）
     if (reviewData) {
       baseProductData.aggregateRating = {
         '@type': 'AggregateRating',
         'ratingValue': reviewData.ratingValue,
-        'reviewCount': reviewData.reviewCount,
-        'bestRating': reviewData.bestRating || '5',
-        'worstRating': reviewData.worstRating || '1'
+        'reviewCount': reviewData.reviewCount
       };
     }
 
     return baseProductData;
   };
 
-  // 生成组织结构化数据
-  const generateOrganizationStructuredData = () => {
+  // 生成WebSite结构化数据（仅首页）
+  const generateWebSiteStructuredData = () => {
     return {
       '@context': 'https://schema.org',
-      '@type': 'Organization',
-      'name': 'Creamoda AI',
-      'description': 'AI-Powered Fashion Design Platform',
-      'url': 'https://creamoda.ai',
-      'logo': 'https://creamoda.ai/marketing/images/bottom_logo.png',
-      'sameAs': [
-        'https://youtube.com/@chimer-ai',
-        'https://www.instagram.com/creamoda.ai/',
-        'https://x.com/ai_creamoda',
-        'https://www.tiktok.com/@creamoda.ai'
-      ],
-      'contactPoint': {
-        '@type': 'ContactPoint',
-        'contactType': 'customer service',
-        'email': 'contact@creamoda.ai'
+      '@type': 'WebSite',
+      'url': 'https://creamoda.ai/',
+      'name': 'Creamoda | AI-Powered Fashion Design Platform',
+      'description': 'Reimagine Fashion with All-in-One AI-powered Solution.',
+      'publisher': {
+        '@type': 'Organization',
+        'name': 'Creamoda',
+        'logo': {
+          '@type': 'ImageObject',
+          'url': 'https://creamoda.ai/_next/image?url=%2Fmarketing%2Fimages%2Flogo_light.png&w=256&q=75'
+        }
       }
     };
   };
 
-  // 生成FAQ结构化数据
-  const generateFAQStructuredData = (faqItems: Array<{question: string, answer: string}>) => {
-    if (!faqItems || faqItems.length === 0) return null;
 
-    return {
-      '@context': 'https://schema.org',
-      '@type': 'FAQPage',
-      'mainEntity': faqItems.map(item => ({
-        '@type': 'Question',
-        'name': item.question,
-        'acceptedAnswer': {
-          '@type': 'Answer',
-          'text': item.answer
-        }
-      }))
-    };
-  };
 
-  // 生成软件应用结构化数据
-  const generateSoftwareApplicationStructuredData = () => {
-    return {
-      '@context': 'https://schema.org',
-      '@type': 'SoftwareApplication',
-      'name': 'Creamoda AI Tools',
-      'description': 'Comprehensive AI-powered fashion design and image editing platform',
-      'applicationCategory': 'DesignApplication',
-      'operatingSystem': 'Web Browser',
-      'offers': {
-        '@type': 'Offer',
-        'price': '0',
-        'priceCurrency': 'USD',
-        'description': 'Free credits for new users'
-      },
-      'creator': {
-        '@type': 'Organization',
-        'name': 'Creamoda AI'
-      },
-      'featureList': [
-        'Image Background Remover',
-        'Virtual Try-On',
-        'Outfit Generator',
-        'Image Enhancer',
-        'Sketch to Image Converter'
-      ]
-    };
-  };
+
 
   const structuredDataArray = [];
 
-  // 始终添加组织数据
-  structuredDataArray.push(generateOrganizationStructuredData());
-
   // 根据页面类型添加相应的结构化数据
   if (pageType === 'homepage') {
-    structuredDataArray.push(generateSoftwareApplicationStructuredData());
+    structuredDataArray.push(generateWebSiteStructuredData());
   }
 
   if (pageType === 'product' || pageType === 'tool') {

@@ -1,5 +1,4 @@
 import Image from 'next/image';
-import { generateImageAlt } from '@/src/utils/seoHelpers';
 
 interface OptimizedImageProps {
   src: string;
@@ -28,8 +27,8 @@ export default function OptimizedImage({
   placeholder = 'empty',
   blurDataURL,
 }: OptimizedImageProps) {
-  // 生成优化的alt属性
-  const optimizedAlt = alt || generateImageAlt(src, context);
+  // 使用传入的alt属性，如果没有则使用context作为fallback
+  const optimizedAlt = alt || `${context} - Creamoda AI` || 'Creamoda AI Tool';
   
   // 默认sizes配置，针对不同屏幕尺寸优化
   const defaultSizes = sizes || '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw';

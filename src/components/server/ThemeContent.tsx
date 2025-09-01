@@ -26,9 +26,9 @@ export default function ThemeContent({
       {showWhyChoose && <StaticWhyChoose theme={theme} />}
       
       {/* 特殊功能模块 - 仅在 outfit-generator 页面显示 */}
-      {currentRoute === 'outfit-generator' && (
+      {/* {currentRoute === 'outfit-generator' && (
         <OutfitGeneratorFeatureModule theme={theme} />
-      )}
+      )} */}
       
       {showOfferMore && (
         <>

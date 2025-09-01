@@ -29,7 +29,7 @@ export default function StaticOfferMore({ theme, currentRoute = '' }: StaticOffe
       title: 'Image Background Changer',
       route: 'image-background-changer',
       image: '/marketing/images/card/changes_bg.png',
-      description: 'Replace any background with custom colors, images, or scenes.',
+      description: 'Replace any background in seconds—no skills needed.',
       hasCorner: false,
       hasEnhance: false,
       hasColor: false

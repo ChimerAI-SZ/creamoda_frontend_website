@@ -57,34 +57,7 @@ export default function Home() {
   const theme = getThemeForRoute('background_remove');
   const saasUrl = 'https://www.creamoda.ai/fashion-design/create';
 
-  // 首页的结构化数据
-  const structuredData = {
-    '@context': 'https://schema.org',
-    '@type': 'WebSite',
-    'name': 'Creamoda | AI-Powered Fashion Design Platform',
-    'description': 'Reimagine Fashion with All-in-One AI-powered Solution. Create, design, and transform fashion with our comprehensive AI tools: background removal, virtual try-on, outfit generation, and more.',
-    'url': 'https://creamoda.ai',
-    'potentialAction': {
-      '@type': 'SearchAction',
-      'target': {
-        '@type': 'EntryPoint',
-        'urlTemplate': 'https://creamoda.ai/{search_term_string}'
-      },
-      'query-input': 'required name=search_term_string'
-    },
-    'mainEntity': {
-      '@type': 'SoftwareApplication',
-      'name': 'Creamoda AI Fashion Tools',
-      'applicationCategory': 'DesignApplication',
-      'operatingSystem': 'Web Browser',
-      'offers': {
-        '@type': 'Offer',
-        'price': '0',
-        'priceCurrency': 'USD',
-        'description': 'Free credits for new users'
-      }
-    }
-  };
+  // 结构化数据现在通过 StructuredDataEnhancer 组件统一管理
 
   return (
     <div className="min-h-screen">
