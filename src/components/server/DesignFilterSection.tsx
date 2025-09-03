@@ -825,7 +825,16 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
                               <button 
                                 className="w-full px-4 py-3 text-white text-sm font-medium text-left hover:bg-white/10 transition-colors relative"
                                 style={{ fontFamily: "Manrope, system-ui, sans-serif" }}
-                                onClick={() => setDropdownOpen(false)}
+                                onClick={() => {
+                                  setDropdownOpen(false);
+                                  if (selectedItem) {
+                                    // 跳转到 fashion-design/create 页面，并传递图片URL和设置 Vary style
+                                    const encodedImageUrl = encodeURIComponent(selectedItem.image_url || '');
+                                    const targetUrl = `/fashion-design/create?imageUrl=${encodedImageUrl}&tab=image-to-image&variationType=11`;
+                                    console.log('跳转到 Change Style:', targetUrl);
+                                    router.push(targetUrl);
+                                  }
+                                }}
                               >
                                 Change Style
                                 <div className="absolute bottom-0 left-4 right-4 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
@@ -835,7 +844,16 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
                               <button 
                                 className="w-full px-4 py-3 text-white text-sm font-medium text-left hover:bg-white/10 transition-colors relative"
                                 style={{ fontFamily: "Manrope, system-ui, sans-serif" }}
-                                onClick={() => setDropdownOpen(false)}
+                                onClick={() => {
+                                  setDropdownOpen(false);
+                                  if (selectedItem) {
+                                    // 跳转到 fashion-design/create 页面，并传递图片URL和设置 Change Printing
+                                    const encodedImageUrl = encodeURIComponent(selectedItem.image_url || '');
+                                    const targetUrl = `/fashion-design/create?imageUrl=${encodedImageUrl}&tab=image-to-image&variationType=9`;
+                                    console.log('跳转到 Change Printing:', targetUrl);
+                                    router.push(targetUrl);
+                                  }
+                                }}
                               >
                                 Change Printing
                                 <div className="absolute bottom-0 left-4 right-4 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
@@ -845,7 +863,16 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
                               <button 
                                 className="w-full px-4 py-3 text-white text-sm font-medium text-left hover:bg-white/10 transition-colors relative"
                                 style={{ fontFamily: "Manrope, system-ui, sans-serif" }}
-                                onClick={() => setDropdownOpen(false)}
+                                onClick={() => {
+                                  setDropdownOpen(false);
+                                  if (selectedItem) {
+                                    // 跳转到 fashion-design/create 页面，并传递图片URL和设置 Change Fabric
+                                    const encodedImageUrl = encodeURIComponent(selectedItem.image_url || '');
+                                    const targetUrl = `/fashion-design/create?imageUrl=${encodedImageUrl}&tab=image-to-image&variationType=8`;
+                                    console.log('跳转到 Change Fabric:', targetUrl);
+                                    router.push(targetUrl);
+                                  }
+                                }}
                               >
                                 Change Fabric
                                 <div className="absolute bottom-0 left-4 right-4 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
@@ -855,7 +882,16 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
                               <button 
                                 className="w-full px-4 py-3 text-white text-sm font-medium text-left hover:bg-white/10 transition-colors"
                                 style={{ fontFamily: "Manrope, system-ui, sans-serif" }}
-                                onClick={() => setDropdownOpen(false)}
+                                onClick={() => {
+                                  setDropdownOpen(false);
+                                  if (selectedItem) {
+                                    // 跳转到 magic-kit/create 页面，并传递图片URL和设置 Change Color
+                                    const encodedImageUrl = encodeURIComponent(selectedItem.image_url || '');
+                                    const targetUrl = `/magic-kit/create?imageUrl=${encodedImageUrl}&variationType=1`;
+                                    console.log('跳转到 Change Color:', targetUrl);
+                                    router.push(targetUrl);
+                                  }
+                                }}
                               >
                                 Change Color
                               </button>

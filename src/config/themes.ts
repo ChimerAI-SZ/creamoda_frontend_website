@@ -632,10 +632,10 @@ export const themes: Record<string, ThemeConfig> = {
       uploadText: 'Try Now',
       uploadSubText: 'Or drop a design reference or URL',
       demoImages: [
-        '/marketing/images/hero/outfit_generator/one.jpg',
+        '/marketing/images/hero/outfit_generator/one.png',
         '/marketing/images/hero/outfit_generator/two.png',
         '/marketing/images/hero/outfit_generator/three.png',
-        '/marketing/images/hero/outfit_generator/four.png'
+        '/marketing/images/hero/outfit_generator/four.jpg'
       ]
     },
     fusionGuide: {

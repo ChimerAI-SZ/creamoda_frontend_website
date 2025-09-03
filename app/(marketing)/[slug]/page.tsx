@@ -78,9 +78,9 @@ const pageMetaConfig: Record<string, {
     keywords: 'Free Nano-Banana, Google AI model, Nano Banana AI, AI fashion design, AI outfit generator, virtual try-on, AI image generator'
   },
   'design': {
-    title: 'Design Hub | AI-Powered Design Tools | Creamoda',
-    description: 'Explore our comprehensive suite of AI-powered design tools. From outfit generation to image editing, create stunning fashion designs with professional-grade AI technology.',
-    keywords: 'AI design tools, fashion design platform, AI outfit generator, virtual try-on, design hub, creative tools, AI fashion design, digital design platform'
+    title: 'AI Fashion Design Ideas | Inspire Your Next Collection',
+    description: 'Find inspiration for your next collection with AI fashion design ideas, spanning casualwear, couture, and avant-garde styles — spark creativity and bring bold concepts to life.',
+    keywords: ''
   }
 };
 

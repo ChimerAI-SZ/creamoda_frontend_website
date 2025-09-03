@@ -77,14 +77,14 @@ const MemoizedImageGrid = memo(function ImageGridContent({
         ))}
         
         {/* 加载更多指示器 */}
-        {isLoading && hasMore && (
+        {/* {isLoading && hasMore && (
           <div className="w-full h-20 flex items-center justify-center col-span-full">
             <div className="flex items-center gap-2 text-gray-500">
               <div className="w-4 h-4 border-2 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
               <span>加载更多图片...</span>
             </div>
           </div>
-        )}
+        )} */}
         
         {/* 没有更多图片提示 */}
         {!hasMore && images.length > 0 && (
