@@ -23,8 +23,8 @@ interface PageProps {
 // 获取图片详情数据
 async function getImageBySlug(slug: string): Promise<FrontendImageItem | null> {
   try {
-    // 直接调用后端API，避免通过Next.js API路由 - 暂时硬编码测试
-    const backendUrl = `https://test-api.chimerai.cn/common/frontend/images/detail?slug=${encodeURIComponent(slug)}`;
+    // 直接调用后端API，避免通过Next.js API路由 - 使用环境变量配置的后端地址
+    const backendUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/common/frontend/images/detail?slug=${encodeURIComponent(slug)}`;
     
     const response = await fetch(backendUrl, {
       method: 'GET',

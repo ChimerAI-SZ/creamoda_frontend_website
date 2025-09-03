@@ -10,8 +10,10 @@ export async function GET(request: NextRequest) {
       queryParams.append(key, value);
     });
 
-    // 转发请求到后端API - 暂时硬编码测试
-    const backendUrl = `https://test-api.chimerai.cn/common/frontend/images?${queryParams.toString()}`;
+    // 转发请求到后端API - 使用环境变量配置的后端地址
+    const backendUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/common/frontend/images?${queryParams.toString()}`;
+    
+    console.log('🔍 请求后端URL:', backendUrl);
     
     const response = await fetch(backendUrl, {
       method: 'GET',
@@ -23,10 +25,12 @@ export async function GET(request: NextRequest) {
     });
 
     if (!response.ok) {
+      console.error('❌ 后端API错误:', response.status, response.statusText);
       throw new Error(`Backend API error: ${response.status}`);
     }
 
     const data = await response.json();
+    console.log('✅ 后端API响应成功:', data);
     
     return NextResponse.json(data);
   } catch (error) {
