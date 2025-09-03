@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { ThemeConfig } from '../../types/theme';
 import StaticFusionGuide from './StaticFusionGuide';
 import StaticWhyChoose from './StaticWhyChoose';
@@ -27,7 +28,9 @@ export default function ThemeContent({
   if (currentRoute === 'design') {
     return (
       <div className="theme-content">
-        <DesignFilterSection />
+        <Suspense fallback={<div className="min-h-screen bg-black flex items-center justify-center"><div className="text-white">Loading...</div></div>}>
+          <DesignFilterSection />
+        </Suspense>
         <DesignStepsModule />
         <DesignAboutModule />
       </div>

@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
+import { Suspense } from 'react';
 import { getAllRoutes } from '@/src/config/routes';
 import { getThemeForRoute, getSaasUrlForRoute } from '@/src/utils/themeRenderer';
 import StaticHero from '@/src/components/server/StaticHero';
