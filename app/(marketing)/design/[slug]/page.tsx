@@ -23,27 +23,27 @@ interface PageProps {
 // 获取图片详情数据
 async function getImageBySlug(slug: string): Promise<FrontendImageItem | null> {
   try {
-    // 直接调用后端API，避免通过Next.js API路由 - 已注释，使用线上后端
-    // const backendUrl = `http://localhost:8000/api/v1/common/frontend/images/detail?slug=${encodeURIComponent(slug)}`;
+    // 直接调用后端API，避免通过Next.js API路由 - 使用环境变量配置的后端地址
+    const backendUrl = `${process.env.NEXT_PUBLIC_API_URL}/common/frontend/images/detail?slug=${encodeURIComponent(slug)}`;
     
-    // const response = await fetch(backendUrl, {
-    //   method: 'GET',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   // 添加超时设置
-    //   signal: AbortSignal.timeout(10000), // 10秒超时
-    // });
+    const response = await fetch(backendUrl, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      // 添加超时设置
+      signal: AbortSignal.timeout(10000), // 10秒超时
+    });
 
-    // if (!response.ok) {
-    //   throw new Error(`Backend API error: ${response.status}`);
-    // }
+    if (!response.ok) {
+      throw new Error(`Backend API error: ${response.status}`);
+    }
 
-    // const data = await response.json();
+    const data = await response.json();
     
-    // if (data.code === 0 && data.data) {
-    //   return data.data;
-    // }
+    if (data.code === 0 && data.data) {
+      return data.data;
+    }
     return null;
   } catch (error) {
     console.error('Failed to fetch image by slug:', error);
