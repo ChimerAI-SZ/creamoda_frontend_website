@@ -58,7 +58,7 @@ export interface ImageUploadFormData {
 
 
 
-export function Sidebar() {
+export function Sidebar({ initialPrompt }: { initialPrompt?: string }) {
   const { setModelSizes } = useModelStore();
   const { setGenerating } = useGenerationStore();
   const { showAlert } = useAlertStore();
@@ -380,7 +380,7 @@ export function Sidebar() {
           <div className="flex-1 overflow-hidden pt-4 ">
             <TabsContent value="text" className="h-full">
               <div className={'block h-full'}>
-                <TextToImageContent onSubmit={handleSubmit} />
+                <TextToImageContent onSubmit={handleSubmit} initialPrompt={initialPrompt} />
               </div>
             </TabsContent>
             <TabsContent value="image" className="h-full">

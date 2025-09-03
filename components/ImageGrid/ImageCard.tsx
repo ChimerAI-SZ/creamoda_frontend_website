@@ -1,4 +1,4 @@
-import { forwardRef, useState, useRef, useEffect } from 'react';
+import { forwardRef, useState, useRef, useEffect, memo } from 'react';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
 
@@ -14,7 +14,7 @@ interface ImageCardProps {
   handleCollectImage: (imageId: number, isCollected: boolean) => void;
 }
 
-export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(
+const ImageCardComponent = forwardRef<HTMLDivElement, ImageCardProps>(
   ({ image, onClick, handleDeleteImage, handleCollectImage }, ref) => {
     const [isLoaded, setIsLoaded] = useState(false);
     const [progress, setProgress] = useState(0);
@@ -102,7 +102,10 @@ export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(
               height={image.height || 512}
               className="object-cover w-full h-auto rounded-[16px] border border-[#DCDCDC]"
               loading="lazy"
+              placeholder="blur"
+              blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
               onLoadingComplete={onImageLoad}
+              onError={() => setIsLoaded(true)} // 即使加载失败也标记为已加载，避免一直显示loading
               unoptimized
               referrerPolicy="no-referrer"
               crossOrigin="anonymous"
@@ -116,7 +119,7 @@ export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(
           <div className="absolute inset-0">
             <div className="relative w-full h-full z-1">
               <div
-                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center rounded-[16px] "
+                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center rounded-[16px]"
                 style={{
                   background: 'linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.5) 100%)'
                 }}
@@ -164,4 +167,15 @@ export const ImageCard = forwardRef<HTMLDivElement, ImageCardProps>(
   }
 );
 
-ImageCard.displayName = 'ImageCard';
+ImageCardComponent.displayName = 'ImageCard';
+
+// 使用memo优化性能，只有当props真正改变时才重新渲染
+export const ImageCard = memo(ImageCardComponent, (prevProps, nextProps) => {
+  // 比较图片的主要属性
+  return (
+    prevProps.image.genImgId === nextProps.image.genImgId &&
+    prevProps.image.status === nextProps.image.status &&
+    prevProps.image.resultPic === nextProps.image.resultPic &&
+    prevProps.image.isCollected === nextProps.image.isCollected
+  );
+});

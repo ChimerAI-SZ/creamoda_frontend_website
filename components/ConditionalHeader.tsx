@@ -26,5 +26,10 @@ export function ConditionalHeader() {
     return null;
   }
   
+  // 如果是 /design/slug 这样的动态路由，也不显示 SaaS Header
+  if (pathname.startsWith('/design/') && pathname !== '/design') {
+    return null;
+  }
+  
   return <Header />;
 }

@@ -41,7 +41,7 @@ export function DescribeDesign({
       <Textarea
         id="description"
         placeholder={placeholderText}
-        className="min-h-[180px] resize-none placeholder:text-[#D5D5D5] font-inter text-sm font-normal leading-5 rounded-[4px] border border-[#DCDCDC]"
+        className="min-h-[180px] resize-none placeholder:text-[#D5D5D5] font-inter text-sm font-normal leading-5 rounded-[4px] border border-[#DCDCDC] text-black"
         value={description}
         onChange={onDescriptionChange}
         maxLength={PROMPT_MAX_LEN}

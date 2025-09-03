@@ -632,10 +632,10 @@ export const themes: Record<string, ThemeConfig> = {
       uploadText: 'Try Now',
       uploadSubText: 'Or drop a design reference or URL',
       demoImages: [
-        '/marketing/images/hero/outfit_generator/one.png',
+        '/marketing/images/hero/outfit_generator/one.jpg',
         '/marketing/images/hero/outfit_generator/two.png',
         '/marketing/images/hero/outfit_generator/three.png',
-        '/marketing/images/hero/outfit_generator/four.jpg'
+        '/marketing/images/hero/outfit_generator/four.png'
       ]
     },
     fusionGuide: {
@@ -1220,21 +1220,22 @@ export const themes: Record<string, ThemeConfig> = {
     faq: {
       items: [
         {
-          question: 'What design tools are available?',
-          answer: 'Our platform includes AI outfit generation, virtual try-on, background editing, image enhancement, and many more creative tools.'
+          question: 'What is this page for?',
+          answer: "This page showcases AI-generated fashion ideas across various styles and categories. It's designed to inspire designers, brands, and creators, providing a starting point for new collections or design experiments."
         },
         {
-          question: 'Do I need design experience?',
-          answer: 'No, our tools are designed for users of all skill levels. The AI-powered interface makes professional design accessible to everyone.'
+          question: 'How do I use these fashion ideas?',
+          answer: 'Browse the ideas, pick the designs that inspire you, and use the AI fashion design tools to create variations or new concepts with one click.'
         },
         {
-          question: 'Can I use designs commercially?',
-          answer: 'Yes, designs created with our tools can be used for commercial purposes according to our licensing terms.'
+          question: 'Can I customize the AI-generated designs?',
+          answer: "Yes! Once you select a fashion idea, you can modify fabrics, colors, patterns, and styles using Creamoda's AI tools."
         },
         {
-          question: 'How do I get started?',
-          answer: 'Simply choose a tool that fits your needs and start creating. Most tools offer free trials to help you get started.'
+          question: 'Are these designs free to use?',
+          answer: "The fashion ideas are free to browse for inspiration. Generating new designs with AI requires credits in Creamoda's system."
         }
+       
       ]
     }
   },

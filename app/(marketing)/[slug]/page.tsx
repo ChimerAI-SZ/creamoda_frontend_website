@@ -8,6 +8,9 @@ import ThemeContent from '@/src/components/server/ThemeContent';
 import StaticFAQ from '@/src/components/server/StaticFAQ';
 import StaticFooter from '@/src/components/server/StaticFooter';
 import StructuredDataEnhancer from '@/src/components/seo/StructuredDataEnhancer';
+import DesignFilterSection from '@/src/components/server/DesignFilterSection';
+import DesignStepsModule from '@/src/components/server/DesignStepsModule';
+import DesignAboutModule from '@/src/components/server/DesignAboutModule';
 
 import { 
   generateBreadcrumbsForRoute, 

@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo, memo } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
 
 import { ImageCard } from './ImageCard';
@@ -10,7 +11,7 @@ import ImageDetail from './ImageDetail';
 import { downloadImage } from '@/utils';
 import { useDeleteImage } from '@/hooks/useDeleteImage';
 import { usePendingImages } from './hooks/usePendingImages';
-import { useGenerationStore } from '@/stores/useGenerationStore';
+import { useInfiniteScroll } from './hooks/useInfiniteScroll';
 import usePersonalInfoStore from '@/stores/usePersonalInfoStore';
 import { useVariationFormStore } from '@/stores/useMagicKitStore';
 import { eventBus } from '@/utils/events';
@@ -29,13 +30,81 @@ export interface ImageItem {
   isCollected: boolean;
 }
 
-const PAGE_SIZE = 10000; // 请求的图片数量
+const PAGE_SIZE = 20;
+
+// 使用memo优化图片网格组件，避免不必要的重渲染
+const MemoizedImageGrid = memo(function ImageGridContent({
+  images,
+  lastItemRef,
+  handleImageClick,
+  handleDeleteImage,
+  handleCollectImage,
+  isLoading,
+  hasMore
+}: {
+  images: ImageItem[];
+  lastItemRef: (node: HTMLDivElement | null) => void;
+  handleImageClick: (image: ImageItem) => void;
+  handleDeleteImage: (imageId: number) => void;
+  handleCollectImage: (imageId: number, isCollected: boolean) => void;
+  isLoading: boolean;
+  hasMore: boolean;
+}) {
+  return (
+    <ResponsiveMasonry
+      columnsCountBreakPoints={{
+        350: 1,
+        800: 2,
+        1200: 3,
+        1440: 4,
+        1680: 5,
+        1920: 6,
+        2560: 7,
+        3440: 8,
+        3840: 9
+      }}
+    >
+      <Masonry>
+        {images.map((image, index) => (
+          <ImageCard
+            key={image.genImgId || index}
+            ref={index === images.length - 1 ? lastItemRef : undefined}
+            image={image}
+            onClick={() => handleImageClick(image)}
+            handleDeleteImage={handleDeleteImage}
+            handleCollectImage={handleCollectImage}
+          />
+        ))}
+        
+        {/* 加载更多指示器 */}
+        {isLoading && hasMore && (
+          <div className="w-full h-20 flex items-center justify-center col-span-full">
+            <div className="flex items-center gap-2 text-gray-500">
+              <div className="w-4 h-4 border-2 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
+              <span>加载更多图片...</span>
+            </div>
+          </div>
+        )}
+        
+        {/* 没有更多图片提示 */}
+        {!hasMore && images.length > 0 && (
+          <div className="w-full h-16 flex items-center justify-center col-span-full">
+            <span className="text-gray-500 text-sm">已加载全部图片</span>
+          </div>
+        )}
+      </Masonry>
+    </ResponsiveMasonry>
+  );
+});
 
 export function ImageGrid() {
   // 图片列表
   const [images, setImages] = useState<ImageItem[]>([]);
+  // 分页状态
+  const [currentPage, setCurrentPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const { setGenerating } = useGenerationStore();
   const { clearUserInfo, fetchUserInfo } = usePersonalInfoStore();
   // 查看图片详情相关state
   const [selectedImage, setSelectedImage] = useState<ImageItem | null>(null);
@@ -60,20 +129,24 @@ export function ImageGrid() {
 
   // 加载图片数据
   const fetchImages = useCallback(
-    async (currentPage: number) => {
+    async (page: number, isLoadMore: boolean = false) => {
+      if (isLoading) return; // 防止重复请求
+      
+      setIsLoading(true);
       try {
-        const data = await generate.getGenerateList(currentPage, PAGE_SIZE);
+        const data = await generate.getGenerateList(page, PAGE_SIZE);
 
         if (data.code === 0) {
           const imageList = data.data.list;
+          
+          // 检查是否还有更多数据
+          setHasMore(imageList.length === PAGE_SIZE);
 
           // 检查是否有正在生成中的图片
           const pendingImages = imageList.filter((item: ImageItem) => [1, 2].includes(item.status));
 
-          // 如果有正在生成中的图片，标记全局的generating状态
+          // 如果有正在生成中的图片，添加到轮询中但不设置全局状态
           if (pendingImages.length > 0) {
-            setGenerating(true);
-
             // 添加待生成图片到轮询集合中
             const pendingIds = pendingImages.map((img: ImageItem) => img.genImgId);
             pendingIdsRef.current = new Set([...pendingIdsRef.current, ...pendingIds]);
@@ -82,10 +155,13 @@ export function ImageGrid() {
             startPolling();
           }
 
-          if (currentPage === 1) {
-            setImages(imageList);
-          } else {
+          if (isLoadMore) {
+            // 加载更多时追加图片
             setImages(prev => [...prev, ...imageList]);
+          } else {
+            // 首次加载或刷新时替换图片
+            setImages(imageList);
+            setCurrentPage(1);
           }
         } else {
           showAlert({
@@ -100,17 +176,36 @@ export function ImageGrid() {
           content:
             error.message || 'Something went wrong. Please try again later or contact support if the issue persists'
         });
+      } finally {
+        setIsLoading(false);
       }
     },
-    [setGenerating, pendingIdsRef, startPolling, showAlert]
+    [pendingIdsRef, startPolling, showAlert, isLoading]
   );
+
+  // 加载更多图片
+  const loadMore = useCallback(() => {
+    if (hasMore && !isLoading) {
+      const nextPage = currentPage + 1;
+      setCurrentPage(nextPage);
+      fetchImages(nextPage, true);
+    }
+  }, [currentPage, hasMore, isLoading, fetchImages]);
+
+  // 无限滚动钩子
+  const { lastItemRef } = useInfiniteScroll({
+    hasMore,
+    loadMore
+  });
 
   // 监听图片列表生成事件
   // 当用户登录成功或提交生成请求后，会触发此事件来刷新图片列表
   useEffect(() => {
     const handler = () => {
-      // 收到事件后重新获取第一页的图片数据，而不是当前页
-      fetchImages(1);
+      // 收到事件后重新获取第一页的图片数据，重置分页状态
+      setCurrentPage(1);
+      setHasMore(true);
+      fetchImages(1, false);
     };
 
     // 订阅和卸载 imageList:generate-list 事件
@@ -155,16 +250,19 @@ export function ImageGrid() {
     }
   }, [pendingIdsRef, startPolling]);
 
-  // 图片点击事件，标记当前点击的图片，然后打开详情
-  const handleImageClick = useCallback((image: ImageItem) => {
-    setSelectedImage(image);
-    setDetailVisible(true);
-  }, []);
-
-  const handleCollectImage = useCallback(
-    (imageId: number, currentIsCollected: boolean) => {
+  // 使用useMemo优化回调函数
+  const memoizedHandlers = useMemo(() => ({
+    handleImageClick: (image: ImageItem) => {
+      setSelectedImage(image);
+      setDetailVisible(true);
+    },
+    handleDeleteImage: (imageId: number) => {
+      deleteImage(imageId, () => {
+        setImages(prev => prev.filter(img => img.genImgId !== imageId));
+      });
+    },
+    handleCollectImage: (imageId: number, currentIsCollected: boolean) => {
       const newIsCollected = !currentIsCollected;
-      // Optimistic update
       setImages(prevImages =>
         prevImages.map(img => (img.genImgId === imageId ? { ...img, isCollected: newIsCollected } : img))
       );
@@ -178,15 +276,12 @@ export function ImageGrid() {
           action: newIsCollected ? 1 : 2
         })
         .catch(error => {
-          // Ensure we return a similar structure on caught error
-          // to prevent downstream .then/.catch from breaking
           console.error(error);
           return { code: -1, message: error.message || 'A network error occurred' };
         });
 
       promise.then(res => {
         if (res.code !== 0) {
-          // Revert on failure
           setImages(prevImages =>
             prevImages.map(img => (img.genImgId === imageId ? { ...img, isCollected: currentIsCollected } : img))
           );
@@ -197,15 +292,8 @@ export function ImageGrid() {
       });
 
       return promise;
-    },
-    [selectedImage] // Dependency on selectedImage is needed for optimistic update of detail view
-  );
-
-  const handleDeleteImage = useCallback((imageId: number) => {
-    deleteImage(imageId, () => {
-      setImages(prev => prev.filter(img => img.genImgId !== imageId));
-    });
-  }, [deleteImage]);
+    }
+  }), [deleteImage, selectedImage]);
 
   const handleActionButtonClick = async (text: string, image: ImageItem) => {
     if (text === 'Download') {
@@ -213,14 +301,11 @@ export function ImageGrid() {
     } else if (text === 'Delete') {
       const imageId = image?.genImgId ?? 0;
 
-      deleteImage(imageId, () => {
-        setImages(prev => prev.filter(img => img.genImgId !== imageId));
-
-        setDetailVisible(false);
-      });
+      memoizedHandlers.handleDeleteImage(imageId);
+      setDetailVisible(false);
     } else if (['Remove from album', 'Add to album'].includes(text)) {
       try {
-        const res = await handleCollectImage(image.genImgId, image.isCollected);
+        const res = await memoizedHandlers.handleCollectImage(image.genImgId, image.isCollected);
 
         if (res.code === 0) {
           showAlert({
@@ -279,7 +364,9 @@ export function ImageGrid() {
 
     // 如果用户已登录，则加载图片
     if (token) {
-      fetchImages(1);
+      setCurrentPage(1);
+      setHasMore(true);
+      fetchImages(1, false);
     }
   }, [fetchImages]);
 
@@ -320,32 +407,43 @@ export function ImageGrid() {
     <>
       <div className="w-full h-full p-4 z-20 bg-[#fff] rounded-[20px] overflow-hidden shadow-card-shadow">
         <div className="h-full overflow-y-auto">
-          {mounted && (
-            <ResponsiveMasonry
-              columnsCountBreakPoints={{
-                350: 1,
-                800: 2,
-                1200: 3,
-                1440: 4,
-                1680: 5,
-                1920: 6,
-                2560: 7,
-                3440: 8,
-                3840: 9
-              }}
-            >
-              <Masonry>
-                {images.map((image, index) => (
-                  <ImageCard
-                    key={image.genImgId || index}
-                    image={image}
-                    onClick={() => handleImageClick(image)}
-                    handleDeleteImage={handleDeleteImage}
-                    handleCollectImage={handleCollectImage}
-                  />
-                ))}
-              </Masonry>
-            </ResponsiveMasonry>
+          {mounted && images.length > 0 && (
+            <MemoizedImageGrid
+              images={images}
+              lastItemRef={lastItemRef}
+              handleImageClick={memoizedHandlers.handleImageClick}
+              handleDeleteImage={memoizedHandlers.handleDeleteImage}
+              handleCollectImage={memoizedHandlers.handleCollectImage}
+              isLoading={isLoading}
+              hasMore={hasMore}
+            />
+          )}
+          
+          {/* 空状态显示 */}
+          {mounted && images.length === 0 && !isLoading && (
+            <div className="h-full flex flex-col items-center justify-center text-gray-500">
+              <div className="text-center">
+                <Image
+                  src="/images/empty-state.svg"
+                  alt="No images"
+                  width={120}
+                  height={120}
+                  className="mx-auto mb-4 opacity-50"
+                />
+                <p className="text-lg font-medium mb-2">还没有生成的图片</p>
+                <p className="text-sm">开始创建你的第一张时尚设计图片吧！</p>
+              </div>
+            </div>
+          )}
+          
+          {/* 初始加载状态 */}
+          {mounted && images.length === 0 && isLoading && (
+            <div className="h-full flex items-center justify-center">
+              <div className="flex items-center gap-2 text-gray-500">
+                <div className="w-6 h-6 border-2 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
+                <span>加载图片中...</span>
+              </div>
+            </div>
           )}
         </div>
       </div>

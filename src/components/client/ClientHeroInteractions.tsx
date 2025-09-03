@@ -14,6 +14,15 @@ export default function ClientHeroInteractions({ currentSaasUrl }: ClientHeroInt
   const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const navRef = useRef<HTMLElement | null>(null);
   const router = useRouter();
+  
+  // 检查当前路径是否为 /design/slug
+  const [isDesignSlugPage, setIsDesignSlugPage] = useState(false);
+  
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setIsDesignSlugPage(window.location.pathname.startsWith('/design/') && window.location.pathname !== '/design');
+    }
+  }, []);
 
   // 设置导航高度CSS变量
   useEffect(() => {
@@ -40,12 +49,17 @@ export default function ClientHeroInteractions({ currentSaasUrl }: ClientHeroInt
 
   useEffect(() => {
     const onScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      // 如果是 /design/slug 页面，直接设置为滚动状态（黑色导航栏）
+      if (isDesignSlugPage) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(window.scrollY > 20);
+      }
     };
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+  }, [isDesignSlugPage]);
 
   const openDropdown = (dropdownName: string) => {
     if (closeTimeoutRef.current) {
