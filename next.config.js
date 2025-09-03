@@ -29,11 +29,11 @@ const nextConfig = {
   },
   
   async rewrites() {
-    // 如果环境变量未设置，返回空数组，避免构建错误
-    const apiUrl = process.env.NEXT_LOCAL_API_URL;
+    // 使用线上后端API地址
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://your-backend-domain.com';
     
     if (!apiUrl) {
-      console.warn('警告: NEXT_LOCAL_API_URL 环境变量未设置，跳过 API 重写配置');
+      console.warn('警告: NEXT_PUBLIC_API_URL 环境变量未设置，跳过 API 重写配置');
       return [];
     }
 
@@ -41,6 +41,10 @@ const nextConfig = {
       {
         source: '/api/v1/:path*',
         destination: `${apiUrl}/api/v1/:path*`
+      },
+      {
+        source: '/api/frontend-images/:path*',
+        destination: `${apiUrl}/api/v1/common/frontend/images/:path*`
       }
     ];
   },
