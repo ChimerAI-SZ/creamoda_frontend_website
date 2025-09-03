@@ -10,8 +10,8 @@ export async function GET(request: NextRequest) {
       queryParams.append(key, value);
     });
 
-    // 转发请求到后端API - 使用环境变量配置的后端地址
-    const backendUrl = `${process.env.NEXT_PUBLIC_API_URL}/common/frontend/images?${queryParams.toString()}`;
+    // 转发请求到后端API - 暂时硬编码测试
+    const backendUrl = `https://test-api.chimerai.cn/common/frontend/images?${queryParams.toString()}`;
     
     const response = await fetch(backendUrl, {
       method: 'GET',
