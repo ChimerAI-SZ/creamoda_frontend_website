@@ -9,22 +9,8 @@ import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { getFrontendImages, getFrontendImageDetail } from '@/lib/api/common';
 import { FrontendImageItem, SimilarImageItem } from '@/types/frontendImages';
 
-// 定义字体样式和动画
-const fontStyles = `
-  @font-face {
-    font-family: 'Neue Machina Ultrabold';
-    src: url('/marketing/fonts/NeueMachina-Ultrabold.otf') format('opentype');
-    font-weight: 900;
-    font-style: normal;
-  }
-  
-  @font-face {
-    font-family: 'Neue Machina Regular';
-    src: url('/marketing/fonts/NeueMachina-Regular.otf') format('opentype');
-    font-weight: 400;
-    font-style: normal;
-  }
-
+// 定义样式和动画（移除重复的字体定义）
+const componentStyles = `
   @keyframes fadeInUp {
     from {
       opacity: 0;
@@ -62,7 +48,6 @@ const fontStyles = `
     background-color: rgba(255, 255, 255, 0.3);
   }
 
-
   /* 下拉菜单动画优化 */
   .dropdown-menu {
     transform: translateZ(0);
@@ -81,6 +66,32 @@ const fontStyles = `
   .image-container-stable {
     contain: layout;
     will-change: auto;
+  }
+
+  /* 字体加载优化 - 防止字体切换时的抖动 */
+  .font-stable {
+    font-display: swap;
+    font-synthesis: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* 标题字体稳定性 */
+  .title-stable {
+    font-family: 'Neue Machina Ultrabold', 'Neue Machina', system-ui, -apple-system, sans-serif;
+    font-weight: 900;
+    font-display: swap;
+    font-synthesis: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    /* 防止字体切换时的布局抖动 */
+    contain: layout style;
+    will-change: auto;
+    /* 确保字体渲染一致性 */
+    font-kerning: normal;
+    font-variant-ligatures: normal;
+    font-feature-settings: "kern" 1, "liga" 1;
   }
 `;
 
@@ -383,6 +394,7 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedGenders, setSelectedGenders] = useState<string[]>(['Female']);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [fontsLoaded, setFontsLoaded] = useState(false);
 
   // 图片数据与懒加载
   const [allImages, setAllImages] = useState<FrontendImageItem[]>([]);
@@ -412,6 +424,22 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
     { id: 'Female', label: 'Female' },
     { id: 'Male', label: 'Male' }
   ];
+
+  // 字体加载状态管理
+  useEffect(() => {
+    const checkFontsLoaded = () => {
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(() => {
+          setFontsLoaded(true);
+        });
+      } else {
+        // 降级处理：延迟设置字体已加载状态
+        setTimeout(() => setFontsLoaded(true), 1000);
+      }
+    };
+
+    checkFontsLoaded();
+  }, []);
 
   const handleDropdownToggle = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -581,6 +609,13 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
     // 先重置状态，防止布局抖动
     setDialogImageLoaded(false);
     setSelectedIndex(idx);
+    
+    // 确保字体已加载后再打开弹窗
+    if (!fontsLoaded) {
+      // 如果字体未加载完成，等待一小段时间
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+    
     setDetailOpen(true);
     
     const image = allImages[idx];
@@ -598,7 +633,7 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
         console.error('Failed to load image detail:', error);
       }
     }
-  }, [allImages]);
+  }, [allImages, fontsLoaded]);
 
   const selectedItem = selectedIndex != null ? allImages[selectedIndex] : null;
 
@@ -659,8 +694,8 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
         backgroundPosition: 'center'
       }}
     >
-      {/* 注入字体样式 */}
-      <style dangerouslySetInnerHTML={{ __html: fontStyles }} />
+      {/* 注入组件样式 */}
+      <style dangerouslySetInnerHTML={{ __html: componentStyles }} />
       <div className="absolute inset-0 bg-black" aria-hidden />
       <div className="relative mx-auto" style={{ maxWidth: '1200px' }}>
         <div className="flex flex-col gap-6">
@@ -931,8 +966,9 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
                   <div className="flex-1 px-8 py-6 flex flex-col overflow-visible">
                     {/* 标题 */}
                     <h2 
-                      className="text-white text-[32px] leading-[1.025] max-w-[498px] mb-6"
-                      style={{ fontFamily: "'Neue Machina Ultrabold', system-ui, sans-serif", fontWeight: 900 }}
+                      className={`text-white text-[32px] leading-[1.025] max-w-[498px] mb-6 title-stable transition-opacity duration-300 ${
+                        fontsLoaded ? 'opacity-100' : 'opacity-90'
+                      }`}
                     >
                       {selectedItem?.clothing_description || 'Fashion Design'}
                     </h2>
