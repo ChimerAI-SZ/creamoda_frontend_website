@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
     
     return NextResponse.json({
       code: 500,
-      msg: 'Internal Server Error',
+      msg: 'Failed to fetch image detail from backend',
       data: null
     }, { status: 500 });
   }

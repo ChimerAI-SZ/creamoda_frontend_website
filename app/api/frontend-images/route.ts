@@ -36,21 +36,17 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('API proxy error:', error);
     
-    // 返回空数据而不是模拟数据
-    const currentPage = parseInt(request.nextUrl.searchParams.get('page') || '1');
-    const pageSize = parseInt(request.nextUrl.searchParams.get('page_size') || '20');
-    
-    const emptyData = {
-      code: 0,
+    // 直接返回错误，不提供兜底数据
+    return NextResponse.json({
+      code: 500,
+      msg: 'Failed to fetch images from backend',
       data: {
         list: [],
         total: 0,
-        page: currentPage,
-        page_size: pageSize,
+        page: 1,
+        page_size: 20,
         has_more: false
       }
-    };
-    
-    return NextResponse.json(emptyData);
+    }, { status: 500 });
   }
 }

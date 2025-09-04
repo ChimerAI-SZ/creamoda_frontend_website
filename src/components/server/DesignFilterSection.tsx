@@ -62,6 +62,30 @@ const componentStyles = `
     will-change: auto;
   }
 
+  /* 响应式弹窗优化 */
+  @media (max-width: 640px) {
+    .dialog-content-stable {
+      width: 95vw !important;
+      max-width: 95vw !important;
+      margin: 0 !important;
+      max-height: 95vh !important;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .dialog-content-stable {
+      width: 90vw !important;
+      max-width: 90vw !important;
+    }
+  }
+
+  @media (max-width: 1024px) {
+    .dialog-content-stable {
+      width: 85vw !important;
+      max-width: 85vw !important;
+    }
+  }
+
   /* 图片容器稳定性 */
   .image-container-stable {
     contain: layout;
@@ -503,11 +527,22 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
         listLength: response.data?.list?.length
       });
       
+      // 检查API是否返回错误
+      if (response.code !== 0) {
+        console.error('API returned error:', response.msg);
+        if (reset) {
+          setAllImages([]);
+          setHasMore(false);
+          setCurrentPage(1);
+        }
+        return;
+      }
+      
       // 调试信息：计算预期的has_more值
       const expectedHasMore = (response.data?.page * response.data?.page_size) < response.data?.total;
       console.log('Debug - Expected has_more:', expectedHasMore, 'Actual has_more:', response.data?.has_more);
       
-      if (response.code === 0 && response.data) {
+      if (response.data) {
         const newImages = response.data.list || [];
         if (reset) {
           setAllImages(newImages);
@@ -523,7 +558,7 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
       }
     } catch (error) {
       console.error('Failed to load images:', error);
-      // 如果API调用失败，显示空状态而不是错误
+      // 如果API调用失败，显示空状态
       if (reset) {
         setAllImages([]);
         setHasMore(false);
@@ -876,6 +911,23 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
             </div>
           )}
           
+          {/* 空状态显示 */}
+          {!isInitialLoading && !isFiltering && allImages.length === 0 && (
+            <div className="flex flex-col items-center justify-center py-16 text-white/60">
+              <div className="w-16 h-16 mb-4 rounded-full bg-white/10 flex items-center justify-center">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                  <circle cx="8.5" cy="8.5" r="1.5"/>
+                  <polyline points="21,15 16,10 5,21"/>
+                </svg>
+              </div>
+              <h3 className="text-lg font-medium mb-2">No designs available</h3>
+              <p className="text-sm text-center max-w-md">
+                Unable to load designs at the moment. Please check your connection and try again later.
+              </p>
+            </div>
+          )}
+          
           <MemoizedImageGrid
             isInitialLoading={isInitialLoading || isFiltering}
             allImages={allImages}
@@ -910,23 +962,30 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
           </div>
         </div>
       </div>
-      {/* 详情弹窗 - 移除可能影响定位的CSS属性 */}
+      {/* 详情弹窗 - 响应式优化 */}
       {detailOpen && (
         <Dialog open={detailOpen} onOpenChange={handleDialogClose}>
           <DialogContent
             closeBtnUnvisible={false}
             overlayVisible={true}
-            className="w-full max-w-4xl max-h-[90vh] bg-black/90 border border-white/10 rounded-2xl overflow-hidden dialog-content-stable"
+            className="w-[95vw] max-w-4xl max-h-[95vh] bg-black/90 border border-white/10 rounded-2xl overflow-hidden dialog-content-stable mx-auto"
+            style={{
+              position: 'fixed',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              zIndex: 9999
+            }}
           >
           <DialogTitle className="sr-only">Image Detail</DialogTitle>
           {/* 可滚动的弹窗内容 */}
           <div className="h-full overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
-            {/* 上下布局调整比例 */}
-            <div className="grid min-h-full grid-rows-[auto_auto] gap-6">
-            {/* 上半部分：左右 2:3 */}
-            <div className="grid grid-cols-[1fr_2fr] gap-4 p-6 overflow-visible">
-              {/* 左侧图片（圆角） - 固定尺寸防止抖动 */}
-              <div className="w-full h-[350px] rounded-xl overflow-hidden bg-black flex items-center justify-center relative image-container-stable" style={{ minHeight: '350px', maxHeight: '350px' }}>
+            {/* 响应式布局 */}
+            <div className="flex flex-col min-h-full gap-4 p-4 sm:p-6">
+            {/* 上半部分：响应式布局 */}
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-4 overflow-visible">
+              {/* 左侧图片（圆角） - 响应式尺寸 */}
+              <div className="w-full h-[250px] sm:h-[300px] lg:h-[350px] rounded-xl overflow-hidden bg-black flex items-center justify-center relative image-container-stable">
                 {/* 弹窗图片骨架屏 */}
                 {!dialogImageLoaded && (
                   <div className="absolute inset-0 z-10 flex items-center justify-center">
@@ -958,15 +1017,15 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
                   </div>
                 )}
               </div>
-              {/* 右侧内容（等待你提供文案/结构） */}
-              <div className="w-full h-[350px] bg-[#0b0b0c]/60 rounded-xl text-white overflow-visible" style={{ minHeight: '350px', maxHeight: '350px' }}>
+              {/* 右侧内容 - 响应式高度 */}
+              <div className="w-full h-auto min-h-[250px] sm:min-h-[300px] lg:min-h-[350px] bg-[#0b0b0c]/60 rounded-xl text-white overflow-visible">
                 {/* 右侧内容分为上下两部分 */}
                 <div className="h-full flex flex-col overflow-visible">
                   {/* 上半部分 */}
-                  <div className="flex-1 px-8 py-6 flex flex-col overflow-visible">
+                  <div className="flex-1 px-4 sm:px-6 lg:px-8 py-4 sm:py-6 flex flex-col overflow-visible">
                     {/* 标题 */}
                     <h2 
-                      className={`text-white text-[32px] leading-[1.025] max-w-[498px] mb-6 title-stable transition-opacity duration-300 ${
+                      className={`text-white text-xl sm:text-2xl lg:text-[32px] leading-[1.025] max-w-full lg:max-w-[498px] mb-4 sm:mb-6 title-stable transition-opacity duration-300 ${
                         fontsLoaded ? 'opacity-100' : 'opacity-90'
                       }`}
                     >
@@ -1014,11 +1073,11 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
                       </p>
                     </div>
                     
-                    {/* 按钮组 */}
-                    <div className="flex items-center gap-3 mt-6 relative">
+                    {/* 按钮组 - 响应式布局 */}
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mt-4 sm:mt-6 relative">
                       {/* Generate Similar Designs 按钮 */}
                       <button 
-                        className="flex items-center justify-center gap-2.5 px-3 py-[11px] w-[406px] h-[42px] rounded-[4px] text-white text-[20px] font-bold leading-[1.1] text-center cursor-pointer hover:bg-opacity-80 transition-all duration-200"
+                        className="flex items-center justify-center gap-2.5 px-3 py-[11px] w-full sm:w-auto sm:flex-1 lg:w-[406px] h-[42px] rounded-[4px] text-white text-sm sm:text-base lg:text-[20px] font-bold leading-[1.1] text-center cursor-pointer hover:bg-opacity-80 transition-all duration-200"
                         style={{ 
                           backgroundColor: 'rgba(112, 77, 255, 0.37)',
                           fontFamily: "Manrope, system-ui, sans-serif"
@@ -1037,13 +1096,14 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
                           }
                         }}
                       >
-                        Generate Similar Designs
+                        <span className="hidden sm:inline">Generate Similar Designs</span>
+                        <span className="sm:hidden">Generate Similar</span>
                       </button>
                       
                       {/* 三个点按钮 */}
                       <div className="relative">
                         <button 
-                          className="flex items-center justify-center gap-2.5 px-3 py-[11px] w-[79px] h-[42px] rounded-[4px]"
+                          className="flex items-center justify-center gap-2.5 px-3 py-[11px] w-full sm:w-[79px] h-[42px] rounded-[4px]"
                           style={{ backgroundColor: 'rgba(112, 77, 255, 0.37)' }}
                           onClick={() => setDropdownOpen(!dropdownOpen)}
                         >
@@ -1073,15 +1133,15 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
               </div>
             </div>
 
-            {/* 下半部分：标题 + 5 张相关图片 */}
-            <div className="px-6 pb-6 flex flex-col">
+            {/* 下半部分：标题 + 相关图片 - 响应式布局 */}
+            <div className="px-4 sm:px-6 pb-4 sm:pb-6 flex flex-col">
               <div 
-                className="text-white text-base font-medium mb-3"
+                className="text-white text-sm sm:text-base font-medium mb-3"
                 style={{ fontFamily: "'Neue Machina Regular', system-ui, sans-serif" }}
               >
                 More like this
               </div>
-              <div className="grid grid-cols-5 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">
                 {(() => {
                   // 使用新的相似度推荐逻辑
                   if (selectedItem) {
