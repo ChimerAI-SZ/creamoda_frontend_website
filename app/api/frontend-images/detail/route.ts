@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { retryFetch } from '@/lib/utils/retryUtils';
 
 export async function GET(request: NextRequest) {
   try {
@@ -13,13 +14,18 @@ export async function GET(request: NextRequest) {
     // 转发请求到后端API - 使用环境变量配置的后端地址
     const backendUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/common/frontend/images/detail?${queryParams.toString()}`;
     
-    const response = await fetch(backendUrl, {
+    const response = await retryFetch(backendUrl, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
       },
       // 添加超时设置
-      signal: AbortSignal.timeout(10000), // 10秒超时
+      signal: AbortSignal.timeout(15000), // 15秒超时
+    }, {
+      maxRetries: 3,
+      baseDelay: 1000,
+      maxDelay: 5000,
+      backoffMultiplier: 2
     });
 
     if (!response.ok) {

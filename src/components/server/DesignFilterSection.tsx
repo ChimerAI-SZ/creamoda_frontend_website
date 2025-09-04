@@ -426,6 +426,8 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
   const [hasMore, setHasMore] = useState(true);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
+  const [lastError, setLastError] = useState<string | null>(null);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
   const isLoadingMoreRef = useRef(false);
@@ -503,6 +505,8 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
   // 加载图片数据的函数
   const loadImages = async (page: number, reset = false) => {
     try {
+      setLastError(null); // 清除之前的错误
+      
       const params: any = {
         page,
         page_size: 20
@@ -530,6 +534,7 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
       // 检查API是否返回错误
       if (response.code !== 0) {
         console.error('API returned error:', response.msg);
+        setLastError(response.msg || 'API error occurred');
         if (reset) {
           setAllImages([]);
           setHasMore(false);
@@ -555,9 +560,37 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
         const calculatedHasMore = (page * 20) < response.data.total;
         console.log('Setting hasMore to:', calculatedHasMore, 'based on page:', page, 'total:', response.data.total);
         setHasMore(calculatedHasMore);
+        
+        // 成功加载后重置重试计数
+        setRetryCount(0);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to load images:', error);
+      
+      // 设置错误信息
+      let errorMessage = 'Network connection failed';
+      if (error?.message?.includes('ECONNRESET') || error?.cause?.code === 'ECONNRESET') {
+        errorMessage = 'Connection interrupted, please try again';
+      } else if (error?.status === 404) {
+        errorMessage = 'API endpoint not found (404)';
+      } else if (error?.status === 500) {
+        errorMessage = 'Server internal error (500), please try again';
+      } else if (error?.status >= 500) {
+        errorMessage = `Server error (${error.status}), please try again later`;
+      } else if (error?.message?.includes('HTTP error')) {
+        errorMessage = error.message;
+      }
+      
+      console.error('📍 Detailed error info:', {
+        message: error?.message,
+        status: error?.status,
+        cause: error?.cause,
+        name: error?.name
+      });
+      
+      setLastError(errorMessage);
+      setRetryCount(prev => prev + 1);
+      
       // 如果API调用失败，显示空状态
       if (reset) {
         setAllImages([]);
@@ -567,7 +600,20 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
     } finally {
       // 重置筛选状态
       setIsFiltering(false);
+      if (reset) {
+        setIsInitialLoading(false);
+      } else {
+        setIsLoadingMore(false);
+        isLoadingMoreRef.current = false;
+      }
     }
+  };
+
+  // 手动重试函数
+  const handleRetry = () => {
+    setRetryCount(0);
+    setLastError(null);
+    loadImages(1, true);
   };
 
   // 初始加载和筛选变化时重新加载（优化防抖）
@@ -921,10 +967,27 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
                   <polyline points="21,15 16,10 5,21"/>
                 </svg>
               </div>
-              <h3 className="text-lg font-medium mb-2">No designs available</h3>
-              <p className="text-sm text-center max-w-md">
-                Unable to load designs at the moment. Please check your connection and try again later.
-              </p>
+              {lastError ? (
+                <>
+                  <h3 className="text-lg font-medium mb-2 text-red-400">Connection Error</h3>
+                  <p className="text-sm text-center max-w-md mb-4">
+                    {lastError}
+                  </p>
+                  {/* <button
+                    onClick={handleRetry}
+                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-md text-white text-sm transition-colors"
+                  >
+                    Retry {retryCount > 0 && `(${retryCount})`}
+                  </button> */}
+                </>
+              ) : (
+                <>
+                  <h3 className="text-lg font-medium mb-2">No designs available</h3>
+                  <p className="text-sm text-center max-w-md">
+                    Unable to load designs at the moment. Please check your connection and try again later.
+                  </p>
+                </>
+              )}
             </div>
           )}
           

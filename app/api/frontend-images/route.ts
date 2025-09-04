@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { retryFetch } from '@/lib/utils/retryUtils';
 
 export async function GET(request: NextRequest) {
   try {
@@ -15,13 +16,18 @@ export async function GET(request: NextRequest) {
     
     console.log('🔍 请求后端URL:', backendUrl);
     
-    const response = await fetch(backendUrl, {
+    const response = await retryFetch(backendUrl, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
       },
       // 添加超时设置
-      signal: AbortSignal.timeout(10000), // 10秒超时
+      signal: AbortSignal.timeout(15000), // 15秒超时
+    }, {
+      maxRetries: 3,
+      baseDelay: 1000,
+      maxDelay: 5000,
+      backoffMultiplier: 2
     });
 
     if (!response.ok) {

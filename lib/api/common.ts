@@ -1,6 +1,7 @@
 import { api } from '@/lib/axios';
 import { getAuthToken } from './token';
 import { FrontendImagesParams, FrontendImagesResponse, FrontendImageDetailResponse, SimilarImageItem } from '@/types/frontendImages';
+import { withRetry } from '@/lib/utils/retryUtils';
 
 /**
  * 获取变化类型列表
@@ -117,7 +118,7 @@ export async function updateUserInfo(payload: {
  * @param params 查询参数
  */
 export async function getFrontendImages(params: FrontendImagesParams): Promise<FrontendImagesResponse> {
-  try {
+  return withRetry(async () => {
     const queryParams = new URLSearchParams({
       page: params.page.toString(),
       page_size: params.page_size.toString(),
@@ -148,15 +149,19 @@ export async function getFrontendImages(params: FrontendImagesParams): Promise<F
     });
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const error = new Error(`HTTP error! status: ${response.status}`);
+      (error as any).status = response.status;
+      throw error;
     }
 
     const data = await response.json();
     return data;
-  } catch (error) {
-    console.error('Error fetching frontend images:', error);
-    throw error;
-  }
+  }, {
+    maxRetries: 3, // 增加重试次数，因为 500 错误可能是临时的
+    baseDelay: 1000,
+    maxDelay: 5000,
+    backoffMultiplier: 1.8
+  });
 }
 
 /**
@@ -164,7 +169,7 @@ export async function getFrontendImages(params: FrontendImagesParams): Promise<F
  * @param params 查询参数
  */
 export async function getFrontendImageDetail(params: { record_id?: string; slug?: string }): Promise<FrontendImageDetailResponse> {
-  try {
+  return withRetry(async () => {
     const queryParams = new URLSearchParams();
     
     if (params.record_id) {
@@ -184,13 +189,17 @@ export async function getFrontendImageDetail(params: { record_id?: string; slug?
     });
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const error = new Error(`HTTP error! status: ${response.status}`);
+      (error as any).status = response.status;
+      throw error;
     }
 
     const data = await response.json();
     return data;
-  } catch (error) {
-    console.error('Error fetching frontend image detail:', error);
-    throw error;
-  }
+  }, {
+    maxRetries: 3, // 增加重试次数，因为 500 错误可能是临时的
+    baseDelay: 1000,
+    maxDelay: 5000,
+    backoffMultiplier: 1.8
+  });
 }
