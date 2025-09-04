@@ -134,7 +134,7 @@ export default function OutfitGeneratorFeatureModule({ theme }: OutfitGeneratorF
 
   // 处理图片点击
   const handleImageClick = (image: FrontendImageItem) => {
-    router.push(`/design/${image.slug}`);
+    router.push(`/designs/${image.slug}`);
   };
 
   return (
@@ -239,7 +239,7 @@ export default function OutfitGeneratorFeatureModule({ theme }: OutfitGeneratorF
               <button 
                 className="bg-black text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-gray-900 transition-colors pointer-events-auto"
                 style={{ fontFamily: "'PP Neue Machina', 'Neue Machina', system-ui, -apple-system, sans-serif" }}
-                onClick={() => router.push('/design')}
+                onClick={() => router.push('/designs')}
               >
                 View more
               </button>

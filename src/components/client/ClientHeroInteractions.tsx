@@ -15,12 +15,12 @@ export default function ClientHeroInteractions({ currentSaasUrl }: ClientHeroInt
   const navRef = useRef<HTMLElement | null>(null);
   const router = useRouter();
   
-  // 检查当前路径是否为 /design/slug
+  // 检查当前路径是否为 /designs/slug
   const [isDesignSlugPage, setIsDesignSlugPage] = useState(false);
   
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      setIsDesignSlugPage(window.location.pathname.startsWith('/design/') && window.location.pathname !== '/design');
+      setIsDesignSlugPage(window.location.pathname.startsWith('/designs/') && window.location.pathname !== '/designs');
     }
   }, []);
 
@@ -49,7 +49,7 @@ export default function ClientHeroInteractions({ currentSaasUrl }: ClientHeroInt
 
   useEffect(() => {
     const onScroll = () => {
-      // 如果是 /design/slug 页面，直接设置为滚动状态（黑色导航栏）
+      // 如果是 /designs/slug 页面，直接设置为滚动状态（黑色导航栏）
       if (isDesignSlugPage) {
         setIsScrolled(true);
       } else {
@@ -101,8 +101,8 @@ export default function ClientHeroInteractions({ currentSaasUrl }: ClientHeroInt
           <div class="tools-category">
             <div class="category-items-container">
               <div class="category-items">
-                <button class="tool-item" data-route="outfit-generator">AI Outfit Generator</button>
-                <button class="tool-item" data-route="sketch-to-image">AI Sketch to Image Converter</button>
+                <a href="/outfit-generator" class="tool-item" data-route="outfit-generator">AI Outfit Generator</a>
+                <a href="/sketch-to-image" class="tool-item" data-route="sketch-to-image">AI Sketch to Image Converter</a>
               </div>
             </div>
           </div>
@@ -114,7 +114,7 @@ export default function ClientHeroInteractions({ currentSaasUrl }: ClientHeroInt
         <div class="tools-dropdown-content">
           <div class="tools-category">
             <div class="category-items">
-              <button class="tool-item" data-route="virtual-try-on">Virtual Try-On</button>
+              <a href="/virtual-try-on" class="tool-item" data-route="virtual-try-on">Virtual Try-On</a>
             </div>
           </div>
         </div>
@@ -126,11 +126,11 @@ export default function ClientHeroInteractions({ currentSaasUrl }: ClientHeroInt
           <div class="tools-category">
             <div class="category-items-container">
               <div class="category-items">
-                <button class="tool-item" data-route="image-background-remover">Image Background Remover</button>
-                <button class="tool-item" data-route="image-background-changer">Image Background Changer</button>
-                <button class="tool-item" data-route="image-enhancer">Image Enhancer</button>
-                <button class="tool-item" data-route="image-changer">AI Image Changer</button>
-                <button class="tool-item" data-route="image-color-changer">Image Color Changer</button>
+                <a href="/magic-kit/image-background-remover" class="tool-item" data-route="image-background-remover">Image Background Remover</a>
+                <a href="/magic-kit/image-background-changer" class="tool-item" data-route="image-background-changer">Image Background Changer</a>
+                <a href="/magic-kit/image-enhancer" class="tool-item" data-route="image-enhancer">Image Enhancer</a>
+                <a href="/magic-kit/image-changer" class="tool-item" data-route="image-changer">AI Image Changer</a>
+                <a href="/magic-kit/image-color-changer" class="tool-item" data-route="image-color-changer">Image Color Changer</a>
               </div>
             </div>
           </div>
@@ -166,7 +166,7 @@ export default function ClientHeroInteractions({ currentSaasUrl }: ClientHeroInt
     
     const handleToolClick = (e: Event) => {
       e.preventDefault();
-      const target = e.target as HTMLButtonElement;
+      const target = e.target as HTMLAnchorElement;
       const route = target.getAttribute('data-route');
       if (route) {
         // 由于 event 参数是可选的，我们只传递必要的参数

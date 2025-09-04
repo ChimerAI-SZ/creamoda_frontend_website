@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { getFrontendImages, getFrontendImageDetail } from '@/lib/api/common';
 import { FrontendImageItem, SimilarImageItem } from '@/types/frontendImages';
 
-// 定义字体样式
+// 定义字体样式和动画
 const fontStyles = `
   @font-face {
     font-family: 'Neue Machina Ultrabold';
@@ -23,6 +23,64 @@ const fontStyles = `
     src: url('/marketing/fonts/NeueMachina-Regular.otf') format('opentype');
     font-weight: 400;
     font-style: normal;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .image-grid-container {
+    min-height: 400px; /* 防止高度跳动 */
+  }
+
+  /* 自定义滚动条样式 */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+
+
+  /* 下拉菜单动画优化 */
+  .dropdown-menu {
+    transform: translateZ(0);
+    will-change: auto;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  /* 弹窗内容稳定性优化 */
+  .dialog-content-stable {
+    contain: layout style;
+    will-change: auto;
+  }
+
+  /* 图片容器稳定性 */
+  .image-container-stable {
+    contain: layout;
+    will-change: auto;
   }
 `;
 
@@ -45,7 +103,7 @@ const MemoizedImageWithSkeleton = memo(function ImageWithSkeleton({
 
   return (
     <div
-      className="group relative w-full overflow-hidden rounded-md cursor-pointer"
+      className="group relative w-full overflow-hidden rounded-md cursor-pointer transition-all duration-300 ease-in-out"
       style={{ aspectRatio: '3 / 4' }}
       onClick={onClick}
     >
@@ -54,23 +112,27 @@ const MemoizedImageWithSkeleton = memo(function ImageWithSkeleton({
         alt={alt}
         fill
         sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
-        className="object-cover block"
+        className="object-cover block transition-all duration-500 ease-in-out"
         onLoad={() => setLoaded(true)}
         loading="lazy"
         quality={85}
-        style={{ opacity: loaded ? 1 : 0, transition: 'opacity 200ms ease' }}
+        style={{ 
+          opacity: loaded ? 1 : 0, 
+          transition: 'opacity 500ms ease-in-out, transform 300ms ease-in-out',
+          transform: loaded ? 'scale(1)' : 'scale(1.05)'
+        }}
       />
       {!loaded && (
         <div className="absolute inset-0 z-20">
-          <Skeleton className="w-full h-full bg-white/10" />
+          <Skeleton className="w-full h-full bg-white/10 animate-pulse" />
         </div>
       )}
-      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10 pointer-events-none" />
-      <div className="absolute inset-x-0 bottom-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10 pointer-events-none">
+      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-300 z-10 pointer-events-none" />
+      <div className="absolute inset-x-0 bottom-0 p-3 opacity-0 group-hover:opacity-100 transition-all duration-300 z-10 pointer-events-none">
         <div className="flex justify-center pointer-events-auto">
           <Button
             variant="ghost"
-            className="w-full bg-gray-800/70 hover:bg-gray-800/80 text-white rounded-md py-3 backdrop-blur-sm"
+            className="w-full bg-gray-800/70 hover:bg-gray-800/80 text-white rounded-md py-3 backdrop-blur-sm transition-all duration-200"
             onClick={e => {
               e.stopPropagation();
               onClick && onClick();
@@ -97,24 +159,40 @@ const MemoizedImageGrid = memo(function ImageGridSection({
   openDetailAt: (idx: number) => void;
 }) {
   return (
-    <div className="grid grid-cols-4 gap-4">
+    <div className="grid grid-cols-4 gap-4 transition-all duration-300 ease-in-out">
       {isInitialLoading
         ? Array.from({ length: 20 }).map((_, idx) => (
-            <div key={idx} className="w-full overflow-hidden rounded-md" style={{ aspectRatio: '3 / 4' }}>
+            <div 
+              key={idx} 
+              className="w-full overflow-hidden rounded-md animate-pulse" 
+              style={{ aspectRatio: '3 / 4' }}
+            >
               <Skeleton className="w-full h-full bg-white/10" />
             </div>
           ))
         : allImages.map((img, idx) => (
-            <MemoizedImageWithSkeleton
+            <div
               key={img.id}
-              src={img.image_url}
-              alt={img.clothing_description || ''}
-              onClick={() => openDetailAt(idx)}
-            />
+              className="transform transition-all duration-300 ease-in-out hover:scale-105"
+              style={{ 
+                animationDelay: `${idx * 50}ms`,
+                animation: 'fadeInUp 0.3s ease-out forwards'
+              }}
+            >
+              <MemoizedImageWithSkeleton
+                src={img.image_url}
+                alt={img.clothing_description || ''}
+                onClick={() => openDetailAt(idx)}
+              />
+            </div>
           ))}
       {!isInitialLoading && pendingAddCount > 0 &&
         Array.from({ length: pendingAddCount }).map((_, idx) => (
-          <div key={`pending-${idx}`} className="w-full overflow-hidden rounded-md" style={{ aspectRatio: '3 / 4' }}>
+          <div 
+            key={`pending-${idx}`} 
+            className="w-full overflow-hidden rounded-md animate-pulse" 
+            style={{ aspectRatio: '3 / 4' }}
+          >
             <Skeleton className="w-full h-full bg-white/10" />
           </div>
         ))}
@@ -192,11 +270,118 @@ const SimilarImagesSection = memo(function SimilarImagesSection({
   });
 });
 
+// 下拉菜单组件 - 独立出来避免影响弹窗重新渲染
+const DropdownMenu = memo(function DropdownMenu({
+  isOpen,
+  onClose,
+  selectedItem,
+  router
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  selectedItem: FrontendImageItem | null;
+  router: any;
+}) {
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const handleMenuAction = useCallback((action: string) => {
+    onClose();
+    if (selectedItem) {
+      const encodedImageUrl = encodeURIComponent(selectedItem.image_url || '');
+      let targetUrl = '';
+      
+      switch (action) {
+        case 'style':
+          targetUrl = `/fashion-design/create?imageUrl=${encodedImageUrl}&tab=image-to-image&variationType=11`;
+          break;
+        case 'printing':
+          targetUrl = `/fashion-design/create?imageUrl=${encodedImageUrl}&tab=image-to-image&variationType=9`;
+          break;
+        case 'fabric':
+          targetUrl = `/fashion-design/create?imageUrl=${encodedImageUrl}&tab=image-to-image&variationType=8`;
+          break;
+        case 'color':
+          targetUrl = `/magic-kit/create?imageUrl=${encodedImageUrl}&variationType=1`;
+          break;
+      }
+      
+      if (targetUrl) {
+        console.log(`跳转到 ${action}:`, targetUrl);
+        router.push(targetUrl);
+      }
+    }
+  }, [selectedItem, router, onClose]);
+
+  // 点击外部关闭下拉菜单
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [isOpen, onClose]);
+
+  if (!isOpen) return null;
+
+  return (
+    <div 
+      ref={dropdownRef}
+      className="absolute top-full right-0 mt-2 w-[160px] rounded-[8px] backdrop-blur-md border border-white/20 z-[9999] overflow-hidden dropdown-menu"
+      style={{ 
+        background: 'rgba(255, 255, 255, 0.1)',
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
+      }}
+    >
+      <div className="py-2">
+        <button 
+          className="w-full px-4 py-3 text-white text-sm font-medium text-left hover:bg-white/10 transition-colors relative"
+          style={{ fontFamily: "Manrope, system-ui, sans-serif" }}
+          onClick={() => handleMenuAction('style')}
+        >
+          Change Style
+          <div className="absolute bottom-0 left-4 right-4 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+        </button>
+        
+        <button 
+          className="w-full px-4 py-3 text-white text-sm font-medium text-left hover:bg-white/10 transition-colors relative"
+          style={{ fontFamily: "Manrope, system-ui, sans-serif" }}
+          onClick={() => handleMenuAction('printing')}
+        >
+          Change Printing
+          <div className="absolute bottom-0 left-4 right-4 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+        </button>
+        
+        <button 
+          className="w-full px-4 py-3 text-white text-sm font-medium text-left hover:bg-white/10 transition-colors relative"
+          style={{ fontFamily: "Manrope, system-ui, sans-serif" }}
+          onClick={() => handleMenuAction('fabric')}
+        >
+          Change Fabric
+          <div className="absolute bottom-0 left-4 right-4 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+        </button>
+        
+        <button 
+          className="w-full px-4 py-3 text-white text-sm font-medium text-left hover:bg-white/10 transition-colors"
+          style={{ fontFamily: "Manrope, system-ui, sans-serif" }}
+          onClick={() => handleMenuAction('color')}
+        >
+          Change Color
+        </button>
+      </div>
+    </div>
+  );
+});
+
 export default function DesignFilterSection({ className = '', initialSelectedImage }: DesignFilterSectionProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [selectedGenders, setSelectedGenders] = useState<string[]>([]);
+  const [selectedGenders, setSelectedGenders] = useState<string[]>(['Female']);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
   // 图片数据与懒加载
@@ -209,6 +394,7 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
   const observerRef = useRef<IntersectionObserver | null>(null);
   const isLoadingMoreRef = useRef(false);
   const [pendingAddCount, setPendingAddCount] = useState(0);
+  const [isFiltering, setIsFiltering] = useState(false);
   const [detailOpen, setDetailOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -237,6 +423,7 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
       : [...selectedGenders, genderId];
     
     setSelectedGenders(newSelectedGenders);
+    setIsFiltering(true); // 设置筛选状态
     
     // 自动收缩列表
     setTimeout(() => {
@@ -250,6 +437,7 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
       : [...selectedCategories, categoryId];
     
     setSelectedCategories(newSelectedCategories);
+    setIsFiltering(true); // 设置筛选状态
   };
 
   const getSelectedGenderLabels = () => {
@@ -313,6 +501,9 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
         setHasMore(false);
         setCurrentPage(1);
       }
+    } finally {
+      // 重置筛选状态
+      setIsFiltering(false);
     }
   };
 
@@ -387,14 +578,15 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
 
   // 使用useCallback优化openDetailAt函数
   const openDetailAt = useCallback(async (idx: number) => {
+    // 先重置状态，防止布局抖动
+    setDialogImageLoaded(false);
     setSelectedIndex(idx);
     setDetailOpen(true);
-    setDialogImageLoaded(false);
     
     const image = allImages[idx];
     if (image) {
       // 使用浏览器历史记录API更新URL，不进行页面跳转
-      const newUrl = `/design/${image.slug}`;
+      const newUrl = `/designs/${image.slug}`;
       window.history.pushState({}, '', newUrl);
       
       try {
@@ -414,10 +606,10 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
   const handleDialogClose = useCallback((open: boolean) => {
     setDetailOpen(open);
     if (!open) {
-      // 关闭弹窗时，如果当前在 /design/slug 页面，则回到 /design
+      // 关闭弹窗时，如果当前在 /designs/slug 页面，则回到 /designs
       const currentPath = window.location.pathname;
-      if (currentPath.startsWith('/design/') && currentPath !== '/design') {
-        window.history.pushState({}, '', '/design');
+      if (currentPath.startsWith('/designs/') && currentPath !== '/designs') {
+        window.history.pushState({}, '', '/designs');
       }
     }
   }, []);
@@ -438,13 +630,13 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
   useEffect(() => {
     const handlePopState = () => {
       const currentPath = window.location.pathname;
-      if (currentPath === '/design') {
-        // 如果回到 /design，关闭弹窗
+      if (currentPath === '/designs') {
+        // 如果回到 /designs，关闭弹窗
         setDetailOpen(false);
         setSelectedIndex(null);
-      } else if (currentPath.startsWith('/design/') && currentPath !== '/design') {
-        // 如果跳转到 /design/slug，打开对应的弹窗
-        const slug = currentPath.replace('/design/', '');
+      } else if (currentPath.startsWith('/designs/') && currentPath !== '/designs') {
+        // 如果跳转到 /designs/slug，打开对应的弹窗
+        const slug = currentPath.replace('/designs/', '');
         const imageIndex = allImages.findIndex(img => img.slug === slug);
         if (imageIndex >= 0) {
           setSelectedIndex(imageIndex);
@@ -638,9 +830,19 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
 
         </div>
         {/* 图片网格：4列，分页懒加载 */}
-        <div className="mt-10">
+        <div className="mt-10 image-grid-container">
+          {/* 筛选状态指示器 */}
+          {isFiltering && (
+            <div className="mb-4 flex items-center justify-center">
+              {/* <div className="flex items-center gap-2 text-white/60 text-sm">
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                <span>筛选中...</span>
+              </div> */}
+            </div>
+          )}
+          
           <MemoizedImageGrid
-            isInitialLoading={isInitialLoading}
+            isInitialLoading={isInitialLoading || isFiltering}
             allImages={allImages}
             pendingAddCount={pendingAddCount}
             openDetailAt={openDetailAt}
@@ -649,7 +851,7 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
           <div ref={sentinelRef} className="h-20 flex flex-col items-center justify-center text-white/60 text-sm gap-2">
             {hasMore ? (
               <>
-                <div>Page {currentPage} - Scroll to load more...</div>
+                {/* <div>Page {currentPage} - Scroll to load more...</div> */}
                 <button
                   onClick={() => {
                     if (!isLoadingMore && hasMore) {
@@ -668,7 +870,7 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
                 </button>
               </>
             ) : (
-              <div>No more images to load</div>
+              <div>End of design list</div>
             )}
           </div>
         </div>
@@ -679,18 +881,20 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
           <DialogContent
             closeBtnUnvisible={false}
             overlayVisible={true}
-            className="w-full max-w-4xl h-[80vh] bg-black/90 border border-white/10 rounded-2xl mt-8"
+            className="w-full max-w-4xl max-h-[90vh] bg-black/90 border border-white/10 rounded-2xl overflow-hidden dialog-content-stable"
           >
           <DialogTitle className="sr-only">Image Detail</DialogTitle>
-          {/* 上下布局调整比例 */}
-          <div className="grid h-full grid-rows-[1.6fr_1fr] overflow-hidden">
+          {/* 可滚动的弹窗内容 */}
+          <div className="h-full overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
+            {/* 上下布局调整比例 */}
+            <div className="grid min-h-full grid-rows-[auto_auto] gap-6">
             {/* 上半部分：左右 2:3 */}
             <div className="grid grid-cols-[1fr_2fr] gap-4 p-6 overflow-visible">
-              {/* 左侧图片（圆角） */}
-              <div className="w-full h-[350px] rounded-xl overflow-hidden bg-black flex items-center justify-center relative">
+              {/* 左侧图片（圆角） - 固定尺寸防止抖动 */}
+              <div className="w-full h-[350px] rounded-xl overflow-hidden bg-black flex items-center justify-center relative image-container-stable" style={{ minHeight: '350px', maxHeight: '350px' }}>
                 {/* 弹窗图片骨架屏 */}
                 {!dialogImageLoaded && (
-                  <div className="absolute inset-0 z-10">
+                  <div className="absolute inset-0 z-10 flex items-center justify-center">
                     <Skeleton className="w-full h-full bg-white/10" />
                   </div>
                 )}
@@ -704,7 +908,12 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
                     style={{
                       opacity: dialogImageLoaded ? 1 : 0,
                       transition: 'opacity 300ms ease',
-                      transform: 'translateZ(0)'
+                      transform: 'translateZ(0)',
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      width: '100%',
+                      height: '100%'
                     }}
                     onLoad={() => setDialogImageLoaded(true)}
                   />
@@ -715,7 +924,7 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
                 )}
               </div>
               {/* 右侧内容（等待你提供文案/结构） */}
-              <div className="w-full h-full bg-[#0b0b0c]/60 rounded-xl text-white overflow-visible">
+              <div className="w-full h-[350px] bg-[#0b0b0c]/60 rounded-xl text-white overflow-visible" style={{ minHeight: '350px', maxHeight: '350px' }}>
                 {/* 右侧内容分为上下两部分 */}
                 <div className="h-full flex flex-col overflow-visible">
                   {/* 上半部分 */}
@@ -809,95 +1018,13 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
                           </div>
                         </button>
                         
-                        {/* 下拉菜单 */}
-                        {dropdownOpen && (
-                          <div 
-                            className="absolute top-full right-0 mt-2 w-[160px] rounded-[8px] backdrop-blur-md border border-white/20 z-[9999] overflow-hidden"
-                            style={{ 
-                              background: 'rgba(255, 255, 255, 0.1)',
-                              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
-                              transform: 'translateZ(0)',
-                              willChange: 'auto'
-                            }}
-                          >
-                            <div className="py-2">
-                              {/* Change Style */}
-                              <button 
-                                className="w-full px-4 py-3 text-white text-sm font-medium text-left hover:bg-white/10 transition-colors relative"
-                                style={{ fontFamily: "Manrope, system-ui, sans-serif" }}
-                                onClick={() => {
-                                  setDropdownOpen(false);
-                                  if (selectedItem) {
-                                    // 跳转到 fashion-design/create 页面，并传递图片URL和设置 Vary style
-                                    const encodedImageUrl = encodeURIComponent(selectedItem.image_url || '');
-                                    const targetUrl = `/fashion-design/create?imageUrl=${encodedImageUrl}&tab=image-to-image&variationType=11`;
-                                    console.log('跳转到 Change Style:', targetUrl);
-                                    router.push(targetUrl);
-                                  }
-                                }}
-                              >
-                                Change Style
-                                <div className="absolute bottom-0 left-4 right-4 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
-                              </button>
-                              
-                              {/* Change Printing */}
-                              <button 
-                                className="w-full px-4 py-3 text-white text-sm font-medium text-left hover:bg-white/10 transition-colors relative"
-                                style={{ fontFamily: "Manrope, system-ui, sans-serif" }}
-                                onClick={() => {
-                                  setDropdownOpen(false);
-                                  if (selectedItem) {
-                                    // 跳转到 fashion-design/create 页面，并传递图片URL和设置 Change Printing
-                                    const encodedImageUrl = encodeURIComponent(selectedItem.image_url || '');
-                                    const targetUrl = `/fashion-design/create?imageUrl=${encodedImageUrl}&tab=image-to-image&variationType=9`;
-                                    console.log('跳转到 Change Printing:', targetUrl);
-                                    router.push(targetUrl);
-                                  }
-                                }}
-                              >
-                                Change Printing
-                                <div className="absolute bottom-0 left-4 right-4 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
-                              </button>
-                              
-                              {/* Change Fabric */}
-                              <button 
-                                className="w-full px-4 py-3 text-white text-sm font-medium text-left hover:bg-white/10 transition-colors relative"
-                                style={{ fontFamily: "Manrope, system-ui, sans-serif" }}
-                                onClick={() => {
-                                  setDropdownOpen(false);
-                                  if (selectedItem) {
-                                    // 跳转到 fashion-design/create 页面，并传递图片URL和设置 Change Fabric
-                                    const encodedImageUrl = encodeURIComponent(selectedItem.image_url || '');
-                                    const targetUrl = `/fashion-design/create?imageUrl=${encodedImageUrl}&tab=image-to-image&variationType=8`;
-                                    console.log('跳转到 Change Fabric:', targetUrl);
-                                    router.push(targetUrl);
-                                  }
-                                }}
-                              >
-                                Change Fabric
-                                <div className="absolute bottom-0 left-4 right-4 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
-                              </button>
-                              
-                              {/* Change Color */}
-                              <button 
-                                className="w-full px-4 py-3 text-white text-sm font-medium text-left hover:bg-white/10 transition-colors"
-                                style={{ fontFamily: "Manrope, system-ui, sans-serif" }}
-                                onClick={() => {
-                                  setDropdownOpen(false);
-                                  if (selectedItem) {
-                                    // 跳转到 magic-kit/create 页面，并传递图片URL和设置 Change Color
-                                    const encodedImageUrl = encodeURIComponent(selectedItem.image_url || '');
-                                    const targetUrl = `/magic-kit/create?imageUrl=${encodedImageUrl}&variationType=1`;
-                                    console.log('跳转到 Change Color:', targetUrl);
-                                    router.push(targetUrl);
-                                  }
-                                }}
-                              >
-                                Change Color
-                              </button>
-                            </div>
-                          </div>
-                        )}
+                        {/* 下拉菜单 - 使用独立组件 */}
+                        <DropdownMenu
+                          isOpen={dropdownOpen}
+                          onClose={() => setDropdownOpen(false)}
+                          selectedItem={selectedItem}
+                          router={router}
+                        />
                       </div>
                     </div>
                   </div>
@@ -911,14 +1038,14 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
             </div>
 
             {/* 下半部分：标题 + 5 张相关图片 */}
-            <div className="px-6 pb-4 pt-2 flex flex-col">
+            <div className="px-6 pb-6 flex flex-col">
               <div 
                 className="text-white text-base font-medium mb-3"
                 style={{ fontFamily: "'Neue Machina Regular', system-ui, sans-serif" }}
               >
                 More like this
               </div>
-              <div className="flex-1 grid grid-cols-5 gap-3 min-h-0">
+              <div className="grid grid-cols-5 gap-3">
                 {(() => {
                   // 使用新的相似度推荐逻辑
                   if (selectedItem) {
@@ -957,6 +1084,7 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
                   }
                 })()}
               </div>
+            </div>
             </div>
           </div>
           </DialogContent>

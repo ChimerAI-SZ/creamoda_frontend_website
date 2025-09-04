@@ -13,7 +13,7 @@ function StepCard({ stepNumber, title, description }: StepCardProps) {
     <div 
       className="flex-1 flex flex-col items-center gap-4 p-8 rounded-3xl"
       style={{
-        backgroundColor: 'rgba(255, 255, 255, 0.48)',
+        backgroundColor: 'rgba(64, 64, 64)',
         minHeight: '200px'
       }}
     >
@@ -26,7 +26,7 @@ function StepCard({ stepNumber, title, description }: StepCardProps) {
             fontWeight: '400',
             fontSize: '16px',
             lineHeight: '1.25',
-            background: 'linear-gradient(90deg, rgba(68, 18, 186, 1) 0%, rgba(149, 0, 255, 1) 100%)',
+            background: 'linear-gradient(90deg, rgba(120, 80, 220, 1) 0%, rgba(180, 100, 255, 1) 100%)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text'

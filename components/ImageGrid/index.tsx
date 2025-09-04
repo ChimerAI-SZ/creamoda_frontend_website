@@ -430,8 +430,8 @@ export function ImageGrid() {
                   height={120}
                   className="mx-auto mb-4 opacity-50"
                 />
-                <p className="text-lg font-medium mb-2">还没有生成的图片</p>
-                <p className="text-sm">开始创建你的第一张时尚设计图片吧！</p>
+                <p className="text-lg font-medium mb-2">No Generated Image</p>
+                <p className="text-sm">Start creating your first fashion design.</p>
               </div>
             </div>
           )}
@@ -441,7 +441,7 @@ export function ImageGrid() {
             <div className="h-full flex items-center justify-center">
               <div className="flex items-center gap-2 text-gray-500">
                 <div className="w-6 h-6 border-2 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
-                <span>加载图片中...</span>
+                <span>Loading pictures...</span>
               </div>
             </div>
           )}

@@ -344,14 +344,14 @@ export default function DesignImageDetailPage({ image }: DesignImageDetailPagePr
                   style={{ aspectRatio: '3 / 4' }}
                   onClick={() => {
                     // 跳转到对应的图片页面
-                    window.location.href = `/design/${img.slug}`;
+                    window.location.href = `/designs/${img.slug}`;
                   }}
                 >
                   <MemoizedImageWithSkeleton
                     src={img.image_url}
                     alt={img.clothing_description || ''}
                     onClick={() => {
-                      window.location.href = `/design/${img.slug}`;
+                      window.location.href = `/designs/${img.slug}`;
                     }}
                   />
 

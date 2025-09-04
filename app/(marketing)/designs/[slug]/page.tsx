@@ -87,7 +87,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     openGraph: {
       type: 'article',
       locale: 'en_US',
-      url: `https://creamoda.ai/design/${slug}`,
+      url: `https://creamoda.ai/designs/${slug}`,
       title,
       description,
       siteName: 'Creamoda AI Tools',
@@ -109,7 +109,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       site: '@creamoda_ai',
     },
     alternates: {
-      canonical: `https://creamoda.ai/design/${slug}`,
+      canonical: `https://creamoda.ai/designs/${slug}`,
     },
   };
 }
@@ -138,7 +138,7 @@ export default async function DesignImagePage({ params }: PageProps) {
         breadcrumbs={breadcrumbs}
         productData={productData}
         reviewData={reviewData}
-        currentUrl={`/design/${slug}`}
+        currentUrl={`/designs/${slug}`}
       />
       
       {/* 营销导航栏 */}

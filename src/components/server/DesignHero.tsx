@@ -16,7 +16,7 @@ export default function DesignHero({ saasUrl }: DesignHeroProps) {
   const [mobileImageLoaded, setMobileImageLoaded] = useState(false);
   const [secondaryImageLoaded, setSecondaryImageLoaded] = useState(false);
   return (
-    <section className="min-h-[600px] relative overflow-hidden bg-cover bg-center bg-no-repeat" style={{backgroundImage: 'url(/marketing/images/background.png)'}}>
+    <section className="min-h-[600px] relative overflow-hidden bg-cover bg-center bg-no-repeat" style={{backgroundImage: 'url(/marketing/images/background-e.png)'}}>
       {/* 导航栏 */}
       <StaticNavigation currentSaasUrl={saasUrl} />
       
@@ -156,8 +156,8 @@ export default function DesignHero({ saasUrl }: DesignHeroProps) {
                 <div 
                   className="absolute left-0 top-0 bottom-0 w-4/5 pointer-events-none z-10 hidden lg:block"
                   style={{
-                    background: 'linear-gradient(to right, rgba(44, 20, 151, 0.6) 0%, rgba(44, 20, 151, 0.3) 30%, rgba(20, 5, 78, 0.15) 50%, rgba(48, 21, 159, 0.05) 70%, rgba(48, 21, 159, 0.01) 85%, transparent 100%)',
-                    filter: 'blur(120px)'
+                    background: 'linear-gradient(to right, rgba(44, 20, 151, 0.25) 0%, rgba(44, 20, 151, 0.15) 25%, rgba(20, 5, 78, 0.08) 50%, rgba(48, 21, 159, 0.04) 75%, transparent 100%)',
+                    filter: 'blur(180px)'
                   }}
                 />
                 
@@ -176,7 +176,7 @@ export default function DesignHero({ saasUrl }: DesignHeroProps) {
                   )}
                   
                   <Image
-                    src="/images/design/design-hero-secondary-2d88c0.png"
+                    src="/marketing/images/design/discover.png"
                     alt="Fashion Design Collection"
                     width={458}
                     height={519}
@@ -200,6 +200,14 @@ export default function DesignHero({ saasUrl }: DesignHeroProps) {
           </div>
         </div>
       </div>
+      
+      {/* 底部渐变遮罩 - 实现与下方section的平滑过渡 */}
+      <div 
+        className="absolute bottom-0 left-0 right-0 h-32 pointer-events-none"
+        style={{
+          background: 'linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.3) 30%, rgba(0, 0, 0, 0.7) 70%, rgba(0, 0, 0, 0.95) 90%, rgba(0, 0, 0, 1) 100%)'
+        }}
+      />
       
       {/* 客户端交互增强 */}
       <ClientHeroInteractions currentSaasUrl={saasUrl} />
