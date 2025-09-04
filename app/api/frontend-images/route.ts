@@ -36,33 +36,21 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('API proxy error:', error);
     
-    // 返回模拟数据用于开发测试
+    // 返回空数据而不是模拟数据
     const currentPage = parseInt(request.nextUrl.searchParams.get('page') || '1');
     const pageSize = parseInt(request.nextUrl.searchParams.get('page_size') || '20');
-    const totalItems = 100;
     
-    const mockData = {
+    const emptyData = {
       code: 0,
       data: {
-        list: Array.from({ length: pageSize }, (_, i) => ({
-          id: (currentPage - 1) * pageSize + i + 1,
-          record_id: `record_${(currentPage - 1) * pageSize + i + 1}`,
-          slug: `design-${(currentPage - 1) * pageSize + i + 1}`,
-          image_url: `https://picsum.photos/300/400?random=${(currentPage - 1) * pageSize + i + 1}`,
-          clothing_description: `Design ${(currentPage - 1) * pageSize + i + 1}`,
-          complete_prompt: `Complete prompt for design ${(currentPage - 1) * pageSize + i + 1}`,
-          type: 'Evening Wear',
-          gender: 'Female',
-          feature: 'AI Generated',
-          create_time: new Date().toISOString()
-        })),
-        total: totalItems,
+        list: [],
+        total: 0,
         page: currentPage,
         page_size: pageSize,
-        has_more: currentPage * pageSize < totalItems
+        has_more: false
       }
     };
     
-    return NextResponse.json(mockData);
+    return NextResponse.json(emptyData);
   }
 }

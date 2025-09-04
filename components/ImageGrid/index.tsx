@@ -420,7 +420,7 @@ export function ImageGrid() {
           )}
           
           {/* 空状态显示 */}
-          {mounted && images.length === 0 && !isLoading && (
+          {/* {mounted && images.length === 0 && !isLoading && (
             <div className="h-full flex flex-col items-center justify-center text-gray-500">
               <div className="text-center">
                 <Image
@@ -434,7 +434,7 @@ export function ImageGrid() {
                 <p className="text-sm">Start creating your first fashion design.</p>
               </div>
             </div>
-          )}
+          )} */}
           
           {/* 初始加载状态 */}
           {mounted && images.length === 0 && isLoading && (
