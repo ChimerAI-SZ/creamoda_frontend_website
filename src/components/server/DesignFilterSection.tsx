@@ -1042,7 +1042,7 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
           >
           <DialogTitle className="sr-only">Image Detail</DialogTitle>
           {/* 可滚动的弹窗内容 */}
-          <div className="h-full overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
+          <div className="max-h-[calc(95vh-2rem)] overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
             {/* 响应式布局 */}
             <div className="flex flex-col min-h-full gap-4 p-4 sm:p-6">
             {/* 上半部分：响应式布局 */}
@@ -1140,7 +1140,7 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
                     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mt-4 sm:mt-6 relative">
                       {/* Generate Similar Designs 按钮 */}
                       <button 
-                        className="flex items-center justify-center gap-2.5 px-3 py-[11px] w-full sm:w-auto sm:flex-1 lg:w-[406px] h-[42px] rounded-[4px] text-white text-sm sm:text-base lg:text-[20px] font-bold leading-[1.1] text-center cursor-pointer hover:bg-opacity-80 transition-all duration-200"
+                        className="flex items-center justify-center gap-2.5 px-3 py-[11px] w-full sm:w-auto sm:flex-1 lg:w-[406px] h-[42px] rounded-[4px] text-white text-sm sm:text-base lg:text-[20px] font-bold leading-[1.1] text-center cursor-pointer hover:bg-opacity-80 transition-all duration-200 focus:outline-none"
                         style={{ 
                           backgroundColor: 'rgba(112, 77, 255, 0.37)',
                           fontFamily: "Manrope, system-ui, sans-serif"
@@ -1166,7 +1166,7 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
                       {/* 三个点按钮 */}
                       <div className="relative">
                         <button 
-                          className="flex items-center justify-center gap-2.5 px-3 py-[11px] w-full sm:w-[79px] h-[42px] rounded-[4px]"
+                          className="flex items-center justify-center gap-2.5 px-3 py-[11px] w-full sm:w-[79px] h-[42px] rounded-[4px] focus:outline-none"
                           style={{ backgroundColor: 'rgba(112, 77, 255, 0.37)' }}
                           onClick={() => setDropdownOpen(!dropdownOpen)}
                         >
@@ -1197,7 +1197,7 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
             </div>
 
             {/* 下半部分：标题 + 相关图片 - 响应式布局 */}
-            <div className="px-4 sm:px-6 pb-4 sm:pb-6 flex flex-col">
+            <div className="px-4 sm:px-6 pb-4 sm:pb-6 flex flex-col flex-shrink-0">
               <div 
                 className="text-white text-sm sm:text-base font-medium mb-3"
                 style={{ fontFamily: "'Neue Machina Regular', system-ui, sans-serif" }}

@@ -99,16 +99,14 @@ export default function DesignHero({ saasUrl }: DesignHeroProps) {
                   height={1300}
                   className="absolute hidden lg:block"
                   style={{ 
-                    right: '0px',
+                    right: '-20px',
                     top: '-180px',
                     width: '1200px',
                     height: '700px',
                     objectFit: 'contain',
-                    // transform: 'rotate(-15deg)',
-                    // opacity: mainImageLoaded ? '0.5' : '0',
-                    maskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 20%, rgba(0,0,0,0.7) 40%, rgba(0,0,0,1) 60%, rgba(0,0,0,1) 100%)',
-                    WebkitMaskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 20%, rgba(0,0,0,0.7) 40%, rgba(0,0,0,1) 60%, rgba(0,0,0,1) 100%)',
-                    transition: 'opacity 300ms ease'
+                    maskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 15%, rgba(0,0,0,0.8) 30%, rgba(0,0,0,1) 50%)',
+                    WebkitMaskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 15%, rgba(0,0,0,0.8) 30%, rgba(0,0,0,1) 50%)',
+                    // transition: 'opacity 300ms ease'
                   }}
                   onLoad={() => setMainImageLoaded(true)}
                   priority
@@ -154,10 +152,10 @@ export default function DesignHero({ saasUrl }: DesignHeroProps) {
                 
                 {/* 左边模糊蒙版 - 仅在桌面端显示 */}
                 <div 
-                  className="absolute left-0 top-0 bottom-0 w-4/5 pointer-events-none z-10 hidden lg:block"
+                  className="absolute left-0 top-0 bottom-0 w-full pointer-events-none z-10 hidden lg:block"
                   style={{
-                    background: 'linear-gradient(to right, rgba(44, 20, 151, 0.25) 0%, rgba(44, 20, 151, 0.15) 25%, rgba(20, 5, 78, 0.08) 50%, rgba(48, 21, 159, 0.04) 75%, transparent 100%)',
-                    filter: 'blur(180px)'
+                    background: 'linear-gradient(to right, rgba(78, 44, 200, 0.8) 10%, rgba(44, 20, 151, 0.4) 15%, rgba(20, 5, 78, 0.25) 30%, rgba(48, 21, 159, 0.15) 50%, rgba(48, 21, 159, 0.08) 70%, rgba(48, 21, 159, 0.03) 85%, transparent 100%)',
+                    filter: 'blur(300px)'
                   }}
                 />
                 
@@ -176,7 +174,7 @@ export default function DesignHero({ saasUrl }: DesignHeroProps) {
                   )}
                   
                   <Image
-                    src="/marketing/images/design/discover.png"
+                    src="/marketing/images/design/discovers.png"
                     alt="Fashion Design Collection"
                     width={458}
                     height={519}
