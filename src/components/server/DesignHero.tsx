@@ -93,19 +93,19 @@ export default function DesignHero({ saasUrl }: DesignHeroProps) {
                 )}
                 
                 <Image
-                  src="/images/design/design-hero-main.png"
+                  src="/marketing/images/design/bb.png"
                   alt="AI Fashion Design Ideas"
                   width={1200}
                   height={1300}
                   className="absolute hidden lg:block"
                   style={{ 
-                    right: '-50px',
-                    top: '-160px',
+                    right: '0px',
+                    top: '-180px',
                     width: '1200px',
                     height: '700px',
                     objectFit: 'contain',
-                    transform: 'rotate(-15deg)',
-                    opacity: mainImageLoaded ? '0.5' : '0',
+                    // transform: 'rotate(-15deg)',
+                    // opacity: mainImageLoaded ? '0.5' : '0',
                     maskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 20%, rgba(0,0,0,0.7) 40%, rgba(0,0,0,1) 60%, rgba(0,0,0,1) 100%)',
                     WebkitMaskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 20%, rgba(0,0,0,0.7) 40%, rgba(0,0,0,1) 60%, rgba(0,0,0,1) 100%)',
                     transition: 'opacity 300ms ease'
