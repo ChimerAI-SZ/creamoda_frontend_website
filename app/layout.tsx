@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 import { Analytics } from '@vercel/analytics/react';
+import { GoogleAnalytics } from '@/components/GoogleAnalytics';
 import { ConditionalHeader } from '@/components/ConditionalHeader';
 import { ConditionalLoginModal } from '@/components/ConditionalLoginModal';
 
@@ -63,6 +64,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="min-h-screen flex flex-col bg-[url('/images/bg.png')] bg-cover">
+        <GoogleAnalytics measurementId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || ''} />
         <TooltipProvider>
           <ConditionalHeader />
           {children}
