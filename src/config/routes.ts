@@ -9,7 +9,7 @@ export const routeToThemeMap: Record<string, string> = {
   'outfit-generator': 'outfit_generator',
   'sketch-to-image': 'sketch_convert',
   'free-nano-banana': 'free_nano_banana',
-  'design': 'design_page'
+  'designs': 'design_page'
 };
 
 // 主题ID到路由路径的映射（反向映射）
@@ -23,7 +23,7 @@ export const themeToRouteMap: Record<string, string> = {
   'outfit_generator': 'outfit-generator',
   'sketch_convert': 'sketch-to-image',
   'free_nano_banana': 'free-nano-banana',
-  'design_page': 'design'
+  'design_page': 'designs'
 };
 
 // 获取主题ID by 路由路径
@@ -47,7 +47,7 @@ export const routeToSaasUrlMap: Record<string, string> = {
   'outfit-generator': 'https://www.creamoda.ai/fashion-design/create',
   'sketch-to-image': 'https://www.creamoda.ai/fashion-design/create',
   'free-nano-banana': 'https://www.creamoda.ai/magic-kit/create',
-  'design': 'https://www.creamoda.ai/fashion-design/create'
+  'designs': 'https://www.creamoda.ai/fashion-design/create'
 };
 
 // 根据路由获取SaaS URL
@@ -57,5 +57,6 @@ export function getSaasUrlByRoute(route: string): string {
 
 // 获取所有可用路由
 export function getAllRoutes(): string[] {
-  return Object.keys(routeToThemeMap);
+  // 排除 'designs'，因为它有专门的页面路由
+  return Object.keys(routeToThemeMap).filter(route => route !== 'designs');
 } 

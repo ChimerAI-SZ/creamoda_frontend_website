@@ -19,9 +19,49 @@ export const metadata: Metadata = {
   }
 };
 
+export function generateViewport() {
+  return {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 1,
+    userScalable: false,
+  }
+}
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
+      <head>
+        {/* 预加载关键字体文件 */}
+        <link
+          rel="preload"
+          href="/marketing/fonts/NeueMachina-Ultrabold.otf"
+          as="font"
+          type="font/otf"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          href="/marketing/fonts/NeueMachina-Regular.otf"
+          as="font"
+          type="font/otf"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          href="/marketing/fonts/AVENIR-BLACK-3.ttf"
+          as="font"
+          type="font/ttf"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          href="/marketing/fonts/MontserratAlternates-SemiBold.ttf"
+          as="font"
+          type="font/ttf"
+          crossOrigin="anonymous"
+        />
+      </head>
       <body className="min-h-screen flex flex-col bg-[url('/images/bg.png')] bg-cover">
         <TooltipProvider>
           <ConditionalHeader />

@@ -18,11 +18,16 @@ export function ConditionalHeader() {
     '/outfit-generator',
     '/sketch-to-image',
     '/free-nano-banana',
-    '/design'
+    '/designs'
   ];
   
   // 如果是营销页路由，不显示 SaaS Header
   if (marketingRoutes.includes(pathname)) {
+    return null;
+  }
+  
+  // 如果是 /designs/slug 这样的动态路由，也不显示 SaaS Header
+  if (pathname.startsWith('/designs/') && pathname !== '/designs') {
     return null;
   }
   

@@ -8,6 +8,7 @@ interface SearchParamsHandlerProps {
   onImageUrl?: (url: string) => void;
   onVariationType?: (type: string) => void;
   onTab?: (tab: string) => void;
+  onPrompt?: (prompt: string) => void;
   showProcessingIndicator?: boolean;
 }
 
@@ -20,6 +21,7 @@ export function SearchParamsHandler({
   onImageUrl, 
   onVariationType, 
   onTab,
+  onPrompt,
   showProcessingIndicator = true 
 }: SearchParamsHandlerProps) {
   const searchParams = useSearchParams();
@@ -31,6 +33,7 @@ export function SearchParamsHandler({
       const imageUrl = searchParams.get('imageUrl');
       const variationType = searchParams.get('variationType');
       const tab = searchParams.get('tab');
+      const prompt = searchParams.get('prompt');
 
       // 处理variationType参数
       if (variationType && onVariationType) {
@@ -40,6 +43,13 @@ export function SearchParamsHandler({
       // 处理tab参数  
       if (tab && onTab) {
         onTab(tab);
+      }
+
+      // 处理prompt参数
+      if (prompt && onPrompt) {
+        const decodedPrompt = decodeURIComponent(prompt);
+        console.log('接收到prompt参数:', decodedPrompt);
+        onPrompt(decodedPrompt);
       }
 
       // 处理imageUrl参数
@@ -54,7 +64,7 @@ export function SearchParamsHandler({
     };
 
     handleParams();
-  }, [searchParams, onImageUrl, onVariationType, onTab, processImageUrl]);
+  }, [searchParams, onImageUrl, onVariationType, onTab, onPrompt, processImageUrl]);
 
   // 显示处理状态
   if (isProcessingImage && showProcessingIndicator) {

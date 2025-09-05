@@ -1,13 +1,16 @@
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
+import { Suspense } from 'react';
 import { getAllRoutes } from '@/src/config/routes';
 import { getThemeForRoute, getSaasUrlForRoute } from '@/src/utils/themeRenderer';
 import StaticHero from '@/src/components/server/StaticHero';
-import DesignHero from '@/src/components/server/DesignHero';
 import ThemeContent from '@/src/components/server/ThemeContent';
 import StaticFAQ from '@/src/components/server/StaticFAQ';
 import StaticFooter from '@/src/components/server/StaticFooter';
 import StructuredDataEnhancer from '@/src/components/seo/StructuredDataEnhancer';
+import DesignFilterSection from '@/src/components/server/DesignFilterSection';
+import DesignStepsModule from '@/src/components/server/DesignStepsModule';
+import DesignAboutModule from '@/src/components/server/DesignAboutModule';
 
 import { 
   generateBreadcrumbsForRoute, 
@@ -72,11 +75,6 @@ const pageMetaConfig: Record<string, {
     title: "Free Nano-Banana Generator | Explore Google's Trending Model for Image Editing",
     description: "Discover Free Nano-Banana, Google's Gemini 2.5 Flash Image, and see how it inspires fashion design and creative image generation. Try it with Creamoda's design tools to explore new possibilities.",
     keywords: 'Free Nano-Banana, Google AI model, Nano Banana AI, AI fashion design, AI outfit generator, virtual try-on, AI image generator'
-  },
-  'design': {
-    title: 'Design Hub | AI-Powered Design Tools | Creamoda',
-    description: 'Explore our comprehensive suite of AI-powered design tools. From outfit generation to image editing, create stunning fashion designs with professional-grade AI technology.',
-    keywords: 'AI design tools, fashion design platform, AI outfit generator, virtual try-on, design hub, creative tools, AI fashion design, digital design platform'
   }
 };
 
@@ -198,12 +196,8 @@ export default async function DynamicPage({ params }: PageProps) {
         currentUrl={`/${slug}`}
       />
       
-      {/* Hero组件 - 设计页面使用专门的DesignHero */}
-      {slug === 'design' ? (
-        <DesignHero saasUrl={saasUrl} />
-      ) : (
-        <StaticHero theme={theme} saasUrl={saasUrl} isHomepage={false} />
-      )}
+      {/* Hero组件 - 使用通用的StaticHero */}
+      <StaticHero theme={theme} saasUrl={saasUrl} isHomepage={false} />
       
       {/* 主题内容组件 */}
       <ThemeContent theme={theme} currentRoute={slug} />

@@ -1,4 +1,8 @@
+'use client';
+
 import Image from 'next/image';
+import { useState } from 'react';
+import { Skeleton } from '@/components/ui/skeleton';
 import StaticNavigation from './StaticNavigation';
 import ClientHeroInteractions from '../client/ClientHeroInteractions';
 import ClientGeneralWorkflowInteractions from '../client/ClientGeneralWorkflowInteractions';
@@ -8,8 +12,11 @@ interface DesignHeroProps {
 }
 
 export default function DesignHero({ saasUrl }: DesignHeroProps) {
+  const [mainImageLoaded, setMainImageLoaded] = useState(false);
+  const [mobileImageLoaded, setMobileImageLoaded] = useState(false);
+  const [secondaryImageLoaded, setSecondaryImageLoaded] = useState(false);
   return (
-    <section className="min-h-screen relative overflow-hidden bg-cover bg-center bg-no-repeat" style={{backgroundImage: 'url(/marketing/images/background.png)'}}>
+    <section className="min-h-[600px] relative overflow-hidden bg-cover bg-center bg-no-repeat" style={{backgroundImage: 'url(/marketing/images/background-e.png)'}}>
       {/* 导航栏 */}
       <StaticNavigation currentSaasUrl={saasUrl} />
       
@@ -17,11 +24,11 @@ export default function DesignHero({ saasUrl }: DesignHeroProps) {
       <div className="dropdown-container"></div>
       
       {/* 主要内容区域 */}
-      <div className="pt-20 pb-16 px-4">
+      <div className="pt-20 pb-4 px-4 sm:px-6 lg:px-8">
         <div className="mx-auto" style={{ maxWidth: '1600px' }}>
           {/* Hero 卡片容器 */}
           <div 
-            className="rounded-[40px] pl-8 border-2 border-white/20 flex items-center justify-between overflow-hidden relative"
+            className="rounded-[20px] sm:rounded-[30px] lg:rounded-[40px] lg:pl-8 border-2 border-white/20 flex flex-col lg:flex-row lg:items-center lg:justify-between overflow-hidden relative"
             style={{
               backgroundColor: 'transparent',
               minHeight: '300px',
@@ -30,15 +37,15 @@ export default function DesignHero({ saasUrl }: DesignHeroProps) {
             }}
           >
             {/* 左侧内容 */}
-            <div className="flex-1 max-w-[780px]">
-              <div className="pl-[60px]">
+            <div className="flex-1 lg:max-w-[780px] z-30 relative">
+              <div className="pl-0 sm:pl-4 lg:pl-[60px]">
                 {/* 标题 */}
                 <h1 
-                  className="text-white mb-6"
+                  className="text-white mb-4 sm:mb-6"
                   style={{
                     fontFamily: "'PP Neue Machina', 'Neue Machina', system-ui, -apple-system, sans-serif",
                     fontWeight: '800',
-                    fontSize: '44px',
+                    fontSize: 'clamp(28px, 5vw, 44px)',
                     lineHeight: '1.32',
                     textAlign: 'left'
                   }}
@@ -48,12 +55,12 @@ export default function DesignHero({ saasUrl }: DesignHeroProps) {
                 
                 {/* 描述文本 */}
                 <p 
-                  className="text-white"
+                  className="text-white mb-6 lg:mb-0"
                   style={{
                     fontFamily: "'Neue Machina', system-ui, -apple-system, sans-serif",
                     fontWeight: '400',
-                    fontSize: '20px',
-                    lineHeight: '0.98',
+                    fontSize: 'clamp(16px, 3vw, 20px)',
+                    lineHeight: '1.4',
                     textAlign: 'left',
                     maxWidth: '750px'
                   }}
@@ -64,66 +71,125 @@ export default function DesignHero({ saasUrl }: DesignHeroProps) {
             </div>
             
             {/* 右侧图片区域 */}
-            <div className="relative flex-shrink-0" style={{ width: '600px', height: '350px' }}>
-              {/* 背景渐变 */}
-              {/* <div 
-                className="absolute inset-0 rounded-lg"
-                style={{
-                  background: 'linear-gradient(244deg, rgba(217, 217, 217, 1) 0%, rgba(115, 115, 115, 0) 100%)'
-                }}
-              /> */}
-              
+            <div 
+              className="relative flex-shrink-0 mt-4 lg:mt-0 w-full lg:w-[600px] h-[250px] sm:h-[300px] lg:h-[350px]"
+            >
               {/* 主要图片 - 背景大图 */}
               <div className="absolute inset-0 overflow-hidden rounded-lg">
-                <Image
-                  src="/images/design/design-hero-main.png"
-                  alt="AI Fashion Design Ideas"
-                  width={1200}
-                  height={1300}
-                  className="absolute"
-                                          style={{ 
+                {/* 桌面端主图片骨架屏 */}
+                {!mainImageLoaded && (
+                  <div className="absolute hidden lg:block">
+                    <Skeleton 
+                      className="bg-white/10"
+                      style={{ 
                         right: '-50px',
                         top: '-160px',
                         width: '1200px',
                         height: '700px',
-                        objectFit: 'contain',
-                        transform: 'rotate(-15deg)',
-                        opacity: '0.5',
-                        maskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 20%, rgba(0,0,0,0.7) 40%, rgba(0,0,0,1) 60%, rgba(0,0,0,1) 100%)',
-                        WebkitMaskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 20%, rgba(0,0,0,0.7) 40%, rgba(0,0,0,1) 60%, rgba(0,0,0,1) 100%)'
+                        borderRadius: '8px'
                       }}
+                    />
+                  </div>
+                )}
+                
+                <Image
+                  src="/marketing/images/design/bb.png"
+                  alt="AI Fashion Design Ideas"
+                  width={1200}
+                  height={1300}
+                  className="absolute hidden lg:block"
+                  style={{ 
+                    right: '-20px',
+                    top: '-180px',
+                    width: '1200px',
+                    height: '700px',
+                    objectFit: 'contain',
+                    maskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 15%, rgba(0,0,0,0.8) 30%, rgba(0,0,0,1) 50%)',
+                    WebkitMaskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 15%, rgba(0,0,0,0.8) 30%, rgba(0,0,0,1) 50%)',
+                    // transition: 'opacity 300ms ease'
+                  }}
+                  onLoad={() => setMainImageLoaded(true)}
                   priority
                 />
                 
-                {/* 左边模糊蒙版 */}
+                {/* 移动端背景图片骨架屏 */}
+                {!mobileImageLoaded && (
+                  <div className="absolute lg:hidden">
+                    <Skeleton 
+                      className="bg-white/10"
+                      style={{ 
+                        right: '-100px',
+                        top: '-100px',
+                        width: '500px',
+                        height: '400px',
+                        borderRadius: '8px'
+                      }}
+                    />
+                  </div>
+                )}
+                
+                <Image
+                  src="/images/design/design-hero-main.png"
+                  alt="AI Fashion Design Ideas"
+                  width={800}
+                  height={800}
+                  className="absolute lg:hidden"
+                  style={{ 
+                    right: '-100px',
+                    top: '-100px',
+                    width: '500px',
+                    height: '400px',
+                    objectFit: 'contain',
+                    transform: 'rotate(-10deg)',
+                    opacity: mobileImageLoaded ? '0.3' : '0',
+                    maskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.5) 30%, rgba(0,0,0,1) 70%)',
+                    WebkitMaskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.5) 30%, rgba(0,0,0,1) 70%)',
+                    transition: 'opacity 300ms ease'
+                  }}
+                  onLoad={() => setMobileImageLoaded(true)}
+                  priority
+                />
+                
+                {/* 左边模糊蒙版 - 仅在桌面端显示 */}
                 <div 
-                  className="absolute left-0 top-0 bottom-0 w-4/5 pointer-events-none z-10"
+                  className="absolute left-0 top-0 bottom-0 w-full pointer-events-none z-10 hidden lg:block"
                   style={{
-                    background: 'linear-gradient(to right, rgba(44, 20, 151, 0.6) 0%, rgba(44, 20, 151, 0.3) 30%, rgba(20, 5, 78, 0.15) 50%, rgba(48, 21, 159, 0.05) 70%, rgba(48, 21, 159, 0.01) 85%, transparent 100%)',
-                    filter: 'blur(120px)'
+                    background: 'linear-gradient(to right, rgba(78, 44, 200, 0.8) 10%, rgba(44, 20, 151, 0.4) 15%, rgba(20, 5, 78, 0.25) 30%, rgba(48, 21, 159, 0.15) 50%, rgba(48, 21, 159, 0.08) 70%, rgba(48, 21, 159, 0.03) 85%, transparent 100%)',
+                    filter: 'blur(300px)'
                   }}
                 />
                 
                 {/* 中间图片 */}
                 <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20">
+                  {/* 中间图片骨架屏 */}
+                  {!secondaryImageLoaded && (
+                    <Skeleton 
+                      className="bg-white/10"
+                      style={{ 
+                        width: 'clamp(200px, 40vw, 300px)',
+                        height: 'clamp(240px, 48vw, 360px)',
+                        borderRadius: '8px'
+                      }}
+                    />
+                  )}
+                  
                   <Image
-                    src="/images/design/design-hero-secondary-2d88c0.png"
+                    src="/marketing/images/design/discovers.png"
                     alt="Fashion Design Collection"
                     width={458}
                     height={519}
                     className="object-contain"
                     style={{ 
-                      width: '300px',
-                      height: 'auto'
+                      width: 'clamp(200px, 40vw, 300px)',
+                      height: 'auto',
+                      opacity: secondaryImageLoaded ? 1 : 0,
+                      transition: 'opacity 300ms ease'
                     }}
+                    onLoad={() => setSecondaryImageLoaded(true)}
                   />
                 </div>
               </div>
-              
-              {/* 次要图片 - 前景图 */}
-             
             </div>
-            
           </div>
           
           {/* 额外内容区域 - 可以添加其他设计工具或功能 */}
@@ -132,6 +198,14 @@ export default function DesignHero({ saasUrl }: DesignHeroProps) {
           </div>
         </div>
       </div>
+      
+      {/* 底部渐变遮罩 - 实现与下方section的平滑过渡 */}
+      <div 
+        className="absolute bottom-0 left-0 right-0 h-32 pointer-events-none"
+        style={{
+          background: 'linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.3) 30%, rgba(0, 0, 0, 0.7) 70%, rgba(0, 0, 0, 0.95) 90%, rgba(0, 0, 0, 1) 100%)'
+        }}
+      />
       
       {/* 客户端交互增强 */}
       <ClientHeroInteractions currentSaasUrl={saasUrl} />

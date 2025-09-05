@@ -3,12 +3,13 @@
 import { Sidebar } from '@/components/Sidebar';
 import { ImageGrid } from '../../../components/ImageGrid/index';
 import { Album as AlbumDrawer } from '@/components/Album';
-import { Suspense } from 'react';
+import { Suspense, useState } from 'react';
 import { useVariationFormStore } from '@/stores/useVariationFormStore';
 import { SearchParamsHandler } from '@/components/SearchParamsHandler';
 
 export default function Page() {
   const { setCurrentVariationType, updateImageUrl } = useVariationFormStore();
+  const [initialPrompt, setInitialPrompt] = useState<string>('');
 
   return (
     <div className="flex p-6 pt-[30px] z-0">
@@ -16,8 +17,9 @@ export default function Page() {
         <SearchParamsHandler 
           onImageUrl={updateImageUrl}
           onVariationType={setCurrentVariationType}
+          onPrompt={setInitialPrompt}
         />
-        <Sidebar />
+        <Sidebar initialPrompt={initialPrompt} />
       </Suspense>
       <main className="flex-1 pl-6 h-[calc(100vh-110px)] overflow-y-auto bg-transparent">
         <ImageGrid />

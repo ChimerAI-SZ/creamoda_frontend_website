@@ -13,16 +13,17 @@ import { OutfitFormData } from '../index';
 
 interface OutfitFormProps {
   onSubmit?: (data: OutfitFormData) => void;
+  initialPrompt?: string;
 }
 
-function OutfitForm({ onSubmit }: OutfitFormProps) {
+function OutfitForm({ onSubmit, initialPrompt }: OutfitFormProps) {
   const { modelSizes } = useModelStore();
   const { isGenerating, setGenerating } = useGenerationStore();
 
   const defaultModelSize = Number(modelSizes.find(size => size.name === 'Mid-size')?.code) || 2;
 
   const [formData, setFormData] = useState<OutfitFormData>({
-    prompt: '',
+    prompt: initialPrompt || '',
     gender: 2,
     age: '25',
     country: 'usa',
@@ -30,6 +31,13 @@ function OutfitForm({ onSubmit }: OutfitFormProps) {
     withHumanModel: 1,
     format: '3:4'
   });
+
+  // 当 initialPrompt 变化时更新表单数据
+  useEffect(() => {
+    if (initialPrompt) {
+      setFormData(prev => ({ ...prev, prompt: initialPrompt }));
+    }
+  }, [initialPrompt]);
 
   const [btnState, setBtnState] = useState<'disabled' | 'ready' | 'generating'>('disabled');
 

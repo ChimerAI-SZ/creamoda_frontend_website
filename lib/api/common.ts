@@ -1,5 +1,7 @@
 import { api } from '@/lib/axios';
 import { getAuthToken } from './token';
+import { FrontendImagesParams, FrontendImagesResponse, FrontendImageDetailResponse, SimilarImageItem } from '@/types/frontendImages';
+import { withRetry } from '@/lib/utils/retryUtils';
 
 /**
  * 获取变化类型列表
@@ -109,4 +111,95 @@ export async function updateUserInfo(payload: {
     console.error('Error contacting us:', error);
     throw error;
   }
+}
+
+/**
+ * 获取前端图片列表
+ * @param params 查询参数
+ */
+export async function getFrontendImages(params: FrontendImagesParams): Promise<FrontendImagesResponse> {
+  return withRetry(async () => {
+    const queryParams = new URLSearchParams({
+      page: params.page.toString(),
+      page_size: params.page_size.toString(),
+    });
+    
+    if (params.type) {
+      // 如果type是字符串（逗号分隔），则分割成数组
+      const typeArray = typeof params.type === 'string' ? params.type.split(',') : [params.type];
+      typeArray.forEach(type => {
+        queryParams.append('type', type.trim());
+      });
+    }
+    
+    if (params.gender) {
+      // 如果gender是字符串（逗号分隔），则分割成数组
+      const genderArray = typeof params.gender === 'string' ? params.gender.split(',') : [params.gender];
+      genderArray.forEach(gender => {
+        queryParams.append('gender', gender.trim());
+      });
+    }
+
+    // 使用Next.js API代理避免CORS问题
+    const response = await fetch(`/api/frontend-images?${queryParams.toString()}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      const error = new Error(`HTTP error! status: ${response.status}`);
+      (error as any).status = response.status;
+      throw error;
+    }
+
+    const data = await response.json();
+    return data;
+  }, {
+    maxRetries: 3, // 增加重试次数，因为 500 错误可能是临时的
+    baseDelay: 1000,
+    maxDelay: 5000,
+    backoffMultiplier: 1.8
+  });
+}
+
+/**
+ * 获取前端图片详情（包含相似图片推荐）
+ * @param params 查询参数
+ */
+export async function getFrontendImageDetail(params: { record_id?: string; slug?: string }): Promise<FrontendImageDetailResponse> {
+  return withRetry(async () => {
+    const queryParams = new URLSearchParams();
+    
+    if (params.record_id) {
+      queryParams.append('record_id', params.record_id);
+    }
+    
+    if (params.slug) {
+      queryParams.append('slug', params.slug);
+    }
+
+    // 使用Next.js API代理避免CORS问题
+    const response = await fetch(`/api/frontend-images/detail?${queryParams.toString()}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      const error = new Error(`HTTP error! status: ${response.status}`);
+      (error as any).status = response.status;
+      throw error;
+    }
+
+    const data = await response.json();
+    return data;
+  }, {
+    maxRetries: 3, // 增加重试次数，因为 500 错误可能是临时的
+    baseDelay: 1000,
+    maxDelay: 5000,
+    backoffMultiplier: 1.8
+  });
 }

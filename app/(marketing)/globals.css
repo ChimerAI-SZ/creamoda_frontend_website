@@ -8,6 +8,9 @@
   font-weight: 400;
   font-style: normal;
   font-display: swap;
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 @font-face {
@@ -16,6 +19,9 @@
   font-weight: 800;
   font-style: normal;
   font-display: swap;
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* 独立的 Regular 字体族，避免权重匹配到 Ultrabold */
@@ -25,6 +31,21 @@
   font-weight: 400;
   font-style: normal;
   font-display: swap;
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 独立的 Ultrabold 字体族，确保精确匹配 */
+@font-face {
+  font-family: 'Neue Machina Ultrabold';
+  src: url('/marketing/fonts/NeueMachina-Ultrabold.otf') format('opentype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Homepage hero fonts */
@@ -34,6 +55,9 @@
   font-weight: 900;
   font-style: normal;
   font-display: swap;
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 @font-face {
@@ -42,6 +66,9 @@
   font-weight: 600;
   font-style: normal;
   font-display: swap;
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
   :root {
