@@ -13,7 +13,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // 结构化数据现在通过子页面的 StructuredDataEnhancer 组件统一管理
+  // 结构化数据现在通过子页面的 StructuredDataEnhancer 组件统一管理。
 
   return (
     <>

@@ -48,6 +48,18 @@ const componentStyles = `
     background-color: rgba(255, 255, 255, 0.3);
   }
 
+  /* 隐藏弹窗滚动条 */
+  .dialog-content-stable .dialog-scroll-hidden {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  
+  .dialog-content-stable .dialog-scroll-hidden::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
   /* 下拉菜单动画优化 */
   .dropdown-menu {
     transform: translateZ(0);
@@ -1042,7 +1054,7 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
           >
           <DialogTitle className="sr-only">Image Detail</DialogTitle>
           {/* 可滚动的弹窗内容 */}
-          <div className="max-h-[calc(95vh-2rem)] overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
+          <div className="max-h-[calc(95vh-2rem)] overflow-y-auto dialog-scroll-hidden">
             {/* 响应式布局 */}
             <div className="flex flex-col min-h-full gap-4 p-4 sm:p-6">
             {/* 上半部分：响应式布局 */}
