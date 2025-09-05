@@ -1,28 +1,39 @@
 import { getAllRoutes } from '@/src/config/routes';
 
-// 获取设计图片数据
-async function getDesignImages() {
+// 获取所有设计图片数据 - 专门用于sitemap
+async function getAllDesignImages() {
   try {
-    const backendUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/common/frontend/images`;
-    const response = await fetch(backendUrl, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      signal: AbortSignal.timeout(10000),
-    });
+    const allImages: any[] = [];
+    let page = 1;
+    let hasMore = true;
+    
+    while (hasMore) {
+      const backendUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/common/frontend/images?page=${page}&page_size=50`;
+      const response = await fetch(backendUrl, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        signal: AbortSignal.timeout(10000),
+      });
 
-    if (!response.ok) {
-      throw new Error(`Backend API error: ${response.status}`);
-    }
+      if (!response.ok) {
+        throw new Error(`Backend API error: ${response.status}`);
+      }
 
-    const data = await response.json();
-    if (data.code === 0 && data.data && data.data.list) {
-      return data.data.list;
+      const data = await response.json();
+      if (data.code === 0 && data.data && data.data.list) {
+        allImages.push(...data.data.list);
+        hasMore = data.data.has_more;
+        page++;
+      } else {
+        hasMore = false;
+      }
     }
-    return [];
+    
+    return allImages;
   } catch (error) {
-    console.error('Failed to fetch design images for sitemap:', error);
+    console.error('Failed to fetch all design images for sitemap:', error);
     return [];
   }
 }
@@ -53,7 +64,7 @@ export async function GET() {
   ];
 
   // 动态设计页面
-  const designImages = await getDesignImages();
+  const designImages = await getAllDesignImages();
   const designPages = designImages.map((image: any) => ({
     url: `/designs/${image.slug}`,
     priority: '0.7',
