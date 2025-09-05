@@ -57,5 +57,6 @@ export function getSaasUrlByRoute(route: string): string {
 
 // 获取所有可用路由
 export function getAllRoutes(): string[] {
-  return Object.keys(routeToThemeMap);
+  // 排除 'designs'，因为它有专门的页面路由
+  return Object.keys(routeToThemeMap).filter(route => route !== 'designs');
 } 
