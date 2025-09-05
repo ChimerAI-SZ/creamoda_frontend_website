@@ -8,8 +8,7 @@ export const routeToThemeMap: Record<string, string> = {
   'virtual-try-on': 'virtual_try',
   'outfit-generator': 'outfit_generator',
   'sketch-to-image': 'sketch_convert',
-  'free-nano-banana': 'free_nano_banana',
-  'design': 'design_page'
+  'free-nano-banana': 'free_nano_banana'
 };
 
 // 主题ID到路由路径的映射（反向映射）
@@ -22,8 +21,7 @@ export const themeToRouteMap: Record<string, string> = {
   'virtual_try': 'virtual-try-on',
   'outfit_generator': 'outfit-generator',
   'sketch_convert': 'sketch-to-image',
-  'free_nano_banana': 'free-nano-banana',
-  'design_page': 'design'
+  'free_nano_banana': 'free-nano-banana'
 };
 
 // 获取主题ID by 路由路径
@@ -46,8 +44,7 @@ export const routeToSaasUrlMap: Record<string, string> = {
   'virtual-try-on': 'https://www.creamoda.ai/virtual-try-on/create',
   'outfit-generator': 'https://www.creamoda.ai/fashion-design/create',
   'sketch-to-image': 'https://www.creamoda.ai/fashion-design/create',
-  'free-nano-banana': 'https://www.creamoda.ai/magic-kit/create',
-  'design': 'https://www.creamoda.ai/fashion-design/create'
+  'free-nano-banana': 'https://www.creamoda.ai/magic-kit/create'
 };
 
 // 根据路由获取SaaS URL

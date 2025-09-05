@@ -9,7 +9,7 @@ export default function DesignAboutModule({ className = '' }: DesignAboutModuleP
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: 'url(/marketing/images/design/design-about-bg.png)'
+          backgroundImage: 'url(/marketing/images/design/about.png)'
         }}
       />
       
