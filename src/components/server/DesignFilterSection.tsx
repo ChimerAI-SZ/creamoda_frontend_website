@@ -159,7 +159,7 @@ const MemoizedImageWithSkeleton = memo(function ImageWithSkeleton({
       />
       {!loaded && (
         <div className="absolute inset-0 z-20">
-          <Skeleton className="w-full h-full bg-white/10 animate-pulse" />
+          <Skeleton className="w-full h-full bg-white/10 animate-pulse rounded-md" />
         </div>
       )}
       <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-300 z-10 pointer-events-none" />
@@ -199,10 +199,10 @@ const MemoizedImageGrid = memo(function ImageGridSection({
         ? Array.from({ length: 20 }).map((_, idx) => (
             <div 
               key={idx} 
-              className="w-full overflow-hidden rounded-md animate-pulse" 
+              className="group relative w-full overflow-hidden rounded-md cursor-pointer transition-all duration-300 ease-in-out" 
               style={{ aspectRatio: '3 / 4' }}
             >
-              <Skeleton className="w-full h-full bg-white/10" />
+              <Skeleton className="w-full h-full bg-white/10 animate-pulse rounded-md" />
             </div>
           ))
         : allImages.map((img, idx) => (
@@ -225,10 +225,10 @@ const MemoizedImageGrid = memo(function ImageGridSection({
         Array.from({ length: pendingAddCount }).map((_, idx) => (
           <div 
             key={`pending-${idx}`} 
-            className="w-full overflow-hidden rounded-md animate-pulse" 
+            className="group relative w-full overflow-hidden rounded-md cursor-pointer transition-all duration-300 ease-in-out" 
             style={{ aspectRatio: '3 / 4' }}
           >
-            <Skeleton className="w-full h-full bg-white/10" />
+            <Skeleton className="w-full h-full bg-white/10 animate-pulse rounded-md" />
           </div>
         ))}
     </div>
@@ -1052,7 +1052,7 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
                 {/* 弹窗图片骨架屏 */}
                 {!dialogImageLoaded && (
                   <div className="absolute inset-0 z-10 flex items-center justify-center">
-                    <Skeleton className="w-full h-full bg-white/10" />
+                    <Skeleton className="w-full h-full bg-white/10 animate-pulse rounded-xl" />
                   </div>
                 )}
                 
@@ -1076,7 +1076,7 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
-                    <Skeleton className="w-[90%] h-[90%] bg-white/10" />
+                    <Skeleton className="w-[90%] h-[90%] bg-white/10 animate-pulse rounded-xl" />
                   </div>
                 )}
               </div>
@@ -1140,10 +1140,13 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
                     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mt-4 sm:mt-6 relative">
                       {/* Generate Similar Designs 按钮 */}
                       <button 
-                        className="flex items-center justify-center gap-2.5 px-3 py-[11px] w-full sm:w-auto sm:flex-1 lg:w-[406px] h-[42px] rounded-[4px] text-white text-sm sm:text-base lg:text-[20px] font-bold leading-[1.1] text-center cursor-pointer hover:bg-opacity-80 transition-all duration-200 focus:outline-none"
+                        className="flex items-center justify-center gap-2.5 px-3 py-[11px] w-full sm:w-auto sm:flex-1 lg:w-[406px] h-[42px] rounded-[4px] text-white text-sm sm:text-base lg:text-[20px] font-bold leading-[1.1] text-center cursor-pointer hover:bg-opacity-80 transition-all duration-200 outline-none focus:outline-none focus-visible:outline-none active:outline-none"
                         style={{ 
                           backgroundColor: 'rgba(112, 77, 255, 0.37)',
-                          fontFamily: "Manrope, system-ui, sans-serif"
+                          fontFamily: "Manrope, system-ui, sans-serif",
+                          border: 'none',
+                          outline: 'none',
+                          boxShadow: 'none'
                         }}
                         onClick={(e) => {
                           e.preventDefault();
@@ -1166,8 +1169,13 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
                       {/* 三个点按钮 */}
                       <div className="relative">
                         <button 
-                          className="flex items-center justify-center gap-2.5 px-3 py-[11px] w-full sm:w-[79px] h-[42px] rounded-[4px] focus:outline-none"
-                          style={{ backgroundColor: 'rgba(112, 77, 255, 0.37)' }}
+                          className="flex items-center justify-center gap-2.5 px-3 py-[11px] w-full sm:w-[79px] h-[42px] rounded-[4px] outline-none focus:outline-none focus-visible:outline-none active:outline-none"
+                          style={{ 
+                            backgroundColor: 'rgba(112, 77, 255, 0.37)',
+                            border: 'none',
+                            outline: 'none',
+                            boxShadow: 'none'
+                          }}
                           onClick={() => setDropdownOpen(!dropdownOpen)}
                         >
                           <div className="flex items-center gap-1">

@@ -55,6 +55,17 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+  
+  /* 禁用所有按钮的默认焦点外边框 */
+  button:focus {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+  
+  button:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+  }
 }
 
 /* Masonry 网格基础样式 */
