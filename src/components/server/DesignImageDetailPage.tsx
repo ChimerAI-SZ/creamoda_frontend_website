@@ -43,7 +43,7 @@ const MemoizedImageWithSkeleton = React.memo(function ImageWithSkeleton({
       />
       {!loaded && (
         <div className="absolute inset-0 z-20">
-          <Skeleton className="w-full h-full bg-white/10" />
+          <Skeleton className="w-full h-full bg-white/10 animate-pulse rounded-md" />
         </div>
       )}
       <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10 pointer-events-none" />
@@ -107,7 +107,7 @@ export default function DesignImageDetailPage({ image }: DesignImageDetailPagePr
             {/* 图片骨架屏 */}
             {!imageLoaded && (
               <div className="absolute inset-0 z-10">
-                <Skeleton className="w-full h-full bg-white/10" />
+                <Skeleton className="w-full h-full bg-white/10 animate-pulse rounded-xl" />
               </div>
             )}
             
@@ -193,10 +193,13 @@ export default function DesignImageDetailPage({ image }: DesignImageDetailPagePr
                 <div className="flex items-center gap-3 mt-6 relative z-10">
                   {/* Generate Similar Designs 按钮 */}
                   <button 
-                    className="flex items-center justify-center gap-2.5 px-3 py-[11px] w-[406px] h-[42px] rounded-[4px] text-white text-[20px] font-bold leading-[1.1] text-center cursor-pointer hover:bg-opacity-80 transition-all duration-200 relative z-20"
+                    className="flex items-center justify-center gap-2.5 px-3 py-[11px] w-[406px] h-[42px] rounded-[4px] text-white text-[20px] font-bold leading-[1.1] text-center cursor-pointer hover:bg-opacity-80 transition-all duration-200 relative z-20 outline-none focus:outline-none focus-visible:outline-none active:outline-none"
                     style={{ 
                       backgroundColor: 'rgba(112, 77, 255, 0.37)',
-                      fontFamily: "Manrope, system-ui, sans-serif"
+                      fontFamily: "Manrope, system-ui, sans-serif",
+                      border: 'none',
+                      outline: 'none',
+                      boxShadow: 'none'
                     }}
                     onClick={(e) => {
                       e.preventDefault();
