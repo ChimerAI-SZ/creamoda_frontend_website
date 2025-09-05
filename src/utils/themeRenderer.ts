@@ -21,7 +21,7 @@ export function getThemeForRoute(slug: string): ThemeConfig {
     'outfit-generator': 'outfit_generator',
     'sketch-to-image': 'sketch_convert',
     'free-nano-banana': 'free_nano_banana',
-    'design': 'design_page',
+    'designs': 'design_page',
   };
 
   const themeId = routeToThemeMap[slug] || 'background_remove';
