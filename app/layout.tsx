@@ -62,6 +62,29 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           type="font/ttf"
           crossOrigin="anonymous"
         />
+        
+        {/* Google Analytics - 备用实现 */}
+        {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
+          <>
+            <script
+              async
+              src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}`}
+            />
+            <script
+              dangerouslySetInnerHTML={{
+                __html: `
+                  window.dataLayer = window.dataLayer || [];
+                  function gtag(){dataLayer.push(arguments);}
+                  gtag('js', new Date());
+                  gtag('config', '${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}', {
+                    page_title: document.title,
+                    page_location: window.location.href
+                  });
+                `,
+              }}
+            />
+          </>
+        )}
       </head>
       <body className="min-h-screen flex flex-col bg-[url('/images/bg.png')] bg-cover">
         <GoogleAnalytics measurementId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || ''} />
