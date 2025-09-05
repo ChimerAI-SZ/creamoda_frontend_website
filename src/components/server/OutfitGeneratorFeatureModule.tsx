@@ -61,7 +61,7 @@ function Tag({ label, isActive, onClick }: TagProps) {
 function Card({ image, hasViewMore = false, className = '', onClick }: CardProps) {
   return (
     <div 
-      className={`relative w-full aspect-[268/356] rounded-2xl overflow-hidden group cursor-pointer ${className}`}
+      className={`relative w-full 10 aspect-[268/356] rounded-2xl overflow-hidden group cursor-pointer ${className}`}
       onClick={onClick}
     >
       <Image
@@ -176,7 +176,8 @@ export default function OutfitGeneratorFeatureModule({ theme }: OutfitGeneratorF
               <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2 md:gap-4 lg:gap-6 mb-6"
                 style={{ 
                   width: '120%',
-                  marginLeft: '-10%'
+                  marginLeft: '-10%',
+                  marginBottom: '-5px'
                 }}>
                 {Array.from({ length: 8 }).map((_, index) => (
                   <div key={index} className="w-full aspect-[268/356] rounded-2xl bg-gray-800 animate-pulse" />
@@ -203,6 +204,7 @@ export default function OutfitGeneratorFeatureModule({ theme }: OutfitGeneratorF
               <div 
                 className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2 md:gap-4 lg:gap-6 mb-6"
                 style={{ 
+                  
                   width: '120%', // Make grid slightly wider than container
                   marginLeft: '-10%' // Center the grid and create cropped effect
                 }}
@@ -213,6 +215,7 @@ export default function OutfitGeneratorFeatureModule({ theme }: OutfitGeneratorF
                     image={image}
                     hasViewMore={false}
                     onClick={() => handleImageClick(image)}
+                    
                   />
                 ))}
               </div>
@@ -225,10 +228,13 @@ export default function OutfitGeneratorFeatureModule({ theme }: OutfitGeneratorF
               </div>
             )}
             
-            {/* White mask at bottom 1/3 */}
+            {/* Subtle fade mask at bottom */}
             {!isLoading && !error && images.length > 0 && (
               <div 
-                className="absolute inset-x-0 bottom-5 h-1/2 bg-gradient-to-t from-white via-white/30 to-transparent pointer-events-none"
+                className="absolute inset-x-0 bottom-5 h-2/3 pointer-events-none"
+                style={{
+                  background: 'linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.8) 10%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.3) 75%, transparent 100%)'
+                }}
               />
             )}
           </div>
