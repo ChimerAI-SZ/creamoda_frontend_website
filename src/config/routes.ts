@@ -36,7 +36,21 @@ export function getRouteByTheme(themeId: string): string {
   return themeToRouteMap[themeId] || 'image-background-remover';
 }
 
-// 路由到SaaS URL的映射
+// 路由到相对路径的映射（不包含域名）
+export const routeToPathMap: Record<string, string> = {
+  'image-background-remover': '/magic-kit/create',
+  'image-background-changer': '/magic-kit/create', 
+  'image-enhancer': '/magic-kit/create',
+  'image-changer': '/magic-kit/create',
+  'image-color-changer': '/magic-kit/create',
+  'virtual-try-on': '/virtual-try-on/create',
+  'outfit-generator': '/fashion-design/create',
+  'sketch-to-image': '/fashion-design/create',
+  'free-nano-banana': '/magic-kit/create',
+  'designs': '/fashion-design/create'
+};
+
+// 路由到SaaS URL的映射（保留兼容性，但已废弃）
 export const routeToSaasUrlMap: Record<string, string> = {
   'image-background-remover': 'https://www.creamoda.ai/magic-kit/create',
   'image-background-changer': 'https://www.creamoda.ai/magic-kit/create', 
@@ -50,8 +64,23 @@ export const routeToSaasUrlMap: Record<string, string> = {
   'designs': 'https://www.creamoda.ai/fashion-design/create'
 };
 
-// 根据路由获取SaaS URL
+// 根据路由获取相对路径
+export function getPathByRoute(route: string): string {
+  return routeToPathMap[route] || '/fashion-design/create';
+}
+
+// 根据路由获取SaaS URL（动态构建）
 export function getSaasUrlByRoute(route: string): string {
+  // 导入navigation.ts的函数来获取正确的域名
+  if (typeof window !== 'undefined') {
+    // 动态导入并使用getMainDomainUrl
+    const { getMainDomainUrl } = require('../utils/navigation');
+    const baseDomain = getMainDomainUrl();
+    const path = getPathByRoute(route);
+    return `${baseDomain}${path}`;
+  }
+  
+  // 服务端渲染时的默认值
   return routeToSaasUrlMap[route] || 'https://www.creamoda.ai/fashion-design/create';
 }
 

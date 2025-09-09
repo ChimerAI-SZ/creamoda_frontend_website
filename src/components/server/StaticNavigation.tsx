@@ -1,11 +1,12 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import DynamicCreateButton from '../client/DynamicCreateButton';
 
 interface StaticNavigationProps {
   currentSaasUrl?: string;
 }
 
-export default function StaticNavigation({ currentSaasUrl = 'https://www.creamoda.ai/fashion-design/create' }: StaticNavigationProps) {
+export default function StaticNavigation({ currentSaasUrl }: StaticNavigationProps) {
   return (
     <nav className="hero-nav">
       <Link href="/" className="hero-logo">
@@ -80,14 +81,19 @@ export default function StaticNavigation({ currentSaasUrl = 'https://www.creamod
         </Link>
       </div>
       
-      <a 
-        href={currentSaasUrl} 
-        target="_blank" 
-        rel="noopener noreferrer" 
-        className="create-btn"
-      >
-        Create
-      </a>
+      {/* 如果有传入的URL就使用传入的，否则使用动态Create按钮 */}
+      {currentSaasUrl ? (
+        <a 
+          href={currentSaasUrl} 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="create-btn"
+        >
+          Create
+        </a>
+      ) : (
+        <DynamicCreateButton />
+      )}
     </nav>
   );
 }
