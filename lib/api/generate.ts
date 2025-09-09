@@ -207,17 +207,34 @@ export async function sketchToDesign(
   referenceImageUrl?: string
 ) {
   try {
+    // 添加调试日志
+    console.log('=== SKETCH_TO_DESIGN DEBUG START ===');
+    console.log('originalPicUrl:', originalPicUrl);
+    console.log('prompt:', prompt);
+    console.log('referenceImageUrl:', referenceImageUrl);
+    console.log('prompt exists and trimmed:', prompt && prompt.trim());
+    console.log('referenceImageUrl exists and trimmed:', referenceImageUrl && referenceImageUrl.trim());
+    
     const requestData: any = { originalPicUrl };
     
     // 只有当 prompt 有值时才添加到请求中
     if (prompt && prompt.trim()) {
       requestData.prompt = prompt;
+      console.log('Added prompt to request:', prompt);
+    } else {
+      console.log('No prompt added to request');
     }
     
     // 只有当 referenceImageUrl 有值时才添加到请求中
     if (referenceImageUrl && referenceImageUrl.trim()) {
       requestData.referenceImageUrl = referenceImageUrl;
+      console.log('Added referenceImageUrl to request:', referenceImageUrl);
+    } else {
+      console.log('No referenceImageUrl added to request');
     }
+    
+    console.log('Final requestData:', requestData);
+    console.log('=== SKETCH_TO_DESIGN DEBUG END ===');
     
     const response = await api.post('/api/v1/img/sketch_to_design', requestData);
     return response.data;

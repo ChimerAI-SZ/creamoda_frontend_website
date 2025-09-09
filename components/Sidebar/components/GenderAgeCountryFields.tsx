@@ -134,7 +134,7 @@ export const GenderAgeCountryFields: React.FC<GenderAgeCountryFieldsProps> = ({
           </>
         )} */}
 
-        <h3 className="text-[#121316] font-inter text-[14px] font-bold leading-5 pt-[24px]">Format</h3>
+        {/* <h3 className="text-[#121316] font-inter text-[14px] font-bold leading-5 pt-[24px]">Format</h3> */}
         <div className="flex flex-col gap-2 items-start">
           <StyledLabel content="Aspect Ratio" />
 

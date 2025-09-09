@@ -294,6 +294,18 @@ export function Sidebar({ initialPrompt }: { initialPrompt?: string }) {
         response = await copyFabricGenerate(finalImageUrl, data.description);
       } else if (data.variationType === '4') {
         // Call sketch to design API
+        console.log('=== SIDEBAR SKETCH_TO_DESIGN DEBUG START ===');
+        console.log('Original form data:', {
+          variationType: data.variationType,
+          description: data.description,
+          referenceImage: data.referenceImage,
+          referenceImageUrl: data.referenceImageUrl
+        });
+        console.log('finalImageUrl:', finalImageUrl);
+        console.log('data.description:', data.description);
+        console.log('finalReferenceImageUrl:', finalReferenceImageUrl);
+        console.log('=== SIDEBAR SKETCH_TO_DESIGN DEBUG END ===');
+        
         response = await sketchToDesign(finalImageUrl, data.description, finalReferenceImageUrl);
       } else if (data.variationType === '5') {
         // Convert style strength level to numeric value for API

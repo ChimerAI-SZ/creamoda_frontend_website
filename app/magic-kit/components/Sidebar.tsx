@@ -386,9 +386,9 @@ export function Sidebar() {
               onImageUrlChange={updateImageUrl}
               showMaskEditor={false}
             />
-            <div className="text-sm text-gray-500 mt-2">
+            {/* <div className="text-sm text-gray-500 mt-2">
               Upload an image and we'll extract a pattern tile using AI. No manual masking required.
-            </div>
+            </div> */}
           </div>
         );
       case '7': // Pattern application
@@ -402,7 +402,7 @@ export function Sidebar() {
               maskImageUrl={formData.maskUrl || ''}
               showMaskEditor={false}
             />
-            <StyledLabel content="Upload printing image" />
+            <StyledLabel content="upload pattern image" />
             <MemoizedImageUploader
               imageUrl={formData.referenceImageUrl || ''}
               onImageUrlChange={updateReferenceImageUrl}
@@ -410,9 +410,9 @@ export function Sidebar() {
               maskImageUrl=""
               showMaskEditor={false}
             />
-            <div className="text-sm text-gray-500 mt-2">
+            {/* <div className="text-sm text-gray-500 mt-2">
               Upload original fashion design and pattern image. AI will apply the pattern to the design using fal.ai Gemini 2.5 Flash.
-            </div>
+            </div> */}
           </div>
         );
 
