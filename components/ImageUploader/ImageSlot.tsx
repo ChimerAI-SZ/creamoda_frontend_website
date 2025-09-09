@@ -42,10 +42,37 @@ export const ImageSlot: React.FC<ImageSlotProps> = ({
   // 保存上传到服务器的遮罩图像URL
   const [uploadedMaskUrl, setUploadedMaskUrl] = React.useState<string | undefined>(undefined);
 
-  // 当imageUrl变化时更新currentImage
+  // 预加载图片尺寸信息，避免Dialog中的抖动
+  const [imageSize, setImageSize] = React.useState<{ width: number; height: number } | null>(null);
+  const [isImageLoading, setIsImageLoading] = React.useState(false);
+
+  // 当imageUrl变化时更新currentImage并预加载图片尺寸
   React.useEffect(() => {
     setCurrentImage(imageUrl);
-  }, [imageUrl]);
+    
+    // 预加载图片尺寸信息
+    if (imageUrl) {
+      setIsImageLoading(true);
+      const img = new window.Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        setImageSize({
+          width: img.naturalWidth,
+          height: img.naturalHeight
+        });
+        setIsImageLoading(false);
+      };
+      img.onerror = () => {
+        // 加载失败时使用默认尺寸
+        setImageSize({ width, height });
+        setIsImageLoading(false);
+      };
+      img.src = imageUrl;
+    } else {
+      setImageSize(null);
+      setIsImageLoading(false);
+    }
+  }, [imageUrl, width, height]);
 
   // 当maskImageUrl变化时更新maskImage
   React.useEffect(() => {
@@ -100,19 +127,29 @@ export const ImageSlot: React.FC<ImageSlotProps> = ({
           </button>
         </div>
       </DialogTrigger>
-      <DialogContent className="flex items-center justify-center max-w-[90vw] min-w-[1040px] w-[1040px] max-h-[90vh]">
+      <DialogContent className="flex items-center justify-center max-w-[90vw] min-w-[1040px] w-[1040px] max-h-[90vh] min-h-[600px]">
         <DialogTitle className="sr-only"></DialogTitle>
-        {/* 直接显示涂鸦编辑器 */}
-        <div className="w-full h-full">
-          <ImageDoodleEditor
-            imageUrl={currentImage || placeholder}
-            maskImageUrl={maskImage || undefined}
-            onSave={handleSaveDoodle}
-            initialStrokes={savedStrokes}
-            width={width}
-            height={height}
-          />
-        </div>
+        {/* 在图片尺寸加载完成前显示占位符，避免抖动 */}
+        {isImageLoading ? (
+          <div className="w-full h-full flex items-center justify-center">
+            <div className="flex flex-col items-center gap-4">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+              <div className="text-gray-600">Loading image...</div>
+            </div>
+          </div>
+        ) : (
+          <div className="w-full h-full">
+            <ImageDoodleEditor
+              imageUrl={currentImage || placeholder}
+              maskImageUrl={maskImage || undefined}
+              onSave={handleSaveDoodle}
+              initialStrokes={savedStrokes}
+              width={width}
+              height={height}
+              preloadedImageSize={imageSize}
+            />
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   );

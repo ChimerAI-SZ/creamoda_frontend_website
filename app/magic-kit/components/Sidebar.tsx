@@ -25,7 +25,6 @@ export function Sidebar() {
     updateImageUrl,
     updateMaskUrl,
     updateReferenceImageUrl,
-    updateFabricImageUrl,
     updateDescription,
     updateColorSelection
   } = useVariationFormStore();
@@ -112,14 +111,7 @@ export function Sidebar() {
             }
             break;
           case '6': // Pattern extraction
-            if (!formData.maskUrl) {
-              showAlert({
-                type: 'error',
-                content: 'Please provide a mask image'
-              });
-              setGenerating(false);
-              return;
-            }
+            // 不需要额外验证，只需要主图片即可
             break;
           case '7': // Pattern extraction
             if (!formData.referenceImageUrl) {
@@ -130,14 +122,7 @@ export function Sidebar() {
               setGenerating(false);
               return;
             }
-            if (!formData.fabricImageUrl) {
-              showAlert({
-                type: 'error',
-                content: 'Please provide a fabric image'
-              });
-              setGenerating(false);
-              return;
-            }
+            // 不再需要面料图片验证
             break;
         }
 
@@ -172,13 +157,12 @@ export function Sidebar() {
             response = await magicKit.upscale(formData.imageUrl!);
             break;
           case '6': // Pattern extraction
-            response = await magicKit.patternExtraction(formData.imageUrl!, formData.maskUrl!);
+            response = await magicKit.patternExtraction(formData.imageUrl!);
             break;
           case '7': // Pattern application
             response = await magicKit.patternApplication(
               formData.imageUrl!,
-              formData.referenceImageUrl!,
-              formData.fabricImageUrl!
+              formData.referenceImageUrl!
             );
             break;
           case '9': // Extend image
@@ -243,10 +227,10 @@ export function Sidebar() {
           isFormValid = hasMainImage;
           break;
         case '6': // Pattern extraction
-          isFormValid = hasMainImage && Boolean(formData.maskUrl);
+          isFormValid = hasMainImage;
           break;
         case '7': // Pattern application
-          isFormValid = hasMainImage && Boolean(formData.referenceImageUrl) && Boolean(formData.fabricImageUrl);
+          isFormValid = hasMainImage && Boolean(formData.referenceImageUrl);
           break;
         case '9': // Extend image
           isFormValid = hasMainImage;
@@ -396,14 +380,15 @@ export function Sidebar() {
       case '6': // Pattern extraction
         return (
           <div className="space-y-2">
-            <StyledLabel content="Upload original image" />
+            <StyledLabel content="Upload image for pattern extraction" />
             <MemoizedImageUploader
               imageUrl={formData.imageUrl || ''}
               onImageUrlChange={updateImageUrl}
-              onMaskImageUrlChange={(dataUrl, uploadedUrl) => updateMaskUrl(uploadedUrl || '')}
-              maskImageUrl={formData.maskUrl || ''}
-              showMaskEditor={true}
+              showMaskEditor={false}
             />
+            <div className="text-sm text-gray-500 mt-2">
+              Upload an image and we'll extract a pattern tile using AI. No manual masking required.
+            </div>
           </div>
         );
       case '7': // Pattern application
@@ -425,14 +410,9 @@ export function Sidebar() {
               maskImageUrl=""
               showMaskEditor={false}
             />
-            <StyledLabel content="Upload fabric image" />
-            <MemoizedImageUploader
-              imageUrl={formData.fabricImageUrl || ''}
-              onImageUrlChange={updateFabricImageUrl}
-              onMaskImageUrlChange={(dataUrl, uploadedUrl) => {}} // Not used for fabric
-              maskImageUrl=""
-              showMaskEditor={false}
-            />
+            <div className="text-sm text-gray-500 mt-2">
+              Upload original fashion design and pattern image. AI will apply the pattern to the design using fal.ai Gemini 2.5 Flash.
+            </div>
           </div>
         );
 

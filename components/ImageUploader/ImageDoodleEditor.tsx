@@ -16,6 +16,7 @@ interface ImageDoodleEditorProps {
   initialStrokes?: any[];
   width?: number;
   height?: number;
+  preloadedImageSize?: { width: number; height: number } | null;
 }
 
 export default function ImageDoodleEditor({
@@ -24,7 +25,8 @@ export default function ImageDoodleEditor({
   onSave,
   initialStrokes = [],
   width = 360,
-  height = 480
+  height = 480,
+  preloadedImageSize
 }: ImageDoodleEditorProps) {
   const [color, setColor] = useState<string>('#ff0000');
   const [eraseMode, setEraseMode] = useState<boolean>(false);
@@ -36,7 +38,7 @@ export default function ImageDoodleEditor({
   const [eraserWidth, setEraserWidth] = useState<number>(15);
   const [showPenSlider, setShowPenSlider] = useState<boolean>(false);
   const [showEraserSlider, setShowEraserSlider] = useState<boolean>(false);
-  const [originalImageSize, setOriginalImageSize] = useState<{ width: number; height: number } | null>(null);
+  const [originalImageSize, setOriginalImageSize] = useState<{ width: number; height: number } | null>(preloadedImageSize || null);
   const [isUploading, setIsUploading] = useState<boolean>(false);
 
   // Reference to the ReactSketchCanvas component
@@ -661,6 +663,13 @@ export default function ImageDoodleEditor({
     }
   }, [initialStrokes]);
 
+  // Update originalImageSize when preloadedImageSize changes
+  useEffect(() => {
+    if (preloadedImageSize) {
+      setOriginalImageSize(preloadedImageSize);
+    }
+  }, [preloadedImageSize]);
+
   // Load background image
   useEffect(() => {
     console.log('🖼️ 开始加载背景图片:', imageUrl);
@@ -675,13 +684,15 @@ export default function ImageDoodleEditor({
         
         backgroundImgRef.current = img;
 
-        // 保存原始图像尺寸以便后续处理
-        const originalSize = {
-          width: img.naturalWidth,
-          height: img.naturalHeight
-        };
-        // console.log('💾 设置 originalImageSize:', originalSize);
-        setOriginalImageSize(originalSize);
+        // 如果没有预加载的尺寸，则保存原始图像尺寸
+        if (!preloadedImageSize) {
+          const originalSize = {
+            width: img.naturalWidth,
+            height: img.naturalHeight
+          };
+          // console.log('💾 设置 originalImageSize:', originalSize);
+          setOriginalImageSize(originalSize);
+        }
 
         // 计算图片的渲染尺寸和位置
         updateImageRenderRect();
@@ -693,7 +704,7 @@ export default function ImageDoodleEditor({
     } else {
       console.log('⚠️ imageUrl 为空');
     }
-  }, [imageUrl, updateImageRenderRect]);
+  }, [imageUrl, preloadedImageSize, updateImageRenderRect]);
 
   // 使用原始图像尺寸创建适当大小的mask
   useEffect(() => {
