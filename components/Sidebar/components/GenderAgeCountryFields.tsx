@@ -60,14 +60,16 @@ export const GenderAgeCountryFields: React.FC<GenderAgeCountryFieldsProps> = ({
 
   return (
     <div className="mt-6">
+      {/* 注释掉 With human model 标题和开关
       {title && (
         <div className="flex items-center justify-between py-[6px]">
           <h3 className="text-[#121316] font-inter text-[14px] font-bold leading-5">{title}</h3>
           <Switch checked={withHumanModel} onCheckedChange={onWithHumanModelChange} />
         </div>
-      )}
+      )} */}
 
       <div className="flex flex-col gap-2">
+        {/* 注释掉与人体模特相关的字段（Gender、Age、Country、Body size）
         {(!collapseWhenOff || withHumanModel) && (
           <>
             <div className="flex flex-col gap-2 items-start">
@@ -130,7 +132,7 @@ export const GenderAgeCountryFields: React.FC<GenderAgeCountryFieldsProps> = ({
               </div>
             )}
           </>
-        )}
+        )} */}
 
         <h3 className="text-[#121316] font-inter text-[14px] font-bold leading-5 pt-[24px]">Format</h3>
         <div className="flex flex-col gap-2 items-start">

@@ -133,8 +133,6 @@ export function Sidebar({ initialPrompt }: { initialPrompt?: string }) {
       switch (data.variationType) {
         case '1':
         case '2':
-        case '3':
-        case '4':
           // These types require description
           if (!data.description.trim()) {
             showAlert({
@@ -144,6 +142,14 @@ export function Sidebar({ initialPrompt }: { initialPrompt?: string }) {
             setGenerating(false);
             return;
           }
+          break;
+        case '3':
+          // Fabric to Design: description is optional
+          // No validation needed for description
+          break;
+
+        case '4':
+          // Sketch to design - description is optional, no validation needed
           break;
 
         case '5':
@@ -229,7 +235,12 @@ export function Sidebar({ initialPrompt }: { initialPrompt?: string }) {
         try {
           finalImageUrl = await uploadImage(data.image);
         } catch (error) {
-          console.error('Error uploading image:', error);
+          console.error('Error uploading image:', (error as Error)?.message || error);
+          console.error('Full upload error details:', {
+            message: (error as Error)?.message,
+            status: (error as any)?.response?.status,
+            data: (error as any)?.response?.data
+          });
           showAlert({
             type: 'error',
             content: 'Failed to upload image. Please try again.'
@@ -251,11 +262,16 @@ export function Sidebar({ initialPrompt }: { initialPrompt?: string }) {
 
       // Handle reference image upload for types that need it
       let finalReferenceImageUrl = data.referenceImageUrl;
-      if ((data.variationType === '5' || data.variationType === '10' || data.variationType === '11') && data.referenceImage && !data.referenceImageUrl) {
+      if (['4', '5', '10', '11'].includes(data.variationType) && data.referenceImage && !data.referenceImageUrl) {
         try {
           finalReferenceImageUrl = await uploadImage(data.referenceImage);
         } catch (error) {
-          console.error('Error uploading reference image:', error);
+          console.error('Error uploading reference image:', (error as Error)?.message || error);
+          console.error('Full reference upload error details:', {
+            message: (error as Error)?.message,
+            status: (error as any)?.response?.status,
+            data: (error as any)?.response?.data
+          });
           showAlert({
             type: 'error',
             content: 'Failed to upload reference image. Please try again.'
@@ -274,11 +290,11 @@ export function Sidebar({ initialPrompt }: { initialPrompt?: string }) {
         // Call change clothes API
         response = await changeClothesGenerate(finalImageUrl, data.description);
       } else if (data.variationType === '3') {
-        // Call copy fabric API
+        // Call fabric to design API
         response = await copyFabricGenerate(finalImageUrl, data.description);
       } else if (data.variationType === '4') {
-        // Call copy fabric API
-        response = await sketchToDesign(finalImageUrl, data.description, 2);
+        // Call sketch to design API
+        response = await sketchToDesign(finalImageUrl, data.description, finalReferenceImageUrl);
       } else if (data.variationType === '5') {
         // Convert style strength level to numeric value for API
         // Backend REFER_LEVEL_MAP expects: 1->0.3, 2->0.5, 3->0.9
@@ -334,7 +350,12 @@ export function Sidebar({ initialPrompt }: { initialPrompt?: string }) {
         setGenerating(false);
       }
     } catch (error) {
-      console.error('Error in image-to-image generation:', error);
+      console.error('Error in image-to-image generation:', (error as Error)?.message || error);
+      console.error('Full error details:', {
+        message: (error as Error)?.message,
+        status: (error as any)?.response?.status,
+        data: (error as any)?.response?.data
+      });
       showAlert({
         type: 'error',
         content: (error as Error).message || 'An unexpected error occurred'
@@ -354,7 +375,12 @@ export function Sidebar({ initialPrompt }: { initialPrompt?: string }) {
         // 设置数据
         setModelSizes(modelSizes || []);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error('Error fetching data:', (error as Error)?.message || error);
+        console.error('Full fetch error details:', {
+          message: (error as Error)?.message,
+          status: (error as any)?.response?.status,
+          data: (error as any)?.response?.data
+        });
         showAlert({
           type: 'error',
           content: 'Something went wrong. Please try again later or contact support if the issue persists'
