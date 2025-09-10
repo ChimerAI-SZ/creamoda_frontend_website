@@ -380,7 +380,7 @@ export function Sidebar() {
       case '6': // Pattern extraction
         return (
           <div className="space-y-2">
-            <StyledLabel content="Upload image for pattern extraction" />
+            <StyledLabel content="Upload original image" />
             <MemoizedImageUploader
               imageUrl={formData.imageUrl || ''}
               onImageUrlChange={updateImageUrl}
@@ -402,7 +402,7 @@ export function Sidebar() {
               maskImageUrl={formData.maskUrl || ''}
               showMaskEditor={false}
             />
-            <StyledLabel content="upload pattern image" />
+            <StyledLabel content="Upload pattern image" />
             <MemoizedImageUploader
               imageUrl={formData.referenceImageUrl || ''}
               onImageUrlChange={updateReferenceImageUrl}
