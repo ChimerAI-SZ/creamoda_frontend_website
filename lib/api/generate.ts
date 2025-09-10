@@ -11,7 +11,12 @@ export async function getGenerateList(page: number, pageSize: number) {
     const response = await api.get(`/api/v1/img/generate/list?page=${page}&pageSize=${pageSize}`);
     return response.data;
   } catch (error) {
-    console.error('Error getting generate list:', error);
+    console.error('Error getting generate list:', (error as Error)?.message || error);
+    console.error('Full error details:', {
+      message: (error as Error)?.message,
+      status: (error as any)?.response?.status,
+      data: (error as any)?.response?.data
+    });
     throw error;
   }
 }
@@ -25,7 +30,12 @@ export async function refreshGenerateStatus(pendingIds: string) {
     const response = await api.get(`/api/v1/img/generate/refresh_status?genImgIdList=${pendingIds}`);
     return response.data;
   } catch (error) {
-    console.error('Error refreshing generate status:', error);
+    console.error('Error refreshing generate status:', (error as Error)?.message || error);
+    console.error('Full error details:', {
+      message: (error as Error)?.message,
+      status: (error as any)?.response?.status,
+      data: (error as any)?.response?.data
+    });
     throw error;
   }
 }
@@ -38,7 +48,12 @@ export async function getGenerateDetail(genImgId: number) {
     const response = await api.get(`/api/v1/img/generate/detail?genImgId=${genImgId}`);
     return response.data;
   } catch (error) {
-    console.error('Error getting generate detail:', error);
+    console.error('Error getting generate detail:', (error as Error)?.message || error);
+    console.error('Full error details:', {
+      message: (error as Error)?.message,
+      status: (error as any)?.response?.status,
+      data: (error as any)?.response?.data
+    });
     throw error;
   }
 }
@@ -54,7 +69,12 @@ export async function getGenerateStatus(genImgIds: number[]) {
     });
     return response.data;
   } catch (error) {
-    console.error('Error getting generate status:', error);
+    console.error('Error getting generate status:', (error as Error)?.message || error);
+    console.error('Full error details:', {
+      message: (error as Error)?.message,
+      status: (error as any)?.response?.status,
+      data: (error as any)?.response?.data
+    });
     throw error;
   }
 }
@@ -75,7 +95,12 @@ export async function textToImageGenerate(data: {
     const response = await api.post('/api/v1/img/txt_generate', data);
     return response.data;
   } catch (error) {
-    console.error('Error generating image from text:', error);
+    console.error('Error generating image from text:', (error as Error)?.message || error);
+    console.error('Full error details:', {
+      message: (error as Error)?.message,
+      status: (error as any)?.response?.status,
+      data: (error as any)?.response?.data
+    });
     throw error;
   }
 }
@@ -93,7 +118,12 @@ export async function changeClothesGenerate(originalPicUrl: string, prompt: stri
     });
     return response.data;
   } catch (error) {
-    console.error('Error changing clothes generate:', error);
+    console.error('Error changing clothes generate:', (error as Error)?.message || error);
+    console.error('Full error details:', {
+      message: (error as Error)?.message,
+      status: (error as any)?.response?.status,
+      data: (error as any)?.response?.data
+    });
     throw error;
   }
 }
@@ -113,7 +143,12 @@ export async function copyStyleGenerate(originalPicUrl: string, prompt: string, 
     });
     return response.data;
   } catch (error) {
-    console.error('Error copying style generate:', error);
+    console.error('Error copying style generate:', (error as Error)?.message || error);
+    console.error('Full error details:', {
+      message: (error as Error)?.message,
+      status: (error as any)?.response?.status,
+      data: (error as any)?.response?.data
+    });
     throw error;
   }
 }
@@ -137,19 +172,25 @@ export async function humanModelGenerate(originalPicUrl: string, prompt: string)
 }
 
 /**
- * 复制面料生成
- * @param originalPicUrl 原始图片URL
- * @param prompt 提示词
+ * 面料转设计生成
+ * @param fabricPicUrl 面料图片URL
+ * @param prompt 提示词（可选）
  */
-export async function copyFabricGenerate(fabricPicUrl: string, prompt: string) {
+export async function copyFabricGenerate(fabricPicUrl: string, prompt?: string) {
   try {
-    const response = await api.post('/api/v1/img/fabric_to_design', {
-      fabricPicUrl,
-      prompt
-    });
+    const requestData: { fabricPicUrl: string; prompt?: string } = {
+      fabricPicUrl
+    };
+    
+    // 只有当 prompt 有值时才添加到请求中
+    if (prompt && prompt.trim() !== '') {
+      requestData.prompt = prompt;
+    }
+    
+    const response = await api.post('/api/v1/img/fabric_to_design', requestData);
     return response.data;
   } catch (error) {
-    console.error('Error generating with fabric copy:', error);
+    console.error('Error generating with fabric to design:', error);
     throw error;
   }
 }
@@ -157,20 +198,53 @@ export async function copyFabricGenerate(fabricPicUrl: string, prompt: string) {
 /**
  * 手绘生成设计
  * @param originalPicUrl 原始图片URL
- * @param prompt 提示词
- * @param colorReproduction 颜色复原
- * @param referLevel 参考级别
+ * @param prompt 提示词 (可选)
+ * @param referenceImageUrl 参考图片URL (可选)
  */
-export async function sketchToDesign(originalPicUrl: string, prompt: string, referLevel: number) {
+export async function sketchToDesign(
+  originalPicUrl: string, 
+  prompt?: string, 
+  referenceImageUrl?: string
+) {
   try {
-    const response = await api.post('/api/v1/img/sketch_to_design', {
-      originalPicUrl,
-      prompt,
-      referLevel
-    });
+    // 添加调试日志
+    console.log('=== SKETCH_TO_DESIGN DEBUG START ===');
+    console.log('originalPicUrl:', originalPicUrl);
+    console.log('prompt:', prompt);
+    console.log('referenceImageUrl:', referenceImageUrl);
+    console.log('prompt exists and trimmed:', prompt && prompt.trim());
+    console.log('referenceImageUrl exists and trimmed:', referenceImageUrl && referenceImageUrl.trim());
+    
+    const requestData: any = { originalPicUrl };
+    
+    // 只有当 prompt 有值时才添加到请求中
+    if (prompt && prompt.trim()) {
+      requestData.prompt = prompt;
+      console.log('Added prompt to request:', prompt);
+    } else {
+      console.log('No prompt added to request');
+    }
+    
+    // 只有当 referenceImageUrl 有值时才添加到请求中
+    if (referenceImageUrl && referenceImageUrl.trim()) {
+      requestData.referenceImageUrl = referenceImageUrl;
+      console.log('Added referenceImageUrl to request:', referenceImageUrl);
+    } else {
+      console.log('No referenceImageUrl added to request');
+    }
+    
+    console.log('Final requestData:', requestData);
+    console.log('=== SKETCH_TO_DESIGN DEBUG END ===');
+    
+    const response = await api.post('/api/v1/img/sketch_to_design', requestData);
     return response.data;
   } catch (error) {
-    console.error('Error generating with fabric copy:', error);
+    console.error('Error generating sketch to design:', (error as Error)?.message || error);
+    console.error('Full error:', { 
+      message: (error as Error)?.message, 
+      status: (error as any)?.response?.status,
+      data: (error as any)?.response?.data 
+    });
     throw error;
   }
 }
@@ -192,7 +266,12 @@ export async function mixImage(originalPicUrl: string, prompt: string, reference
     });
     return response.data;
   } catch (error) {
-    console.error('Error generating with fabric copy:', error);
+    console.error('Error mixing images:', (error as Error)?.message || error);
+    console.error('Full error details:', {
+      message: (error as Error)?.message,
+      status: (error as any)?.response?.status,
+      data: (error as any)?.response?.data
+    });
     throw error;
   }
 }

@@ -28,7 +28,7 @@ function OutfitForm({ onSubmit, initialPrompt }: OutfitFormProps) {
     age: '25',
     country: 'usa',
     modelSize: defaultModelSize,
-    withHumanModel: 1,
+    withHumanModel: 0, // 注释掉人体模特功能，默认设为关闭状态
     format: '3:4'
   });
 
@@ -127,9 +127,10 @@ function OutfitForm({ onSubmit, initialPrompt }: OutfitFormProps) {
               onRatioChange={handleRatioChange}
               selectedRatio={formData.format}
               onModelSizeChange={handleModelSizeChange}
-              title="With human model"
-              withHumanModel={formData.withHumanModel === 1}
-              onWithHumanModelChange={handleWithHumanModelChange}
+              // 注释掉人体模特相关的属性传递
+              // title="With human model"
+              // withHumanModel={formData.withHumanModel === 1}
+              // onWithHumanModelChange={handleWithHumanModelChange}
             />
           </div>
         </form>

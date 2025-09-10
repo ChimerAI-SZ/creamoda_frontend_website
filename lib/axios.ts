@@ -33,7 +33,19 @@ const configureResponseInterceptor = (instance: AxiosInstance): void => {
         handleUnauthorized();
       }
 
-      return Promise.reject(error?.response?.data || error.message || 'An unknown error occurred');
+      // 创建更详细的错误对象
+      const errorData = error.response?.data;
+      const errorMessage = typeof errorData === 'object' && errorData !== null
+        ? (errorData as any)?.msg || (errorData as any)?.message || JSON.stringify(errorData)
+        : errorData || error.message || 'An unknown error occurred';
+
+      // 创建带有完整错误信息的错误对象
+      const enhancedError = new Error(errorMessage);
+      (enhancedError as any).response = error.response;
+      (enhancedError as any).status = error.response?.status;
+      (enhancedError as any).data = errorData;
+
+      return Promise.reject(enhancedError);
     }
   );
 };

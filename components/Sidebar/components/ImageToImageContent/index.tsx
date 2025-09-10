@@ -220,7 +220,12 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
         // Call the parent's onSubmit function with the form data
         await onSubmit(formData);
       } catch (error) {
-        console.error('Error submitting form:', error);
+        console.error('Error submitting form:', (error as Error)?.message || error);
+        console.error('Full error details:', {
+          message: (error as Error)?.message,
+          status: (error as any)?.response?.status,
+          data: (error as any)?.response?.data
+        });
         setGenerating(false);
       }
     }
@@ -247,12 +252,20 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
     switch (currentVariationType) {
       case '1':
       case '2':
-      case '3':
-      case '4':
         // These types require description
         if (!currentData.description.trim()) {
           return 'disabled';
         }
+        break;
+      
+      case '3':
+        // Fabric to Design: description is optional
+        // No additional validation needed beyond main image
+        break;
+      
+      case '4':
+        // Sketch to design - prompt is optional, only main image required
+        // No additional validation needed beyond main image
         break;
 
       case '5':
@@ -324,7 +337,9 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
           
           {/* Upload original image - 对所有 variation type 都显示 */}
           <div className="space-y-[10px]">
-            <FormLabel>Upload original image</FormLabel>
+            <FormLabel>
+              {currentVariationType === '3' ? 'Upload fabric image' : 'Upload original image'}
+            </FormLabel>
             {currentVariationType === '8' ? (
               <ImageUploader2
                 onImageUrlChange={handleImageUrlChange}
@@ -357,9 +372,11 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
           )}
 
           {/* Reference image upload for variation types that need it */}
-          {(['5', '10', '11'].includes(currentVariationType)) && (
+          {(['4', '5', '10', '11'].includes(currentVariationType)) && (
             <div className="space-y-[10px]">
-              <FormLabel>Upload reference image</FormLabel>
+              <FormLabel>
+                {currentVariationType === '4' ? 'Upload reference image (optional)' : 'Upload reference image'}
+              </FormLabel>
               <ImageUploader
                 onImageChange={handleReferenceImageChange}
                 onImageUrlChange={handleReferenceImageUrlChange}
@@ -381,11 +398,7 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
           )}
 
           {/* Description field for variation types that need it */}
-
-
-          {(['1', '2', '3', '4'].includes(currentVariationType)) && (
-
-
+          {(['1', '2', '3'].includes(currentVariationType)) && (
             <DescribeDesign
               label="Describe the final design"
               description={currentData.description}
@@ -393,6 +406,18 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
               onFeatureSelection={handleFeatureSelection}
               onRandomPrompt={handleQueryRandomPrompt}
               placeholderText={getPlaceholderText()}
+            />
+          )}
+
+          {/* Optional description field for sketch-to-design */}
+          {currentVariationType === '4' && (
+            <DescribeDesign
+              label="Describe the final design (optional)"
+              description={currentData.description}
+              onDescriptionChange={handleDescriptionChange}
+              onFeatureSelection={handleFeatureSelection}
+              onRandomPrompt={handleQueryRandomPrompt}
+              placeholderText="Optional: Describe how you want to transform the sketch"
             />
           )}
         </form>

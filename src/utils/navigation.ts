@@ -31,9 +31,23 @@ export function getMainDomainUrl(): string {
       return 'http://localhost:3000'; // 假设主站本地端口
     }
     
-    // 如果是vercel预览环境
+    // 如果是测试/预生产环境
+    if (hostname.includes('test-mvp.creamoda.ai')) {
+      return 'https://test-mvp.creamoda.ai';
+    }
+    
+    // 如果是vercel预览环境，根据域名判断
     if (hostname.includes('vercel.app')) {
+      // 如果是test-mvp相关的vercel部署，返回测试环境
+      if (hostname.includes('test') || hostname.includes('mvp')) {
+        return 'https://test-mvp.creamoda.ai';
+      }
       return 'https://www.creamoda.ai'; // 生产环境主域名
+    }
+    
+    // 生产环境
+    if (hostname.includes('creamoda.ai') && !hostname.includes('test-mvp')) {
+      return 'https://www.creamoda.ai';
     }
     
     // 默认返回生产环境主域名
