@@ -337,7 +337,9 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
           
           {/* Upload original image - 对所有 variation type 都显示 */}
           <div className="space-y-[10px]">
-            <FormLabel>Upload original image</FormLabel>
+            <FormLabel>
+              {currentVariationType === '3' ? 'Upload fabric image' : 'Upload original image'}
+            </FormLabel>
             {currentVariationType === '8' ? (
               <ImageUploader2
                 onImageUrlChange={handleImageUrlChange}
