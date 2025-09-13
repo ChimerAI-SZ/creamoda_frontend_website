@@ -33,4 +33,4 @@ export function log(message: string, ...optionalParams: any[]) {
 }
 
 // 文生图提示词后端长度限制（参考 BE: img.py 校验）
-export const PROMPT_MAX_LEN = 166;
+export const PROMPT_MAX_LEN = 2048;
