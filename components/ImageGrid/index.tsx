@@ -490,13 +490,7 @@ export function ImageGrid() {
           {mounted && images.length === 0 && !isLoading && (
             <div className="h-full flex flex-col items-center justify-center text-gray-500">
               <div className="text-center">
-                <Image
-                  src="/images/empty-state.svg"
-                  alt="No images"
-                  width={120}
-                  height={120}
-                  className="mx-auto mb-4 opacity-50"
-                />
+               
                 <p className="text-lg font-medium mb-2">No Generated Image</p>
                 <p className="text-sm">Start creating your first fashion design.</p>
               </div>
