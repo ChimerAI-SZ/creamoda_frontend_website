@@ -89,7 +89,7 @@ const MemoizedImageGrid = memo(function ImageGridContent({
         {/* 没有更多图片提示 */}
         {!hasMore && images.length > 0 && (
           <div className="w-full h-16 flex items-center justify-center col-span-full">
-            <span className="text-gray-500 text-sm">已加载全部图片</span>
+            {/* <span className="text-gray-500 text-sm">已加载全部图片</span> */}
           </div>
         )}
       </Masonry>
