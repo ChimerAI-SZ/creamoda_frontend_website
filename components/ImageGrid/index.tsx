@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback, useMemo, memo } from 'react';
+import { useEffect, useState, useCallback, useMemo, memo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
@@ -104,6 +104,9 @@ export function ImageGrid() {
   const [currentPage, setCurrentPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  
+  // 使用 ref 来避免 fetchImages 依赖项问题
+  const isLoadingRef = useRef(false);
 
   const { clearUserInfo, fetchUserInfo } = usePersonalInfoStore();
   // 查看图片详情相关state
@@ -130,14 +133,25 @@ export function ImageGrid() {
   // 加载图片数据
   const fetchImages = useCallback(
     async (page: number, isLoadMore: boolean = false) => {
-      if (isLoading) return; // 防止重复请求
+      console.log('fetchImages called with page:', page, 'isLoadMore:', isLoadMore, 'current isLoadingRef:', isLoadingRef.current);
       
+      if (isLoadingRef.current) {
+        console.log('Already loading, skipping request');
+        return; // 防止重复请求
+      }
+      
+      console.log('Starting fetch, setting loading to true');
+      isLoadingRef.current = true;
       setIsLoading(true);
+      
       try {
+        console.log('Calling generate.getGenerateList');
         const data = await generate.getGenerateList(page, PAGE_SIZE);
+        console.log('API response:', data);
 
         if (data.code === 0) {
           const imageList = data.data.list;
+          console.log('Got image list:', imageList.length, 'items');
           
           // 检查是否还有更多数据
           setHasMore(imageList.length === PAGE_SIZE);
@@ -164,6 +178,7 @@ export function ImageGrid() {
             setCurrentPage(1);
           }
         } else {
+          console.log('API returned error:', data.message);
           showAlert({
             type: 'error',
             content:
@@ -171,26 +186,29 @@ export function ImageGrid() {
           });
         }
       } catch (error: any) {
+        console.log('Fetch error:', error);
         showAlert({
           type: 'error',
           content:
             error.message || 'Something went wrong. Please try again later or contact support if the issue persists'
         });
       } finally {
+        console.log('Fetch completed, setting loading to false');
+        isLoadingRef.current = false;
         setIsLoading(false);
       }
     },
-    [pendingIdsRef, startPolling, showAlert, isLoading]
+    [pendingIdsRef, startPolling, showAlert]
   );
 
   // 加载更多图片
   const loadMore = useCallback(() => {
-    if (hasMore && !isLoading) {
+    if (hasMore && !isLoadingRef.current) {
       const nextPage = currentPage + 1;
       setCurrentPage(nextPage);
       fetchImages(nextPage, true);
     }
-  }, [currentPage, hasMore, isLoading, fetchImages]);
+  }, [currentPage, hasMore, fetchImages]);
 
   // 无限滚动钩子
   const { lastItemRef } = useInfiniteScroll({
@@ -361,14 +379,63 @@ export function ImageGrid() {
   // 初始加载
   useEffect(() => {
     const token = localStorage.getItem('auth_token');
+    console.log('Initial load effect triggered, hasToken:', !!token);
 
     // 如果用户已登录，则加载图片
     if (token) {
-      setCurrentPage(1);
-      setHasMore(true);
-      fetchImages(1, false);
+      console.log('User has token, calling fetchImages directly');
+      const loadInitialImages = async () => {
+        if (isLoadingRef.current) return;
+        
+        isLoadingRef.current = true;
+        setIsLoading(true);
+        setCurrentPage(1);
+        setHasMore(true);
+        
+        try {
+          const data = await generate.getGenerateList(1, PAGE_SIZE);
+          console.log('Initial API response:', data);
+
+          if (data.code === 0) {
+            const imageList = data.data.list;
+            console.log('Initial image list:', imageList.length, 'items');
+            
+            setHasMore(imageList.length === PAGE_SIZE);
+            setImages(imageList);
+            setCurrentPage(1);
+            
+            // 检查是否有正在生成中的图片
+            const pendingImages = imageList.filter((item: ImageItem) => [1, 2].includes(item.status));
+            if (pendingImages.length > 0) {
+              const pendingIds = pendingImages.map((img: ImageItem) => img.genImgId);
+              pendingIdsRef.current = new Set([...pendingIdsRef.current, ...pendingIds]);
+              startPolling();
+            }
+          } else {
+            showAlert({
+              type: 'error',
+              content: data.message || 'Something went wrong. Please try again later or contact support if the issue persists'
+            });
+          }
+        } catch (error: any) {
+          showAlert({
+            type: 'error',
+            content: error.message || 'Something went wrong. Please try again later or contact support if the issue persists'
+          });
+        } finally {
+          console.log('Initial fetch completed, setting loading to false');
+          isLoadingRef.current = false;
+          setIsLoading(false);
+        }
+      };
+      
+      loadInitialImages();
+    } else {
+      // 如果用户未登录，确保loading状态为false
+      console.log('User has no token, setting isLoading to false');
+      setIsLoading(false);
     }
-  }, [fetchImages]);
+  }, []); // 空依赖项，避免无限循环
 
   // 监听提交成功事件，加载最近图片
   useEffect(() => {
@@ -420,7 +487,7 @@ export function ImageGrid() {
           )}
           
           {/* 空状态显示 */}
-          {/* {mounted && images.length === 0 && !isLoading && (
+          {mounted && images.length === 0 && !isLoading && (
             <div className="h-full flex flex-col items-center justify-center text-gray-500">
               <div className="text-center">
                 <Image
@@ -434,7 +501,7 @@ export function ImageGrid() {
                 <p className="text-sm">Start creating your first fashion design.</p>
               </div>
             </div>
-          )} */}
+          )}
           
           {/* 初始加载状态 */}
           {mounted && images.length === 0 && isLoading && (
