@@ -279,13 +279,20 @@ export function Sidebar() {
               <StyledLabel content="Color selection" />
               <ColorPicker value={formData.colorSelection || '#ffffff'} onChange={updateColorSelection} />
             </div>
-            <DescribeDesign
-              label="Describe the final design"
-              description={formData.description || ''}
-              onDescriptionChange={e => updateDescription(e.target.value)}
-              onFeatureSelection={handleFeatureSelection}
-              onRandomPrompt={handleQueryRandomPrompt}
-            />
+            <div className="space-y-[10px]">
+              <StyledLabel content="Describe the final design" />
+              <textarea
+                id="description"
+                placeholder="pants"
+                className="min-h-[180px] resize-none placeholder:text-[#D5D5D5] font-inter text-sm font-normal leading-5 rounded-[4px] border border-[#DCDCDC] text-black w-full p-3"
+                value={formData.description || ''}
+                onChange={e => updateDescription(e.target.value)}
+                maxLength={2000}
+              />
+              <div className="text-right text-xs text-gray-40 font-inter">{(formData.description || '').length}/2000</div>
+              {/* 注释掉预制提示词组件 */}
+              {/* <RandomPrompt handleQueryRandomPrompt={handleQueryRandomPrompt} /> */}
+            </div>
           </div>
         );
 
