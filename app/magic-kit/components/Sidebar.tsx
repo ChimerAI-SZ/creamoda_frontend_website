@@ -10,6 +10,7 @@ import { StyledLabel } from '@/components/StyledLabel';
 import { DescribeDesign } from '@/components/DescribeDesign';
 import { ColorPicker } from './ColorPicker';
 import { MemoizedImageUploader } from '@/components/ImageUploader';
+import { Textarea } from '@/components/ui/textarea';
 
 import { magicKit, extendImage } from '@/lib/api';
 import { eventBus } from '@/utils/events';
@@ -279,13 +280,20 @@ export function Sidebar() {
               <StyledLabel content="Color selection" />
               <ColorPicker value={formData.colorSelection || '#ffffff'} onChange={updateColorSelection} />
             </div>
-            <DescribeDesign
-              label="Describe the final design"
-              description={formData.description || ''}
-              onDescriptionChange={e => updateDescription(e.target.value)}
-              onFeatureSelection={handleFeatureSelection}
-              onRandomPrompt={handleQueryRandomPrompt}
-            />
+            <div className="space-y-[10px]">
+              <StyledLabel content="Change the color of" />
+              <Textarea
+                id="description"
+                placeholder="pants"
+                className="min-h-[180px] resize-none placeholder:text-[#D5D5D5] font-inter text-sm font-normal leading-5 rounded-[4px] border-none text-black"
+                value={formData.description || ''}
+                onChange={e => updateDescription(e.target.value)}
+                maxLength={2000}
+              />
+              <div className="text-right text-xs text-gray-40 font-inter">{(formData.description || '').length}/2000</div>
+              {/* 注释掉预制提示词组件 */}
+              {/* <RandomPrompt handleQueryRandomPrompt={handleQueryRandomPrompt} /> */}
+            </div>
           </div>
         );
 
