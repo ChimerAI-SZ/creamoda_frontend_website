@@ -1,4 +1,5 @@
 import { FrontendImageItem, FrontendImagesResponse } from '@/types/frontendImages';
+import { retryFetch } from '@/lib/utils/retryUtils';
 
 interface GetSSRDesignImagesParams {
   page?: number;
@@ -31,33 +32,47 @@ export async function getSSRDesignImages(params: GetSSRDesignImagesParams = {}):
       });
     }
 
-    // 直接调用后端API
+    // 使用与 API 路由完全相同的逻辑
     const backendUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/common/frontend/images?${queryParams.toString()}`;
     
-    const response = await fetch(backendUrl, {
+    console.log('🔍 [SSR] 请求后端URL:', backendUrl);
+    
+    // 使用与 API 路由相同的 retryFetch 和超时设置
+    const response = await retryFetch(backendUrl, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
       },
+      // 与 API 路由使用相同的超时时间
+      signal: AbortSignal.timeout(15000), // 15秒超时
       // 设置缓存策略，适合SSR
       cache: 'force-cache',
       next: { revalidate: 3600 } // 1小时重新验证
+    }, {
+      // 与 API 路由使用相同的重试策略
+      maxRetries: 3,
+      baseDelay: 1000,
+      maxDelay: 5000,
+      backoffMultiplier: 2
     });
 
     if (!response.ok) {
-      console.error('Backend API error:', response.status, response.statusText);
+      console.error('❌ [SSR] 后端API错误:', response.status, response.statusText);
       return [];
     }
 
     const data: FrontendImagesResponse = await response.json();
+    console.log('✅ [SSR] 后端API响应成功:', data);
     
     if (data.code === 0 && data.data && data.data.list) {
+      console.log(`✅ [SSR] 成功获取 ${data.data.list.length} 张设计图片`);
       return data.data.list;
     }
     
+    console.error('❌ [SSR] 无效的API响应:', { code: data.code, msg: data.msg });
     return [];
   } catch (error) {
-    console.error('Failed to fetch SSR design images:', error);
+    console.error('❌ [SSR] 获取设计图片失败:', error);
     // 返回空数组而不是抛出错误，确保页面能正常渲染
     return [];
   }
