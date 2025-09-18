@@ -42,19 +42,19 @@ export function getMainDomainUrl(): string {
       if (hostname.includes('test') || hostname.includes('mvp')) {
         return 'https://test-mvp.creamoda.ai';
       }
-      return 'https://www.creamoda.ai'; // 生产环境主域名
+      return 'https://creamoda.ai'; // 生产环境主域名
     }
     
     // 生产环境
     if (hostname.includes('creamoda.ai') && !hostname.includes('test-mvp')) {
-      return 'https://www.creamoda.ai';
+      return 'https://creamoda.ai';
     }
     
     // 默认返回生产环境主域名
-    return 'https://www.creamoda.ai';
+    return 'https://creamoda.ai';
   }
   
-  return 'https://www.creamoda.ai';
+  return 'https://creamoda.ai';
 }
 
 /**
