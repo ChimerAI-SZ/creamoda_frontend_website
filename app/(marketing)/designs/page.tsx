@@ -16,6 +16,9 @@ import {
 } from '@/src/utils/seoHelpers';
 import { getTheme } from '@/src/config/themes';
 
+// 强制动态渲染，避免在构建时预渲染（此时 API 不可用）
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   metadataBase: new URL('https://creamoda.ai'),
   title: 'AI Fashion Design Ideas | Inspire Your Next Collection | Creamoda',

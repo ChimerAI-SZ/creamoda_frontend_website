@@ -35,7 +35,7 @@ export async function getSSRDesignImages(params: GetSSRDesignImagesParams = {}):
     // 使用与 API 路由完全相同的逻辑
     const backendUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/common/frontend/images?${queryParams.toString()}`;
     
-    console.log('🔍 [SSR] 请求后端URL:', backendUrl);
+    // console.log('🔍 [SSR] 请求后端URL:', backendUrl);
     
     // 使用与 API 路由相同的 retryFetch 和超时设置
     const response = await retryFetch(backendUrl, {
@@ -62,10 +62,10 @@ export async function getSSRDesignImages(params: GetSSRDesignImagesParams = {}):
     }
 
     const data: FrontendImagesResponse = await response.json();
-    console.log('✅ [SSR] 后端API响应成功:', data);
+    // console.log('✅ [SSR] 后端API响应成功:', data);
     
     if (data.code === 0 && data.data && data.data.list) {
-      console.log(`✅ [SSR] 成功获取 ${data.data.list.length} 张设计图片`);
+      // console.log(`✅ [SSR] 成功获取 ${data.data.list.length} 张设计图片`);
       return data.data.list;
     }
     
