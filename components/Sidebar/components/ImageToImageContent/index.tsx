@@ -155,7 +155,7 @@ export default function ImageUploadForm({ onSubmit }: ImageUploadFormProps) {
       case '1':
         return 'Please describe the new variation.';
       case '2':
-        return 'Please describe the category you would like to change.';
+        return 'Change the top to a black t-shirt with short sleeves';
       case '3':
         return 'Please describe the clothing type, fit, color, print, etc.';
       default:
