@@ -29,7 +29,7 @@ export default function StaticHeroMain({ theme, saasUrl, isHomepage = false }: S
               </div>
               <div>
                 <Link
-                  href="https://www.creamoda.ai/fashion-design/create"
+                  href="https://creamoda.ai/fashion-design/create"
                   className="upload-demo-btn"
                 >
                   Design Now
@@ -310,7 +310,7 @@ export default function StaticHeroMain({ theme, saasUrl, isHomepage = false }: S
           </h2>
           <div className="trend-cta-actions">
             <Link
-              href="https://www.creamoda.ai/fashion-design/create"
+              href="https://creamoda.ai/fashion-design/create"
               className="homepage-cta-button"
             >
               Design Now

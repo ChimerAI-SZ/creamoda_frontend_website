@@ -142,7 +142,7 @@ export default async function DesignImagePage({ params }: PageProps) {
       />
       
       {/* 营销导航栏 */}
-      <StaticNavigation currentSaasUrl="https://www.creamoda.ai/fashion-design/create" />
+      <StaticNavigation currentSaasUrl="https://creamoda.ai/fashion-design/create" />
       
       {/* 下拉菜单容器 - 由客户端组件管理显示 */}
       <div className="dropdown-container"></div>
@@ -153,7 +153,7 @@ export default async function DesignImagePage({ params }: PageProps) {
       </main>
       
       {/* 客户端交互增强 */}
-      <ClientHeroInteractions currentSaasUrl="https://www.creamoda.ai/fashion-design/create" />
+      <ClientHeroInteractions currentSaasUrl="https://creamoda.ai/fashion-design/create" />
       
       {/* Footer */}
       <StaticFooter />
