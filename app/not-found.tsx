@@ -4,7 +4,6 @@ import StaticFooter from '@/src/components/server/StaticFooter';
 import ClientHeroInteractions from '@/src/components/client/ClientHeroInteractions';
 
 export default function NotFound() {
-
   return (
     <div className="min-h-screen">
       {/* 营销页导航栏和404内容 */}
@@ -24,7 +23,7 @@ export default function NotFound() {
               </h1>
               <h2 className="text-3xl font-semibold text-gray-200 mb-6">Oops! Page not found</h2>
               <p className="text-gray-400 mb-12 text-lg leading-relaxed">
-              The page you’re looking for might have been removed, renamed, or is temporarily unavailable.
+                The page you're looking for might have been removed, renamed, or is temporarily unavailable.
               </p>
               
               <div className="space-y-8">
@@ -63,7 +62,7 @@ export default function NotFound() {
                       <span className="text-purple-400 font-medium text-center">AI Image Changer</span>
                     </Link>
                     <Link href="/free-nano-banana" className="flex items-center justify-center p-4 bg-gray-800/50 backdrop-blur-sm rounded-lg hover:bg-gray-700/50 transition-all duration-300 border border-gray-700 hover:border-purple-500 min-h-[60px]">
-                      <span className="text-purple-400 font-medium text-center">Free Nabo-Banana Generator</span>
+                      <span className="text-purple-400 font-medium text-center">Free Nano-Banana Generator</span>
                     </Link>
                   </div>
                 </div>
@@ -80,4 +79,4 @@ export default function NotFound() {
       <ClientHeroInteractions currentSaasUrl="https://creamoda.ai/fashion-design/create" />
     </div>
   );
-} 
+}

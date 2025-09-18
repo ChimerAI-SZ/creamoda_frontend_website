@@ -15,7 +15,7 @@ export function getBaseUrl(): string {
       return process.env.NEXT_PUBLIC_BASE_URL;
     }
     // 生产环境默认域名
-    return 'https://www.creamoda.ai';
+    return 'https://creamoda.ai';
   }
   
   // 在客户端
@@ -32,7 +32,7 @@ export function getBaseUrl(): string {
   }
   
   // 生产环境
-  return 'https://www.creamoda.ai';
+  return 'https://creamoda.ai';
 }
 
 // 生成完整的图片URL
