@@ -205,11 +205,11 @@ export default function DesignImageDetailPage({ image }: DesignImageDetailPagePr
                       e.preventDefault();
                       e.stopPropagation();
                       console.log('Button clicked!');
-                      // 跳转到 fashion-design/create 页面，并传递 clothing_description 参数
-                      const encodedDescription = encodeURIComponent(image.clothing_description || '');
+                      // 跳转到 fashion-design/create 页面，并传递 complete_prompt 参数
+                      const encodedDescription = encodeURIComponent(image.complete_prompt || '');
                       const targetUrl = `/fashion-design/create?prompt=${encodedDescription}&tab=text-to-image`;
                       console.log('跳转到:', targetUrl);
-                      console.log('原始描述:', image.clothing_description);
+                      console.log('原始描述:', image.complete_prompt);
                       router.push(targetUrl);
                     }}
                   >
