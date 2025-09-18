@@ -1178,11 +1178,11 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
                           e.stopPropagation();
                           console.log('Generate Similar Designs clicked!');
                           if (selectedItem) {
-                            // 跳转到 fashion-design/create 页面，并传递 clothing_description 参数
-                            const encodedDescription = encodeURIComponent(selectedItem.clothing_description || '');
+                            // 跳转到 fashion-design/create 页面，并传递 complete_prompt 参数
+                            const encodedDescription = encodeURIComponent(selectedItem.complete_prompt || '');
                             const targetUrl = `/fashion-design/create?prompt=${encodedDescription}&tab=text-to-image`;
                             console.log('跳转到:', targetUrl);
-                            console.log('原始描述:', selectedItem.clothing_description);
+                            console.log('原始描述:', selectedItem.complete_prompt);
                             router.push(targetUrl);
                           }
                         }}
