@@ -1,28 +1,81 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
-import { getFrontendImageDetail } from '@/lib/api/common';
 import { FrontendImageItem, SimilarImageItem } from '@/types/frontendImages';
 
 interface DesignImageDetailPageProps {
   image: FrontendImageItem;
+  similarImages?: SimilarImageItem[];
 }
 
 // 优化图片组件，使用memo防止重渲染
 const MemoizedImageWithSkeleton = React.memo(function ImageWithSkeleton({ 
   src, 
   alt = '', 
+  href,
   onClick 
 }: { 
   src: string; 
   alt?: string; 
+  href?: string;
   onClick?: () => void 
 }) {
   const [loaded, setLoaded] = useState(false);
+
+  const handleClick = (e: React.MouseEvent) => {
+    if (onClick) {
+      e.preventDefault();
+      onClick();
+    }
+  };
+
+  if (href) {
+    return (
+      <Link
+        href={href}
+        className="group relative w-full overflow-hidden rounded-md cursor-pointer block"
+        style={{ aspectRatio: '3 / 4' }}
+        onClick={handleClick}
+      >
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+        className="object-cover block"
+        onLoad={() => setLoaded(true)}
+        loading="lazy"
+        quality={85}
+        style={{ opacity: loaded ? 1 : 0, transition: 'opacity 200ms ease' }}
+      />
+      {!loaded && (
+        <div className="absolute inset-0 z-20">
+          <Skeleton className="w-full h-full bg-white/10 animate-pulse rounded-md" />
+        </div>
+      )}
+      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10 pointer-events-none" />
+      <div className="absolute inset-x-0 bottom-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10 pointer-events-none">
+        <div className="flex justify-center pointer-events-auto">
+          <Button
+            variant="ghost"
+            className="w-full bg-gray-800/70 hover:bg-gray-800/80 text-white rounded-md py-3 backdrop-blur-sm"
+            onClick={e => {
+              e.stopPropagation();
+              onClick && onClick();
+            }}
+          >
+            View Detail
+          </Button>
+        </div>
+        </div>
+      </Link>
+    );
+  }
 
   return (
     <div
@@ -65,36 +118,10 @@ const MemoizedImageWithSkeleton = React.memo(function ImageWithSkeleton({
   );
 });
 
-export default function DesignImageDetailPage({ image }: DesignImageDetailPageProps) {
+export default function DesignImageDetailPage({ image, similarImages = [] }: DesignImageDetailPageProps) {
   const router = useRouter();
-  const [relatedImages, setRelatedImages] = useState<SimilarImageItem[]>([]);
-  const [isLoadingRelated, setIsLoadingRelated] = useState(true);
   const [imageLoaded, setImageLoaded] = useState(true); // 默认设为 true，让图片直接显示
   const [dropdownOpen, setDropdownOpen] = useState(false);
-
-  // 加载相关图片（使用新的相似度推荐接口）
-  useEffect(() => {
-    const loadRelatedImages = async () => {
-      try {
-        const response = await getFrontendImageDetail({
-          slug: image.slug
-        });
-        
-        if (response.code === 0 && response.data) {
-          // 直接使用后端返回的相似图片列表
-          setRelatedImages(response.data.similar_images || []);
-        }
-      } catch (error) {
-        console.error('Failed to load related images:', error);
-        // 如果新接口失败，可以回退到旧的逻辑
-        setRelatedImages([]);
-      } finally {
-        setIsLoadingRelated(false);
-      }
-    };
-
-    loadRelatedImages();
-  }, [image.slug]);
 
   return (
     <div className="w-full max-w-6xl mx-auto px-4 py-8">
@@ -332,33 +359,21 @@ export default function DesignImageDetailPage({ image }: DesignImageDetailPagePr
             More like this
           </div>
           <div className="flex-1 grid grid-cols-5 gap-3 min-h-0">
-            {isLoadingRelated ? (
-              // 加载骨架屏
+            {similarImages.length === 0 ? (
+              // 没有数据时显示骨架屏
               Array.from({ length: 5 }).map((_, idx) => (
                 <div key={`loading-${idx}`} className="w-full overflow-hidden rounded-md" style={{ aspectRatio: '3 / 4' }}>
                   <Skeleton className="w-full h-full bg-white/10" />
                 </div>
               ))
             ) : (
-              relatedImages.map((img, idx) => (
-                <div
+              similarImages.slice(0, 5).map((img, idx) => (
+                <MemoizedImageWithSkeleton
                   key={`related-${img.id}-${idx}`}
-                  className="w-full overflow-hidden rounded-md cursor-pointer relative group"
-                  style={{ aspectRatio: '3 / 4' }}
-                  onClick={() => {
-                    // 跳转到对应的图片页面
-                    window.location.href = `/designs/${img.slug}`;
-                  }}
-                >
-                  <MemoizedImageWithSkeleton
-                    src={img.image_url}
-                    alt={img.clothing_description || ''}
-                    onClick={() => {
-                      window.location.href = `/designs/${img.slug}`;
-                    }}
-                  />
-
-                </div>
+                  src={img.image_url}
+                  alt={img.clothing_description || ''}
+                  href={`/designs/${img.slug}`}
+                />
               ))
             )}
           </div>
