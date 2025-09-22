@@ -1,5 +1,9 @@
+'use client';
+
 import React from 'react';
 import { ArrowUp } from 'lucide-react';
+
+const AGENT_URL = 'https://agent.chimer-ai.com/';
 
 const AgentHero: React.FC = () => {
   return (
@@ -49,14 +53,25 @@ const AgentHero: React.FC = () => {
         {/* 输入和按钮区域 */}
         <div className="flex flex-col gap-4 items-center justify-center w-full max-w-4xl">
           {/* 主输入框 */}
-          <div className="bg-white/20 backdrop-blur-sm border border-white/10 rounded-2xl sm:rounded-3xl shadow-[0px_0px_34px_0px_rgba(0,0,0,0.25)] p-4 sm:p-8 w-full flex items-center gap-3 sm:gap-4">
+          <div 
+            className="bg-white/20 backdrop-blur-sm border border-white/10 rounded-2xl sm:rounded-3xl shadow-[0px_0px_34px_0px_rgba(0,0,0,0.25)] p-4 sm:p-8 w-full flex items-center gap-3 sm:gap-4 cursor-pointer hover:bg-white/25 transition-colors"
+            onClick={() => window.open(AGENT_URL, '_blank')}
+          >
             <input
               type="text"
               placeholder="Type your idea…"
-              className="flex-1 bg-transparent text-white/70 text-lg sm:text-2xl font-normal placeholder:text-white/70 border-none outline-none tracking-[-0.18px] leading-6"
+              className="flex-1 bg-transparent text-white/70 text-lg sm:text-2xl font-normal placeholder:text-white/70 border-none outline-none tracking-[-0.18px] leading-6 cursor-pointer"
               style={{ fontFamily: 'Inter, sans-serif' }}
+              readOnly
+              onClick={() => window.open(AGENT_URL, '_blank')}
             />
-            <button className="bg-white rounded-full p-1.5 hover:bg-gray-100 transition-colors">
+            <button 
+              className="bg-white rounded-full p-1.5 hover:bg-gray-100 transition-colors"
+              onClick={(e) => {
+                e.stopPropagation();
+                window.open(AGENT_URL, '_blank');
+              }}
+            >
               <ArrowUp className="w-4.5 h-4.5 text-black " />
             </button>
           </div>
@@ -71,6 +86,7 @@ const AgentHero: React.FC = () => {
               <button
                 key={index}
                 className="bg-white/20 backdrop-blur-sm border border-white/10 rounded-2xl shadow-[0px_0px_34px_0px_rgba(0,0,0,0.25)] px-2 py-3 flex items-center justify-between gap-2 hover:bg-white/30 transition-colors flex-1 min-h-[55px]"
+                onClick={() => window.open(AGENT_URL, '_blank')}
               >
                 <div className="flex flex-col items-start justify-center gap-0.5 flex-1">
                   <span 
@@ -108,6 +124,7 @@ const AgentHero: React.FC = () => {
               <button
                 key={index}
                 className="bg-white/20 backdrop-blur-sm border border-white/10 rounded-2xl shadow-[0px_0px_34px_0px_rgba(0,0,0,0.25)] px-3 py-4 flex items-center justify-between gap-2 hover:bg-white/30 transition-colors flex-1 min-h-[70px]"
+                onClick={() => window.open(AGENT_URL, '_blank')}
               >
                 <div className="flex flex-col items-start justify-center gap-0.5 flex-1">
                   <span 
