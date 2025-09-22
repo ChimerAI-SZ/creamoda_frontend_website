@@ -9,7 +9,8 @@ export const routeToThemeMap: Record<string, string> = {
   'outfit-generator': 'outfit_generator',
   'sketch-to-image': 'sketch_convert',
   'free-nano-banana': 'free_nano_banana',
-  'designs': 'design_page'
+  'designs': 'design_page',
+  'fashion-agent': 'fashion_agent'
 };
 
 // 主题ID到路由路径的映射（反向映射）
@@ -23,7 +24,8 @@ export const themeToRouteMap: Record<string, string> = {
   'outfit_generator': 'outfit-generator',
   'sketch_convert': 'sketch-to-image',
   'free_nano_banana': 'free-nano-banana',
-  'design_page': 'designs'
+  'design_page': 'designs',
+  'fashion_agent': 'fashion-agent'
 };
 
 // 获取主题ID by 路由路径
@@ -47,7 +49,8 @@ export const routeToPathMap: Record<string, string> = {
   'outfit-generator': '/fashion-design/create',
   'sketch-to-image': '/fashion-design/create',
   'free-nano-banana': '/magic-kit/create',
-  'designs': '/fashion-design/create'
+  'designs': '/fashion-design/create',
+  'fashion-agent': '/fashion-design/create'
 };
 
 // 路由到SaaS URL的映射（保留兼容性，但已废弃）
@@ -61,7 +64,8 @@ export const routeToSaasUrlMap: Record<string, string> = {
   'outfit-generator': 'https://www.creamoda.ai/fashion-design/create',
   'sketch-to-image': 'https://www.creamoda.ai/fashion-design/create',
   'free-nano-banana': 'https://www.creamoda.ai/magic-kit/create',
-  'designs': 'https://www.creamoda.ai/fashion-design/create'
+  'designs': 'https://www.creamoda.ai/fashion-design/create',
+  'fashion-agent': 'https://www.creamoda.ai/fashion-design/create'
 };
 
 // 根据路由获取相对路径
@@ -86,6 +90,6 @@ export function getSaasUrlByRoute(route: string): string {
 
 // 获取所有可用路由
 export function getAllRoutes(): string[] {
-  // 排除 'designs'，因为它有专门的页面路由
-  return Object.keys(routeToThemeMap).filter(route => route !== 'designs');
+  // 排除 'designs' 和 'fashion-agent'，因为它们有专门的页面路由
+  return Object.keys(routeToThemeMap).filter(route => route !== 'designs' && route !== 'fashion-agent');
 } 

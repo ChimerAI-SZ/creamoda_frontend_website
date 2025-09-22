@@ -2,17 +2,22 @@ import { Metadata } from 'next';
 import { Suspense } from 'react';
 import DesignHero from '@/src/components/server/DesignHero';
 import DesignFilterSection from '@/src/components/server/DesignFilterSection';
-import DesignStepsModule from '@/src/components/server/DesignStepsModule';
 import DesignAboutModule from '@/src/components/server/DesignAboutModule';
 import StaticFAQ from '@/src/components/server/StaticFAQ';
 import StaticFooter from '@/src/components/server/StaticFooter';
 import StructuredDataEnhancer from '@/src/components/seo/StructuredDataEnhancer';
+import SSRDesignLinks from '@/src/components/server/SSRDesignLinks';
+import { getSSRDesignImages } from '@/src/utils/serverApi';
 import { 
   generateBreadcrumbsForRoute, 
   getProductDataForRoute, 
   getReviewDataForRoute
 } from '@/src/utils/seoHelpers';
 import { getTheme } from '@/src/config/themes';
+import FusionGuide from '@/src/components/server/StaticFusionGuide';
+
+// 强制动态渲染，避免在构建时预渲染（此时 API 不可用）
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://creamoda.ai'),
@@ -74,7 +79,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function DesignsPage() {
+export default async function DesignsPage() {
   const saasUrl = 'https://www.creamoda.ai/fashion-design/create';
   
   // 获取主题数据
@@ -84,6 +89,13 @@ export default function DesignsPage() {
   const breadcrumbs = generateBreadcrumbsForRoute('designs');
   const productData = getProductDataForRoute('designs');
   const reviewData = getReviewDataForRoute('designs');
+
+  // 获取服务端图片数据用于SEO链接
+  const ssrImages = await getSSRDesignImages({
+    page: 1,
+    page_size: 50, // 获取前50个图片的链接
+    gender: 'Female' // 默认获取女性服装链接
+  });
 
   return (
     <div className="min-h-screen">
@@ -105,13 +117,16 @@ export default function DesignsPage() {
       </Suspense>
       
       {/* 设计步骤模块 */}
-      <DesignStepsModule />
+      <FusionGuide theme={theme} />
       
       {/* 关于设计模块 */}
       <DesignAboutModule />
       
       {/* FAQ组件 */}
       <StaticFAQ faqData={theme.faq} />
+      
+      {/* 服务端渲染的设计链接 - 用于SEO，在HTML源码中可见 */}
+      <SSRDesignLinks images={ssrImages} />
       
       {/* Footer组件 */}
       <StaticFooter />

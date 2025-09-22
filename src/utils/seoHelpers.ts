@@ -79,7 +79,7 @@ export function getProductDataForRoute(route: string) {
       category: 'ImageEditingApplication',
       operatingSystem: 'Web',
       softwareVersion: '1.0',
-      image: getFullImageUrl('/marketing/images/hero/background_remover/remove_backgrounds.png'),
+      image: getFullImageUrl('/marketing/images/hero/background_remover/remover.png'),
     },
     'image-background-changer': {
       name: 'Image Background Changer',
@@ -88,7 +88,7 @@ export function getProductDataForRoute(route: string) {
       category: 'ImageEditingApplication',
       operatingSystem: 'Web',
       softwareVersion: '1.0',
-      image: getFullImageUrl('/marketing/images/hero/background_changer/change_backgrounds.png'),
+      image: getFullImageUrl('/marketing/images/hero/background_changer/bg_changer.png'),
     },
     'image-enhancer': {
       name: 'Image Enhancer',
@@ -97,7 +97,7 @@ export function getProductDataForRoute(route: string) {
       category: 'ImageEditingApplication',
       operatingSystem: 'Web',
       softwareVersion: '1.0',
-      image: getFullImageUrl('/marketing/images/hero/enhance/enhance.png'),
+      image: getFullImageUrl('/marketing/images/hero/enhance/enhances.png'),
     },
     'image-changer': {
       name: 'AI Image Changer',
@@ -106,7 +106,7 @@ export function getProductDataForRoute(route: string) {
       category: 'ImageEditingApplication',
       operatingSystem: 'Web',
       softwareVersion: '1.0',
-      image: getFullImageUrl('/marketing/images/hero/changer/changer.png'),
+      image: getFullImageUrl('/marketing/images/hero/changer/changers.png'),
     },
     'image-color-changer': {
       name: 'Image Color Changer',
@@ -115,7 +115,7 @@ export function getProductDataForRoute(route: string) {
       category: 'ImageEditingApplication',
       operatingSystem: 'Web',
       softwareVersion: '1.0',
-      image: getFullImageUrl('/marketing/images/hero/color_changer/color_changer.png'),
+      image: getFullImageUrl('/marketing/images/hero/color_changer/color_changeress.png'),
     },
     'virtual-try-on': {
       name: 'AI Virtual Try-On',
@@ -124,7 +124,7 @@ export function getProductDataForRoute(route: string) {
       category: 'ImageEditingApplication',
       operatingSystem: 'Web',
       softwareVersion: '1.0',
-      image: getFullImageUrl('/marketing/images/hero/virtual_try/virtuals_trye.png'),
+      image: getFullImageUrl('/marketing/images/hero/virtual_try/virtuals_try_on.png'),
     },
     'outfit-generator': {
       name: 'AI Outfit Generator',
@@ -133,7 +133,7 @@ export function getProductDataForRoute(route: string) {
       category: 'ImageEditingApplication',
       operatingSystem: 'Web',
       softwareVersion: '1.0',
-      image: getFullImageUrl('/marketing/images/hero/outfit_generator/outfit_generatorss.png'),
+      image: getFullImageUrl('/marketing/images/hero/outfit_generator/outfit_generators.png'),
     },
     'sketch-to-image': {
       name: 'AI Sketch to Image Converter',
@@ -142,7 +142,7 @@ export function getProductDataForRoute(route: string) {
       category: 'ImageEditingApplication',
       operatingSystem: 'Web',
       softwareVersion: '1.0',
-      image: getFullImageUrl('/marketing/images/hero/sketch_convert/sketch_convert.png'),
+      image: getFullImageUrl('/marketing/images/hero/sketch_convert/sketch_conv.png'),
     },
     'free-nano-banana': {
       name: 'Free Nano-Banana Generator',

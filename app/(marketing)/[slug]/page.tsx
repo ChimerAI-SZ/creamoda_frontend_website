@@ -197,7 +197,7 @@ export default async function DynamicPage({ params }: PageProps) {
       />
       
       {/* Hero组件 - 使用通用的StaticHero */}
-      <StaticHero theme={theme} saasUrl={saasUrl} isHomepage={false} />
+      <StaticHero theme={theme} saasUrl={saasUrl} isHomepage={false} currentRoute={slug} />
       
       {/* 主题内容组件 */}
       <ThemeContent theme={theme} currentRoute={slug} />

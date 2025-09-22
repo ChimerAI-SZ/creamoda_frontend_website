@@ -38,16 +38,16 @@ export default function StaticFAQ({ faqData }: StaticFAQProps) {
   // 使用传入的FAQ数据，如果没有则使用默认数据
   const faqItems = faqData?.items || defaultFaqData;
   return (
-    <section className="py-12 md:py-16 px-4 md:px-6 bg-black">
-      <div className="max-w-7xl mx-auto">
+    <section className="py-12 md:py-16 bg-black">
+      <div className="max-w-7xl lg:max-w-[1450px] xl:max-w-[1550px] 2xl:max-w-[1650px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-6 lg:gap-8">
           {/* 左侧标题 */}
           <div className="flex flex-col justify-start">
             <h2 
               className="text-3xl md:text-5xl lg:text-7xl font-black text-white leading-tight"
               style={{ 
-                fontFamily: "'Neue Machina Regular', 'Neue Machina', system-ui, -apple-system, sans-serif",
-                fontWeight: '950'
+                fontFamily: "'Instrument Sans', system-ui, -apple-system, sans-serif",
+                fontWeight: '400'
               }}
             >
               <span className="block">Frequently</span>
@@ -71,7 +71,7 @@ export default function StaticFAQ({ faqData }: StaticFAQProps) {
 function FAQItem({ question, answer }: FAQItem) {
   return (
     <details className="group border-b border-gray-600">
-      <summary className="flex justify-between items-center py-4 md:py-6 text-lg md:text-xl lg:text-2xl font-bold text-white cursor-pointer hover:text-gray-300 transition-colors list-none">
+      <summary className="flex justify-between items-center py-4 md:py-6 text-lg md:text-xl lg:text-2xl font-medium text-white cursor-pointer hover:text-gray-300 transition-colors list-none">
         <span className="flex-1 text-left pr-4">{question}</span>
         {/* 自定义向下箭头 */}
         <div className="faq-arrow flex-shrink-0 w-6 h-6 flex items-center justify-center">

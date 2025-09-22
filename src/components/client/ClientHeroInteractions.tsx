@@ -53,7 +53,28 @@ export default function ClientHeroInteractions({ currentSaasUrl }: ClientHeroInt
       if (isDesignSlugPage) {
         setIsScrolled(true);
       } else {
-        setIsScrolled(window.scrollY > 20);
+        // 获取导航栏的实际高度
+        const navElement = document.querySelector('.hero-nav') as HTMLElement;
+        const navHeight = navElement ? navElement.offsetHeight : 75;
+        
+        // 检测是否为移动端
+        const isMobile = window.innerWidth < 768;
+        
+        // 移动端：滚动很少距离就变黑，确保用户看到效果
+        // 桌面端：保持原有逻辑，滚动20px后变黑  
+        const threshold = isMobile ? 10 : 20;
+        
+        const shouldScroll = window.scrollY > threshold;
+        setIsScrolled(shouldScroll);
+        
+        // 调试信息（可以在开发者工具中查看）
+        console.log('Scroll Debug:', {
+          scrollY: window.scrollY,
+          threshold,
+          isMobile,
+          navHeight,
+          shouldScroll
+        });
       }
     };
     onScroll();
@@ -85,6 +106,13 @@ export default function ClientHeroInteractions({ currentSaasUrl }: ClientHeroInt
     
     if (nav) {
       nav.classList.toggle('scrolled', isScrolled);
+      
+      // 调试：检查类是否正确应用
+      console.log('Nav class applied:', {
+        isScrolled,
+        hasScrolledClass: nav.classList.contains('scrolled'),
+        allClasses: Array.from(nav.classList)
+      });
     }
   }, [isScrolled]);
 
@@ -95,47 +123,37 @@ export default function ClientHeroInteractions({ currentSaasUrl }: ClientHeroInt
 
     // 创建下拉菜单HTML结构
     dropdownContainer.innerHTML = `
-      <!-- Fashion Design 下拉菜单 -->
+      <!-- Design Tools 下拉菜单 -->
       <div class="tools-dropdown fashion-design-dropdown ${isScrolled ? 'tools-dropdown-scrolled' : ''}">
-        <div class="tools-dropdown-content">
-          <div class="tools-category">
-            <div class="category-items-container">
-              <div class="category-items">
-                <a href="/outfit-generator" class="tool-item" data-route="outfit-generator">AI Outfit Generator</a>
-                <a href="/sketch-to-image" class="tool-item" data-route="sketch-to-image">AI Sketch to Image Converter</a>
+        <div class="tools-dropdown-content-new">
+          <div class="dropdown-grid">
+            <div class="dropdown-column">
+              <h3 class="dropdown-column-title">Fashion Design</h3>
+              <div class="dropdown-tools-list">
+                <a href="/outfit-generator" class="dropdown-tool-item" data-route="outfit-generator">AI Outfit Generator</a>
+                <a href="/sketch-to-image" class="dropdown-tool-item" data-route="sketch-to-image">AI Sketch to Image Converter</a>
+              </div>
+            </div>
+            <div class="dropdown-column">
+              <h3 class="dropdown-column-title">Virtual Try-on</h3>
+              <div class="dropdown-tools-list">
+                <a href="/virtual-try-on" class="dropdown-tool-item" data-route="virtual-try-on">Virtual Try-On</a>
+              </div>
+            </div>
+            <div class="dropdown-column">
+              <h3 class="dropdown-column-title">Magic Kit</h3>
+              <div class="dropdown-tools-list">
+                <a href="/image-background-remover" class="dropdown-tool-item" data-route="image-background-remover">Image Background Remover</a>
+                <a href="/image-background-changer" class="dropdown-tool-item" data-route="image-background-changer">Image Background Changer</a>
+                <a href="/image-enhancer" class="dropdown-tool-item" data-route="image-enhancer">Image Enhancer</a>
+                <a href="/image-changer" class="dropdown-tool-item" data-route="image-changer">AI Image Changer</a>
+                <a href="/image-color-changer" class="dropdown-tool-item" data-route="image-color-changer">Image Color Changer</a>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Virtual Try-on 下拉菜单 -->
-      <div class="tools-dropdown virtual-tryon-dropdown ${isScrolled ? 'tools-dropdown-scrolled' : ''}">
-        <div class="tools-dropdown-content">
-          <div class="tools-category">
-            <div class="category-items">
-              <a href="/virtual-try-on" class="tool-item" data-route="virtual-try-on">Virtual Try-On</a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Magic Kit 下拉菜单 -->
-      <div class="tools-dropdown magic-kit-dropdown ${isScrolled ? 'tools-dropdown-scrolled' : ''}">
-        <div class="tools-dropdown-content">
-          <div class="tools-category">
-            <div class="category-items-container">
-              <div class="category-items">
-                <a href="/magic-kit/image-background-remover" class="tool-item" data-route="image-background-remover">Image Background Remover</a>
-                <a href="/magic-kit/image-background-changer" class="tool-item" data-route="image-background-changer">Image Background Changer</a>
-                <a href="/magic-kit/image-enhancer" class="tool-item" data-route="image-enhancer">Image Enhancer</a>
-                <a href="/magic-kit/image-changer" class="tool-item" data-route="image-changer">AI Image Changer</a>
-                <a href="/magic-kit/image-color-changer" class="tool-item" data-route="image-color-changer">Image Color Changer</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     `;
 
     // 为下拉菜单添加交互事件
@@ -144,7 +162,7 @@ export default function ClientHeroInteractions({ currentSaasUrl }: ClientHeroInt
     const cleanupFunctions: (() => void)[] = [];
 
     dropdowns.forEach((dropdown, index) => {
-      const dropdownNames = ['fashion-design', 'virtual-tryon', 'magic-kit'];
+      const dropdownNames = ['fashion-design'];
       const dropdownName = dropdownNames[index];
       
       if (dropdownName) {
@@ -162,7 +180,7 @@ export default function ClientHeroInteractions({ currentSaasUrl }: ClientHeroInt
     });
 
     // 为工具项添加点击事件
-    const toolItems = document.querySelectorAll('.tool-item[data-route]');
+    const toolItems = document.querySelectorAll('.tool-item[data-route], .tool-title[data-route], .magic-tool-item[data-route]');
     
     const handleToolClick = (e: Event) => {
       e.preventDefault();

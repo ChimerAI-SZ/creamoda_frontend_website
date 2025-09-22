@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Feature Page Hero Responsive Styles */
+@media (max-width: 768px) {
+  .hero-desktop {
+    display: none !important;
+  }
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

@@ -13,12 +13,16 @@ import {
 } from '@/src/utils/seoHelpers';
 import DesignImageDetailPage from '@/src/components/server/DesignImageDetailPage';
 import ClientHeroInteractions from '@/src/components/client/ClientHeroInteractions';
+import ServerSimilarImages from '@/src/components/server/ServerSimilarImages';
 
 interface PageProps {
   params: Promise<{
     slug: string;
   }>;
 }
+
+// 强制动态渲染，避免在构建时预渲染（此时 API 不可用）
+export const dynamic = 'force-dynamic';
 
 // 获取图片详情数据
 async function getImageBySlug(slug: string): Promise<FrontendImageItem | null> {
@@ -48,6 +52,40 @@ async function getImageBySlug(slug: string): Promise<FrontendImageItem | null> {
   } catch (error) {
     console.error('Failed to fetch image by slug:', error);
     return null;
+  }
+}
+
+async function getImageDetailWithSimilar(slug: string) {
+  try {
+    const backendUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/common/frontend/images/detail?slug=${encodeURIComponent(slug)}`;
+    
+    const response = await fetch(backendUrl, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      signal: AbortSignal.timeout(10000),
+      cache: 'force-cache',
+      next: { revalidate: 3600 }
+    });
+
+    if (!response.ok) {
+      throw new Error(`Backend API error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    
+    if (data.code === 0 && data.data) {
+      return {
+        image: data.data,
+        similarImages: data.data.similar_images || []
+      };
+    }
+    
+    return { image: null, similarImages: [] };
+  } catch (error) {
+    console.error('Failed to fetch image detail with similar images:', error);
+    return { image: null, similarImages: [] };
   }
 }
 
@@ -116,7 +154,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function DesignImagePage({ params }: PageProps) {
   const { slug } = await params;
-  const image = await getImageBySlug(slug);
+  const { image, similarImages } = await getImageDetailWithSimilar(slug);
   
   if (!image) {
     notFound();
@@ -149,8 +187,11 @@ export default async function DesignImagePage({ params }: PageProps) {
       
       {/* 主要内容区域 */}
       <main className="flex-1">
-        <DesignImageDetailPage image={image} />
+        <DesignImageDetailPage image={image} similarImages={similarImages} />
       </main>
+      
+      {/* 服务端渲染的推荐图片链接 - 用于SEO，在HTML源码中可见 */}
+      <ServerSimilarImages similarImages={similarImages} />
       
       {/* 客户端交互增强 */}
       <ClientHeroInteractions currentSaasUrl="https://www.creamoda.ai/fashion-design/create" />

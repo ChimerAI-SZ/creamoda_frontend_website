@@ -7,8 +7,8 @@ export const themes: Record<string, ThemeConfig> = {
     heroMain: {
       title: 'Image Background Remover',
       subtitle: 'One-click professional background removal powered by AI - get pixel-perfect results in seconds.',
-      mainImage: '/marketing/images/hero/background_remover/remove_backgrounds.png',
-      uploadText: 'Try Now',
+      mainImage: '/marketing/images/hero/background_remover/remover.png',
+      uploadText: 'Upload Image',
       uploadSubText: 'Or drop a file, paste image or URL',
       demoImages: [
         '/marketing/images/hero/background_remover/one.png',
@@ -21,24 +21,24 @@ export const themes: Record<string, ThemeConfig> = {
       title: 'How to Remove Image<br/>Background in One Step?',
       cards: [
         {
-          icon: '/marketing/images/feature/picture.png',
+          icon: '/marketing/images/feature/upload.svg',
           title: 'Upload Your Image',
           description: 'Upload images from your device (supports JPEG/PNG) or paste URLs, using high-resolution images can achieve the best results.'
         },
         {
-          icon: '/marketing/images/feature/water.png',
+          icon: '/marketing/images/feature/upload.svg',
           title: 'AI Instant Processing',
           description: 'Our AI removes backgrounds flawlessly in seconds with zero manual effort required.'
         },
         {
-          icon: '/marketing/images/feature/download.png',
+          icon: '/marketing/images/feature/upload.svg',
           title: 'Download Ready-to-Use Images',
           description: 'Get transparent PNGs instantly, then save, remove, or enhance with Creamoda\'s full suite of design tools.'
         }
       ]
     },
     whyChoose: {
-      title: 'Why Choose Creamoda?',
+      title: 'Why us',
       cards: [
         {
           title: 'Professional-Quality Precision for Complex Edges',
@@ -131,8 +131,8 @@ export const themes: Record<string, ThemeConfig> = {
     heroMain: {
       title: 'Image Background Changer',
       subtitle: 'Replace any background in seconds—no skills needed.',
-      mainImage: '/marketing/images/hero/background_changer/change_backgrounds.png',
-      uploadText: 'Try Now',
+      mainImage: '/marketing/images/hero/background_changer/bg_changer.png',
+      uploadText: 'Upload Image',
       uploadSubText: 'Or drop a file, paste image or URL',
       demoImages: [
         '/marketing/images/hero/background_changer/one.png',
@@ -145,24 +145,24 @@ export const themes: Record<string, ThemeConfig> = {
       title: 'How to Change Image<br/>Background Using AI?',
       cards: [
         {
-          icon: '/marketing/images/feature/picture.png',
+          icon: '/marketing/images/feature/upload.svg',
           title: 'Upload & Describe ',
           description: 'Upload original image (JPEG/PNG/URL) and describe your desired background (e.g., "sunset by the sea").'
         },
         {
-          icon: '/marketing/images/feature/water.png',
+          icon: '/marketing/images/feature/upload.svg',
           title: 'AI Automatic Processing ',
           description: 'AI intelligently matches tones and details, generating new backgrounds with seamless edge blending.'
         },
         {
-          icon: '/marketing/images/feature/download.png',
+          icon: '/marketing/images/feature/upload.svg',
           title: 'Download & Use',
           description: 'Download your edited image for immediate use or further adjustments.'
         }
       ]
     },
     whyChoose: {
-      title: 'Why Choose Creamoda?',
+      title: 'Why us',
       cards: [
         {
           title: 'Instant Professional Background Replacement',
@@ -255,8 +255,8 @@ export const themes: Record<string, ThemeConfig> = {
     heroMain: {
       title: 'AI Image Enhancer',
       subtitle: 'Transform low-quality images into stunning high-resolution masterpieces with one click – powered by AI.',
-      mainImage: '/marketing/images/hero/enhance/enhance.png',
-      uploadText: 'Try Now',
+      mainImage: '/marketing/images/hero/enhance/enhances.png',
+      uploadText: 'Upload Image',
       uploadSubText: 'Or drop a file, paste image or URL',
       demoImages: [
         '/marketing/images/hero/enhance/one.png',
@@ -269,24 +269,24 @@ export const themes: Record<string, ThemeConfig> = {
       title: 'How to Upscale Images Without<br/>Any Quality Loss?',
       cards: [
         {
-          icon: '/marketing/images/feature/picture.png',
+          icon: '/marketing/images/feature/upload.svg',
           title: 'Upload Your Image',
           description: 'Drag & drop any JPEG/PNG file or paste an image URL. For best results, use images with clear outlines.'
         },
         {
-          icon: '/marketing/images/feature/water.png',
+          icon: '/marketing/images/feature/upload.svg',
           title: 'AI Magic Enhancement',
           description: 'Our AI analyzes textures, sharpens edges, and fills missing details—completely automatically.'
         },
         {
-          icon: '/marketing/images/feature/download.png',
+          icon: '/marketing/images/feature/upload.svg',
           title: 'Download HD Results',
           description: 'Save your upscaled image as PNG. Feel free to use your brand new high-definition images!'
         }
       ]
     },
     whyChoose: {
-      title: 'Why Choose Creamoda?',
+      title: 'Why us',
       cards: [
         {
           title: 'Pixel-Perfect AI Reconstruction',
@@ -379,8 +379,8 @@ export const themes: Record<string, ThemeConfig> = {
     heroMain: {
       title: 'Image Color Changer',
       subtitle: 'AI-powered color swapping that keeps textures and lighting intact—no more unnatural patches or mismatched shadows.',
-      mainImage: '/marketing/images/hero/color_changer/color_changer.png',
-      uploadText: 'Try Now',
+      mainImage: '/marketing/images/hero/color_changer/color_changeress.png',
+      uploadText: 'Upload Image',
       uploadSubText: 'Or drop a file, paste image or URL',
       demoImages: [
         '/marketing/images/hero/color_changer/one.webp',
@@ -393,24 +393,24 @@ export const themes: Record<string, ThemeConfig> = {
       title: 'How to Change Image Color?',
       cards: [
         {
-          icon: '/marketing/images/feature/picture.png',
+          icon: '/marketing/images/feature/upload.svg',
           title: 'Upload & Select Colors',
           description: 'Upload image (JPEG/PNG), sample colors or input HEX codes with sliders for fine-tuning.'
         },
         {
-          icon: '/marketing/images/feature/water.png',
+          icon: '/marketing/images/feature/upload.svg',
           title: 'AI-Powered Color Magic',
           description: 'AI adapts colors naturally based on material textures and lighting.'
         },
         {
-          icon: '/marketing/images/feature/download.png',
+          icon: '/marketing/images/feature/upload.svg',
           title: 'Download & Use ',
           description: 'Get recolored PNGs instantly for further editing or saving.'
         }
       ]
     },
     whyChoose: {
-      title: 'Why Choose Creamoda?',
+      title: 'Why us',
       cards: [
         {
           title: 'Pixel-Perfect Color Accuracy',
@@ -504,8 +504,8 @@ export const themes: Record<string, ThemeConfig> = {
     heroMain: {
       title: 'AI Virtual Try-On',
       subtitle: 'Immediately imagine the fit of any clothing with realistic pose adjustments - perfect for shoppers, designers, and brands. No physical samples required.',
-      mainImage: '/marketing/images/hero/virtual_try/virtuals_trye.png',
-      uploadText: 'Try Now',
+      mainImage: '/marketing/images/hero/virtual_try/virtual_on.png',
+      uploadText: 'Upload Image',
       uploadSubText: 'Or drop a product image or URL',
       demoImages: [
         '/marketing/images/hero/virtual_try/one.jpg',
@@ -515,27 +515,27 @@ export const themes: Record<string, ThemeConfig> = {
       ]
     },
     fusionGuide: {
-      title: 'How to Generate Model Try-on<br/>Images From Apparel?',
+      title: 'How to achieve style fusion?',
       cards: [
         {
-          icon: '/marketing/images/feature/picture.png',
+          icon: '/marketing/images/feature/upload.svg',
           title: 'Upload Your Photo',
           description: 'Upload your apparel image and a target model image. For best results, use a clear, well-lit photo with visible posture.'
         },
         {
-          icon: '/marketing/images/feature/water.png',
+          icon: '/marketing/images/feature/upload.svg',
           title: 'Select Garment & Pose',
           description: 'Choose the garment category (Top/Bottom/One-Piece) and optionally upload a reference pose image for realistic adjustments.'
         },
         {
-          icon: '/marketing/images/feature/download.png',
+          icon: '/marketing/images/feature/upload.svg',
           title: 'Generate & Download',
           description: 'Get your AI-processed image in seconds, then download the high-resolution try-on result.'
         }
       ]
     },
     whyChoose: {
-      title: 'Why Choose Creamoda?',
+      title: 'Why us',
       cards: [
         {
           title: 'Realistic Fit Simulation',
@@ -548,6 +548,10 @@ export const themes: Record<string, ThemeConfig> = {
         {
           title: 'End-to-End Virtual Garment Solution',
           description: 'Upload finished garments to create realistic try-on visuals. AI preserves stitching, prints, and fabric flow while adapting poses naturally, providing accurate references for prototyping, marketing, and supply chain collaboration.'
+        },
+        {
+          title: '',
+          description: ''
         }
       ]
     },
@@ -628,8 +632,8 @@ export const themes: Record<string, ThemeConfig> = {
     heroMain: {
       title: 'AI Outfit Generator',
       subtitle: 'Turn Ideas into Art Instantly – Generate unique images from text or transform your photos with AI-powered creativity. No design skills required!',
-      mainImage: '/marketing/images/hero/outfit_generator/outfit_generatorss.png',
-      uploadText: 'Try Now',
+      mainImage: '/marketing/images/hero/outfit_generator/outfit_generators.png',
+      uploadText: 'Upload Image',
       uploadSubText: 'Or drop a design reference or URL',
       demoImages: [
         '/marketing/images/hero/outfit_generator/one.png',
@@ -642,24 +646,24 @@ export const themes: Record<string, ThemeConfig> = {
       title: 'How to Design Fashion Items Online?',
       cards: [
         {
-          icon: '/marketing/images/feature/picture.png',
+          icon: '/marketing/images/feature/upload.svg',
           title: 'Input & Customize',
           description: 'Enter a prompt or upload a photo, then describe the desired changes or choose from the design features with multiple selections supported.'
         },
         {
-          icon: '/marketing/images/feature/water.png',
+          icon: '/marketing/images/feature/upload.svg',
           title: 'AI Processing',
           description: 'Our AI generates or transforms your image in seconds. For images, it preserves original details while applying your edits. Preview and tweak results if needed.'
         },
         {
-          icon: '/marketing/images/feature/download.png',
+          icon: '/marketing/images/feature/upload.svg',
           title: 'Download & Share',
           description: 'Download your high-resolution image. Use it directly or refine further with Creamoda’s editing tools. All outputs are saved to your portfolio for easy access.'
         }
       ]
     },
     whyChoose: {
-      title: 'Why Choose Creamoda?',
+      title: 'Why us',
       cards: [
         {
           title: 'Unlimited Creativity for Diverse Needs',
@@ -753,9 +757,10 @@ export const themes: Record<string, ThemeConfig> = {
     heroMain: {
       title: 'AI Sketch to Image Converter',
       subtitle: 'Upload your hand drawing and let AI convert it into a production-ready design - with textures, colors, and clean lines automatically applied.',
-      mainImage: '/marketing/images/hero/sketch_convert/sketch_convert.png',
-      uploadText: 'Try Now',
+      mainImage: '/marketing/images/hero/sketch_convert/sketch_conv.png',
+      uploadText: 'Upload Image',
       uploadSubText: 'Or drop a sketch image or URL',
+      imageSize: 'medium',
       demoImages: [
         '/marketing/images/hero/sketch_convert/one.png',
         '/marketing/images/hero/sketch_convert/two.png',
@@ -767,26 +772,27 @@ export const themes: Record<string, ThemeConfig> = {
       title: 'How to Tranfrom Sketch Images<br/>to Real Design?',
       cards: [
         {
-          icon: '/marketing/images/feature/picture.png',
+          icon: '/marketing/images/feature/upload.svg',
           title: 'Upload Sketch',
           description: 'Upload a hand-drawn sketch (JPEG/PNG) or URL. For best results, use clear lines and minimal shadows.'
         },
         {
-          icon: '/marketing/images/feature/water.png',
+          icon: '/marketing/images/feature/upload.svg',
           title: 'Describe Your Design',
           description: 'Type text prompts (e.g., "silk evening gown with floral embroidery") or select our preset design features, supports multi-selection for complex designs.'
         },
         {
-          icon: '/marketing/images/feature/download.png',
+          icon: '/marketing/images/feature/upload.svg',
           title: 'Generate & Download',
           description: 'AI processes your inputs and generates a polished design in seconds, then downloads as PNG.'
         }
       ]
     },
     whyChoose: {
-      title: 'Why Choose Creamoda?',
+      title: 'Why us',
       cards: [
         {
+          
           title: 'Intelligent Draft Optimization',
           description: 'Our AI will automatically correct shaky lines and smooth curves while maintaining the authenticity of hand drawn artwork'
         },
@@ -877,8 +883,8 @@ export const themes: Record<string, ThemeConfig> = {
     heroMain: {
       title: 'AI Image Changer',
       subtitle: 'Modify only what you need—AI handles the rest with pixel-perfect precision.',
-      mainImage: '/marketing/images/hero/changer/changer.png',
-      uploadText: 'Try Now',
+      mainImage: '/marketing/images/hero/changer/changers.png',
+      uploadText: 'Upload Image',
       uploadSubText: 'Or drop a file, paste image or URL',
       demoImages: [
         '/marketing/images/hero/changer/one.png',
@@ -891,24 +897,24 @@ export const themes: Record<string, ThemeConfig> = {
       title: 'How to Change Images Easily<br/>With One Click?',
       cards: [
         {
-          icon: '/marketing/images/feature/picture.png',
+          icon: '/marketing/images/feature/upload.svg',
           title: 'Upload & Describe ',
           description: 'Edits Upload image (JPEG/PNG) and specify changes (e.g., "change shirt to T-shirt")'
         },
         {
-          icon: '/marketing/images/feature/water.png',
+          icon: '/marketing/images/feature/upload.svg',
           title: 'AI Precision Processing',
           description: 'AI applies context-aware edits while keeping unmodified areas intact.'
         },
         {
-          icon: '/marketing/images/feature/download.png',
+          icon: '/marketing/images/feature/upload.svg',
           title: 'Download & Compare',
           description: 'Save modified PNGs for comparison or final use.'
         }
       ]
     },
     whyChoose: {
-      title: 'Why Choose Creamoda?',
+      title: 'Why us',
       cards: [
         {
           title: 'AI-Powered Detail Preservation',
@@ -1002,7 +1008,7 @@ export const themes: Record<string, ThemeConfig> = {
       title: 'Free Nano-Banana Generator',
       subtitle: 'Discover Google’s Gemini 2.5 Flash Image, and see how it powers next-generation fashion design.',
       mainImage: '/marketing/images/hero/banana/banana.png',
-      uploadText: 'Try Now',
+      uploadText: 'Upload Image',
       uploadSubText: 'Or drop a banana sketch, paste banana URL',
       demoImages: [
         '/marketing/images/hero/banana/one.png',
@@ -1015,24 +1021,24 @@ export const themes: Record<string, ThemeConfig> = {
       title: 'How to Generate Fashion Images<br/>with Free Nano-Banana?',
       cards: [
         {
-          icon: '/marketing/images/feature/picture.png',
+          icon: '/marketing/images/feature/upload.svg',
           title: 'Visit Outfit Generator Feature',
           description: 'Access our Free Nano-Banana integration and explore pre-built templates tailored for fashion design and creative testing.'
         },
         {
-          icon: '/marketing/images/feature/water.png',
+          icon: '/marketing/images/feature/upload.svg',
           title: 'Enter Your Prompt',
           description: 'Describe your fashion idea — from outfit style and fabric to mood and background — and let AI interpret it.'
         },
         {
-          icon: '/marketing/images/feature/download.png',
+          icon: '/marketing/images/feature/upload.svg',
           title: 'Generate & Export Instantly',
           description: 'Receive high-quality visuals in seconds and download them for prototyping, presentations, or campaigns.'
         }
       ]
     },
     whyChoose: {
-      title: 'Why Choose Creamoda?',
+      title: 'Why us',
       cards: [
         {
           title: 'Seamless Integration',
@@ -1139,17 +1145,17 @@ export const themes: Record<string, ThemeConfig> = {
       title: 'How to Use Our Design Tools?',
       cards: [
         {
-          icon: '/marketing/images/feature/picture.png',
+          icon: '/marketing/images/feature/upload.svg',
           title: 'Choose Your Tool',
           description: 'Select from our comprehensive suite of AI-powered design tools tailored for fashion and creative professionals.'
         },
         {
-          icon: '/marketing/images/feature/water.png',
+          icon: '/marketing/images/feature/upload.svg',
           title: 'Design & Create',
           description: 'Use intuitive interfaces and AI assistance to bring your creative vision to life with professional results.'
         },
         {
-          icon: '/marketing/images/feature/download.png',
+          icon: '/marketing/images/feature/upload.svg',
           title: 'Export & Share',
           description: 'Download high-quality results and share your creations directly from our platform.'
         }
@@ -1169,6 +1175,127 @@ export const themes: Record<string, ThemeConfig> = {
         {
           title: 'User-Friendly Interface',
           description: 'Intuitive design makes our tools accessible to both beginners and professionals, no technical skills required.'
+        }
+      ]
+    },
+    offerMore: {
+      title: 'Explore Our Design Tools',
+      cards: [
+        {
+          image: '/images/card/design.png',
+          title: 'AI Outfit Generator',
+          description: 'Generate and customize fashion outfits — swap fabrics, tweak styles, redesign patterns, all in one tool.'
+        },
+        {
+          image: '/marketing/images/card/virtual_try.png',
+          title: 'AI Virtual Try-On',
+          description: 'Generate lifelike model images wearing your products, cutting shoot costs and boosting sales.'
+        },
+        {
+          image: '/images/card/remove_bg.png',
+          title: 'Magic Kit Tools',
+          description: 'Professional image editing tools including background removal, color changing, and image enhancement.'
+        },
+        {
+          image: '/images/card/change_bg.png',
+          title: 'Background Editor',
+          description: 'Replace any background with custom colors, images, or scenes using AI technology.'
+        },
+        {
+          image: '/images/card/upscale.png',
+          title: 'Image Enhancer',
+          description: 'Boost image resolution up to 2× without losing sharpness or detail.'
+        },
+        {
+          image: '/images/card/change_color.png',
+          title: 'Color Changer',
+          description: 'Instantly swap product or object colors with realistic results.'
+        },
+        {
+          image: '/images/card/sketch_design.png',
+          title: 'Sketch to Image',
+          description: 'Turn garment sketches into realistic images for prototyping and presentations.'
+        },
+        {
+          image: '/marketing/images/card/partial_mod.png',
+          title: 'AI Image Editor',
+          description: 'Edit or replace only the areas you select, keeping the rest untouched.'
+        }
+      ]
+    },
+    faq: {
+      items: [
+        {
+          question: 'What is this page for?',
+          answer: "This page showcases AI-generated fashion ideas across various styles and categories. It's designed to inspire designers, brands, and creators, providing a starting point for new collections or design experiments."
+        },
+        {
+          question: 'How do I use these fashion ideas?',
+          answer: 'Browse the ideas, pick the designs that inspire you, and use the AI fashion design tools to create variations or new concepts with one click.'
+        },
+        {
+          question: 'Can I customize the AI-generated designs?',
+          answer: "Yes! Once you select a fashion idea, you can modify fabrics, colors, patterns, and styles using Creamoda's AI tools."
+        },
+        {
+          question: 'Are these designs free to use?',
+          answer: "The fashion ideas are free to browse for inspiration. Generating new designs with AI requires credits in Creamoda's system."
+        }
+       
+      ]
+    }
+  },
+
+  agent_page: {
+    id: 'agent_page',
+    name: 'Fashion Agent',
+    heroMain: {
+      title: 'Turn Creative Concepts into Complete Fashion Designs with AI.',
+      subtitle: 'Explore our comprehensive design tools and create stunning fashion designs with AI-powered solutions.',
+      mainImage: '/marketing/images/hero/agent/agent.png',
+      uploadText: 'Get Started',
+      uploadSubText: 'Start designing with our powerful tools',
+      demoImages: [
+        '/marketing/images/hero/design/demo1.png',
+        '/marketing/images/hero/design/demo2.png',
+        '/marketing/images/hero/design/demo3.png',
+        '/marketing/images/hero/design/demo4.png'
+      ]
+    },
+    fusionGuide: {
+      title: 'How to Use Fashion Design Agent？',
+      cards: [
+        {
+          icon: '/marketing/images/feature/upload.svg',
+          title: 'Input Design Vision',
+          description: 'Describe your design concept through text prompts or visual references. Share your inspiration, preferred styles, color palettes, or specific garment details to guide the AI.'
+        },
+        {
+          icon: '/marketing/images/feature/upload.svg',
+          title: 'AI Generates Complete Designs',
+          description: 'Our AI creates fully realized fashion designs including technical flats, style variations, and collection suggestions based on your input. '
+        },
+        {
+          icon: '/marketing/images/feature/upload.svg',
+          title: 'Refine & Export',
+          description: 'Review the generated designs, make adjustments using our editing tools, and export production-ready outputs for you.'
+        }
+      ]
+    },
+    whyChoose: {
+      title: 'Why Choose Chimer AI',
+      cards: [
+        {
+          title: 'Style Adaptation Intelligence',
+          description: 'Easily transform designs across different garment types, sizes, and styles while maintaining design integrity.'
+        },
+        {
+          title: 'Collaborative Workflow',
+          description: 'Seamlessly integrate with your existing design process, allowing human-AI collaboration and iterative refinement.'
+        },
+        {
+          title: 'Technical Precision',
+          description: 'Automatically creates accurate technical flats with detailed stitching, seam, and construction details meeting industry standards.'
         }
       ]
     },

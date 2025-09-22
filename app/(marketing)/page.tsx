@@ -1,8 +1,15 @@
 import type { Metadata } from 'next';
 import StaticHero from '@/src/components/server/StaticHero';
+import Endorsement from '@/src/components/server/Endorsement';
 import { getThemeForRoute } from '@/src/utils/themeRenderer';
 import StaticFooter from '@/src/components/server/StaticFooter';
 import StructuredDataEnhancer from '@/src/components/seo/StructuredDataEnhancer';
+import WhyChoose from '@/src/components/server/WhyChoose';
+import HowToUse from '@/src/components/server/HowToUse';
+import StaticOfferMore from '@/src/components/server/StaticOfferMore';
+import InsightsBeta from '@/src/components/server/InsightsBeta';
+import ChasingTrends from '@/src/components/server/ChasingTrends';
+import FashionAgent from '@/src/components/server/FasionAgent';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://creamoda.ai'),
@@ -69,7 +76,13 @@ export default function Home() {
       
       {/* 静态Hero组件 - 包含所有主要内容 */}
       <StaticHero theme={theme} saasUrl={saasUrl} isHomepage={true} />
-      
+      <Endorsement />
+      <WhyChoose />
+      <FashionAgent />
+      <HowToUse />
+      <StaticOfferMore />
+      <InsightsBeta />
+      <ChasingTrends />
       {/* Footer组件 */}
       <StaticFooter />
     </div>

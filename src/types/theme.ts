@@ -5,6 +5,7 @@ export interface HeroMainConfig {
   uploadText: string;
   uploadSubText: string;
   demoImages: string[];
+  imageSize?: 'small' | 'medium' | 'large' | 'default';
 }
 
 export interface FusionGuideConfig {

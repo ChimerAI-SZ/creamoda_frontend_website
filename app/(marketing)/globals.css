@@ -71,6 +71,28 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+@font-face {
+  font-family: 'Instrument Sans Italic';
+  src: url('/marketing/fonts/InstrumentSans-Italic-VariableFont_wdth,wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@font-face {
+  font-family: 'Instrument Sans';
+  src: url('/marketing/fonts/InstrumentSans-VariableFont_wdth,wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
   :root {
     --background: #0a0a0a;
   --foreground: #ffffff;
@@ -99,7 +121,7 @@ body {
   left: 0;
   right: 0;
   height: calc(100vh + 80px);
-  background: url('/marketing/images/background.png');
+  background: url('/marketing/images/bgs.png');
   background-size: cover, cover;
   background-position: center top, center top;
   background-repeat: no-repeat, no-repeat;
@@ -125,15 +147,52 @@ body {
   transition: filter 0.2s ease;
 }
 
+/* 移动端菜单打开时模糊hero内容 */
+@media (max-width: 767px) {
+  .mobile-menu-open .hero-title,
+  .mobile-menu-open .hero-subtitle,
+  .mobile-menu-open .hero-content h1,
+  .mobile-menu-open .hero-content p,
+  .mobile-menu-open .hero-content a,
+  .mobile-menu-open .hero-content button,
+  .mobile-menu-open .hero-main h1,
+  .mobile-menu-open .hero-main p,
+  .mobile-menu-open .hero-main a,
+  .mobile-menu-open .hero-main button,
+  /* 针对StaticHeroMains组件的特定元素 */
+  .mobile-menu-open section h1,
+  .mobile-menu-open section p,
+  .mobile-menu-open section a,
+  .mobile-menu-open section button,
+  /* 更具体的选择器 */
+  .mobile-menu-open .w-full h1,
+  .mobile-menu-open .w-full p, 
+  .mobile-menu-open .w-full a,
+  .mobile-menu-open .w-full button {
+    filter: blur(4px);
+    transition: filter 0.3s ease;
+  }
+
+  /* 但不要模糊菜单本身和导航栏 */
+  .mobile-menu-open .hero-nav,
+  .mobile-menu-open .hero-nav *,
+  .mobile-menu-open [style*="position: fixed"],
+  .mobile-menu-open .mobile-menu-content,
+  .mobile-menu-open [class*="dropdown"],
+  .mobile-menu-open [class*="menu"] {
+    filter: none !important;
+  }
+}
+
 /* 导航栏 */
 .hero-nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: min(2vw, 15px) min(5vw, 40px);
-  background: rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(15px) saturate(100%) brightness(100%);
-  -webkit-backdrop-filter: blur(15px) saturate(100%) brightness(100%);
+  padding: min(2vw, 15px) min(8vw, 160px);
+  background: rgba(169, 169, 169, 0.15);
+  backdrop-filter: blur(54px);
+  -webkit-backdrop-filter: blur(54px);
   /* border-bottom: 1px solid rgba(255, 255, 255, 0.1); */
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1);
   position: fixed;
@@ -401,7 +460,6 @@ body {
 .dropdown-container {
   position: relative;
   z-index: 999;
-  margin-top: 75px;
 }
 
 .tools-dropdown {
@@ -409,10 +467,10 @@ body {
   top: var(--hero-nav-height, 75px); /* 跟随导航实时高度 */
   left: 0;
   width: 100vw;
-  background: rgba(255, 255, 255, 0.40);
-  backdrop-filter: blur(50px);
-  -webkit-backdrop-filter: blur(50px);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(169, 169, 169, 0.15);
+  backdrop-filter: blur(54px);
+  -webkit-backdrop-filter: blur(54px);
+  border-top: none;
   max-height: 0;
   overflow: hidden;
   opacity: 0;
@@ -422,34 +480,125 @@ body {
 
 /* 下拉菜单滚动后的深色主题，与导航同步 */
 .tools-dropdown-scrolled {
-  background: rgba(0, 0, 0, 0.92);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.88);
+  backdrop-filter: blur(10px) saturate(100%) brightness(100%);
+  -webkit-backdrop-filter: blur(10px) saturate(100%) brightness(100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-/* 下拉里的文字颜色在深色主题下也变为白色 */
+/* 下拉里的文字颜色保持白色 */
 .tools-dropdown-scrolled .category-title,
-.tools-dropdown-scrolled .tool-item {
+.tools-dropdown-scrolled .tool-item,
+.tools-dropdown-scrolled .tool-title,
+.tools-dropdown-scrolled .dropdown-column-title,
+.tools-dropdown-scrolled .dropdown-tool-item {
   color: rgba(255, 255, 255, 0.9);
 }
 
-.tools-dropdown-scrolled .tool-item:hover {
+.tools-dropdown-scrolled .tool-item:hover,
+.tools-dropdown-scrolled .tool-title:hover,
+.tools-dropdown-scrolled .dropdown-tool-item:hover {
   color: #ffffff;
 }
 
-/* 未滚动：确保下拉内文本为黑色（提高选择器优先级以避免被覆盖） */
-.tools-dropdown:not(.tools-dropdown-scrolled) .category-title,
-.tools-dropdown:not(.tools-dropdown-scrolled) .tool-item {
-  color: #000000;
+.tools-dropdown-scrolled .dropdown-column-title {
+  color: #FFFFFF;
+  border-bottom: none;
 }
 
-.tools-dropdown:not(.tools-dropdown-scrolled) .tool-item:hover {
-  color: #000000;
+/* 滚动时的fashion标题样式 */
+.tools-dropdown-scrolled .fashion-title {
+  color: #ffffff;
+}
+
+.tools-dropdown-scrolled .fashion-subtitle {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* 滚动时的Magic Kit标题样式 */
+.tools-dropdown-scrolled .magic-title {
+  color: #ffffff;
+}
+
+.tools-dropdown-scrolled .magic-subtitle {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* 确保Magic Kit下拉菜单中工具项在滚动时为白色 */
+.tools-dropdown-scrolled .magic-tool-item {
+  color: rgba(255, 255, 255, 0.9);
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.tools-dropdown-scrolled .magic-tool-item:hover {
+  color: #ffffff;
+}
+
+/* 确保Fashion Design下拉菜单中图片下方的工具标题在滚动时为白色 */
+.tools-dropdown-scrolled .fashion-tool-card .tool-title {
+  color: #ffffff !important;
+}
+
+.tools-dropdown-scrolled .fashion-tool-card .tool-title:hover {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* 未滚动：确保下拉内文本为白色（与新的三列布局一致） */
+.tools-dropdown:not(.tools-dropdown-scrolled) .category-title,
+.tools-dropdown:not(.tools-dropdown-scrolled) .tool-item,
+.tools-dropdown:not(.tools-dropdown-scrolled) .tool-title,
+.tools-dropdown:not(.tools-dropdown-scrolled) .dropdown-column-title,
+.tools-dropdown:not(.tools-dropdown-scrolled) .dropdown-tool-item {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.tools-dropdown:not(.tools-dropdown-scrolled) .tool-item:hover,
+.tools-dropdown:not(.tools-dropdown-scrolled) .tool-title:hover,
+.tools-dropdown:not(.tools-dropdown-scrolled) .dropdown-tool-item:hover {
+  color: #FFFFFF;
 }
 
 .tools-dropdown:not(.tools-dropdown-scrolled) .category-title {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.tools-dropdown:not(.tools-dropdown-scrolled) .dropdown-column-title {
+  color: #FFFFFF;
+  border-bottom: none;
+}
+
+/* 未滚动时Fashion Design和Magic Kit保持白色文字 */
+.tools-dropdown:not(.tools-dropdown-scrolled) .fashion-title {
+  color: #FFFFFF !important;
+}
+
+.tools-dropdown:not(.tools-dropdown-scrolled) .fashion-subtitle {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.tools-dropdown:not(.tools-dropdown-scrolled) .fashion-tool-card .tool-title {
+  color: #FFFFFF !important;
+}
+
+.tools-dropdown:not(.tools-dropdown-scrolled) .fashion-tool-card .tool-title:hover {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.tools-dropdown:not(.tools-dropdown-scrolled) .magic-title {
+  color: #FFFFFF;
+}
+
+.tools-dropdown:not(.tools-dropdown-scrolled) .magic-subtitle {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.tools-dropdown:not(.tools-dropdown-scrolled) .magic-tool-item {
+  color: rgba(255, 255, 255, 0.9);
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.tools-dropdown:not(.tools-dropdown-scrolled) .magic-tool-item:hover {
+  color: #FFFFFF;
 }
 
 .tools-dropdown-open {
@@ -473,14 +622,206 @@ body {
   margin-right: auto;
 }
 
-.virtual-tryon-dropdown .tools-dropdown-content {
-  margin-left: 44.5%;
-  margin-right: auto;
+/* 新的三列布局下拉菜单 */
+.fashion-design-dropdown .tools-dropdown-content-new {
+  padding: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+  margin-left: calc(min(8vw, 160px) - 40px); /* 与导航栏logo左对齐，减去padding */
 }
 
-.magic-kit-dropdown .tools-dropdown-content {
-  margin-left: 54%;
-  margin-right: auto;
+.dropdown-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 80px;
+  align-items: flex-start;
+}
+
+.dropdown-column {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.dropdown-column-title {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 1.3;
+  color: #FFFFFF;
+  margin: 0 0 16px 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.dropdown-tools-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dropdown-tool-item {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  transition: color 0.2s ease;
+  padding: 4px 0;
+}
+
+.dropdown-tool-item:hover {
+  color: #FFFFFF;
+}
+
+.fashion-header-section {
+  flex: 0 0 380px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.fashion-title {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 50px;
+  line-height: 1.21;
+  text-align: left;
+  color: #FFFFFF;
+  text-shadow: 0px 0px 50px rgba(0, 0, 0, 0.25);
+  margin: 0;
+}
+
+.fashion-subtitle {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.25;
+  color: #FFFFFF;
+  margin: 0;
+  text-align: left;
+}
+
+.fashion-tools-section {
+  flex: 1;
+  display: flex;
+  gap: 30px;
+  align-items: flex-start;
+}
+
+.fashion-tool-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  flex: 0 0 auto;
+}
+
+.tool-image-container {
+  width: 240px;
+  height: 160px;
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.tool-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.tool-title {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.25;
+  text-align: center;
+  color: #FFFFFF;
+  text-decoration: none;
+  transition: opacity 0.3s ease;
+}
+
+.tool-title:hover {
+  opacity: 0.8;
+  color: #FFFFFF;
+}
+
+.fashion-tool-card:hover .tool-image {
+  transform: scale(1.05);
+}
+
+
+/* Magic Kit 下拉菜单布局 */
+.magic-kit-dropdown .tools-dropdown-content-new {
+  padding: 40px 150px;
+  display: flex;
+  gap: 150px;
+  margin: 0 auto;
+}
+
+.magic-header-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex: 1;
+}
+
+.magic-title {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 50px;
+  line-height: 1.21;
+  text-align: left;
+  color: #FFFFFF;
+  margin-bottom: 16px;
+}
+
+.magic-subtitle {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.25;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.magic-tools-section {
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.magic-tools-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 280px;
+}
+
+.magic-tool-item {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.9);
+  text-decoration: none;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.2s ease;
+}
+
+.magic-tool-item:hover {
+  color: #FFFFFF;
+  padding-left: 8px;
+}
+
+.magic-tool-item:last-child {
+  border-bottom: none;
 }
 
 .tools-category {
@@ -552,6 +893,24 @@ body {
   gap: 40px;
   padding-top: calc(var(--hero-nav-height, 75px) + 60px);
   min-height: calc(100vh - 160px);
+}
+
+/* Hero responsive classes */
+.hero-desktop {
+  display: block;
+}
+
+.hero-mobile {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .hero-desktop {
+    display: none !important;
+  }
+  .hero-mobile {
+    display: block !important;
+  }
 }
 
 /* Homepage 1+2 cards hero */
@@ -1540,63 +1899,124 @@ body {
 .fusion-guide {
   margin-top: 0;
   text-align: center;
-  padding: 120px 20px;
+  padding:  120px;
   background-color: #0a0a0a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
 }
 
 .fusion-title {
-  font-family: 'Neue Machina', system-ui, -apple-system, sans-serif;
-  font-weight: 800;
-  font-size: clamp(36px, 6vw, 64px);
+  font-family: 'Instrument Sans', system-ui, -apple-system, sans-serif;
+  font-weight: 400;
+  font-size: clamp(2.25rem, 5vw, 3.75rem); /* 36px → 60px */
   color: white;
-  margin: 0 0 80px 0;
-  line-height: 1.1;
+  margin: 0;
+  line-height: 1.2;
+  text-align: left; /* 移动端居左 */
+}
+
+/* 中等屏幕及以上居中 */
+@media (min-width: 768px) {
+  .fusion-title {
+    text-align: center;
+  }
+}
+
+/* Large screens - equivalent to lg:text-6xl */
+@media (min-width: 1024px) {
+  .fusion-title {
+    font-size: 3.75rem; /* 60px */
+  }
+}
+
+/* Medium screens - equivalent to md:text-5xl */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .fusion-title {
+    font-size: 3rem; /* 48px */
+  }
+}
+
+/* Small screens - equivalent to text-4xl */
+@media (max-width: 767px) {
+  .fusion-title {
+    font-size: 2.25rem; /* 36px */
+  }
 }
 
 .fusion-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 40px;
-  max-width: 1200px;
-  margin: 0 auto;
+  display: flex;
+  justify-content: stretch;
+  align-items: stretch;
+  gap: 24px;
+  width: 100%;
+  max-width: 1434px;
 }
 
 .fusion-card {
-  background: #333333;
-  border-radius: 20px;
-  padding: 40px 30px;
+  padding: 32px;
   text-align: left;
   transition: transform 0.3s ease, background-color 0.3s ease;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .fusion-card:hover {
   transform: translateY(-5px);
-  background: #404040;
 }
 
 .fusion-icon {
-  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  gap: 16px;
+  margin-bottom: 0;
+}
+
+.fusion-icon-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
+  width: fit-content;
+}
+
+.fusion-icon-inner {
+  width: 32px;
+  height: 32px;
+  position: relative;
 }
 
 .feature-icon {
   filter: brightness(0) invert(1);
+  width: 100%;
+  height: 100%;
 }
 
 .fusion-card-title {
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: 'Instrument Sans', system-ui, -apple-system, sans-serif;
   font-weight: 600;
-  font-size: clamp(20px, 3vw, 24px);
+  font-size: 28px;
   color: white;
-  margin: 0 0 16px 0;
-  line-height: 1.3;
+  margin: 0;
+  line-height: 1.33;
+  text-align: left;
 }
 
 .fusion-card-desc {
-  font-family: system-ui, -apple-system, sans-serif;
-  font-size: clamp(14px, 2vw, 16px);
-  color: rgba(255, 255, 255, 0.8);
-  line-height: 1.6;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-weight: 400;
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.5;
   margin: 0;
+  text-align: left;
 }
 
 /* Why Choose Section */
@@ -2067,6 +2487,83 @@ body {
     padding: 20px 10px;
   }
 
+  /* 新的三列布局下拉菜单 - 移动端 */
+  .fashion-design-dropdown .tools-dropdown-content-new {
+    padding: 20px;
+    margin-left: 15px;
+  }
+  
+  .dropdown-grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  
+  .dropdown-column-title {
+    font-size: 18px;
+  }
+  
+  .dropdown-tool-item {
+    font-size: 14px;
+  }
+
+  /* Magic Kit下拉菜单 - 移动端 */
+  .magic-kit-dropdown .tools-dropdown-content-new {
+    padding: 20px;
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .magic-header-section {
+    flex: none;
+    text-align: left;
+    align-items: flex-start;
+  }
+
+  .magic-title {
+    font-size: 32px;
+    text-align: left;
+  }
+
+  .magic-subtitle {
+    font-size: 14px;
+    text-align: left;
+  }
+
+  .magic-tools-section {
+    justify-content: flex-start;
+  }
+
+  .magic-tools-list {
+    min-width: auto;
+    width: 100%;
+  }
+
+  .fashion-header-section {
+    flex: none;
+    text-align: left;
+    align-items: flex-start;
+  }
+
+  .fashion-title {
+    font-size: 32px;
+    text-align: left;
+  }
+
+  .fashion-subtitle {
+    font-size: 14px;
+    text-align: left;
+  }
+
+  .fashion-tools-section {
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .tool-image-container {
+    width: 200px;
+    height: 133px;
+  }
+
   .category-title {
     font-size: 14px;
     margin-bottom: 12px;
@@ -2098,21 +2595,37 @@ body {
   .fusion-guide {
     margin: 0;
     padding: 60px 15px;
+    gap: 30px;
   }
   
   .fusion-title {
-    font-size: clamp(24px, 6vw, 36px);
-    margin-bottom: 40px;
+    font-size: 2.25rem; /* 36px - consistent with text-4xl */
+    margin: 0;
   }
   
   .fusion-cards {
-    grid-template-columns: 1fr;
+    flex-direction: column;
     gap: 20px;
+    max-width: 100%;
   }
   
   .fusion-card {
     padding: 25px 20px;
     text-align: left;
+    gap: 6px;
+  }
+  
+  .fusion-icon {
+    gap: 12px;
+  }
+  
+  .fusion-icon-container {
+    padding: 12px;
+  }
+  
+  .fusion-icon-inner {
+    width: 24px;
+    height: 24px;
   }
   
   .fusion-card-title {
@@ -2313,20 +2826,36 @@ body {
   .fusion-guide {
     margin: 0;
     padding: 70px 20px;
+    gap: 35px;
   }
   
   .fusion-title {
-    font-size: clamp(32px, 5vw, 48px);
-    margin-bottom: 60px;
+    font-size: 3rem; /* 48px - consistent with md:text-5xl */
+    margin: 0;
   }
   
   .fusion-cards {
-    grid-template-columns: 1fr;
+    flex-direction: column;
     gap: 30px;
+    max-width: 100%;
   }
   
   .fusion-card {
     padding: 30px 25px;
+    gap: 7px;
+  }
+  
+  .fusion-icon {
+    gap: 14px;
+  }
+  
+  .fusion-icon-container {
+    padding: 14px;
+  }
+  
+  .fusion-icon-inner {
+    width: 28px;
+    height: 28px;
   }
   
   .why-choose-section {
@@ -2479,6 +3008,66 @@ body {
     grid-template-columns: 2fr 1fr 2fr;
     gap: 30px;
     padding: 30px;
+  }
+
+  /* 新的Fashion Design下拉菜单 - 平板端 */
+  .fashion-design-dropdown .tools-dropdown-content-new {
+    padding: 30px 60px;
+    gap: 80px;
+  }
+
+  /* Magic Kit下拉菜单 - 平板端 */
+  .magic-kit-dropdown .tools-dropdown-content-new {
+    padding: 30px 60px;
+    gap: 80px;
+  }
+
+  .magic-header-section {
+    flex: 0 0 300px;
+    align-items: flex-start;
+  }
+
+  .magic-title {
+    font-size: 42px;
+    text-align: left;
+  }
+
+  .magic-subtitle {
+    font-size: 15px;
+    text-align: left;
+  }
+
+  .magic-tools-section {
+    flex: 1;
+    justify-content: flex-start;
+  }
+
+  .magic-tools-list {
+    min-width: 250px;
+  }
+
+  .fashion-header-section {
+    flex: 0 0 300px;
+    align-items: flex-start;
+  }
+
+  .fashion-title {
+    font-size: 42px;
+    text-align: left;
+  }
+
+  .fashion-subtitle {
+    font-size: 15px;
+    text-align: left;
+  }
+
+  .fashion-tools-section {
+    gap: 30px;
+  }
+
+  .tool-image-container {
+    width: 220px;
+    height: 147px;
   }
 
   .category-title {
@@ -2645,14 +3234,14 @@ body {
   }
 
   .footer-container {
-    flex-direction: row;
-    gap: 15px;
+    flex-direction: column;
+    gap: 20px;
     padding: 0 15px;
-    align-items: flex-start;
+    align-items: stretch;
   }
 
   .footer-left {
-    max-width: 35%;
+    max-width: 100%;
     flex-shrink: 0;
   }
 

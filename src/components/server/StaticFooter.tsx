@@ -4,13 +4,14 @@ import Link from 'next/link';
 export default function StaticFooter() {
   return (
     <footer className="footer-section">
-      <div className="footer-container">
-        {/* Left section */}
-        <div className="footer-left">
+      <div className="max-w-7xl lg:max-w-[1450px] xl:max-w-[1550px] 2xl:max-w-[1650px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24">
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-16">
+          {/* Left section */}
+          <div className="footer-left flex-1">
           {/* Logo */}
           <div className="footer-logo">
             <Image
-              src="/marketing/images/bottom_logo.png"
+              src="/marketing/images/logo/Union.svg"
               alt="CREAMODA"
               width={200}
               height={60}
@@ -26,7 +27,7 @@ export default function StaticFooter() {
           {/* Social icons */}
           <div className="footer-social">
             <a 
-              href="https://youtube.com/@chimer-ai" 
+              href="https://www.instagram.com/chimeraisaas/" 
               target="_blank" 
               rel="noopener noreferrer" 
               className="social-button"
@@ -70,20 +71,21 @@ export default function StaticFooter() {
             </a>
           </div>
         </div>
-        
-        {/* Right section */}
-        <div className="footer-right">
+          
+          {/* Right section */}
+          <div className="footer-right flex-1">
           {/* AI Features Section */}
           <div className="footer-ai-features">
-            <h3 className="footer-section-title">AI Features</h3>
+            <h3 className="footer-section-title pl-4 sm:pl-0">AI Features</h3>
             <div className="footer-features">
               <div className="feature-group">
-                <Link href="/outfit-generator" className="feature-item">Text to Image</Link>
+              <a href="https://agent.chimer-ai.com/" className="feature-item">AI Agent</a>
+              <a href="https://www.creamoda.ai/fashion-design/create" className="feature-item">Text to Image</a>
                 <a href="https://www.creamoda.ai/fashion-design/create" className="feature-item">Copy Style</a>
                 <a href="https://www.creamoda.ai/fashion-design/create" className="feature-item">Mix 2 Images</a>
                 <a href="https://www.creamoda.ai/fashion-design/create" className="feature-item">Change Clothes</a>
                 <a href="https://www.creamoda.ai/fashion-design/create" className="feature-item">Fabric to Design</a>
-                <Link href="/sketch-to-image" className="feature-item">Sketch to Design</Link>
+                <a href="https://www.creamoda.ai/fashion-design/create" className="feature-item">Sketch to Design</a>
               </div>
               
               <div className="feature-group">
@@ -94,18 +96,18 @@ export default function StaticFooter() {
               </div>
               
               <div className="feature-group">
-                <Link href="/virtual-try-on" className="feature-item">Virtual Try-on</Link>
-                <a href="https://www.creamoda.ai/fashion-design/create" className="feature-item">Change Pose</a>
+              <a href="https://www.creamoda.ai/virtual-try-on/create" className="feature-item">Virtual Try-on</a>
+                <a href="https://www.creamoda.ai/virtual-try-on/create" className="feature-item">Change Pose</a>
               </div>
 
               <div className="feature-group">
-                <Link href="/image-color-changer" className="feature-item">Change Color</Link>
-                <Link href="/image-background-changer" className="feature-item">Change Background</Link>
-                <Link href="/image-background-remover" className="feature-item">Remove Background</Link>
-                <Link href="/image-changer" className="feature-item">Partial Modification</Link>
-                <Link href="/image-enhancer" className="feature-item">Upscale</Link>
-                <a href="https://www.creamoda.ai/fashion-design/create" className="feature-item">Pattern Extraction</a>
-                <a href="https://www.creamoda.ai/fashion-design/create" className="feature-item">Pattern Application</a>
+              <a href="https://www.creamoda.ai/magic-kit/create" className="feature-item">Change Color</a>
+              <a href="https://www.creamoda.ai/magic-kit/create" className="feature-item">Change Background</a>
+                <a href="https://www.creamoda.ai/magic-kit/create" className="feature-item">Remove Background</a>
+                <a href="https://www.creamoda.ai/magic-kit/create" className="feature-item">Partial Modification</a>
+                <a href="https://www.creamoda.ai/magic-kit/create" className="feature-item">Upscale</a>
+                <a href="https://www.creamoda.ai/magic-kit/create" className="feature-item">Pattern Extraction</a>
+                <a href="https://www.creamoda.ai/magic-kit/create" className="feature-item">Pattern Application</a>
               </div>
             </div>
           </div>
@@ -114,18 +116,21 @@ export default function StaticFooter() {
           <div className="footer-other-links">
             {/* Contact Us Column */}
             <div className="footer-column">
-              <h3 className="footer-section-title">Contact Us</h3>
+              <h3 className="footer-section-title pl-4 sm:pl-0">Contact Us</h3>
               <div className="footer-links">
                 <a href="mailto:contact@creamoda.ai" className="footer-link">contact@creamoda.ai</a>
               </div>
             </div>
           </div>
+          </div>
         </div>
       </div>
       
       {/* Copyright Section */}
-      <div className="footer-copyright">
-        <p>©2025 CHIMER AI PTE.LTD</p>
+      <div className="max-w-7xl lg:max-w-[1450px] xl:max-w-[1550px] 2xl:max-w-[1650px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24">
+        <div className="footer-copyright">
+          <p>©2025 CHIMER AI PTE.LTD</p>
+        </div>
       </div>
     </footer>
   );

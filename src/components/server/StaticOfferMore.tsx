@@ -1,173 +1,282 @@
-import Image from 'next/image';
-import { ThemeConfig } from '../../types/theme';
+'use client'
 
-interface StaticOfferMoreProps {
-  theme: ThemeConfig;
-  currentRoute?: string;
+import React, { useState, useRef, useEffect } from 'react'
+import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react'
+
+interface FeatureCard {
+  id: string
+  title: string
+  description: string
+  image: string
+  gradientOverlay: string
 }
 
-export default function StaticOfferMore({ theme, currentRoute = '' }: StaticOfferMoreProps) {
-  const { offerMore } = theme;
+const featureCards: FeatureCard[] = [
+  {
+    id: 'background-remover',
+    title: 'Image background remover',
+    description: 'Instantly cut out subjects and get a clean,transparent PNG in seconds..',
+    image: '/marketing/images/main/offer/one.png',
+    gradientOverlay: 'bg-gradient-to-t from-black/20 to-transparent'
+  },
+  {
+    id: 'background-changer',
+    title: 'Image background Changer',
+    description: 'Replace any background with custom colors, images, or scenes.',
+    image: '/marketing/images/main/offer/two.png',
+    gradientOverlay: 'bg-gradient-to-t from-black/20 to-transparent'
+  },
+  {
+    id: 'color-changer',
+    title: 'Image Color Changer',
+    description: 'Instantly swap product or object colors with realistic results.',
+    image: '/marketing/images/main/offer/three.png',
+    gradientOverlay: 'bg-gradient-to-t from-black/20 to-transparent'
+  },
+  {
+    id: 'sketch-converter',
+    title: 'AI Sketch to Image Converter',
+    description: 'Turn garment sketches into realistic images for prototyping and presentations.',
+    image: '/marketing/images/main/offer/four.png',
+    gradientOverlay: 'bg-gradient-to-t from-black/20 to-transparent'
+  },
+  {
+    id: 'virtual-tryon',
+    title: 'AI Virtual Try-On',
+    description: 'Generate lifelike model images wearing your products, cutting shoot costs and boosting sales.',
+    image: '/marketing/images/main/offer/five.png',
+    gradientOverlay: 'bg-gradient-to-t from-black/20 to-transparent'
+  },
+  {
+    id: 'image-enhancer',
+    title: 'Image Enhancer',
+    description: 'Boost image resolution up to 2× without losing sharpness or detail.',
+    image: '/marketing/images/main/offer/six.png',
+    gradientOverlay: 'bg-gradient-to-t from-black/20 to-transparent'
+  },
+  {
+    id: 'image-changer',
+    title: 'AI Image Changer',
+    description: 'Edit or replace only the areas you select, keeping the rest untouched.',
+    image: '/marketing/images/main/offer/seven.png',
+    gradientOverlay: 'bg-gradient-to-t from-black/20 to-transparent'
+  },
+  {
+    id: 'outfit-generator',
+    title: 'AI Outfit Generator',
+    description: 'Generate and customize fashion outfits — swap fabrics, tweak styles, redesign patterns, all in one tool.',
+    image: '/marketing/images/main/offer/eight.png',
+    gradientOverlay: 'bg-gradient-to-t from-black/20 to-transparent'
+  }
+]
 
-  if (!offerMore || !offerMore.cards) {
-    return null;
+const StaticOfferMore: React.FC = () => {
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
+  const [canScrollLeft, setCanScrollLeft] = useState(false)
+  const [canScrollRight, setCanScrollRight] = useState(true)
+  const [activeButton, setActiveButton] = useState<'left' | 'right' | null>(null)
+
+  const checkScrollButtons = () => {
+    if (scrollContainerRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current
+      setCanScrollLeft(scrollLeft > 0)
+      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10)
+    }
   }
 
-  // 所有卡片配置，包含完整的路由映射
-  const allCards = [
-    {
-      title: 'Image Background Remover',
-      route: 'image-background-remover',
-      image: '/marketing/images/card/removes_bg.png',
-      cornerImage: '/marketing/images/card/removes_bg_rt.png',
-      description: 'Instantly cut out subjects and get a clean, transparent PNG in seconds.',
-      hasCorner: true,
-      hasEnhance: false,
-      hasColor: false
-    },
-    {
-      title: 'Image Background Changer',
-      route: 'image-background-changer',
-      image: '/marketing/images/card/changes_bg.png',
-      description: 'Replace any background in seconds—no skills needed.',
-      hasCorner: false,
-      hasEnhance: false,
-      hasColor: false
-    },
-    {
-      title: 'Image Enhancer',
-      route: 'image-enhancer',
-      image: '/marketing/images/card/upscaless.png',
-      enhanceImage: '/marketing/images/card/upscale_r.png',
-      description: 'Boost image resolution up to 2× without losing sharpness or detail.',
-      hasCorner: false,
-      hasEnhance: true,
-      hasColor: false
-    },
-    {
-      title: 'AI Image Changer',
-      route: 'image-changer',
-      image: '/marketing/images/card/changer.png',
-      description: 'Edit or replace only the areas you select, keeping the rest untouched.',
-      hasCorner: false,
-      hasEnhance: false,
-      hasColor: false
-    },
-    {
-      title: 'Image Color Changer',
-      route: 'image-color-changer',
-      image: '/marketing/images/card/change_colors.png',
-      colorImage: '/marketing/images/card/change_color_r.png',
-      description: 'Instantly swap product or object colors with realistic results.',
-      hasCorner: false,
-      hasEnhance: false,
-      hasColor: true
-    },
-    {
-      title: 'AI Virtual Try-On',
-      route: 'virtual-try-on',
-      image: '/marketing/images/card/virtual_try.png',
-      description: 'Generate lifelike model images wearing your products, cutting shoot costs and boosting sales.',
-      hasCorner: false,
-      hasEnhance: false,
-      hasColor: false
-    },
-    {
-      title: 'AI Outfit Generator',
-      route: 'outfit-generator',
-      image: '/marketing/images/card/designs.png',
-      description: 'Generate and customize fashion outfits — swap fabrics, tweak styles, redesign patterns, all in one tool.',
-      hasCorner: false,
-      hasEnhance: false,
-      hasColor: false
-    },
-    {
-      title: 'AI Sketch to Image Converter',
-      route: 'sketch-to-image',
-      image: '/marketing/images/card/sketch_design.png',
-      description: 'Turn garment sketches into realistic images for prototyping and presentations.',
-      hasCorner: false,
-      hasEnhance: false,
-      hasColor: false
+  const scrollLeft = () => {
+    if (scrollContainerRef.current) {
+      setActiveButton('left')
+      scrollContainerRef.current.scrollBy({
+        left: -360,
+        behavior: 'smooth'
+      })
+      // Reset active state after a short delay
+      setTimeout(() => setActiveButton(null), 200)
     }
-  ];
+  }
 
-  // 过滤掉当前页面对应的卡片
-  const filteredCards = allCards.filter(card => card.route !== currentRoute);
+  const scrollRight = () => {
+    if (scrollContainerRef.current) {
+      setActiveButton('right')
+      scrollContainerRef.current.scrollBy({
+        left: 360,
+        behavior: 'smooth'
+      })
+      // Reset active state after a short delay
+      setTimeout(() => setActiveButton(null), 200)
+    }
+  }
+
+  const handleTryNow = (featureId: string) => {
+    // Handle try now button click
+    console.log(`Try now clicked for: ${featureId}`)
+  }
+
+  // Initialize scroll state on mount
+  useEffect(() => {
+    checkScrollButtons()
+    
+    // Add resize listener for responsive behavior
+    const handleResize = () => checkScrollButtons()
+    window.addEventListener('resize', handleResize)
+    
+    return () => window.removeEventListener('resize', handleResize)
+  }, [checkScrollButtons])
 
   return (
-    <div className="offer-more-section">
-      <div className="offer-more-header">
-        <h2 className="offer-more-title">{offerMore.title}</h2>
-        <div className="offer-more-navigation">
-          <button className="nav-arrow nav-arrow-left">
-            <svg width="10" height="18" viewBox="0 0 10 18" fill="none">
-              <path d="M8 2L2 9L8 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
+    <section className="w-full bg-black text-white overflow-visible">
+      <div className="max-w-7xl lg:max-w-[1450px] xl:max-w-[1550px] 2xl:max-w-[1650px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 py-12 lg:py-20">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8 lg:mb-10">
+          <h2 className="fusion-title !text-left pl-4 sm:pl-0">
+            We Offer More
+          </h2>
+          
+          {/* Navigation Controls - Hidden on mobile */}
+          <div className="hidden md:flex gap-4">
+            <button
+              onClick={scrollLeft}
+              disabled={!canScrollLeft}
+              className={`w-12 h-12 flex items-center justify-center transition-all duration-200 ${
+                !canScrollLeft 
+                  ? 'bg-[#151515] cursor-not-allowed opacity-50' 
+                  : 'bg-[#292929] hover:bg-[#3a3a3a]'
+              }`}
+              aria-label="Scroll left"
+            >
+              <ChevronLeft className="w-5 h-5 text-white" />
+            </button>
+            
+            <button
+              onClick={scrollRight}
+              disabled={!canScrollRight}
+              className={`w-12 h-12 flex items-center justify-center transition-all duration-200 ${
+                !canScrollRight 
+                  ? 'bg-[#151515] cursor-not-allowed opacity-50' 
+                  : 'bg-[#292929] hover:bg-[#3a3a3a]'
+              }`}
+              aria-label="Scroll right"
+            >
+              <ChevronRight className="w-5 h-5 text-white" />
+            </button>
+          </div>
+        </div>
+
+        {/* Cards Container */}
+        <div 
+          ref={scrollContainerRef}
+          onScroll={checkScrollButtons}
+          className="flex gap-6 md:gap-8 lg:gap-10 overflow-x-auto scroll-smooth [&::-webkit-scrollbar]:hidden px-2 md:px-0"
+          style={{ 
+            scrollbarWidth: 'none', 
+            msOverflowStyle: 'none'
+          }}
+        >
+          {featureCards.map((card, index) => (
+            <div key={card.id} className="flex-none first:ml-0 last:mr-0">
+              <FeatureCard 
+                card={card}
+                onTryNow={() => handleTryNow(card.id)}
+              />
+            </div>
+          ))}
+        </div>
+
+        {/* Mobile Navigation Controls - Only visible on mobile */}
+        <div className="flex md:hidden justify-center gap-4 pt-8">
+          <button
+            onClick={scrollLeft}
+            disabled={!canScrollLeft}
+            className={`w-12 h-12 flex items-center justify-center transition-all duration-200 ${
+              !canScrollLeft 
+                ? 'bg-[#151515] cursor-not-allowed opacity-50' 
+                : 'bg-[#292929] hover:bg-[#3a3a3a]'
+            }`}
+            aria-label="Scroll left"
+          >
+            <ChevronLeft className="w-5 h-5 text-white" />
           </button>
-          <button className="nav-arrow nav-arrow-right">
-            <svg width="10" height="18" viewBox="0 0 10 18" fill="none">
-              <path d="M2 2L8 9L2 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
+          
+          <button
+            onClick={scrollRight}
+            disabled={!canScrollRight}
+            className={`w-12 h-12 flex items-center justify-center transition-all duration-200 ${
+              !canScrollRight 
+                ? 'bg-[#151515] cursor-not-allowed opacity-50' 
+                : 'bg-[#292929] hover:bg-[#3a3a3a]'
+            }`}
+            aria-label="Scroll right"
+          >
+            <ChevronRight className="w-5 h-5 text-white" />
           </button>
         </div>
       </div>
-      <div className="offer-more-cards">
-        {filteredCards.map((card, index) => (
-          <a 
-            key={card.route}
-            href={`/${card.route}`}
-            className={`offer-card ${card.hasCorner ? 'offer-card-with-corner' : ''} ${card.hasEnhance ? 'offer-card-with-enhance' : ''} ${card.hasColor ? 'offer-card-with-color' : ''}`} 
-          >
-            {card.hasCorner && (
-              <div className="corner-image">
-                <Image
-                  src={card.cornerImage!}
-                  alt={`${card.title} Corner`}
-                  width={120}
-                  height={180}
-                  className="corner-img"
-                />
-              </div>
-            )}
-            <div className={`offer-card-image ${card.hasCorner ? 'offer-card-image-transparent' : ''}`}>
-              <Image
-                src={card.image}
-                alt={card.title}
-                width={280}
-                height={201}
-                className="card-img"
-              />
-              {card.hasEnhance && (
-                <div className="enhance-right">
-                  <Image
-                    src={card.enhanceImage!}
-                    alt="After Enhancement"
-                    width={70}
-                    height={70}
-                    className="enhance-img"
-                  />
+    </section>
+  )
+}
+
+interface FeatureCardProps {
+  card: FeatureCard
+  onTryNow: () => void
+}
+
+const FeatureCard: React.FC<FeatureCardProps> = ({ card, onTryNow }) => {
+  return (
+    <div className="relative">
+      {/* Card Container */}
+      <div className="w-80 h-[450px] rounded-lg overflow-hidden relative group">
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <div 
+            className="w-full h-full bg-cover bg-center bg-gray-800"
+            style={{ 
+              backgroundImage: `url(${card.image})`,
+            }}
+          />
+          {/* Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
+        </div>
+      </div>
+
+      {/* Content Panel - Outside of card container to allow overflow */}
+      <div className="absolute bottom-6 left-4" style={{ transform: 'translateX(10px)' }}>
+        <div className="bg-white p-4 px-5 shadow-[0px_0px_24px_0px_rgba(0,0,0,0.08)] h-[150px] flex flex-col justify-between">
+          <div className="flex-1">
+            <h3 className="text-lg font-semibold text-black capitalize tracking-tight leading-tight">
+              {card.title}
+            </h3>
+            
+            <p className="text-xs text-black/50 leading-tight mt-2">
+              {card.description}
+            </p>
+          </div>
+          
+          <div className="mt-auto">
+            {/* Gray top line with margins */}
+            <div className="mx-0 h-px bg-gray-300 mb-2" />
+            
+            {/* Try Now Button */}
+            <div className="-ml-2">
+              <button 
+                onClick={onTryNow}
+                className="inline-flex items-center gap-2 pl-2 bg-white rounded-2xl shadow-[0px_0px_40px_0px_rgba(255,255,255,0.6)] hover:shadow-xl transition-all duration-200 group/btn"
+              >
+                <span className="text-[#5F2EFF] font-semibold text-sm">
+                  Try now
+                </span>
+                <div className="w-4 h-4 flex items-center justify-center">
+                  <ArrowRight size={12} className="text-[#5F2EFF] stroke-[1.33px]" />
                 </div>
-              )}
-              {card.hasColor && (
-                <div className="color-change-right">
-                  <Image
-                    src={card.colorImage!}
-                    alt="Color Change Effect"
-                    width={110}
-                    height={120}
-                    className="color-change-img"
-                  />
-                </div>
-              )}
+              </button>
+              {/* Purple bottom line same width as button */}
+              <div className="h-px bg-[#5F2EFF] ml-2" style={{ width: '55px' }} />
             </div>
-            <div className="offer-card-content">
-              <h3 className="offer-card-title">{card.title}</h3>
-              <p className="offer-card-desc">{card.description}</p>
-            </div>
-          </a>
-        ))}
+          </div>
+        </div>
       </div>
     </div>
-  );
+  )
 }
+
+export default StaticOfferMore

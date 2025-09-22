@@ -129,6 +129,21 @@ const componentStyles = `
     font-variant-ligatures: normal;
     font-feature-settings: "kern" 1, "liga" 1;
   }
+
+  /* InstrumentSans字体样式 */
+  @font-face {
+    font-family: 'InstrumentSans';
+    src: url('/marketing/fonts/InstrumentSans-Italic-Variable.ttf') format('truetype');
+    font-display: swap;
+  }
+
+  .instrument-sans {
+    font-family: 'InstrumentSans', system-ui, sans-serif;
+    font-display: swap;
+    font-synthesis: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 `;
 
 interface DesignFilterSectionProps {
@@ -179,7 +194,7 @@ const MemoizedImageWithSkeleton = memo(function ImageWithSkeleton({
         <div className="flex justify-center pointer-events-auto">
           <Button
             variant="ghost"
-            className="w-full bg-gray-800/70 hover:bg-gray-800/80 text-white rounded-md py-3 backdrop-blur-sm transition-all duration-200"
+            className="w-full bg-white hover:bg-white/90 text-black rounded-md py-3 backdrop-blur-sm transition-all duration-200"
             onClick={e => {
               e.stopPropagation();
               onClick && onClick();
@@ -206,7 +221,7 @@ const MemoizedImageGrid = memo(function ImageGridSection({
   openDetailAt: (idx: number) => void;
 }) {
   return (
-    <div className="grid grid-cols-4 gap-4 transition-all duration-300 ease-in-out">
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3 lg:gap-4 transition-all duration-300 ease-in-out">
       {isInitialLoading
         ? Array.from({ length: 20 }).map((_, idx) => (
             <div 
@@ -317,110 +332,33 @@ const SimilarImagesSection = memo(function SimilarImagesSection({
   });
 });
 
-// 下拉菜单组件 - 独立出来避免影响弹窗重新渲染
-const DropdownMenu = memo(function DropdownMenu({
-  isOpen,
-  onClose,
-  selectedItem,
-  router
+// 修改设计功能卡片组件
+const ModifyDesignCard = memo(function ModifyDesignCard({
+  icon,
+  title,
+  onClick
 }: {
-  isOpen: boolean;
-  onClose: () => void;
-  selectedItem: FrontendImageItem | null;
-  router: any;
+  icon: React.ReactNode;
+  title: string;
+  onClick?: () => void;
 }) {
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
-  const handleMenuAction = useCallback((action: string) => {
-    onClose();
-    if (selectedItem) {
-      const encodedImageUrl = encodeURIComponent(selectedItem.image_url || '');
-      let targetUrl = '';
-      
-      switch (action) {
-        case 'style':
-          targetUrl = `/fashion-design/create?imageUrl=${encodedImageUrl}&tab=image-to-image&variationType=11`;
-          break;
-        case 'printing':
-          targetUrl = `/fashion-design/create?imageUrl=${encodedImageUrl}&tab=image-to-image&variationType=9`;
-          break;
-        case 'fabric':
-          targetUrl = `/fashion-design/create?imageUrl=${encodedImageUrl}&tab=image-to-image&variationType=8`;
-          break;
-        case 'color':
-          targetUrl = `/magic-kit/create?imageUrl=${encodedImageUrl}&variationType=1`;
-          break;
-      }
-      
-      if (targetUrl) {
-        console.log(`跳转到 ${action}:`, targetUrl);
-        router.push(targetUrl);
-      }
-    }
-  }, [selectedItem, router, onClose]);
-
-  // 点击外部关闭下拉菜单
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        onClose();
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => document.removeEventListener('mousedown', handleClickOutside);
-    }
-  }, [isOpen, onClose]);
-
-  if (!isOpen) return null;
-
   return (
-    <div 
-      ref={dropdownRef}
-      className="absolute top-full right-0 mt-2 w-[160px] rounded-[8px] backdrop-blur-md border border-white/20 z-[9999] overflow-hidden dropdown-menu"
-      style={{ 
-        background: 'rgba(255, 255, 255, 0.1)',
-        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
+    <button
+      onClick={onClick}
+      className="flex items-center gap-2 p-2 rounded-sm cursor-pointer transition-all duration-200 hover:bg-white/25 flex-shrink-0 min-w-0"
+      style={{
+        background: 'rgba(255, 255, 255, 0.18)',
+        border: '0.5px solid rgba(255, 255, 255, 0.4)',
+        width: 'calc(25% - 6px)'
       }}
     >
-      <div className="py-2">
-        <button 
-          className="w-full px-4 py-3 text-white text-sm font-medium text-left hover:bg-white/10 transition-colors relative"
-          style={{ fontFamily: "Manrope, system-ui, sans-serif" }}
-          onClick={() => handleMenuAction('style')}
-        >
-          Change Style
-          <div className="absolute bottom-0 left-4 right-4 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
-        </button>
-        
-        <button 
-          className="w-full px-4 py-3 text-white text-sm font-medium text-left hover:bg-white/10 transition-colors relative"
-          style={{ fontFamily: "Manrope, system-ui, sans-serif" }}
-          onClick={() => handleMenuAction('printing')}
-        >
-          Change Printing
-          <div className="absolute bottom-0 left-4 right-4 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
-        </button>
-        
-        <button 
-          className="w-full px-4 py-3 text-white text-sm font-medium text-left hover:bg-white/10 transition-colors relative"
-          style={{ fontFamily: "Manrope, system-ui, sans-serif" }}
-          onClick={() => handleMenuAction('fabric')}
-        >
-          Change Fabric
-          <div className="absolute bottom-0 left-4 right-4 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
-        </button>
-        
-        <button 
-          className="w-full px-4 py-3 text-white text-sm font-medium text-left hover:bg-white/10 transition-colors"
-          style={{ fontFamily: "Manrope, system-ui, sans-serif" }}
-          onClick={() => handleMenuAction('color')}
-        >
-          Change Color
-        </button>
+      <div className="w-5 h-5 flex-shrink-0">
+        {icon}
       </div>
-    </div>
+      <span className="text-white text-xs font-medium leading-tight break-words">
+        {title}
+      </span>
+    </button>
   );
 });
 
@@ -447,7 +385,6 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
   const [isFiltering, setIsFiltering] = useState(false);
   const [detailOpen, setDetailOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
   const [dialogImageLoaded, setDialogImageLoaded] = useState(false);
 
   const categories = [
@@ -795,9 +732,9 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
           {/* 第一行: Sort by 和类别标签在同一水平线 */}
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
             {/* Sort by 下拉框 */}
-            <div className="relative">
+            <div className="relative sm:ml-0">
               <div 
-                className="flex items-center justify-between px-3 h-10 bg-transparent cursor-pointer backdrop-blur-lg"
+                className="flex items-center justify-between px-1 sm:px-3 h-10 bg-transparent cursor-pointer backdrop-blur-lg"
                 style={{
                   backgroundColor: 'rgba(0, 0, 0, 0.5)',
                 }}
@@ -902,38 +839,53 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
                 return (
                   <button
                     key={category.id}
-                    className={`px-3 h-10 rounded-md border flex items-center gap-3 cursor-pointer transition-all duration-200 backdrop-blur-xl ${
+                    className={`px-2 sm:px-3 h-8 sm:h-10 rounded-md flex items-center gap-2 sm:gap-3 cursor-pointer transition-all duration-200 backdrop-blur-xl ${
                       isSelected 
-                        ? 'border-white/20 text-black' 
-                        : 'border-white/20 text-white hover:bg-white/5'
+                        ? 'text-black' 
+                        : 'text-white hover:bg-white/10'
                     }`}
                     style={{
                       background: isSelected 
-                        ? '#BFB6FF' 
-                        : 'rgba(36, 28, 70, 0.6)'
+                        ? '#FFFFFF' 
+                        : 'rgba(255, 255, 255, 0.18)',
+                      border: isSelected 
+                        ? '1px solid transparent'
+                        : '1px solid rgba(255, 255, 255, 0.4)',
+                      backgroundImage: isSelected
+                        ? 'linear-gradient(#FFFFFF, #FFFFFF), linear-gradient(45deg, #704DFF, #00D4FF, #704DFF)'
+                        : 'none',
+                      backgroundOrigin: isSelected ? 'border-box' : 'padding-box',
+                      backgroundClip: isSelected ? 'padding-box, border-box' : 'padding-box'
                     }}
                     onClick={() => handleCategorySelect(category.id)}
                   >
                     <span 
+                      className="text-sm sm:text-base"
                       style={{
                         fontFamily: "'Neue Machina', system-ui, sans-serif",
                         fontWeight: '400',
-                        fontSize: '16px',
                         lineHeight: '1.375'
                       }}
                     >
                       {category.label}
                     </span>
-                    <div className="w-3 h-3 flex items-center justify-center">
+                    <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 flex items-center justify-center">
                       {isSelected ? (
                         // 勾号图标
-                        <svg width="13" height="9" viewBox="0 0 13 9" fill="none">
+                        <svg 
+                          width="13" 
+                          height="9" 
+                          viewBox="0 0 13 9" 
+                          fill="none"
+                          style={{ color: '#000000' }}
+                        >
                           <path 
                             d="M1.5 4.5L5 7.5L11.5 1" 
                             stroke="#000000" 
                             strokeWidth="0.4" 
                             strokeLinecap="round" 
                             strokeLinejoin="round"
+                            style={{ stroke: '#000000' }}
                           />
                         </svg>
                       ) : (
@@ -1041,7 +993,7 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
       {detailOpen && (
         <Dialog open={detailOpen} onOpenChange={handleDialogClose}>
           <DialogContent
-            closeBtnUnvisible={false}
+            closeBtnUnvisible={true}
             overlayVisible={true}
             className="w-[95vw] max-w-4xl max-h-[95vh] bg-black/90 border border-white/10 rounded-2xl overflow-hidden dialog-content-stable mx-auto"
             style={{
@@ -1056,15 +1008,15 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
           {/* 可滚动的弹窗内容 */}
           <div className="max-h-[calc(95vh-2rem)] overflow-y-auto dialog-scroll-hidden">
             {/* 响应式布局 */}
-            <div className="flex flex-col min-h-full gap-4 p-4 sm:p-6">
+            <div className="flex flex-col min-h-full gap-4 p-0.5 sm:p-1">
             {/* 上半部分：响应式布局 */}
-            <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-4 overflow-visible">
-              {/* 左侧图片（圆角） - 响应式尺寸 */}
-              <div className="w-full h-[250px] sm:h-[300px] lg:h-[350px] rounded-xl overflow-hidden bg-black flex items-center justify-center relative image-container-stable">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 overflow-visible">
+              {/* 左侧图片（无圆角） - 响应式尺寸 */}
+              <div className="w-full aspect-[3/4] bg-black flex items-center justify-center relative image-container-stable">
                 {/* 弹窗图片骨架屏 */}
                 {!dialogImageLoaded && (
                   <div className="absolute inset-0 z-10 flex items-center justify-center">
-                    <Skeleton className="w-full h-full bg-white/10 animate-pulse rounded-xl" />
+                    <Skeleton className="w-full h-full bg-white/10 animate-pulse" />
                   </div>
                 )}
                 
@@ -1088,19 +1040,29 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
-                    <Skeleton className="w-[90%] h-[90%] bg-white/10 animate-pulse rounded-xl" />
+                    <Skeleton className="w-[90%] h-[90%] bg-white/10 animate-pulse" />
                   </div>
                 )}
               </div>
               {/* 右侧内容 - 响应式高度 */}
-              <div className="w-full h-auto min-h-[250px] sm:min-h-[300px] lg:min-h-[350px] bg-[#0b0b0c]/60 rounded-xl text-white overflow-visible">
+              <div className="w-full aspect-[3/4] text-white overflow-visible relative"
+                style={{ background: 'rgba(255, 255, 255, 0.1)' }}>
+                {/* 关闭按钮 */}
+                <button
+                  onClick={() => handleDialogClose(false)}
+                  className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center hover:bg-white/10 transition-colors z-10"
+                >
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M12 4L4 12M4 4l8 8" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </button>
                 {/* 右侧内容分为上下两部分 */}
-                <div className="h-full flex flex-col overflow-visible">
-                  {/* 上半部分 */}
-                  <div className="flex-1 px-4 sm:px-6 lg:px-8 py-4 sm:py-6 flex flex-col overflow-visible">
+                <div className="h-full flex flex-col justify-between overflow-visible">
+                  {/* 上半部分 - 标题和标签 */}
+                  <div className="flex-1 px-2 sm:px-3 lg:px-4 py-4 sm:py-6 flex flex-col justify-center overflow-visible">
                     {/* 标题 */}
                     <h2 
-                      className={`text-white text-xl sm:text-2xl lg:text-[32px] leading-[1.025] max-w-full lg:max-w-[498px] mb-4 sm:mb-6 title-stable transition-opacity duration-300 ${
+                      className={`text-white text-lg sm:text-xl lg:text-2xl leading-[1.2] max-w-full lg:max-w-[498px] mb-4 sm:mb-6 instrument-sans transition-opacity duration-300 ${
                         fontsLoaded ? 'opacity-100' : 'opacity-90'
                       }`}
                     >
@@ -1109,29 +1071,26 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
                     
                     {/* 标签组 */}
                     <div className="flex items-center gap-3">
-                      <div className="flex items-center justify-center gap-0.5 px-0 py-[11px] h-7 bg-transparent">
-                        <div className="w-[5px] h-[5px] rounded-full bg-[#704DFF]"></div>
+                      <div className="flex items-center justify-center gap-1 px-0 py-[11px] h-7 bg-transparent">
+                        <span className="text-[#ffffff] text-sm font-medium">#</span>
                         <span 
-                          className="text-white text-xs font-medium leading-[1.833] text-center ml-1"
-                          style={{ fontFamily: "Manrope, system-ui, sans-serif" }}
+                          className="text-white text-xs font-medium leading-[1.833] text-center instrument-sans"
                         >
                           {selectedItem?.type || 'Fashion'}
                         </span>
                       </div>
-                      <div className="flex items-center justify-center gap-0.5 px-0 py-[11px] h-7 bg-transparent">
-                        <div className="w-[5px] h-[5px] rounded-full bg-[#704DFF]"></div>
+                      <div className="flex items-center justify-center gap-1 px-0 py-[11px] h-7 bg-transparent">
+                        <span className="text-[#ffffff] text-sm font-medium">#</span>
                         <span 
-                          className="text-white text-xs font-medium leading-[1.833] text-center ml-1"
-                          style={{ fontFamily: "Manrope, system-ui, sans-serif" }}
+                          className="text-white text-xs font-medium leading-[1.833] text-center instrument-sans"
                         >
                           {selectedItem?.gender || 'Unisex'}
                         </span>
                       </div>
-                      <div className="flex items-center justify-center gap-0.5 px-0 py-[11px] h-7 bg-transparent">
-                        <div className="w-[5px] h-[5px] rounded-full bg-[#704DFF]"></div>
+                      <div className="flex items-center justify-center gap-1 px-0 py-[11px] h-7 bg-transparent">
+                        <span className="text-[#ffffff] text-sm font-medium">#</span>
                         <span 
-                          className="text-white text-xs font-normal leading-[1.833] text-center ml-1"
-                          style={{ fontFamily: "Manrope, system-ui, sans-serif" }}
+                          className="text-white text-xs font-normal leading-[1.833] text-center instrument-sans"
                         >
                           {selectedItem?.feature || 'AI Generated'}
                         </span>
@@ -1139,90 +1098,148 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
                     </div>
                     
                     {/* Generated by 文字紧跟标签组 */}
-                    <div className="mt-6">
-                      <p 
-                        className="text-white text-[10px] font-bold leading-[2.2] w-full"
-                        style={{ fontFamily: "Manrope, system-ui, sans-serif" }}
-                      >
-                        Created by Creamoda
-                      </p>
-                    </div>
-                    
+                  
+                  </div>
+                  
+                  {/* 下半部分 - 按钮组 */}
+                  <div className="px-2 sm:px-3 lg:px-4 pb-6 flex flex-col">
                     {/* 按钮组 - 响应式布局 */}
-                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mt-4 sm:mt-6 relative">
+                    <div className="flex flex-col items-stretch gap-3">
                       {/* Generate Similar Designs 按钮 */}
-                      <button 
-                        className="flex items-center justify-center gap-2.5 px-3 py-[11px] w-full sm:w-auto sm:flex-1 lg:w-[406px] h-[42px] rounded-[4px] text-white text-sm sm:text-base lg:text-[20px] font-bold leading-[1.1] text-center cursor-pointer hover:bg-opacity-80 transition-all duration-200 outline-none focus:outline-none focus-visible:outline-none active:outline-none"
-                        style={{ 
-                          backgroundColor: 'rgba(112, 77, 255, 0.37)',
-                          fontFamily: "Manrope, system-ui, sans-serif",
-                          border: 'none',
-                          outline: 'none',
-                          boxShadow: 'none'
-                        }}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          console.log('Generate Similar Designs clicked!');
-                          if (selectedItem) {
-                            // 跳转到 fashion-design/create 页面，并传递 clothing_description 参数
-                            const encodedDescription = encodeURIComponent(selectedItem.clothing_description || '');
-                            const targetUrl = `/fashion-design/create?prompt=${encodedDescription}&tab=text-to-image`;
-                            console.log('跳转到:', targetUrl);
-                            console.log('原始描述:', selectedItem.clothing_description);
-                            router.push(targetUrl);
-                          }
-                        }}
-                      >
-                        <span className="hidden sm:inline">Generate Similar Designs</span>
-                        <span className="sm:hidden">Generate Similar</span>
-                      </button>
-                      
-                      {/* 三个点按钮 */}
-                      <div className="relative">
+                      <div className="flex flex-col">
                         <button 
-                          className="flex items-center justify-center gap-2.5 px-3 py-[11px] w-full sm:w-[79px] h-[42px] rounded-[4px] outline-none focus:outline-none focus-visible:outline-none active:outline-none"
+                          className="flex items-center justify-center gap-2.5 px-3 py-[11px] w-full h-[42px] rounded-[4px] text-black text-sm font-medium leading-[1.1] text-center cursor-pointer hover:bg-gray-100 transition-all duration-200 outline-none focus:outline-none focus-visible:outline-none active:outline-none"
                           style={{ 
-                            backgroundColor: 'rgba(112, 77, 255, 0.37)',
+                            backgroundColor: '#FFFFFF',
                             border: 'none',
                             outline: 'none',
                             boxShadow: 'none'
                           }}
-                          onClick={() => setDropdownOpen(!dropdownOpen)}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            console.log('Generate Similar Designs clicked!');
+                            if (selectedItem) {
+                              // 跳转到 fashion-design/create 页面，并传递 clothing_description 参数
+                              const encodedDescription = encodeURIComponent(selectedItem.clothing_description || '');
+                              const targetUrl = `/fashion-design/create?prompt=${encodedDescription}&tab=text-to-image`;
+                              console.log('跳转到:', targetUrl);
+                              console.log('原始描述:', selectedItem.clothing_description);
+                              router.push(targetUrl);
+                            }
+                          }}
                         >
-                          <div className="flex items-center gap-1">
-                            <div className="w-[6px] h-[6px] rounded-full bg-[#D9D9D9]"></div>
-                            <div className="w-[6px] h-[6px] rounded-full bg-[#D9D9D9]"></div>
-                            <div className="w-[6px] h-[6px] rounded-full bg-[#D9D9D9]"></div>
-                          </div>
+                          Generate Similar Designs
                         </button>
-                        
-                        {/* 下拉菜单 - 使用独立组件 */}
-                        <DropdownMenu
-                          isOpen={dropdownOpen}
-                          onClose={() => setDropdownOpen(false)}
-                          selectedItem={selectedItem}
-                          router={router}
+                        {/* 下划线 */}
+                        <div className="w-full h-px bg-white/15 mt-4"></div>
+                      </div>
+                      
+                      {/* Or modify the design 文字 */}
+                      <div className="mt-2 mb-3">
+                        <span className="text-white/80 text-sm">Or modify the design</span>
+                      </div>
+                      
+                      {/* 修改设计功能卡片 */}
+                      <div className="flex gap-2 overflow-x-auto">
+                        <ModifyDesignCard
+                          icon={
+                            <svg width="21" height="21" viewBox="0 0 21 21" fill="none">
+                              <path d="M17.0664 2.59985H3.73307C2.8126 2.59985 2.06641 3.34605 2.06641 4.26652V17.5999C2.06641 18.5203 2.8126 19.2665 3.73307 19.2665H17.0664C17.9869 19.2665 18.7331 18.5203 18.7331 17.5999V4.26652C18.7331 3.34605 17.9869 2.59985 17.0664 2.59985Z" stroke="white" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round"/>
+                              <path d="M5.40039 5.93311V9.26644" stroke="white" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round"/>
+                              <path d="M12.0664 12.5999V15.9332" stroke="white" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round"/>
+                              <path d="M8.73438 5.93311V9.26644" stroke="white" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round"/>
+                              <path d="M12.0664 5.93311H15.3997" stroke="white" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round"/>
+                              <path d="M5.40039 12.5999H8.73372" stroke="white" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round"/>
+                              <path d="M12.0664 9.26636H15.3997" stroke="white" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round"/>
+                              <path d="M5.40039 15.9331H8.73372" stroke="white" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round"/>
+                              <path d="M15.4004 12.5999V15.9332" stroke="white" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                          }
+                          title="Change Fabric"
+                          onClick={() => {
+                            if (selectedItem) {
+                              const encodedImageUrl = encodeURIComponent(selectedItem.image_url || '');
+                              const targetUrl = `/fashion-design/create?imageUrl=${encodedImageUrl}&tab=image-to-image&variationType=8`;
+                              router.push(targetUrl);
+                            }
+                          }}
+                        />
+                        <ModifyDesignCard
+                          icon={
+                            <svg width="21" height="21" viewBox="0 0 21 21" fill="none">
+                              <path d="M15.8164 8.01652V16.3499M15.8164 16.3499V19.2665H4.98307V16.3499M15.8164 16.3499H18.7331V8.01652C18.7331 6.76652 17.8997 5.30819 16.6497 4.26652C15.3997 3.22485 12.8997 2.59985 12.8997 2.59985H7.89974C7.89974 2.59985 5.39974 3.22485 4.14974 4.26652C2.89974 5.30819 2.06641 6.76652 2.06641 8.01652V16.3499H4.98307M4.98307 16.3499V8.01652" stroke="white" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round"/>
+                              <path d="M12.9004 2.59985C12.9004 3.98057 11.7811 5.09985 10.4004 5.09985C9.01968 5.09985 7.90039 3.98057 7.90039 2.59985" stroke="white" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                          }
+                          title="Change Style"
+                          onClick={() => {
+                            if (selectedItem) {
+                              const encodedImageUrl = encodeURIComponent(selectedItem.image_url || '');
+                              const targetUrl = `/fashion-design/create?imageUrl=${encodedImageUrl}&tab=image-to-image&variationType=11`;
+                              router.push(targetUrl);
+                            }
+                          }}
+                        />
+                        <ModifyDesignCard
+                          icon={
+                            <svg width="21" height="21" viewBox="0 0 21 21" fill="none">
+                              <path d="M6.87109 18.3499L17.9822 7.23949L14.1717 3.34985L7.56549 9.95605" stroke="white" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round"/>
+                              <path d="M12.1504 13.4331H18.7341V19.2664H4.65039" stroke="white" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round"/>
+                              <path d="M1.73438 2.93311H7.56771V16.2664C7.56771 17.8773 6.26187 19.1831 4.65104 19.1831C3.04021 19.1831 1.73438 17.8773 1.73438 16.2664V2.93311Z" stroke="white" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                          }
+                          title="Change Color"
+                          onClick={() => {
+                            if (selectedItem) {
+                              const encodedImageUrl = encodeURIComponent(selectedItem.image_url || '');
+                              const targetUrl = `/magic-kit/create?imageUrl=${encodedImageUrl}&variationType=1`;
+                              router.push(targetUrl);
+                            }
+                          }}
+                        />
+                        <ModifyDesignCard
+                          icon={
+                            <svg width="21" height="21" viewBox="0 0 21 21" fill="none">
+                              <g clipPath="url(#clip0_177_3516)">
+                                <path d="M18.7331 2.59988C18.7331 2.59988 14.3955 1.8503 12.8997 4.26655C11.7863 6.06515 13.3164 8.01656 13.3164 8.01656M18.7331 2.59988L13.3164 8.01656M18.7331 2.59988C18.7331 2.59988 19.4827 6.93744 17.0664 8.43323C15.2678 9.54665 13.3164 8.01656 13.3164 8.01656M13.3164 8.01656L12.0664 9.26656" stroke="white" strokeWidth="1.66667" strokeLinecap="round" strokeLinejoin="round"/>
+                                <path d="M13.3164 13.8499L12.0664 12.5999M13.3164 13.8499C13.3164 13.8499 11.7863 15.8013 12.8997 17.5999C14.3955 20.0161 18.7331 19.2665 18.7331 19.2665M13.3164 13.8499L18.7331 19.2665M13.3164 13.8499C13.3164 13.8499 15.2678 12.3198 17.0664 13.4332C19.4827 14.929 18.7331 19.2665 18.7331 19.2665" stroke="white" strokeWidth="1.66667" strokeLinecap="round" strokeLinejoin="round"/>
+                                <path d="M7.59299 8.01656L8.84299 9.26656M7.59299 8.01656C7.59299 8.01656 9.12307 6.06515 8.00966 4.26655C6.51386 1.8503 2.1763 2.59988 2.1763 2.59988M7.59299 8.01656L2.1763 2.59988M7.59299 8.01656C7.59299 8.01656 5.64157 9.54665 3.84296 8.43323C1.42672 6.93744 2.1763 2.59988 2.1763 2.59988" stroke="white" strokeWidth="1.66667" strokeLinecap="round" strokeLinejoin="round"/>
+                                <path d="M7.59299 13.8499L8.84299 12.5999M7.59299 13.8499C7.59299 13.8499 9.12307 15.8013 8.00966 17.5999C6.51386 20.0161 2.1763 19.2665 2.1763 19.2665M7.59299 13.8499L2.1763 19.2665M7.59299 13.8499C7.59299 13.8499 5.64157 12.3198 3.84296 13.4332C1.42672 14.929 2.1763 19.2665 2.1763 19.2665" stroke="white" strokeWidth="1.66667" strokeLinecap="round" strokeLinejoin="round"/>
+                              </g>
+                              <defs>
+                                <clipPath id="clip0_177_3516">
+                                  <rect width="20" height="20" fill="white" transform="translate(0.400391 0.933105)"/>
+                                </clipPath>
+                              </defs>
+                            </svg>
+                          }
+                          title="Change Printing"
+                          onClick={() => {
+                            if (selectedItem) {
+                              const encodedImageUrl = encodeURIComponent(selectedItem.image_url || '');
+                              const targetUrl = `/fashion-design/create?imageUrl=${encodedImageUrl}&tab=image-to-image&variationType=9`;
+                              router.push(targetUrl);
+                            }
+                          }}
                         />
                       </div>
                     </div>
-                  </div>
-                  
-                  {/* 下半部分 - 预留给后续内容 */}
-                  <div className="px-8 pb-6">
-                    {/* 下半部分内容稍后补充 */}
                   </div>
                 </div>
               </div>
             </div>
 
             {/* 下半部分：标题 + 相关图片 - 响应式布局 */}
-            <div className="px-4 sm:px-6 pb-4 sm:pb-6 flex flex-col flex-shrink-0">
-              <div 
-                className="text-white text-sm sm:text-base font-medium mb-3"
-                style={{ fontFamily: "'Neue Machina Regular', system-ui, sans-serif" }}
-              >
-                More like this
+            <div className="px-1 sm:px-2 pb-4 sm:pb-6 flex flex-col flex-shrink-0">
+              <div className="flex items-center justify-center mb-3 mt-6">
+                <div className="flex-1 h-px bg-gray-600"></div>
+                <div 
+                  className="text-white text-base sm:text-lg font-medium mx-4"
+                >
+                  More Like This
+                </div>
+                <div className="flex-1 h-px bg-gray-600"></div>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">
                 {(() => {
