@@ -69,7 +69,7 @@ export const metadata: Metadata = {
 };
 
 export default function FashionAgentPage() {
-  const saasUrl = 'https://www.creamoda.ai/fashion-design/create';
+  const saasUrl = 'https://creamoda.ai/fashion-design/create';
   
   // 使用适合的主题配置
   const theme = themes.agent_page || themes.design_page || themes[Object.keys(themes)[0]];

@@ -80,34 +80,34 @@ export default function StaticFooter() {
             <div className="footer-features">
               <div className="feature-group">
               <a href="https://agent.chimer-ai.com/" className="feature-item">AI Agent</a>
-              <a href="https://www.creamoda.ai/fashion-design/create" className="feature-item">Text to Image</a>
-                <a href="https://www.creamoda.ai/fashion-design/create" className="feature-item">Copy Style</a>
-                <a href="https://www.creamoda.ai/fashion-design/create" className="feature-item">Mix 2 Images</a>
-                <a href="https://www.creamoda.ai/fashion-design/create" className="feature-item">Change Clothes</a>
-                <a href="https://www.creamoda.ai/fashion-design/create" className="feature-item">Fabric to Design</a>
-                <a href="https://www.creamoda.ai/fashion-design/create" className="feature-item">Sketch to Design</a>
+              <a href="https://creamoda.ai/fashion-design/create" className="feature-item">Text to Image</a>
+                <a href="https://creamoda.ai/fashion-design/create" className="feature-item">Copy Style</a>
+                <a href="https://creamoda.ai/fashion-design/create" className="feature-item">Mix 2 Images</a>
+                <a href="https://creamoda.ai/fashion-design/create" className="feature-item">Change Clothes</a>
+                <a href="https://creamoda.ai/fashion-design/create" className="feature-item">Fabric to Design</a>
+                <a href="https://creamoda.ai/fashion-design/create" className="feature-item">Sketch to Design</a>
               </div>
               
               <div className="feature-group">
-                <a href="https://www.creamoda.ai/fashion-design/create" className="feature-item">Change Style</a>
-                <a href="https://www.creamoda.ai/fashion-design/create" className="feature-item">Change Fabric</a>
-                <a href="https://www.creamoda.ai/fashion-design/create" className="feature-item">Change Printing</a>
-                <a href="https://www.creamoda.ai/fashion-design/create" className="feature-item">Style Fusion</a>
+                <a href="https://creamoda.ai/fashion-design/create" className="feature-item">Change Style</a>
+                <a href="https://creamoda.ai/fashion-design/create" className="feature-item">Change Fabric</a>
+                <a href="https://creamoda.ai/fashion-design/create" className="feature-item">Change Printing</a>
+                <a href="https://creamoda.ai/fashion-design/create" className="feature-item">Style Fusion</a>
               </div>
               
               <div className="feature-group">
-              <a href="https://www.creamoda.ai/virtual-try-on/create" className="feature-item">Virtual Try-on</a>
-                <a href="https://www.creamoda.ai/virtual-try-on/create" className="feature-item">Change Pose</a>
+              <a href="https://creamoda.ai/virtual-try-on/create" className="feature-item">Virtual Try-on</a>
+                <a href="https://creamoda.ai/virtual-try-on/create" className="feature-item">Change Pose</a>
               </div>
 
               <div className="feature-group">
-              <a href="https://www.creamoda.ai/magic-kit/create" className="feature-item">Change Color</a>
-              <a href="https://www.creamoda.ai/magic-kit/create" className="feature-item">Change Background</a>
-                <a href="https://www.creamoda.ai/magic-kit/create" className="feature-item">Remove Background</a>
-                <a href="https://www.creamoda.ai/magic-kit/create" className="feature-item">Partial Modification</a>
-                <a href="https://www.creamoda.ai/magic-kit/create" className="feature-item">Upscale</a>
-                <a href="https://www.creamoda.ai/magic-kit/create" className="feature-item">Pattern Extraction</a>
-                <a href="https://www.creamoda.ai/magic-kit/create" className="feature-item">Pattern Application</a>
+              <a href="https://creamoda.ai/magic-kit/create" className="feature-item">Change Color</a>
+              <a href="https://creamoda.ai/magic-kit/create" className="feature-item">Change Background</a>
+                <a href="https://creamoda.ai/magic-kit/create" className="feature-item">Remove Background</a>
+                <a href="https://creamoda.ai/magic-kit/create" className="feature-item">Partial Modification</a>
+                <a href="https://creamoda.ai/magic-kit/create" className="feature-item">Upscale</a>
+                <a href="https://creamoda.ai/magic-kit/create" className="feature-item">Pattern Extraction</a>
+                <a href="https://creamoda.ai/magic-kit/create" className="feature-item">Pattern Application</a>
               </div>
             </div>
           </div>
