@@ -11,7 +11,7 @@ export default function NotFound() {
       <div className="hero-container">
         <div className="hero-background"></div>
         <div className="hero-content">
-          <StaticNavigation currentSaasUrl="https://www.creamoda.ai/fashion-design/create" />
+          <StaticNavigation currentSaasUrl="https://creamoda.ai/fashion-design/create" />
           
           {/* 下拉菜单容器 - 由客户端组件管理显示 */}
           <div className="dropdown-container"></div>
@@ -77,7 +77,7 @@ export default function NotFound() {
       <StaticFooter />
       
       {/* 客户端交互逻辑 */}
-      <ClientHeroInteractions currentSaasUrl="https://www.creamoda.ai/fashion-design/create" />
+      <ClientHeroInteractions currentSaasUrl="https://creamoda.ai/fashion-design/create" />
     </div>
   );
 } 

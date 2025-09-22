@@ -55,17 +55,17 @@ export const routeToPathMap: Record<string, string> = {
 
 // 路由到SaaS URL的映射（保留兼容性，但已废弃）
 export const routeToSaasUrlMap: Record<string, string> = {
-  'image-background-remover': 'https://www.creamoda.ai/magic-kit/create',
-  'image-background-changer': 'https://www.creamoda.ai/magic-kit/create', 
-  'image-enhancer': 'https://www.creamoda.ai/magic-kit/create',
-  'image-changer': 'https://www.creamoda.ai/magic-kit/create',
-  'image-color-changer': 'https://www.creamoda.ai/magic-kit/create',
-  'virtual-try-on': 'https://www.creamoda.ai/virtual-try-on/create',
-  'outfit-generator': 'https://www.creamoda.ai/fashion-design/create',
-  'sketch-to-image': 'https://www.creamoda.ai/fashion-design/create',
-  'free-nano-banana': 'https://www.creamoda.ai/magic-kit/create',
-  'designs': 'https://www.creamoda.ai/fashion-design/create',
-  'fashion-agent': 'https://www.creamoda.ai/fashion-design/create'
+  'image-background-remover': 'https://creamoda.ai/magic-kit/create',
+  'image-background-changer': 'https://creamoda.ai/magic-kit/create', 
+  'image-enhancer': 'https://creamoda.ai/magic-kit/create',
+  'image-changer': 'https://creamoda.ai/magic-kit/create',
+  'image-color-changer': 'https://creamoda.ai/magic-kit/create',
+  'virtual-try-on': 'https://creamoda.ai/virtual-try-on/create',
+  'outfit-generator': 'https://creamoda.ai/fashion-design/create',
+  'sketch-to-image': 'https://creamoda.ai/fashion-design/create',
+  'free-nano-banana': 'https://creamoda.ai/magic-kit/create',
+  'designs': 'https://creamoda.ai/fashion-design/create',
+  'fashion-agent': 'https://creamoda.ai/fashion-design/create'
 };
 
 // 根据路由获取相对路径
@@ -85,7 +85,7 @@ export function getSaasUrlByRoute(route: string): string {
   }
   
   // 服务端渲染时的默认值
-  return routeToSaasUrlMap[route] || 'https://www.creamoda.ai/fashion-design/create';
+  return routeToSaasUrlMap[route] || 'https://creamoda.ai/fashion-design/create';
 }
 
 // 获取所有可用路由

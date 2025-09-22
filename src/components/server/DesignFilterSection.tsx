@@ -155,20 +155,18 @@ interface DesignFilterSectionProps {
 const MemoizedImageWithSkeleton = memo(function ImageWithSkeleton({ 
   src, 
   alt = '', 
+  href,
   onClick 
 }: { 
   src: string; 
   alt?: string; 
+  href?: string;
   onClick?: () => void 
 }) {
   const [loaded, setLoaded] = useState(false);
 
-  return (
-    <div
-      className="group relative w-full overflow-hidden rounded-md cursor-pointer transition-all duration-300 ease-in-out"
-      style={{ aspectRatio: '3 / 4' }}
-      onClick={onClick}
-    >
+  const content = (
+    <>
       <Image
         src={src}
         alt={alt}
@@ -204,6 +202,32 @@ const MemoizedImageWithSkeleton = memo(function ImageWithSkeleton({
           </Button>
         </div>
       </div>
+    </>
+  );
+
+  if (href) {
+    return (
+      <a
+        href={href}
+        className="group relative w-full overflow-hidden rounded-md cursor-pointer transition-all duration-300 ease-in-out block"
+        style={{ aspectRatio: '3 / 4' }}
+        onClick={(e) => {
+          e.preventDefault();
+          onClick && onClick();
+        }}
+      >
+        {content}
+      </a>
+    );
+  }
+
+  return (
+    <div
+      className="group relative w-full overflow-hidden rounded-md cursor-pointer transition-all duration-300 ease-in-out"
+      style={{ aspectRatio: '3 / 4' }}
+      onClick={onClick}
+    >
+      {content}
     </div>
   );
 });
@@ -244,6 +268,7 @@ const MemoizedImageGrid = memo(function ImageGridSection({
               <MemoizedImageWithSkeleton
                 src={img.image_url}
                 alt={img.clothing_description || ''}
+                href={`/designs/${img.slug}`}
                 onClick={() => openDetailAt(idx)}
               />
             </div>
@@ -322,6 +347,7 @@ const SimilarImagesSection = memo(function SimilarImagesSection({
         <MemoizedImageWithSkeleton
           src={img.image_url}
           alt={img.clothing_description || ''}
+          href={img.slug ? `/designs/${img.slug}` : undefined}
           onClick={() => {
             if (originalIndex >= 0) openDetailAt(originalIndex);
           }}
@@ -1270,6 +1296,7 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
                           <MemoizedImageWithSkeleton
                             src={img.image_url}
                             alt={img.clothing_description || ''}
+                            href={`/designs/${img.slug}`}
                             onClick={() => {
                               if (originalIndex >= 0) openDetailAt(originalIndex);
                             }}

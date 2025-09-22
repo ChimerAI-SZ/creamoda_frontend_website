@@ -245,7 +245,7 @@ export default function StaticHeroMains({ className = '' }: StaticHeroMainsProps
 
           {/* Design Now 按钮 */}
           <Link
-            href="https://www.creamoda.ai/fashion-design/create"
+            href="https://creamoda.ai/fashion-design/create"
             className="flex items-center justify-center gap-2 md:px-4 lg:px-5 px-4 md:py-2.5 lg:py-3 py-2.5 bg-white rounded-lg shadow-[0_8px_20px_rgba(0,0,0,0.1)] hover:shadow-[0_12px_24px_rgba(0,0,0,0.15)] transition-all duration-200 group"
           >
             <div className="flex flex-col items-center justify-center">

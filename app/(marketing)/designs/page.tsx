@@ -80,7 +80,7 @@ export const metadata: Metadata = {
 };
 
 export default async function DesignsPage() {
-  const saasUrl = 'https://www.creamoda.ai/fashion-design/create';
+  const saasUrl = 'https://creamoda.ai/fashion-design/create';
   
   // 获取主题数据
   const theme = getTheme('design_page');

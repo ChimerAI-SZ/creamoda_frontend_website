@@ -9,7 +9,7 @@ interface DynamicCreateButtonProps {
 }
 
 export default function DynamicCreateButton({ 
-  fallbackUrl = 'https://www.creamoda.ai/fashion-design/create',
+  fallbackUrl = 'https://creamoda.ai/fashion-design/create',
   className = 'create-btn'
 }: DynamicCreateButtonProps) {
   const [createUrl, setCreateUrl] = useState(fallbackUrl);
