@@ -233,7 +233,7 @@ export default function MobileMenuToggle() {
               </div>
 
               {/* Pricing 分类 */}
-              <div className="mb-6">
+              {/* <div className="mb-6">
                 <h3 className="text-white text-lg font-semibold mb-3 pb-2 border-b border-gray-400/30">
                   Pricing
                 </h3>
@@ -246,7 +246,7 @@ export default function MobileMenuToggle() {
                     View Plans
                   </Link>
                 </div>
-              </div>
+              </div> */}
               
               {/* 底部登录按钮 */}
               <div className="pt-4">
@@ -258,7 +258,7 @@ export default function MobileMenuToggle() {
                   }}
                   className="w-full bg-white text-black font-semibold py-4 px-6 rounded-lg hover:bg-gray-100 transition-colors duration-200"
                 >
-                  Log in / Sign up
+                  Get Started
                 </button>
               </div>
             </div>

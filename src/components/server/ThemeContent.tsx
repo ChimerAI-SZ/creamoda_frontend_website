@@ -47,11 +47,11 @@ export default function ThemeContent({
     
       <StaticWhyChoose theme={theme} />
      
-      {/* 特殊功能模块 - 仅在 outfit-generator 页面显示 */}
-      {currentRoute === 'outfit-generator' && (
-        <OutfitGeneratorFeatureModule theme={theme} />
-      )}
       <StaticOfferMore  />
+      
+      {/* OutfitGeneratorFeatureModule - 在所有功能页面的StaticOfferMore后显示 */}
+      <OutfitGeneratorFeatureModule theme={theme} />
+      
       {showOfferMore && (
         <>
           {/* <StaticOfferMore theme={theme} currentRoute={currentRoute} /> */}

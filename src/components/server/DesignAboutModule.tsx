@@ -92,7 +92,7 @@ export default function DesignAboutModule({ className = '' }: DesignAboutModuleP
         />
         
         {/* Content - Mobile */}
-        <div className="px-4 py-8 bg-gray-900">
+        <div className="px-4 py-8 bg-black">
           <div className="flex flex-col gap-6 text-left">
             {/* Title - Mobile */}
             <div className="w-full">
@@ -100,8 +100,8 @@ export default function DesignAboutModule({ className = '' }: DesignAboutModuleP
                 className="text-white"
                 style={{
                   fontFamily: "'Instrument Sans', system-ui, -apple-system, sans-serif",
-                  fontWeight: '600',
-                  fontSize: '28px',
+                  fontWeight: '400',
+                  fontSize: '30px',
                   lineHeight: '1.2'
                 }}
               >

@@ -60,9 +60,9 @@ export default function StaticNavigation({ currentSaasUrl }: StaticNavigationPro
             </Link>
 
             {/* Pricing 静态导航 - 直接跳转 */}
-            <Link href="/pricing" className="nav-link" style={{ color: 'white' }}>
+            {/* <Link href="/pricing" className="nav-link" style={{ color: 'white' }}>
               Pricing
-            </Link>
+            </Link> */}
           </div>
           
           {/* 如果有传入的URL就使用传入的，否则使用动态Create按钮 */}
@@ -73,7 +73,7 @@ export default function StaticNavigation({ currentSaasUrl }: StaticNavigationPro
               rel="noopener noreferrer" 
               className="flex items-center gap-2 px-4 py-2 bg-white text-black text-sm font-semibold rounded-xl shadow-sm hover:shadow-md transition-all duration-200 hover:scale-105"
             >
-              Log in / Sign up
+              Get Started
             </a>
           ) : (
             <DynamicCreateButton />
@@ -118,8 +118,8 @@ export default function StaticNavigation({ currentSaasUrl }: StaticNavigationPro
           <h3>Design Ideas</h3>
           <Link href="/designs">Browse Designs</Link>
           
-          <h3>Pricing</h3>
-          <Link href="/pricing">View Plans</Link>
+          {/* <h3>Pricing</h3>
+          <Link href="/pricing">View Plans</Link> */}
         </div>
       </div>
     </>

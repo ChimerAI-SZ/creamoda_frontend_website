@@ -8,24 +8,37 @@ const AGENT_URL = 'https://agent.chimer-ai.com/';
 const AgentHero: React.FC = () => {
   return (
     <div className="relative w-full h-[70vh] sm:h-[800px] overflow-hidden">
-      {/* 背景图片 - 延伸到顶部以覆盖导航栏区域 */}
+      {/* 移动端背景图片 - 延伸到顶部以覆盖导航栏区域 */}
       <div 
-        className="absolute w-full h-full bg-cover bg-center"
+        className="absolute w-full h-full bg-cover bg-center sm:hidden"
         style={{
           backgroundImage: "url('/marketing/images/main/agent/mobile.png')",
           top: '-80px',
           height: 'calc(100% + 80px)'
         }}
       />
-      {/* 桌面端背景图片 */}
-      <div 
-        className="absolute w-full h-full bg-cover bg-center hidden sm:block"
+      
+      {/* 桌面端背景视频 - 延伸到顶部以覆盖导航栏区域 */}
+      <video
+        className="absolute w-full object-cover hidden sm:block"
         style={{
-          backgroundImage: "url('/marketing/images/main/agent/background.png')",
-          top: '-80px',
-          height: 'calc(100% + 80px)'
+          top: '0px',
+          height: '100%'
         }}
-      />
+        autoPlay
+        loop
+        muted
+        playsInline
+      >
+        <source src="/marketing/images/main/agent/background.mp4" type="video/mp4" />
+        {/* 视频加载失败时的备用图片 */}
+        <div 
+          className="absolute w-full h-full bg-cover bg-center"
+          style={{
+            backgroundImage: "url('/marketing/images/main/agent/background.png')"
+          }}
+        />
+      </video>
       
       {/* 渐变叠加层 - 也延伸到顶部 */}
       <div 

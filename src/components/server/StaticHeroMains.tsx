@@ -14,15 +14,16 @@ interface StaticHeroMainsProps {
 
 export default function StaticHeroMains({ className = '' }: StaticHeroMainsProps) {
   return (
-    <section className={`w-full h-screen overflow-hidden relative ${className}`}>
-      {/* 背景图片层 */}
+    <section className={`w-full h-[80vh] md:h-screen -mt-10 md:mt-0 overflow-hidden relative ${className}`}>
+      {/* 背景视频层 */}
       <div className="absolute inset-0">
-        <Image
-          src="/marketing/images/hero/bg.png"
-          alt="Fashion background"
-          fill
-          className="object-cover"
-          priority
+        <video
+          src="/marketing/images/hero/bg.webm"
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-full h-full object-cover"
         />
       </div>
 
@@ -35,7 +36,7 @@ export default function StaticHeroMains({ className = '' }: StaticHeroMainsProps
         <div className="hidden md:contents">
           {/* 第一列 - 最短可视高度，下移最多 */}
           <div className="flex-1 flex flex-col items-end">
-            <div className="relative w-full h-[320px] lg:h-[480px] rounded-lg overflow-hidden opacity-50 transform translate-y-[160px] lg:translate-y-[240px]">
+            <div className="relative w-full h-[36vh] lg:h-[40vh] rounded-lg overflow-hidden opacity-50 transform translate-y-[16vh] lg:translate-y-[20vh]">
               <Image
                 src="/marketing/images/main/hero/one.png"
                 alt="Fashion item 1"
@@ -47,7 +48,7 @@ export default function StaticHeroMains({ className = '' }: StaticHeroMainsProps
 
           {/* 第二列 - 第二高可视高度 */}
           <div className="flex-1 flex flex-col items-end">
-            <div className="relative w-full h-[300px] lg:h-[440px] rounded-lg overflow-hidden opacity-70 transform translate-y-[70px] lg:translate-y-[100px]">
+            <div className="relative w-full h-[34vh] lg:h-[42vh] rounded-lg overflow-hidden opacity-70 transform translate-y-[7vh] lg:translate-y-[10vh]">
               <Image
                 src="/marketing/images/main/hero/two.png"
                 alt="Fashion item 2"
@@ -59,7 +60,7 @@ export default function StaticHeroMains({ className = '' }: StaticHeroMainsProps
 
           {/* 第三列 - 中等偏小可视高度 */}
           <div className="flex-1 flex flex-col items-end">
-            <div className="relative w-full h-[310px] lg:h-[460px] rounded-lg overflow-hidden transform translate-y-[120px] lg:translate-y-[180px]">
+            <div className="relative w-full h-[35vh] lg:h-[44vh] rounded-lg overflow-hidden transform translate-y-[12vh] lg:translate-y-[18vh]">
               <Image
                 src="/marketing/images/main/hero/three.png"
                 alt="Fashion item 3"
@@ -71,7 +72,7 @@ export default function StaticHeroMains({ className = '' }: StaticHeroMainsProps
 
           {/* 第四列 - 最高可视高度，下移最少 */}
           <div className="flex-1 flex flex-col items-end">
-            <div className="relative w-full h-[340px] lg:h-[500px] rounded-lg overflow-hidden transform translate-y-[95px] lg:translate-y-[140px]">
+            <div className="relative w-full h-[38vh] lg:h-[49vh] rounded-lg overflow-hidden transform translate-y-[9vh] lg:translate-y-[14vh]">
               <Image
                 src="/marketing/images/main/hero/four.png"
                 alt="Fashion item 4"
@@ -83,7 +84,7 @@ export default function StaticHeroMains({ className = '' }: StaticHeroMainsProps
 
           {/* 第五列 - 中等可视高度 */}
           <div className="flex-1 flex flex-col items-end">
-            <div className="relative w-full h-[240px] lg:h-[356px] rounded-lg overflow-hidden opacity-70 transform translate-y-[40px] lg:translate-y-[60px]">
+            <div className="relative w-full h-[28vh] lg:h-[36vh] rounded-lg overflow-hidden opacity-70 transform translate-y-[4vh] lg:translate-y-[6vh]">
               <Image
                 src="/marketing/images/main/hero/five.png"
                 alt="Fashion item 5"
@@ -95,7 +96,7 @@ export default function StaticHeroMains({ className = '' }: StaticHeroMainsProps
 
           {/* 第六列 - 中等偏小可视高度 */}
           <div className="flex-1 flex flex-col items-end">
-            <div className="relative w-full h-[315px] lg:h-[463px] rounded-lg overflow-hidden opacity-70 transform translate-y-[140px] lg:translate-y-[210px]">
+            <div className="relative w-full h-[35vh] lg:h-[46vh] rounded-lg overflow-hidden opacity-70 transform translate-y-[14vh] lg:translate-y-[21vh]">
               <Image
                 src="/marketing/images/main/hero/six.png"
                 alt="Fashion item 6"
@@ -107,7 +108,7 @@ export default function StaticHeroMains({ className = '' }: StaticHeroMainsProps
 
           {/* 第七列 - 中等可视高度 */}
           <div className="flex-1 flex flex-col items-end">
-            <div className="relative w-full h-[318px] lg:h-[469px] rounded-lg overflow-hidden opacity-40 transform translate-y-[120px] lg:translate-y-[180px]">
+            <div className="relative w-full h-[36vh] lg:h-[47vh] rounded-lg overflow-hidden opacity-40 transform translate-y-[12vh] lg:translate-y-[18vh]">
               <Image
                 src="/marketing/images/main/hero/seven.png"
                 alt="Fashion item 7"
@@ -243,24 +244,51 @@ export default function StaticHeroMains({ className = '' }: StaticHeroMainsProps
             </p>
           </div>
 
-          {/* Design Now 按钮 */}
-          <Link
-            href="https://creamoda.ai/fashion-design/create"
-            className="flex items-center justify-center gap-2 md:px-4 lg:px-5 px-4 md:py-2.5 lg:py-3 py-2.5 bg-white rounded-lg shadow-[0_8px_20px_rgba(0,0,0,0.1)] hover:shadow-[0_12px_24px_rgba(0,0,0,0.15)] transition-all duration-200 group"
-          >
-            <div className="flex flex-col items-center justify-center">
-              <span className="text-black md:text-base lg:text-lg text-base font-semibold">Design now</span>
-            </div>
-            <div className="md:w-5 lg:w-6 md:h-5 lg:h-6 w-5 h-5 flex items-center justify-center">
-              <Image
-                src="/marketing/images/hero/narrow.svg"
-                alt="Arrow"
-                width={17}
-                height={16}
-                className="md:w-[15px] lg:w-[17px] md:h-[14px] lg:h-[16px] w-[14px] h-[13px] group-hover:translate-x-1 transition-transform duration-200"
-              />
-            </div>
-          </Link>
+          {/* 两个操作按钮 */}
+          <div className="flex flex-row items-center gap-2 md:gap-4">
+            {/* Chat With Fashion Agent 按钮 - 半透明样式 */}
+            <Link
+              href="/fashion-agent"
+              className="flex items-center justify-center gap-2 md:px-4 lg:px-5 px-4 md:py-2.5 lg:py-3 py-2.5 rounded-lg transition-all duration-200 group"
+              style={{
+                background: 'rgba(255, 255, 255, 0.25)',
+                boxShadow: '0px 8px 20px rgba(0, 0, 0, 0.10)',
+                backdropFilter: 'blur(27px)'
+              }}
+            >
+              <div className="flex flex-col items-center justify-center">
+                <span className="text-white md:text-base lg:text-lg text-sm font-semibold">Chat With Fashion Agent</span>
+              </div>
+              <div className="md:w-5 lg:w-6 md:h-5 lg:h-6 w-5 h-5 flex items-center justify-center">
+                <Image
+                  src="/marketing/images/msg.svg"
+                  alt="Message"
+                  width={20}
+                  height={20}
+                  className="md:w-[18px] lg:w-[20px] md:h-[18px] lg:h-[20px] w-[16px] h-[16px]"
+                />
+              </div>
+            </Link>
+
+            {/* Start With Creative Tools 按钮 - 白底黑字样式 */}
+            <Link
+              href="/designs"
+              className="flex items-center justify-center gap-2 md:px-4 lg:px-5 px-4 md:py-2.5 lg:py-3 py-2.5 bg-white rounded-lg shadow-[0_8px_20px_rgba(0,0,0,0.1)] hover:shadow-[0_12px_24px_rgba(0,0,0,0.15)] transition-all duration-200 group"
+            >
+              <div className="flex flex-col items-center justify-center">
+                <span className="text-black md:text-base lg:text-lg text-sm font-semibold">Start With Creative Tools</span>
+              </div>
+              <div className="md:w-5 lg:w-6 md:h-5 lg:h-6 w-5 h-5 flex items-center justify-center">
+                <Image
+                  src="/marketing/images/hero/narrow.svg"
+                  alt="Arrow"
+                  width={17}
+                  height={16}
+                  className="md:w-[15px] lg:w-[17px] md:h-[14px] lg:h-[16px] w-[14px] h-[13px] group-hover:translate-x-1 transition-transform duration-200"
+                />
+              </div>
+            </Link>
+          </div>
         </div>
       </div>
     </section>
