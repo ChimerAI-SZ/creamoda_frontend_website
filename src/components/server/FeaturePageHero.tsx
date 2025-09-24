@@ -310,13 +310,14 @@ export default function FeaturePageHero({ theme, saasUrl, currentRoute }: Featur
         paddingTop: 'calc(var(--hero-nav-height, 75px) + 20px)',
         paddingBottom: '0px',
         position: 'relative',
-        minHeight: '85vh',
+        minHeight: '80vh',
         height: 'auto',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'flex-start',
-        boxSizing: 'border-box'
+        justifyContent: 'flex-end',
+        boxSizing: 'border-box',
+        maxHeight: 'none'
       }}>
         {/* Centered Image with Overlay Text */}
         <div style={{
@@ -334,7 +335,12 @@ export default function FeaturePageHero({ theme, saasUrl, currentRoute }: Featur
             alt={`${heroMain.title} sample image`}
             fill
             className="sample-img"
-            style={{ objectFit: 'cover', objectPosition: 'center center' }}
+            style={{ 
+              objectFit: 'cover', 
+              objectPosition: 'center center',
+              maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 60%, rgba(0,0,0,0.8) 80%, rgba(0,0,0,0) 100%)',
+              WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 60%, rgba(0,0,0,0.8) 80%, rgba(0,0,0,0) 100%)'
+            }}
           />
           
           {/* All Content Inside Image */}
@@ -422,14 +428,15 @@ export default function FeaturePageHero({ theme, saasUrl, currentRoute }: Featur
           <div style={{
             textAlign: 'center'
           }}>
-            <p style={{
+            <div style={{
               color: 'white',
-              marginBottom: '12px',
-              fontSize: '16px',
+             
+              marginBottom: '8px',
+              fontSize: '12px',
               fontFamily: "'Instrument Sans', system-ui, -apple-system, sans-serif"
             }}>
               No image? Try one of these:
-            </p>
+            </div>
             <div style={{
               display: 'flex',
               gap: '8px',

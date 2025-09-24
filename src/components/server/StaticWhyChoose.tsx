@@ -67,35 +67,76 @@ export default function StaticWhyChoose({ theme }: StaticWhyChooseProps) {
 
           {/* Cards - Mobile: Second (Stack), Desktop: Right (Grid) */}
           <div className="order-2 lg:order-2">
-            <div className="relative">
-              {/* Cards Container - Mobile: Single Column, Desktop: 2x2 Grid */}
-              <div className="flex flex-col lg:grid lg:grid-cols-2 gap-6 lg:gap-12">
-                {cards.slice(0, 4).map((card, index) => (
-                  <div
-                    key={index}
-                    className={`
-                      group relative p-6 lg:p-8 transition-all duration-300
-                      ${!card.title ? 'opacity-50' : ''}
-                    `}
-                  >
-                    <div className="space-y-3 lg:space-y-4">
-                      <h3 className="text-lg lg:text-xl font-semibold text-white group-hover:text-gray-100 transition-colors text-left">
-                        {card.title}
-                      </h3>
-                      <p className="text-gray-300 text-sm leading-relaxed group-hover:text-gray-200 transition-colors text-left">
-                        {card.description || ''}
-                      </p>
-                    </div>
+            {/* Mobile Layout */}
+            <div className="lg:hidden flex flex-col gap-6">
+              {cards.slice(0, 4).map((card, index) => (
+                <div
+                  key={index}
+                  className={`
+                    group relative p-6 transition-all duration-300
+                    ${!card.title ? 'opacity-50' : ''}
+                  `}
+                >
+                  <div className="space-y-3">
+                    <h3 className="text-lg font-semibold text-white group-hover:text-gray-100 transition-colors text-left">
+                      {card.title}
+                    </h3>
+                    <p className="text-gray-300 text-sm leading-relaxed group-hover:text-gray-200 transition-colors text-left">
+                      {card.description || ''}
+                    </p>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
+            </div>
 
-              {/* Cross Divider - Only show on desktop with adaptive positioning */}
-              <div className="absolute inset-0 pointer-events-none hidden lg:block">
-                {/* Horizontal Line - positioned with margin from content */}
-                <div className="absolute top-1/2 left-6 right-6 h-px bg-[#454545] transform -translate-y-0.5"></div>
-                {/* Vertical Line - positioned with margin from content */}
-                <div className="absolute left-1/2 top-6 bottom-6 w-px bg-[#454545] transform -translate-x-0.5"></div>
+            {/* Desktop Layout - 2x2 Grid with Dynamic Cross */}
+            <div className="hidden lg:block">
+              <div className="grid grid-cols-2 gap-x-0 gap-y-0 relative">
+                {/* Top Row */}
+                <div className="relative border-r border-b border-[#454545] p-8">
+                  <div className="space-y-4">
+                    <h3 className="text-xl font-semibold text-white group-hover:text-gray-100 transition-colors text-left">
+                      {cards[0]?.title}
+                    </h3>
+                    <p className="text-gray-300 text-sm leading-relaxed group-hover:text-gray-200 transition-colors text-left">
+                      {cards[0]?.description || ''}
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="relative border-b border-[#454545] p-8">
+                  <div className="space-y-4">
+                    <h3 className="text-xl font-semibold text-white group-hover:text-gray-100 transition-colors text-left">
+                      {cards[1]?.title}
+                    </h3>
+                    <p className="text-gray-300 text-sm leading-relaxed group-hover:text-gray-200 transition-colors text-left">
+                      {cards[1]?.description || ''}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Bottom Row */}
+                <div className="relative border-r border-[#454545] p-8">
+                  <div className="space-y-4">
+                    <h3 className="text-xl font-semibold text-white group-hover:text-gray-100 transition-colors text-left">
+                      {cards[2]?.title}
+                    </h3>
+                    <p className="text-gray-300 text-sm leading-relaxed group-hover:text-gray-200 transition-colors text-left">
+                      {cards[2]?.description || ''}
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="relative p-8">
+                  <div className="space-y-4">
+                    <h3 className="text-xl font-semibold text-white group-hover:text-gray-100 transition-colors text-left">
+                      {cards[3]?.title}
+                    </h3>
+                    <p className="text-gray-300 text-sm leading-relaxed group-hover:text-gray-200 transition-colors text-left">
+                      {cards[3]?.description || ''}
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
