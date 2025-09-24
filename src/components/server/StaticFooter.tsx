@@ -27,7 +27,7 @@ export default function StaticFooter() {
           {/* Social icons */}
           <div className="footer-social">
             <a 
-              href="https://www.instagram.com/chimeraisaas/" 
+              href="https://www.youtube.com/@chimer-ai" 
               target="_blank" 
               rel="noopener noreferrer" 
               className="social-button"
@@ -38,7 +38,7 @@ export default function StaticFooter() {
             </a>
 
             <a 
-              href="https://www.instagram.com/creamoda.ai/" 
+              href="https://www.instagram.com/chimeraisaas/" 
               target="_blank" 
               rel="noopener noreferrer" 
               className="social-button"
@@ -127,9 +127,9 @@ export default function StaticFooter() {
       </div>
       
       {/* Copyright Section */}
-      <div className="max-w-7xl lg:max-w-[1450px] xl:max-w-[1550px] 2xl:max-w-[1650px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24">
-        <div className="footer-copyright">
-          <p>©2025 CHIMER AI PTE.LTD</p>
+      <div className="max-w-7xl lg:max-w-[1450px] xl:max-w-[1550px] 2xl:max-w-[1650px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24" style={{ marginTop: '34px' }}>
+        <div className="footer-copyright" style={{ padding: '30px 0', borderTop: '1px solid rgba(255, 255, 255, 0.1)', backgroundColor: '#0a0a0a' }}>
+          <p style={{ fontFamily: 'system-ui, -apple-system, sans-serif', fontSize: '14px', color: 'rgba(255, 255, 255, 0.4)', margin: '0', textAlign: 'left', marginLeft: '-8px' }}>©2025 CHIMER AI PTE.LTD</p>
         </div>
       </div>
     </footer>

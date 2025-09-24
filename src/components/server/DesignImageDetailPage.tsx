@@ -91,18 +91,18 @@ const ModifyDesignCard = React.memo(function ModifyDesignCard({
   return (
     <button
       onClick={onClick}
-      className="flex flex-col items-center justify-center gap-1 p-2 rounded-sm cursor-pointer transition-all duration-200 hover:bg-white/25 flex-shrink-0 min-w-0"
+      className="flex flex-row items-center justify-start gap-2 px-2 py-0.5 rounded-sm cursor-pointer transition-all duration-200 hover:bg-white/25 flex-shrink-0 min-w-0"
       style={{
         background: 'rgba(255, 255, 255, 0.18)',
         border: '0.5px solid rgba(255, 255, 255, 0.4)',
         width: 'calc(25% - 6px)',
-        minHeight: '60px'
+        minHeight: '40px'
       }}
     >
       <div className="w-5 h-5 flex-shrink-0">
         {icon}
       </div>
-      <span className="text-white text-xs font-medium leading-tight break-words neue-machina text-center mt-1">
+      <span className="text-white text-xs font-medium leading-tight break-words neue-machina text-left">
         {title}
       </span>
     </button>
@@ -222,16 +222,32 @@ export default function DesignImageDetailPage({ image, similarImages = [] }: Des
   }, [image.slug, similarImages]);
 
   return (
-    <div className="w-full max-w-6xl mx-auto px-4 py-8 pt-20">
-      {/* 注入组件样式 */}
-      <style dangerouslySetInnerHTML={{ __html: componentStyles }} />
-      
-      {/* 主要内容区域 */}
-      <div className="grid h-full grid-rows-[1.6fr_1fr] overflow-hidden">
-        {/* 上半部分：返回按钮 + 图片 + 右侧内容 */}
-        <div className="grid grid-cols-[auto_1fr_2fr] gap-6 p-6 overflow-visible">
-          {/* 返回按钮 - 在图片左边 */}
-          <div className="flex items-start pt-4">
+    <div className="relative w-full min-h-screen">
+      {/* 桌面端背景图片 - 上半部分全宽 */}
+      <div 
+        className="hidden lg:block fixed top-0 left-0 w-full h-[70vh] z-0"
+        style={{
+          backgroundImage: `url(${image.image_url})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }}
+      >
+        {/* 渐变遮罩 - 新的渐变和模糊效果 */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black backdrop-blur-[200px]"></div>
+      </div>
+
+      {/* 桌面端主要内容区域 */}
+      <div className="hidden lg:block relative z-10 w-full max-w-6xl mx-auto px-4 py-8 pt-20">
+        {/* 注入组件样式 */}
+        <style dangerouslySetInnerHTML={{ __html: componentStyles }} />
+        
+        {/* 主要内容区域 */}
+        <div className="grid h-full grid-rows-[1.6fr_1fr] overflow-hidden">
+        {/* 上半部分：图片 + 右侧内容 */}
+        <div className="flex flex-col gap-6 p-6 overflow-visible">
+          {/* 返回按钮 - 在顶部居左 */}
+          <div className="flex items-center justify-start">
             <button
               onClick={() => router.back()}
               className="flex items-center gap-2 text-white hover:text-white/80 transition-colors duration-200 neue-machina"
@@ -245,12 +261,14 @@ export default function DesignImageDetailPage({ image, similarImages = [] }: Des
                   strokeLinejoin="round"
                 />
               </svg>
-              <span className="text-sm font-medium">Back</span>
+              <span className="text-sm font-medium">Back to list</span>
             </button>
           </div>
-
-          {/* 左侧图片（圆角） */}
-          <div className="w-full h-full rounded-xl overflow-hidden bg-black flex items-center justify-center relative">
+          
+          {/* 图片和右侧内容区域 */}
+          <div className="grid grid-cols-[1fr_2fr] gap-6 flex-1 overflow-visible">
+            {/* 左侧图片 */}
+            <div className="w-full h-full rounded-xl overflow-hidden bg-black flex items-center justify-center relative">
             {/* 图片骨架屏 */}
             {!imageLoaded && (
               <div className="absolute inset-0 z-10">
@@ -279,22 +297,22 @@ export default function DesignImageDetailPage({ image, similarImages = [] }: Des
               }}
               priority
             />
-          </div>
+            </div>
           
           {/* 右侧内容 */}
-          <div className="w-full h-full bg-[#0b0b0c]/60 rounded-xl text-white overflow-visible">
-            {/* 右侧内容分为上下两部分 */}
-            <div className="h-full flex flex-col overflow-visible">
-              {/* 上半部分 */}
-              <div className="flex-1 px-8 py-6 flex flex-col overflow-visible">
+          <div className="w-full h-full text-white overflow-visible">
+            {/* 圆角容器，白色10%背景 - 与图片同高度 */}
+            <div className="bg-white/10 rounded-lg p-6 h-full flex flex-col">
+              {/* 容器top - 标题和标签组，上下居中 */}
+              <div className="flex-1 flex flex-col justify-center">
                 {/* 标题 */}
-                <h1 
-                  className={`text-white text-[32px] leading-[1.025] max-w-[498px] mb-6 instrument-sans transition-opacity duration-300 ${
+                <div 
+                  className={`text-white text-[24px] leading-[1.5]  mb-1 instrument-sans transition-opacity duration-300 ${
                     fontsLoaded ? 'opacity-100' : 'opacity-90'
                   }`}
                 >
                   {image.clothing_description || 'Fashion Design'}
-                </h1>
+                </div>
                 
                 {/* 标签组 */}
                 <div className="flex items-center gap-3">
@@ -323,22 +341,16 @@ export default function DesignImageDetailPage({ image, similarImages = [] }: Des
                     </span>
                   </div>
                 </div>
-                
-                {/* Generated by 文字紧跟标签组 */}
-                <div className="mt-6">
-                  <p 
-                    className="text-white text-[10px] font-bold leading-[2.2] w-full neue-machina"
-                  >
-                    Created by Creamoda
-                  </p>
-                </div>
-                
+              </div>
+
+              {/* 容器bottom - 按钮和功能卡片，置底 */}
+              <div className="flex flex-col justify-end">
                 {/* 按钮组 */}
-                <div className="flex flex-col items-stretch gap-3 mt-6">
+                <div className="flex flex-col items-stretch gap-3">
                   {/* Generate Similar Designs 按钮 */}
                   <div className="flex flex-col">
                   <button 
-                      className="flex items-center justify-center gap-2.5 px-3 py-[11px] w-full h-[42px] rounded-[4px] text-black text-[20px] font-bold leading-[1.1] text-center cursor-pointer hover:bg-gray-100 transition-all duration-200 outline-none focus:outline-none focus-visible:outline-none active:outline-none"
+                      className="flex items-center justify-center gap-2.5 px-3 py-[14px] w-full h-[50px] rounded-[4px] text-black text-[17px] font-bold leading-[1.1] text-center cursor-pointer hover:bg-gray-100 transition-all duration-200 outline-none focus:outline-none focus-visible:outline-none active:outline-none"
                     style={{ 
                         backgroundColor: '#FFFFFF',
                       border: 'none',
@@ -349,23 +361,23 @@ export default function DesignImageDetailPage({ image, similarImages = [] }: Des
                       e.preventDefault();
                       e.stopPropagation();
                       console.log('Button clicked!');
-                      // 跳转到 fashion-design/create 页面，并传递 clothing_description 参数
-                      const encodedDescription = encodeURIComponent(image.clothing_description || '');
-                      const targetUrl = `/fashion-design/create?prompt=${encodedDescription}&tab=text-to-image`;
+                      // 跳转到 fashion-design/create 页面，并传递 complete_prompt 参数
+                      const encodedPrompt = encodeURIComponent(image.complete_prompt || '');
+                      const targetUrl = `/fashion-design/create?prompt=${encodedPrompt}&tab=text-to-image`;
                       console.log('跳转到:', targetUrl);
-                      console.log('原始描述:', image.clothing_description);
+                      console.log('原始提示词:', image.complete_prompt);
                       router.push(targetUrl);
                     }}
                   >
-                    Generate Similar Designs
-                  </button>
+                      Generate Similar Designs
+                    </button>
                     {/* 下划线 */}
                     <div className="w-full h-px bg-white/15 mt-4"></div>
                   </div>
                   
                   {/* Or modify the design 文字 */}
-                  <div className="mt-2 mb-3 flex items-center justify-center">
-                    <span className="text-white/80 text-sm neue-machina">Or modify the design</span>
+                  <div className="mt-2 mb-3 flex items-center justify-start">
+                    <span className="text-white/80 text-sm">Or modify the design</span>
                       </div>
                   
                   {/* 修改设计功能卡片 */}
@@ -446,12 +458,8 @@ export default function DesignImageDetailPage({ image, similarImages = [] }: Des
                   </div>
                 </div>
               </div>
-              
-              {/* 下半部分 - 预留给后续内容 */}
-              <div className="px-8 pb-6">
-                {/* 下半部分内容稍后补充 */}
-              </div>
             </div>
+          </div>
           </div>
         </div>
 
@@ -460,7 +468,7 @@ export default function DesignImageDetailPage({ image, similarImages = [] }: Des
           <div className="flex items-center justify-center mb-3 mt-6">
             <div className="flex-1 h-px bg-gray-600"></div>
           <div 
-              className="text-white text-base sm:text-lg font-medium mx-4 neue-machina"
+              className="text-white text-base sm:text-lg font-medium mx-4"
           >
               More Like This
             </div>
@@ -493,6 +501,236 @@ export default function DesignImageDetailPage({ image, similarImages = [] }: Des
                     }}
                   />
 
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      </div>
+      </div>
+
+      {/* 移动端布局 */}
+      <div className="lg:hidden w-full px-4 py-8 pt-20">
+        {/* 注入组件样式 */}
+        <style dangerouslySetInnerHTML={{ __html: componentStyles }} />
+        
+        {/* 返回按钮 - 在顶部居左 */}
+        <div className="flex items-center justify-start mb-6">
+          <button
+            onClick={() => router.back()}
+            className="flex items-center gap-2 text-white hover:text-white/80 transition-colors duration-200"
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path 
+                d="M10 12L6 8L10 4" 
+                stroke="currentColor" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+              />
+            </svg>
+            <span className="text-sm font-medium">Back</span>
+          </button>
+        </div>
+
+        {/* 上半部分：图片 + 蒙版内容 */}
+        <div className="relative w-full aspect-[3/4] rounded-xl overflow-hidden bg-black mb-6">
+          <Image
+            src={image.image_url}
+            alt={image.clothing_description || ''}
+            fill
+            sizes="100vw"
+            className="object-cover"
+            style={{
+              opacity: imageLoaded ? 1 : 0,
+              transition: 'opacity 300ms ease',
+              transform: 'translateZ(0)'
+            }}
+            onLoad={() => {
+              console.log('Image loaded successfully:', image.image_url);
+              setImageLoaded(true);
+            }}
+            onError={(e) => {
+              console.error('Failed to load image:', image.image_url, e);
+              setImageLoaded(true); // 即使加载失败也隐藏骨架屏
+            }}
+            priority
+          />
+          
+          {/* 图片骨架屏 */}
+          {!imageLoaded && (
+            <div className="absolute inset-0 z-10">
+              <Skeleton className="w-full h-full bg-white/10 animate-pulse rounded-xl" />
+            </div>
+          )}
+
+          {/* 底部蒙版和标题标签 */}
+          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/80 to-transparent p-4 z-10">
+            {/* 标题 */}
+            <h2 
+              className={`text-white text-lg leading-[1.4] mb-3 instrument-sans transition-opacity duration-300 ${
+                fontsLoaded ? 'opacity-100' : 'opacity-90'
+              }`}
+            >
+              {image.clothing_description || 'Fashion Design'}
+            </h2>
+            
+            {/* 标签组 */}
+            <div className="flex items-center gap-2 flex-wrap">
+              <div className="flex items-center gap-1">
+                <span className="text-white text-sm font-medium">#</span>
+                <span className="text-white text-xs font-medium instrument-sans">
+                  {image.type || 'Fashion'}
+                </span>
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="text-white text-sm font-medium">#</span>
+                <span className="text-white text-xs font-medium instrument-sans">
+                  {image.gender || 'Unisex'}
+                </span>
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="text-white text-sm font-medium">#</span>
+                <span className="text-white text-xs font-normal instrument-sans">
+                  {image.feature || 'AI Generated'}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 下半部分：按钮和功能卡片 */}
+        <div className="w-full">
+          {/* Generate Similar Designs 按钮 */}
+          <button 
+            className="w-full bg-white text-black py-3 rounded-md text-sm font-medium mb-4"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              const encodedPrompt = encodeURIComponent(image.complete_prompt || '');
+              const targetUrl = `/fashion-design/create?prompt=${encodedPrompt}&tab=text-to-image`;
+              router.push(targetUrl);
+            }}
+          >
+            Generate Similar Designs
+          </button>
+
+          {/* Or modify the design 文字 - 左对齐 */}
+          <div className="mb-4 text-left">
+            <span className="text-white/80 text-sm">Or modify the design</span>
+          </div>
+
+          {/* 修改设计功能卡片 - 2x2 网格布局 */}
+          <div className="grid grid-cols-2 gap-3 mb-8">
+            <button
+              onClick={() => {
+                const encodedImageUrl = encodeURIComponent(image.image_url || '');
+                const targetUrl = `/fashion-design/create?imageUrl=${encodedImageUrl}&tab=image-to-image&variationType=8`;
+                router.push(targetUrl);
+              }}
+              className="flex items-center gap-2 p-3 rounded-md bg-white/20 backdrop-blur-sm"
+            >
+              <svg width="16" height="16" viewBox="0 0 21 21" fill="none">
+                <path d="M17.0664 2.59985H3.73307C2.8126 2.59985 2.06641 3.34605 2.06641 4.26652V17.5999C2.06641 18.5203 2.8126 19.2665 3.73307 19.2665H17.0664C17.9869 19.2665 18.7331 18.5203 18.7331 17.5999V4.26652C18.7331 3.34605 17.9869 2.59985 17.0664 2.59985Z" stroke="white" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M5.40039 5.93311V9.26644" stroke="white" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M12.0664 12.5999V15.9332" stroke="white" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M8.73438 5.93311V9.26644" stroke="white" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M12.0664 5.93311H15.3997" stroke="white" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M5.40039 12.5999H8.73372" stroke="white" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M12.0664 9.26636H15.3997" stroke="white" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M5.40039 15.9331H8.73372" stroke="white" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M15.4004 12.5999V15.9332" stroke="white" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              <span className="text-white text-xs font-medium">Change Fabric</span>
+            </button>
+
+            <button
+              onClick={() => {
+                const encodedImageUrl = encodeURIComponent(image.image_url || '');
+                const targetUrl = `/fashion-design/create?imageUrl=${encodedImageUrl}&tab=image-to-image&variationType=11`;
+                router.push(targetUrl);
+              }}
+              className="flex items-center gap-2 p-3 rounded-md bg-white/20 backdrop-blur-sm"
+            >
+              <svg width="16" height="16" viewBox="0 0 21 21" fill="none">
+                <path d="M15.8164 8.01652V16.3499M15.8164 16.3499V19.2665H4.98307V16.3499M15.8164 16.3499H18.7331V8.01652C18.7331 6.76652 17.8997 5.30819 16.6497 4.26652C15.3997 3.22485 12.8997 2.59985 12.8997 2.59985H7.89974C7.89974 2.59985 5.39974 3.22485 4.14974 4.26652C2.89974 5.30819 2.06641 6.76652 2.06641 8.01652V16.3499H4.98307M4.98307 16.3499V8.01652" stroke="white" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M12.9004 2.59985C12.9004 3.98057 11.7811 5.09985 10.4004 5.09985C9.01968 5.09985 7.90039 3.98057 7.90039 2.59985" stroke="white" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              <span className="text-white text-xs font-medium">Change Style</span>
+            </button>
+
+            <button
+              onClick={() => {
+                const encodedImageUrl = encodeURIComponent(image.image_url || '');
+                const targetUrl = `/magic-kit/create?imageUrl=${encodedImageUrl}&variationType=1`;
+                router.push(targetUrl);
+              }}
+              className="flex items-center gap-2 p-3 rounded-md bg-white/20 backdrop-blur-sm"
+            >
+              <svg width="16" height="16" viewBox="0 0 21 21" fill="none">
+                <path d="M6.87109 18.3499L17.9822 7.23949L14.1717 3.34985L7.56549 9.95605" stroke="white" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M12.1504 13.4331H18.7341V19.2664H4.65039" stroke="white" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M1.73438 2.93311H7.56771V16.2664C7.56771 17.8773 6.26187 19.1831 4.65104 19.1831C3.04021 19.1831 1.73438 17.8773 1.73438 16.2664V2.93311Z" stroke="white" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              <span className="text-white text-xs font-medium">Change Color</span>
+            </button>
+
+            <button
+              onClick={() => {
+                const encodedImageUrl = encodeURIComponent(image.image_url || '');
+                const targetUrl = `/fashion-design/create?imageUrl=${encodedImageUrl}&tab=image-to-image&variationType=9`;
+                router.push(targetUrl);
+              }}
+              className="flex items-center gap-2 p-3 rounded-md bg-white/20 backdrop-blur-sm"
+            >
+              <svg width="16" height="16" viewBox="0 0 21 21" fill="none">
+                <g clipPath="url(#clip0_177_3516)">
+                  <path d="M18.7331 2.59988C18.7331 2.59988 14.3955 1.8503 12.8997 4.26655C11.7863 6.06515 13.3164 8.01656 13.3164 8.01656M18.7331 2.59988L13.3164 8.01656M18.7331 2.59988C18.7331 2.59988 19.4827 6.93744 17.0664 8.43323C15.2678 9.54665 13.3164 8.01656 13.3164 8.01656M13.3164 8.01656L12.0664 9.26656" stroke="white" strokeWidth="1.66667" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M13.3164 13.8499L12.0664 12.5999M13.3164 13.8499C13.3164 13.8499 11.7863 15.8013 12.8997 17.5999C14.3955 20.0161 18.7331 19.2665 18.7331 19.2665M13.3164 13.8499L18.7331 19.2665M13.3164 13.8499C13.3164 13.8499 15.2678 12.3198 17.0664 13.4332C19.4827 14.929 18.7331 19.2665 18.7331 19.2665" stroke="white" strokeWidth="1.66667" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M7.59299 8.01656L8.84299 9.26656M7.59299 8.01656C7.59299 8.01656 9.12307 6.06515 8.00966 4.26655C6.51386 1.8503 2.1763 2.59988 2.1763 2.59988M7.59299 8.01656L2.1763 2.59988M7.59299 8.01656C7.59299 8.01656 5.64157 9.54665 3.84296 8.43323C1.42672 6.93744 2.1763 2.59988 2.1763 2.59988" stroke="white" strokeWidth="1.66667" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M7.59299 13.8499L8.84299 12.5999M7.59299 13.8499C7.59299 13.8499 9.12307 15.8013 8.00966 17.5999C6.51386 20.0161 2.1763 19.2665 2.1763 19.2665M7.59299 13.8499L2.1763 19.2665M7.59299 13.8499C7.59299 13.8499 5.64157 12.3198 3.84296 13.4332C1.42672 14.929 2.1763 19.2665 2.1763 19.2665" stroke="white" strokeWidth="1.66667" strokeLinecap="round" strokeLinejoin="round"/>
+                </g>
+                <defs>
+                  <clipPath id="clip0_177_3516">
+                    <rect width="20" height="20" fill="white" transform="translate(0.400391 0.933105)"/>
+                  </clipPath>
+                </defs>
+              </svg>
+              <span className="text-white text-xs font-medium">Change Printing</span>
+            </button>
+          </div>
+
+          {/* More like this 标题 - 左对齐 */}
+          <div className="mb-4 text-left">
+            <span className="text-white text-base font-medium">More like this</span>
+          </div>
+
+          {/* 相似图片 - 两行两张 */}
+          <div className="grid grid-cols-2 gap-3">
+            {isLoadingRelated ? (
+              // 加载骨架屏
+              Array.from({ length: 4 }).map((_, idx) => (
+                <div key={`loading-${idx}`} className="w-full overflow-hidden rounded-md" style={{ aspectRatio: '3 / 4' }}>
+                  <Skeleton className="w-full h-full bg-white/10" />
+                </div>
+              ))
+            ) : (
+              relatedImages.slice(0, 4).map((img, idx) => (
+                <div
+                  key={`mobile-related-${img.id}-${idx}`}
+                  className="w-full overflow-hidden rounded-md cursor-pointer relative group"
+                  style={{ aspectRatio: '3 / 4' }}
+                  onClick={() => {
+                    window.location.href = `/designs/${img.slug}`;
+                  }}
+                >
+                  <MemoizedImageWithSkeleton
+                    src={img.image_url}
+                    alt={img.clothing_description || ''}
+                    onClick={() => {
+                      window.location.href = `/designs/${img.slug}`;
+                    }}
+                  />
                 </div>
               ))
             )}

@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react'
 import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 interface FeatureCard {
   id: string
@@ -13,24 +14,17 @@ interface FeatureCard {
 
 const featureCards: FeatureCard[] = [
   {
-    id: 'background-remover',
-    title: 'Image background remover',
-    description: 'Instantly cut out subjects and get a clean,transparent PNG in seconds..',
-    image: '/marketing/images/main/offer/one.png',
+    id: 'fashion-agent',
+    title: 'Fashion Agent',
+    description: 'Streamline design, prototyping, and marketing with an end-to-end AI fashion assistant.',
+    image: '/marketing/images/main/offer/nine.png',
     gradientOverlay: 'bg-gradient-to-t from-black/20 to-transparent'
   },
   {
-    id: 'background-changer',
-    title: 'Image background Changer',
-    description: 'Replace any background with custom colors, images, or scenes.',
-    image: '/marketing/images/main/offer/two.png',
-    gradientOverlay: 'bg-gradient-to-t from-black/20 to-transparent'
-  },
-  {
-    id: 'color-changer',
-    title: 'Image Color Changer',
-    description: 'Instantly swap product or object colors with realistic results.',
-    image: '/marketing/images/main/offer/three.png',
+    id: 'outfit-generator',
+    title: 'AI Outfit Generator',
+    description: 'Generate and customize fashion outfits — swap fabrics, tweak styles, redesign patterns, all in one tool.',
+    image: '/marketing/images/main/offer/eight.png',
     gradientOverlay: 'bg-gradient-to-t from-black/20 to-transparent'
   },
   {
@@ -48,6 +42,20 @@ const featureCards: FeatureCard[] = [
     gradientOverlay: 'bg-gradient-to-t from-black/20 to-transparent'
   },
   {
+    id: 'background-remover',
+    title: 'Image background remover',
+    description: 'Instantly cut out subjects and get a clean,transparent PNG in seconds..',
+    image: '/marketing/images/main/offer/one.png',
+    gradientOverlay: 'bg-gradient-to-t from-black/20 to-transparent'
+  },
+  {
+    id: 'background-changer',
+    title: 'Image background Changer',
+    description: 'Replace any background with custom colors, images, or scenes.',
+    image: '/marketing/images/main/offer/two.png',
+    gradientOverlay: 'bg-gradient-to-t from-black/20 to-transparent'
+  },
+  {
     id: 'image-enhancer',
     title: 'Image Enhancer',
     description: 'Boost image resolution up to 2× without losing sharpness or detail.',
@@ -62,15 +70,28 @@ const featureCards: FeatureCard[] = [
     gradientOverlay: 'bg-gradient-to-t from-black/20 to-transparent'
   },
   {
-    id: 'outfit-generator',
-    title: 'AI Outfit Generator',
-    description: 'Generate and customize fashion outfits — swap fabrics, tweak styles, redesign patterns, all in one tool.',
-    image: '/marketing/images/main/offer/eight.png',
+    id: 'color-changer',
+    title: 'Image Color Changer',
+    description: 'Instantly swap product or object colors with realistic results.',
+    image: '/marketing/images/main/offer/three.png',
     gradientOverlay: 'bg-gradient-to-t from-black/20 to-transparent'
   }
 ]
 
+// 功能ID到路径的映射
+const featureRouteMap: Record<string, string> = {
+  'background-remover': '/image-background-remover',
+  'background-changer': '/image-background-changer',
+  'color-changer': '/image-color-changer',
+  'sketch-converter': '/sketch-to-image',
+  'virtual-tryon': '/virtual-try-on',
+  'outfit-generator': '/outfit-generator',
+  'image-enhancer': '/image-enhancer',
+  'image-changer': '/image-changer'
+}
+
 const StaticOfferMore: React.FC = () => {
+  const router = useRouter()
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const [canScrollLeft, setCanScrollLeft] = useState(false)
   const [canScrollRight, setCanScrollRight] = useState(true)
@@ -109,8 +130,13 @@ const StaticOfferMore: React.FC = () => {
   }
 
   const handleTryNow = (featureId: string) => {
-    // Handle try now button click
-    console.log(`Try now clicked for: ${featureId}`)
+    // 根据功能ID获取对应的路径
+    const route = featureRouteMap[featureId]
+    if (route) {
+      router.push(route)
+    } else {
+      console.warn(`No route found for feature: ${featureId}`)
+    }
   }
 
   // Initialize scroll state on mount
@@ -225,7 +251,7 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ card, onTryNow }) => {
   return (
     <div className="relative">
       {/* Card Container */}
-      <div className="w-80 h-[450px] rounded-lg overflow-hidden relative group">
+      <div className="w-80 h-[490px] rounded-lg overflow-hidden relative group">
         {/* Background Image */}
         <div className="absolute inset-0">
           <div 
@@ -260,7 +286,7 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ card, onTryNow }) => {
             <div className="-ml-2">
               <button 
                 onClick={onTryNow}
-                className="inline-flex items-center gap-2 pl-2 bg-white rounded-2xl shadow-[0px_0px_40px_0px_rgba(255,255,255,0.6)] hover:shadow-xl transition-all duration-200 group/btn"
+                className="inline-flex items-center gap-2 pl-2 bg-white rounded-2xl shadow-[0px_0px_40px_0px_rgba(255,255,255,0.6)] group/btn"
               >
                 <span className="text-[#5F2EFF] font-semibold text-sm">
                   Try now

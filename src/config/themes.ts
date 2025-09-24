@@ -38,15 +38,15 @@ export const themes: Record<string, ThemeConfig> = {
       ]
     },
     whyChoose: {
-      title: 'Why us',
+      title: 'Why Choose Creamoda AI?',
       cards: [
         {
           title: 'Professional-Quality Precision for Complex Edges',
-          description: 'Creamoda provides professional grade accuracy for complex edges such as hair, fur, and glass, without watermarks or reduced resolution, making it ideal for professionals who require pixel perfect transparency.'
+          description: 'We provide professional grade accuracy for complex edges such as hair, fur, and glass, ideal for professionals who require pixel perfect transparency.'
         },
         {
           title: 'Smart Detection Model for Flawless Transparency',
-          description: 'Advanced detection model preserves fine details like lace or water droplets while auto-smoothing jagged edges, ensuring clean cuts even for translucent objects. If needed, you can reprocess with one click, and we recommend using well-lit, high-contrast images for optimal results.'
+          description: 'Advanced detection model preserves fine details like lace or water droplets while auto-smoothing jagged edges, ensuring clean cuts even for translucent objects.'
         },
         {
           title: 'Rapid Single-Image Processing for Workflow Efficiency',
@@ -162,7 +162,7 @@ export const themes: Record<string, ThemeConfig> = {
       ]
     },
     whyChoose: {
-      title: 'Why us',
+      title: 'Why Choose Creamoda AI?',
       cards: [
         {
           title: 'Instant Professional Background Replacement',
@@ -174,7 +174,7 @@ export const themes: Record<string, ThemeConfig> = {
         },
         {
           title: 'Effortless Customization for Diverse Needs',
-          description: 'Creamoda offers over a hundred preset design features, allowing for personalized customization by simply choosing according to your needs, making it ideal for users who require fast and versatile editing.'
+          description: 'We offer over a hundred preset design features for personalized customization, making it ideal for users who require fast and versatile editing.'
         }
       ]
     },
@@ -286,7 +286,7 @@ export const themes: Record<string, ThemeConfig> = {
       ]
     },
     whyChoose: {
-      title: 'Why us',
+      title: 'Why Choose Creamoda AI?',
       cards: [
         {
           title: 'Pixel-Perfect AI Reconstruction',
@@ -410,7 +410,7 @@ export const themes: Record<string, ThemeConfig> = {
       ]
     },
     whyChoose: {
-      title: 'Why us',
+      title: 'Why Choose Creamoda AI?',
       cards: [
         {
           title: 'Pixel-Perfect Color Accuracy',
@@ -515,7 +515,7 @@ export const themes: Record<string, ThemeConfig> = {
       ]
     },
     fusionGuide: {
-      title: 'How to achieve style fusion?',
+      title: 'How to Generate Model Try-on Images From Apparel?',
       cards: [
         {
           icon: '/marketing/images/feature/upload.svg',
@@ -535,7 +535,7 @@ export const themes: Record<string, ThemeConfig> = {
       ]
     },
     whyChoose: {
-      title: 'Why us',
+      title: 'Why Choose Creamoda AI?',
       cards: [
         {
           title: 'Realistic Fit Simulation',
@@ -663,7 +663,7 @@ export const themes: Record<string, ThemeConfig> = {
       ]
     },
     whyChoose: {
-      title: 'Why us',
+      title: 'Why Choose Creamoda AI?',
       cards: [
         {
           title: 'Unlimited Creativity for Diverse Needs',
@@ -789,7 +789,7 @@ export const themes: Record<string, ThemeConfig> = {
       ]
     },
     whyChoose: {
-      title: 'Why us',
+      title: 'Why Choose Creamoda AI?',
       cards: [
         {
           
@@ -798,7 +798,7 @@ export const themes: Record<string, ThemeConfig> = {
         },
         {
           title: 'AI-Powered Material Autofill',
-          description: 'Automatically detects garment components (collars, sleeves, etc.) and applies physically accurate fabric textures with proper draping, stitching, and lighting effects. AI intelligently matches materials to design intent (e.g., silk for eveningwear, denim for casual).'
+          description: 'Automatically detects garment components (collars, sleeves, etc.) and applies physically accurate fabric textures with proper draping, stitching, and lighting effects.'
         },
         {
           title: 'AI Material Mapping',
@@ -914,7 +914,7 @@ export const themes: Record<string, ThemeConfig> = {
       ]
     },
     whyChoose: {
-      title: 'Why us',
+      title: 'Why Choose Creamoda AI?',
       cards: [
         {
           title: 'AI-Powered Detail Preservation',
@@ -1038,7 +1038,7 @@ export const themes: Record<string, ThemeConfig> = {
       ]
     },
     whyChoose: {
-      title: 'Why us',
+      title: 'Why Choose Creamoda AI?',
       cards: [
         {
           title: 'Seamless Integration',
@@ -1142,22 +1142,22 @@ export const themes: Record<string, ThemeConfig> = {
       ]
     },
     fusionGuide: {
-      title: 'How to Use Our Design Tools?',
+      title: 'How to Get Your Fashion Design Ideas',
       cards: [
         {
           icon: '/marketing/images/feature/upload.svg',
-          title: 'Choose Your Tool',
-          description: 'Select from our comprehensive suite of AI-powered design tools tailored for fashion and creative professionals.'
+          title: 'Visit Designs Page',
+          description: 'Explore a wide range of AI-generated outfits across casualwear, couture, sportswear, and more.'
         },
         {
           icon: '/marketing/images/feature/upload.svg',
-          title: 'Design & Create',
-          description: 'Use intuitive interfaces and AI assistance to bring your creative vision to life with professional results.'
+          title: 'Find the Perfect Idea',
+          description: 'Filter by style or category to discover looks that fit your vision or upcoming collection.'
         },
         {
           icon: '/marketing/images/feature/upload.svg',
-          title: 'Export & Share',
-          description: 'Download high-quality results and share your creations directly from our platform.'
+          title: 'Create Similar Designs',
+          description: 'Use our AI fashion design tools to instantly produce variations and turn inspiration into new designs.'
         }
       ]
     },

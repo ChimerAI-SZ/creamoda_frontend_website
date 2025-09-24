@@ -39,7 +39,7 @@ const FashionAgent: React.FC = () => {
         <div className="flex flex-col items-center gap-6 sm:gap-10 lg:gap-14 w-full max-w-4xl">
           {/* Title and Description */}
           <div className="flex flex-col items-center gap-4 lg:gap-6 text-center">
-            <h1 className="text-2xl sm:text-3xl lg:text-5xl font-normal text-white leading-tight" style={{ fontFamily: 'Instrument Sans' }}>
+            <h1 className="text-3xl sm:text-3xl lg:text-5xl font-normal text-white leading-tight" style={{ fontFamily: 'Instrument Sans' }}>
               One Flow, Endless Possibilities
             </h1>
             <p className="hidden sm:block text-base lg:text-xl font-medium text-white/70 leading-tight max-w-4xl">
@@ -49,36 +49,49 @@ const FashionAgent: React.FC = () => {
           
           {/* Input Area - Static Display */}
           <div className="w-full max-w-4xl">
-            <div className="bg-white/20 backdrop-blur-sm rounded-3xl p-4 sm:p-6 lg:p-8 flex flex-col gap-3 lg:gap-4 min-h-[80px] sm:min-h-[120px] lg:min-h-[180px] border border-white/10">
-              {/* Input Field - Static */}
-              <div className="flex-1">
-                <div className="w-full h-full bg-transparent border-none text-base sm:text-lg lg:text-2xl text-white/70 flex items-center">
+            <div className="bg-white/20 backdrop-blur-sm rounded-xl sm:rounded-3xl p-3 sm:p-6 lg:p-8 border border-white/10">
+              {/* Mobile Layout - Input and Send Button on Same Row */}
+              <div className="flex sm:hidden items-center gap-3">
+                <div className="flex-1 bg-transparent border-none text-base text-white/70 flex items-center min-h-[40px]">
                   <span style={{ letterSpacing: '-0.75%' }}>Type your idea…</span>
                 </div>
+                <div className="bg-white hover:bg-white/90 text-black rounded-full w-8 h-8 p-1.5 flex items-center justify-center cursor-pointer transition-all duration-200 flex-shrink-0">
+                  <ArrowUp className="w-full h-full" />
+                </div>
               </div>
-              
-              {/* Controls Row - Static */}
-              <div className="flex items-center justify-end">
-                {/* Left Side - Image and Link Buttons (Hidden on mobile) */}
-                <div className="hidden sm:flex items-center gap-2 mr-auto">
-                  <div className="bg-white/10 text-white rounded-full px-3 py-2 h-auto gap-1 flex items-center cursor-pointer hover:bg-white/20 transition-all duration-200">
-                    <div className="w-4 h-4">
-                      <ImageIcon className="w-4 h-4" />
-                    </div>
-                    <span className="text-sm font-normal">Image</span>
-                  </div>
-                  
-                  <div className="bg-white/10 text-white rounded-full px-3 py-2 h-auto gap-1 flex items-center cursor-pointer hover:bg-white/20 transition-all duration-200">
-                    <div className="w-4 h-4">
-                      <LinkIcon className="w-4 h-4" />
-                    </div>
-                    <span className="text-sm font-normal">Link</span>
+
+              {/* Desktop Layout - Original Structure */}
+              <div className="hidden sm:flex flex-col gap-3 lg:gap-4 min-h-[120px] lg:min-h-[180px]">
+                {/* Input Field - Static */}
+                <div className="flex-1">
+                  <div className="w-full h-full bg-transparent border-none text-lg lg:text-2xl text-white/70 flex items-center">
+                    <span style={{ letterSpacing: '-0.75%' }}>Type your idea…</span>
                   </div>
                 </div>
                 
-                {/* Right Side - Send Button */}
-                <div className="bg-white hover:bg-white/90 text-black rounded-full w-8 h-8 p-1.5 flex items-center justify-center cursor-pointer transition-all duration-200">
-                  <ArrowUp className="w-full h-full" />
+                {/* Controls Row - Static */}
+                <div className="flex items-center justify-end">
+                  {/* Left Side - Image and Link Buttons */}
+                  <div className="flex items-center gap-2 mr-auto">
+                    <div className="bg-white/10 text-white rounded-full px-3 py-2 h-auto gap-1 flex items-center cursor-pointer hover:bg-white/20 transition-all duration-200">
+                      <div className="w-4 h-4">
+                        <ImageIcon className="w-4 h-4" />
+                      </div>
+                      <span className="text-sm font-normal">Image</span>
+                    </div>
+                    
+                    <div className="bg-white/10 text-white rounded-full px-3 py-2 h-auto gap-1 flex items-center cursor-pointer hover:bg-white/20 transition-all duration-200">
+                      <div className="w-4 h-4">
+                        <LinkIcon className="w-4 h-4" />
+                      </div>
+                      <span className="text-sm font-normal">Link</span>
+                    </div>
+                  </div>
+                  
+                  {/* Right Side - Send Button */}
+                  <div className="bg-white hover:bg-white/90 text-black rounded-full w-8 h-8 p-1.5 flex items-center justify-center cursor-pointer transition-all duration-200">
+                    <ArrowUp className="w-full h-full" />
+                  </div>
                 </div>
               </div>
             </div>

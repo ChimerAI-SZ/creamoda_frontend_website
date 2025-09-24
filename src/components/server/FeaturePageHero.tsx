@@ -175,34 +175,90 @@ export default function FeaturePageHero({ theme, saasUrl, currentRoute }: Featur
         }}>
           <div className="upload-demo-area" style={{
             background: 'rgba(0, 0, 0, 0.55)',
-            padding: '50px 40px',
+            padding: '80px 40px',
             width: '100%',
             textAlign: 'center'
           }}>
+            {/* Upload Image Component */}
+            <div style={{
+              width: '100px',
+              height: '100px',
+              position: 'relative',
+              margin: '0 auto auto'
+            }}>
+              {/* Background frame - rotated */}
+              <div style={{
+                width: '50px',
+                height: '50px',
+                left: '42px',
+                top: '10px',
+                position: 'absolute',
+                transform: 'rotate(20deg)',
+                transformOrigin: 'top left',
+                opacity: 0.5,
+                background: 'rgba(255, 255, 255, 0.35)',
+                boxShadow: '-1px 3px 5px rgba(0, 0, 0, 0.15)',
+                borderRadius: '10px',
+                border: '2px white solid'
+              }} />
+              
+              {/* Main frame with image */}
+              <div style={{
+                width: '76.7px',
+                height: '76.7px',
+                left: '5.4px',
+                top: '0px',
+                position: 'absolute',
+                transform: 'rotate(4deg)',
+                transformOrigin: 'top left',
+               
+                overflow: 'hidden'
+              }}>
+                <Image
+                  src="/marketing/images/hero/upload_img.png"
+                  alt="Upload preview"
+                  fill
+                  style={{ objectFit: 'cover' }}
+                />
+              </div>
+            </div>
+            
             <Link 
               href={saasUrl} 
               className="upload-demo-btn"
+              style={{
+                padding: '18px 32px',
+                fontSize: '20px',
+                fontWeight: '600',
+                borderRadius: '12px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '12px',
+                minWidth: '200px',
+                marginTop: '-15px'
+              }}
             >
               <Image
                 src="/marketing/images/upload.svg"
                 alt="Upload icon"
-                width={22}
-                height={22}
+                width={28}
+                height={28}
                 className="upload-icon"
               />
               {heroMain.uploadText}
             </Link>
             
-            <p style={{ 
+            {/* <p style={{ 
               color: 'rgba(255, 255, 255, 0.8)', 
               marginTop: '18px', 
               marginBottom: '25px',
               fontSize: '18px'
             }}>
               {heroMain.uploadSubText}
-            </p>
+            </p> */}
             
-            <button style={{
+            {/* <button style={{
               background: 'rgba(128, 128, 128, 0.6)',
               color: 'white',
               border: 'none',
@@ -222,13 +278,13 @@ export default function FeaturePageHero({ theme, saasUrl, currentRoute }: Featur
                 height={16}
               />
               Upload Tips
-            </button>
+            </button> */}
             
             <div style={{
               width: '80%',
               height: '1px',
               background: 'rgba(128, 128, 128, 0.5)',
-              margin: '0 auto 30px auto'
+              margin: '0 auto'
             }}></div>
             
             <div className="demo-suggestions">
@@ -317,64 +373,39 @@ export default function FeaturePageHero({ theme, saasUrl, currentRoute }: Featur
               </p>
             </div>
 
-            {/* Action Buttons */}
+            {/* Action Button */}
             <div style={{
               display: 'flex',
-              gap: '10px'
+              width: '100%'
             }}>
               <Link 
                 href={saasUrl}
                 style={{
-                  flex: '2',
+                  width: '100%',
                   background: '#6b4ff6',
                   color: 'white',
                   border: 'none',
                   borderRadius: '12px',
-                  padding: '14px 20px',
-                  fontSize: '15px',
+                  padding: '16px 24px',
+                  fontSize: '18px',
                   fontWeight: '600',
                   textDecoration: 'none',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  gap: '8px',
+                  gap: '12px',
                   fontFamily: "'Instrument Sans', system-ui, -apple-system, sans-serif"
                 }}
               >
                 <Image
                   src="/marketing/images/upload.svg"
                   alt="Upload icon"
-                  width={18}
-                  height={18}
+                  width={24}
+                  height={24}
                   style={{ filter: 'brightness(0) invert(1)' }}
                 />
                 {heroMain.uploadText}
               </Link>
-              <button style={{
-                flex: '1',
-                background: 'rgba(128, 128, 128, 0.6)',
-                color: 'white',
-                border: 'none',
-                borderRadius: '12px',
-                padding: '14px 20px',
-                fontSize: '15px',
-                fontWeight: '600',
-                cursor: 'pointer',
-                fontFamily: "'Instrument Sans', system-ui, -apple-system, sans-serif",
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px'
-              }}>
-                <Image
-                  src="/marketing/images/link.svg"
-                  alt="Link icon"
-                  width={18}
-                  height={18}
-                  style={{ filter: 'brightness(0) invert(1)' }}
-                />
-                Url
-              </button>
             </div>
           </div>
         </div>

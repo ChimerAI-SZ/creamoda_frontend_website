@@ -76,7 +76,6 @@ export default function StaticWhyChoose({ theme }: StaticWhyChooseProps) {
                     className={`
                       group relative p-6 lg:p-8 transition-all duration-300
                       ${!card.title ? 'opacity-50' : ''}
-                      ${index < cards.length - 1 ? 'border-b border-white/20 lg:border-b-0' : ''}
                     `}
                   >
                     <div className="space-y-3 lg:space-y-4">

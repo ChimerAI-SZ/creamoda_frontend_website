@@ -114,7 +114,7 @@ const componentStyles = `
 
   /* 标题字体稳定性 */
   .title-stable {
-    font-family: 'Neue Machina Ultrabold', 'Neue Machina', system-ui, -apple-system, sans-serif;
+   
     font-weight: 900;
     font-display: swap;
     font-synthesis: none;
@@ -381,7 +381,7 @@ const ModifyDesignCard = memo(function ModifyDesignCard({
       <div className="w-5 h-5 flex-shrink-0">
         {icon}
       </div>
-      <span className="text-white text-xs font-medium leading-tight break-words">
+      <span className="text-white text-xs font-medium leading-tight break-words text-left">
         {title}
       </span>
     </button>
@@ -392,7 +392,7 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [selectedGenders, setSelectedGenders] = useState<string[]>(['Female']);
+  const [selectedGenders, setSelectedGenders] = useState<string[]>(['All']);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [fontsLoaded, setFontsLoaded] = useState(false);
 
@@ -422,6 +422,7 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
   ];
 
   const genderOptions = [
+    { id: 'All', label: 'All' },
     { id: 'Female', label: 'Female' },
     { id: 'Male', label: 'Male' }
   ];
@@ -447,11 +448,8 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
   };
 
   const handleGenderSelect = (genderId: string) => {
-    const newSelectedGenders = selectedGenders.includes(genderId)
-      ? selectedGenders.filter(id => id !== genderId)
-      : [...selectedGenders, genderId];
-    
-    setSelectedGenders(newSelectedGenders);
+    // 改为单选模式
+    setSelectedGenders([genderId]);
     setIsFiltering(true); // 设置筛选状态
     
     // 自动收缩列表
@@ -470,8 +468,7 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
   };
 
   const getSelectedGenderLabels = () => {
-    if (selectedGenders.length === 0) return '';
-    if (selectedGenders.length === genderOptions.length) return 'All';
+    if (selectedGenders.length === 0) return 'All';
     return selectedGenders.map(id => 
       genderOptions.find(option => option.id === id)?.label
     ).join(', ');
@@ -491,7 +488,7 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
       if (selectedCategories.length > 0) {
         params.type = selectedCategories.join(',');
       }
-      if (selectedGenders.length > 0) {
+      if (selectedGenders.length > 0 && !selectedGenders.includes('All')) {
         params.gender = selectedGenders.join(',');
       }
 
@@ -660,8 +657,24 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
 
   console.log('Component state:', { hasMore, currentPage, isLoadingMore, allImagesCount: allImages.length });
 
+  // 检查是否为移动端
+  const isMobile = () => {
+    if (typeof window === 'undefined') return false;
+    return window.innerWidth < 1024; // lg断点
+  };
+
   // 使用useCallback优化openDetailAt函数
   const openDetailAt = useCallback(async (idx: number) => {
+    const image = allImages[idx];
+    if (!image) return;
+
+    // 移动端直接跳转到详情页
+    if (isMobile()) {
+      router.push(`/designs/${image.slug}`);
+      return;
+    }
+
+    // 桌面端显示弹窗
     // 先重置状态，防止布局抖动
     setDialogImageLoaded(false);
     setSelectedIndex(idx);
@@ -674,8 +687,6 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
     
     setDetailOpen(true);
     
-    const image = allImages[idx];
-    if (image) {
       // 使用浏览器历史记录API更新URL，不进行页面跳转
       const newUrl = `/designs/${image.slug}`;
       window.history.pushState({}, '', newUrl);
@@ -688,8 +699,7 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
       } catch (error) {
         console.error('Failed to load image detail:', error);
       }
-    }
-  }, [allImages, fontsLoaded]);
+  }, [allImages, fontsLoaded, router]);
 
   const selectedItem = selectedIndex != null ? allImages[selectedIndex] : null;
 
@@ -755,43 +765,61 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
       <div className="absolute inset-0 bg-black" aria-hidden />
       <div className="relative mx-auto" style={{ maxWidth: '1200px' }}>
         <div className="flex flex-col gap-6">
-          {/* 第一行: Sort by 和类别标签在同一水平线 */}
-          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+          {/* 移动端: Sort by 标题行 */}
+          <div className="flex items-center justify-between lg:hidden">
+            <span 
+              className="text-base"
+              style={{
+                fontWeight: '400',
+                fontSize: '16px',
+                lineHeight: '1.375',
+                color: '#cdccd3'
+              }}
+            >
+              Sort by: 
+            </span>
+            <button
+              onClick={() => {
+                setSelectedCategories([]);
+                setIsFiltering(true);
+              }}
+              className="text-white/80 hover:text-white text-sm underline transition-colors cursor-pointer"
+              style={{
+                fontWeight: '400',
+                fontSize: '14px',
+                lineHeight: '1.375'
+              }}
+            >
+              Clear all
+            </button>
+          </div>
+
+          {/* 移动端: 选择按钮行 */}
+          <div className="flex flex-wrap gap-3 lg:hidden">
             {/* Sort by 下拉框 */}
-            <div className="relative sm:ml-0">
+            <div className="relative">
               <div 
-                className="flex items-center justify-between px-1 sm:px-3 h-10 bg-transparent cursor-pointer backdrop-blur-lg"
+                className="flex items-center justify-between px-2 sm:px-4 h-8 sm:h-10 cursor-pointer backdrop-blur-lg rounded-md"
                 style={{
-                  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                  background: 'rgba(255, 255, 255, 0.18)',
+                  border: '1px solid rgba(255, 255, 255, 0.4)',
+                  minWidth: '100px',
+                  width: 'auto'
                 }}
                 onClick={handleDropdownToggle}
               >
-                <span className="text-base">
                   <span 
+                  className="text-base whitespace-nowrap"
                     style={{
-                      fontFamily: "'Neue Machina', system-ui, sans-serif",
-                      fontWeight: '400',
-                      fontSize: '16px',
-                      lineHeight: '1.375',
-                      color: '#cdccd3'
-                    }}
-                  >
-                    Sort by: 
-                  </span>
-                  <span 
-                    style={{
-                      fontFamily: "'Neue Machina', system-ui, sans-serif",
-                      fontWeight: '400',
-                      fontSize: '16px',
-                      lineHeight: '1.375',
-                      color: '#FFFFFF',
-                      marginLeft: '8px'
-                    }}
-                  >
-                    {getSelectedGenderLabels()}
-                  </span>
+                    fontWeight: '400',
+                    fontSize: '16px',
+                    lineHeight: '1.375',
+                    color: '#FFFFFF'
+                  }}
+                >
+                  {getSelectedGenderLabels()}
                 </span>
-                <div className="w-3 h-3 flex items-center justify-center ml-16">
+                <div className="w-3 h-3 flex items-center justify-center ml-2 flex-shrink-0">
                   <svg 
                     width="12" 
                     height="7" 
@@ -813,24 +841,205 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
               {/* 下拉列表 */}
               {isDropdownOpen && (
                 <div 
-                  className="absolute top-12 left-0 z-50 backdrop-blur-xl bg-black/40 border border-white/20 rounded-md shadow-lg"
+                  className="absolute top-12 left-0 z-50 backdrop-blur-xl border border-white/20 rounded-md shadow-lg"
                   style={{ 
-                    width: '207px',
+                    width: '180px',
                     transform: 'translateZ(0)',
-                    willChange: 'auto'
+                    willChange: 'auto',
+                    background: 'rgba(255, 255, 255, 0.18)'
                   }}
                 >
-                  {genderOptions.map((option) => (
+                  {genderOptions.map((option, index) => (
                     <div
                       key={option.id}
                       className="flex items-center px-3 h-10 hover:bg-white/10 cursor-pointer transition-colors"
+                      style={{
+                        borderBottom: index < genderOptions.length - 1 ? '0.50px rgba(255, 255, 255, 0.40) solid' : 'none'
+                      }}
                       onClick={() => handleGenderSelect(option.id)}
                     >
                       <div className="flex-1 flex items-center justify-between">
                         <span 
                           className="text-white text-base"
                           style={{
-                            fontFamily: "'Neue Machina', system-ui, sans-serif",
+                            fontWeight: '400',
+                            fontSize: '16px',
+                            lineHeight: '1.375'
+                          }}
+                        >
+                          {option.label}
+                        </span>
+                        {selectedGenders.includes(option.id) && (
+                          <div className="w-4 h-4 flex items-center justify-center">
+                            <svg width="13" height="9" viewBox="0 0 13 9" fill="none">
+                              <path 
+                                d="M1.5 4.5L5 7.5L11.5 1" 
+                                stroke="#FFFFFF" 
+                                strokeWidth="0.4" 
+                                strokeLinecap="round" 
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* 类别标签 */}
+            {categories.map((category) => {
+              const isSelected = selectedCategories.includes(category.id);
+              return (
+                <button
+                  key={category.id}
+                  className={`px-2 sm:px-3 h-8 sm:h-10 rounded-md flex items-center gap-2 sm:gap-3 cursor-pointer transition-all duration-200 backdrop-blur-xl ${
+                    isSelected 
+                      ? 'text-black' 
+                      : 'text-white hover:bg-white/10'
+                  }`}
+                  style={{
+                    background: isSelected 
+                      ? '#FFFFFF' 
+                      : 'rgba(255, 255, 255, 0.18)',
+                    border: isSelected 
+                      ? '1px solid transparent'
+                      : '1px solid rgba(255, 255, 255, 0.4)',
+                    backgroundImage: isSelected
+                      ? 'linear-gradient(#FFFFFF, #FFFFFF), linear-gradient(45deg, #704DFF, #00D4FF, #704DFF)'
+                      : 'none',
+                    backgroundOrigin: isSelected ? 'border-box' : 'padding-box',
+                    backgroundClip: isSelected ? 'padding-box, border-box' : 'padding-box'
+                  }}
+                  onClick={() => handleCategorySelect(category.id)}
+                >
+                  <span 
+                    className="text-sm sm:text-base"
+                    style={{
+                      fontWeight: '400',
+                      lineHeight: '1.375'
+                    }}
+                  >
+                    {category.label}
+                  </span>
+                  <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 flex items-center justify-center">
+                    {isSelected ? (
+                      // binggo图标
+                      <svg 
+                        width="19" 
+                        height="18" 
+                        viewBox="0 0 19 18" 
+                        fill="none"
+                        className="w-full h-full"
+                      >
+                        <path 
+                          d="M15.9873 3.73633C16.0875 3.73636 16.1867 3.75652 16.2793 3.79492C16.3717 3.83326 16.4557 3.88923 16.5264 3.95996C16.5974 4.03079 16.6539 4.11537 16.6924 4.20801C16.7308 4.30057 16.751 4.39979 16.751 4.5C16.751 4.6002 16.7308 4.69943 16.6924 4.79199C16.6539 4.88463 16.5974 4.96921 16.5264 5.04004L8.65137 12.915C8.58067 12.9858 8.49667 13.0417 8.4043 13.0801C8.31174 13.1185 8.21251 13.1386 8.1123 13.1387C8.01201 13.1387 7.91197 13.1185 7.81934 13.0801C7.72689 13.0416 7.64297 12.985 7.57227 12.9141L3.63477 8.97754C3.49164 8.83441 3.41113 8.63992 3.41113 8.4375C3.41114 8.23509 3.49164 8.04058 3.63477 7.89746C3.77788 7.75442 3.97246 7.6748 4.1748 7.6748C4.37695 7.67488 4.57084 7.75463 4.71387 7.89746L8.1123 11.2959L15.4473 3.95996C15.5179 3.88922 15.602 3.8333 15.6943 3.79492C15.787 3.75648 15.887 3.73633 15.9873 3.73633Z" 
+                          fill="black" 
+                          stroke="black" 
+                          strokeWidth="0.4"
+                        />
+                      </svg>
+                    ) : (
+                      // 加号图标
+                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                        <path 
+                          d="M6 1V11M1 6H11" 
+                          stroke="#FFFFFF" 
+                          strokeWidth="1" 
+                          strokeLinecap="round" 
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    )}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* 桌面端: Sort by 和类别标签在同一水平线 */}
+          <div className="hidden lg:flex flex-row items-center justify-between gap-6">
+            {/* Sort by 下拉框 */}
+            <div className="relative">
+              <div className="flex items-center gap-2">
+                <span 
+                  className="text-base"
+                  style={{
+                      fontWeight: '400',
+                      fontSize: '16px',
+                      lineHeight: '1.375',
+                      color: '#cdccd3'
+                    }}
+                  >
+                    Sort by: 
+                  </span>
+                <div 
+                  className="flex items-center justify-between px-4 h-10 cursor-pointer backdrop-blur-lg rounded-md"
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.18)',
+                    border: '1px solid rgba(255, 255, 255, 0.4)',
+                    minWidth: '100px',
+                    width: 'auto'
+                  }}
+                  onClick={handleDropdownToggle}
+                >
+                  <span 
+                    className="text-base whitespace-nowrap"
+                    style={{
+                      fontWeight: '400',
+                      fontSize: '16px',
+                      lineHeight: '1.375',
+                      color: '#FFFFFF'
+                    }}
+                  >
+                    {getSelectedGenderLabels()}
+                  </span>
+                  <div className="w-3 h-3 flex items-center justify-center ml-2 flex-shrink-0">
+                  <svg 
+                    width="12" 
+                    height="7" 
+                    viewBox="0 0 12 7" 
+                    fill="none"
+                    className={`text-white transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`}
+                  >
+                    <path 
+                      d="M1 1L6 6L11 1" 
+                      stroke="currentColor" 
+                      strokeWidth="1.5" 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  </div>
+                </div>
+              </div>
+
+              {/* 下拉列表 */}
+              {isDropdownOpen && (
+                <div 
+                  className="absolute top-12 left-[74px] z-50 backdrop-blur-xl border border-white/20 rounded-md shadow-lg"
+                  style={{ 
+                    width: '180px',
+                    transform: 'translateZ(0)',
+                    willChange: 'auto',
+                    background: 'rgba(255, 255, 255, 0.18)'
+                  }}
+                >
+                  {genderOptions.map((option, index) => (
+                    <div
+                      key={option.id}
+                      className="flex items-center px-3 h-10 hover:bg-white/10 cursor-pointer transition-colors"
+                      style={{
+                        borderBottom: index < genderOptions.length - 1 ? '0.50px rgba(255, 255, 255, 0.40) solid' : 'none'
+                      }}
+                      onClick={() => handleGenderSelect(option.id)}
+                    >
+                      <div className="flex-1 flex items-center justify-between">
+                        <span 
+                          className="text-white text-base"
+                          style={{
                             fontWeight: '400',
                             fontSize: '16px',
                             lineHeight: '1.375'
@@ -888,7 +1097,6 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
                     <span 
                       className="text-sm sm:text-base"
                       style={{
-                        fontFamily: "'Neue Machina', system-ui, sans-serif",
                         fontWeight: '400',
                         lineHeight: '1.375'
                       }}
@@ -897,21 +1105,19 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
                     </span>
                     <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 flex items-center justify-center">
                       {isSelected ? (
-                        // 勾号图标
+                        // binggo图标
                         <svg 
-                          width="13" 
-                          height="9" 
-                          viewBox="0 0 13 9" 
+                          width="19" 
+                          height="18" 
+                          viewBox="0 0 19 18" 
                           fill="none"
-                          style={{ color: '#000000' }}
+                          className="w-full h-full"
                         >
                           <path 
-                            d="M1.5 4.5L5 7.5L11.5 1" 
-                            stroke="#000000" 
+                            d="M15.9873 3.73633C16.0875 3.73636 16.1867 3.75652 16.2793 3.79492C16.3717 3.83326 16.4557 3.88923 16.5264 3.95996C16.5974 4.03079 16.6539 4.11537 16.6924 4.20801C16.7308 4.30057 16.751 4.39979 16.751 4.5C16.751 4.6002 16.7308 4.69943 16.6924 4.79199C16.6539 4.88463 16.5974 4.96921 16.5264 5.04004L8.65137 12.915C8.58067 12.9858 8.49667 13.0417 8.4043 13.0801C8.31174 13.1185 8.21251 13.1386 8.1123 13.1387C8.01201 13.1387 7.91197 13.1185 7.81934 13.0801C7.72689 13.0416 7.64297 12.985 7.57227 12.9141L3.63477 8.97754C3.49164 8.83441 3.41113 8.63992 3.41113 8.4375C3.41114 8.23509 3.49164 8.04058 3.63477 7.89746C3.77788 7.75442 3.97246 7.6748 4.1748 7.6748C4.37695 7.67488 4.57084 7.75463 4.71387 7.89746L8.1123 11.2959L15.4473 3.95996C15.5179 3.88922 15.602 3.8333 15.6943 3.79492C15.787 3.75648 15.887 3.73633 15.9873 3.73633Z" 
+                            fill="black" 
+                            stroke="black" 
                             strokeWidth="0.4" 
-                            strokeLinecap="round" 
-                            strokeLinejoin="round"
-                            style={{ stroke: '#000000' }}
                           />
                         </svg>
                       ) : (
@@ -931,6 +1137,24 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
                 );
               })}
             </div>
+          </div>
+
+          {/* 桌面端: Clear all */}
+          <div className="hidden lg:flex justify-end">
+            <button
+              onClick={() => {
+                setSelectedCategories([]);
+                setIsFiltering(true);
+              }}
+              className="text-white/80 hover:text-white text-sm underline transition-colors cursor-pointer"
+              style={{
+                fontWeight: '400',
+                fontSize: '14px',
+                lineHeight: '1.375'
+              }}
+            >
+              Clear all
+            </button>
           </div>
 
 
@@ -1015,8 +1239,8 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
           </div>
         </div>
       </div>
-      {/* 详情弹窗 - 响应式优化 */}
-      {detailOpen && (
+       {/* 详情弹窗 - 仅桌面端显示 */}
+       {detailOpen && !isMobile() && (
         <Dialog open={detailOpen} onOpenChange={handleDialogClose}>
           <DialogContent
             closeBtnUnvisible={true}
@@ -1146,11 +1370,11 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
                             e.stopPropagation();
                             console.log('Generate Similar Designs clicked!');
                             if (selectedItem) {
-                              // 跳转到 fashion-design/create 页面，并传递 clothing_description 参数
-                              const encodedDescription = encodeURIComponent(selectedItem.clothing_description || '');
-                              const targetUrl = `/fashion-design/create?prompt=${encodedDescription}&tab=text-to-image`;
+                              // 跳转到 fashion-design/create 页面，并传递 complete_prompt 参数
+                              const encodedPrompt = encodeURIComponent(selectedItem.complete_prompt || '');
+                              const targetUrl = `/fashion-design/create?prompt=${encodedPrompt}&tab=text-to-image`;
                               console.log('跳转到:', targetUrl);
-                              console.log('原始描述:', selectedItem.clothing_description);
+                              console.log('原始提示词:', selectedItem.complete_prompt);
                               router.push(targetUrl);
                             }
                           }}

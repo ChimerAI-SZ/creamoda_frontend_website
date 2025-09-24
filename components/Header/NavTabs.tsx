@@ -15,7 +15,7 @@ const navItems: NavItem[] = [
   { text: 'Design Tools', href: '/fashion-design/create' },
   { text: 'Fashion Agent', href: '/fashion-agent' },
   { text: 'Design Ideas', href: '/designs' },
-  { text: 'Pricing', href: '/pricing' }
+  // { text: 'Pricing', href: '/pricing' }
 ];
 
 function NavItem({ text, href }: NavItem) {

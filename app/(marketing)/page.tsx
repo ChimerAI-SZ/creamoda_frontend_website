@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import StaticHero from '@/src/components/server/StaticHero';
-import Endorsement from '@/src/components/server/Endorsement';
+import Endorsement from '@/src/components/client/Endorsement';
 import { getThemeForRoute } from '@/src/utils/themeRenderer';
 import StaticFooter from '@/src/components/server/StaticFooter';
 import StructuredDataEnhancer from '@/src/components/seo/StructuredDataEnhancer';
@@ -10,6 +10,7 @@ import StaticOfferMore from '@/src/components/server/StaticOfferMore';
 import InsightsBeta from '@/src/components/server/InsightsBeta';
 import ChasingTrends from '@/src/components/server/ChasingTrends';
 import FashionAgent from '@/src/components/server/FasionAgent';
+import OutfitGeneratorFeatureModule from '@/src/components/server/OutfitGeneratorFeatureModule';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://creamoda.ai'),
@@ -80,6 +81,7 @@ export default function Home() {
       <WhyChoose />
       <FashionAgent />
       <HowToUse />
+      <OutfitGeneratorFeatureModule theme={theme} />
       <StaticOfferMore />
       <InsightsBeta />
       <ChasingTrends />

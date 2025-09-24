@@ -21,7 +21,7 @@ const HowDifferent: React.FC = () => {
       title: 'Independent Designers',
       description: 'Turning ideas into prototypes without costly resources.',
       shortDescription: 'Freelance and independent designers can instantly visualize their fashion concepts, experiment with fabrics and cuts, and prepare production-ready drafts—all without hiring large teams or investing heavily in software.',
-      image: '/marketing/images/main/agent/independent.png',
+      image: '/marketing/images/main/agent/independents.png',
       isActive: true
     },
     {
@@ -29,7 +29,7 @@ const HowDifferent: React.FC = () => {
       title: 'E-commerce Sellers',
       description: 'Faster product visuals, stronger sales.',
       shortDescription: 'Small to medium online fashion stores can generate professional product images, create styled mockups, and test multiple looks for marketing campaigns. This makes product listings more engaging while cutting time-to-market.',
-      image: '/marketing/images/main/agent/commers.png',
+      image: '/marketing/images/main/agent/commeres.png',
       isActive: false
     },
     {
@@ -37,7 +37,7 @@ const HowDifferent: React.FC = () => {
       title: 'Marketing Teams',
       description: 'Campaign visuals in hours, not weeks.',
       shortDescription: 'Fashion brands\' marketing teams can use AI to create campaign visuals, seasonal lookbooks, and social content at scale—dramatically reducing dependency on traditional shoots while keeping aesthetics consistent.',
-      image: '/marketing/images/main/agent/marketing.png',
+      image: '/marketing/images/main/agent/marketings.png',
       isActive: false
     },
     {
@@ -45,7 +45,7 @@ const HowDifferent: React.FC = () => {
       title: 'Fashion Students & Creatives',
       description: 'Learn, experiment, and showcase your creativity.',
       shortDescription: 'Fashion students and creative hobbyists can quickly explore ideas, iterate on designs, and build portfolios. The AI assists in turning imagination into polished outputs, lowering the entry barrier for new talent.',
-      image: '/marketing/images/main/agent/fasion.png',
+      image: '/marketing/images/main/agent/fasions.png',
       isActive: false
     }
   ];
@@ -83,8 +83,8 @@ const HowDifferent: React.FC = () => {
                 </div>
                 
                 {/* Title Rectangle */}
-                <div className="bg-[#333333] mx-2 px-4 py-3 mt-4 rounded-lg">
-                  <span className="text-lg font-medium text-white font-['Instrument_Sans',sans-serif]">
+                <div className="bg-[#333333] mx-2 px-2 py-1 mt-4 inline-block w-fit">
+                  <span className="text-sm font-medium text-white font-['Instrument_Sans',sans-serif]">
                     {userType.title}
                   </span>
                 </div>
@@ -113,7 +113,7 @@ const HowDifferent: React.FC = () => {
                   <div key={userType.id} className="flex flex-col flex-1">
                     <button
                       onClick={() => handleUserTypeClick(userType.id)}
-                      className={`flex items-center justify-stretch w-full lg:w-auto px-6 py-6 lg:py-8 rounded-lg text-left transition-all duration-300 flex-1 min-h-[60px] lg:min-h-[120px] ${
+                      className={`flex items-center justify-stretch w-full lg:w-auto px-6 py-4 lg:py-6 rounded-md text-left transition-all duration-300 flex-1 min-h-[60px] lg:min-h-[100px] ${
                         activeUserType === userType.id
                           ? 'bg-white bg-opacity-15 text-white font-medium'
                           : 'bg-transparent text-white font-normal hover:bg-white hover:bg-opacity-10'
@@ -124,8 +124,10 @@ const HowDifferent: React.FC = () => {
                       </span>
                     </button>
                     
-                    {/* Divider Line - only show between items, not after last item */}
-                    {index < userTypes.length - 1 && (
+                    {/* Divider Line - only show between items, not after last item, and not when current or next item is active */}
+                    {index < userTypes.length - 1 && 
+                     activeUserType !== userType.id && 
+                     activeUserType !== userTypes[index + 1].id && (
                       <div className="w-full h-px bg-white bg-opacity-15 my-0"></div>
                     )}
                   </div>

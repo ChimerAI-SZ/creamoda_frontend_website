@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 
@@ -20,20 +20,12 @@ export default function InsightsBeta() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkIfMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-
-    // 初始检查
-    checkIfMobile();
-
-    // 监听窗口大小变化
-    window.addEventListener('resize', checkIfMobile);
-
-    return () => window.removeEventListener('resize', checkIfMobile);
-  }, []);
+  
+  // 拖拽相关状态
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [currentX, setCurrentX] = useState(0);
+  const [dragOffset, setDragOffset] = useState(0);
 
   const cardData: TestimonialData[] = [
 
@@ -75,18 +67,84 @@ export default function InsightsBeta() {
     
   ];
 
-  const goToPrevious = () => {
+  const goToPrevious = useCallback(() => {
     if (currentIndex === 0 || isTransitioning) return;
     setIsTransitioning(true);
     setCurrentIndex((prevIndex) => prevIndex - 1);
     setTimeout(() => setIsTransitioning(false), 300);
-  };
+  }, [currentIndex, isTransitioning]);
 
-  const goToNext = () => {
+  const goToNext = useCallback(() => {
     if (currentIndex >= cardData.length - 1 || isTransitioning) return;
     setIsTransitioning(true);
     setCurrentIndex((prevIndex) => prevIndex + 1);
     setTimeout(() => setIsTransitioning(false), 300);
+  }, [currentIndex, isTransitioning, cardData.length]);
+
+  useEffect(() => {
+    const checkIfMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    // 初始检查
+    checkIfMobile();
+
+    // 监听窗口大小变化
+    window.addEventListener('resize', checkIfMobile);
+
+    return () => window.removeEventListener('resize', checkIfMobile);
+  }, []);
+
+  // 全局鼠标事件监听
+  useEffect(() => {
+    const handleGlobalMouseMove = (e: MouseEvent) => {
+      if (!isDragging || isTransitioning) return;
+      
+      e.preventDefault();
+      const deltaX = e.clientX - startX;
+      setCurrentX(e.clientX);
+      setDragOffset(deltaX);
+    };
+
+    const handleGlobalMouseUp = () => {
+      if (!isDragging || isTransitioning) return;
+      
+      setIsDragging(false);
+      const threshold = 100; // 拖拽阈值
+      
+      if (dragOffset > threshold && currentIndex > 0) {
+        // 向右拖拽，显示上一张
+        goToPrevious();
+      } else if (dragOffset < -threshold && currentIndex < cardData.length - 1) {
+        // 向左拖拽，显示下一张
+        goToNext();
+      }
+      
+      // 重置拖拽状态
+      setDragOffset(0);
+      setStartX(0);
+      setCurrentX(0);
+    };
+
+    if (isDragging) {
+      document.addEventListener('mousemove', handleGlobalMouseMove);
+      document.addEventListener('mouseup', handleGlobalMouseUp);
+      
+      return () => {
+        document.removeEventListener('mousemove', handleGlobalMouseMove);
+        document.removeEventListener('mouseup', handleGlobalMouseUp);
+      };
+    }
+  }, [isDragging, startX, dragOffset, currentIndex, isTransitioning, cardData.length, goToPrevious, goToNext]);
+
+  // 拖拽处理函数
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (isTransitioning) return;
+    e.preventDefault();
+    setIsDragging(true);
+    setStartX(e.clientX);
+    setCurrentX(e.clientX);
+    setDragOffset(0);
   };
 
   // 确定按钮是否可用
@@ -100,7 +158,7 @@ export default function InsightsBeta() {
         <div className="px-6 md:px-12 lg:px-[120px]">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 mb-8 md:mb-12">
             <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-light leading-tight">
-              Insight from our beta testers
+              Insight From Our Beta Testers
             </h2>
             
             {/* Desktop Navigation buttons */}
@@ -137,10 +195,12 @@ export default function InsightsBeta() {
       {/* Cards Section */}
       <div className="w-screen overflow-hidden" style={{ marginLeft: '-2px' }}>
         <div 
-          className="flex transition-transform duration-300 ease-in-out"
+          className={`flex ${isDragging ? '' : 'transition-transform duration-300 ease-in-out'} select-none`}
           style={{ 
-            transform: `translateX(-${currentIndex * (isMobile ? 100 : 66.67)}${isMobile ? 'vw' : '%'})`,
+            transform: `translateX(calc(-${currentIndex * (isMobile ? 100 : 66.67)}${isMobile ? 'vw' : '%'} + ${dragOffset}px))`,
+            cursor: isDragging ? 'grabbing' : 'grab'
           }}
+          onMouseDown={handleMouseDown}
         >
           {cardData.map((card) => (
             <div 

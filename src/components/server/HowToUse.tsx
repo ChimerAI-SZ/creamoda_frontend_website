@@ -20,12 +20,23 @@ const HowToUse: React.FC = () => {
         </div>
         
         {/* 气泡提示框 */}
-        <div className="absolute left-1/2 -translate-x-1/2 bottom-1 lg:bottom-[120px] w-[calc(100%-2rem)] max-w-[500px] lg:w-[500px] flex flex-col">
-          <div className="backdrop-blur-[49px] bg-white/60 rounded-lg px-4 py-3 lg:px-6 lg:py-4 shadow-[0px_12px_49px_0px_rgba(0,0,0,0.06)]">
+        <div className="absolute left-1/2 -translate-x-1/2 bottom-8 lg:bottom-[120px] w-[calc(100%-4rem)] max-w-[500px] lg:w-[500px] flex flex-col">
+          <div className="backdrop-blur-[49px] bg-white/60 rounded-2xl lg:rounded-lg px-6 py-4 lg:px-6 lg:py-4 shadow-[0px_12px_49px_0px_rgba(0,0,0,0.06)] relative">
             <div className="flex items-center gap-2">
               <p className="text-[#161617] text-lg lg:text-3xl font-normal leading-[1.5] tracking-tight flex-1 font-['Inter',system-ui,sans-serif]">
-                A stylish female model with short black hair, wearing a strapless black dress, photographed in a glossy tiled room with dramatic lighting.
+                <span className="lg:hidden">I am a piece of content describing inspiration I am a piece of content describing inspiration.</span>
+                <span className="hidden lg:inline">A stylish female model with short black hair, wearing a strapless black dress, photographed in a glossy tiled room with dramatic lighting.</span>
               </p>
+            </div>
+            {/* 左下角图标 - 仅移动端显示 */}
+            <div className="absolute -bottom-5 left-4 w-6 h-6 lg:hidden">
+              <Image
+                src="/marketing/images/main/how/pubber.png"
+                alt="Bubble indicator"
+                width={24}
+                height={24}
+                className="object-contain"
+              />
             </div>
           </div>
           
