@@ -4,8 +4,8 @@ import Link from 'next/link';
 export default function StaticFooter() {
   return (
     <footer className="footer-section">
-      <div className="max-w-7xl lg:max-w-[1450px] xl:max-w-[1550px] 2xl:max-w-[1650px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24">
-        <div className="flex flex-col lg:flex-row gap-8 lg:gap-16">
+      <div className="max-w-7xl lg:max-w-[1450px] xl:max-w-[1550px] 2xl:max-w-[1650px] mx-auto px-3 sm:px-4 md:px-6 lg:px-12 xl:px-16 2xl:px-24 ">
+        <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 lg:gap-16 w-full min-w-0">
           {/* Left section */}
           <div className="footer-left flex-1">
           {/* Logo */}
@@ -73,52 +73,52 @@ export default function StaticFooter() {
         </div>
           
           {/* Right section */}
-          <div className="footer-right flex-1">
+          <div className="footer-right flex-1 min-w-0 ">
           {/* AI Features Section */}
-          <div className="footer-ai-features">
-            <h3 className="footer-section-title pl-4 sm:pl-0">AI Features</h3>
+          <div className="footer-ai-features min-w-0">
+            <h3 className="footer-section-title pl-2 sm:pl-0 break-words">AI Features</h3>
             <div className="footer-features">
-              <div className="feature-group">
-              <a href="https://agent.chimer-ai.com/" className="feature-item">AI Agent</a>
-              <a href="https://creamoda.ai/fashion-design/create" className="feature-item">Text to Image</a>
-                <a href="https://creamoda.ai/fashion-design/create" className="feature-item">Copy Style</a>
-                <a href="https://creamoda.ai/fashion-design/create" className="feature-item">Mix 2 Images</a>
-                <a href="https://creamoda.ai/fashion-design/create" className="feature-item">Change Clothes</a>
-                <a href="https://creamoda.ai/fashion-design/create" className="feature-item">Fabric to Design</a>
-                <a href="https://creamoda.ai/fashion-design/create" className="feature-item">Sketch to Design</a>
+              <div className="feature-group min-w-0 ">
+              <a href="https://agent.chimer-ai.com/" className="feature-item break-words">AI Agent</a>
+              <a href="https://creamoda.ai/fashion-design/create" className="feature-item break-words">Text to Image</a>
+                <a href="https://creamoda.ai/fashion-design/create" className="feature-item break-words">Copy Style</a>
+                <a href="https://creamoda.ai/fashion-design/create" className="feature-item break-words">Mix 2 Images</a>
+                <a href="https://creamoda.ai/fashion-design/create" className="feature-item break-words">Change Clothes</a>
+                <a href="https://creamoda.ai/fashion-design/create" className="feature-item break-words">Fabric to Design</a>
+                <a href="https://creamoda.ai/fashion-design/create" className="feature-item break-words">Sketch to Design</a>
               </div>
               
-              <div className="feature-group">
-                <a href="https://creamoda.ai/fashion-design/create" className="feature-item">Change Style</a>
-                <a href="https://creamoda.ai/fashion-design/create" className="feature-item">Change Fabric</a>
-                <a href="https://creamoda.ai/fashion-design/create" className="feature-item">Change Printing</a>
-                <a href="https://creamoda.ai/fashion-design/create" className="feature-item">Style Fusion</a>
+              <div className="feature-group min-w-0 ">
+                <a href="https://creamoda.ai/fashion-design/create" className="feature-item break-words">Change Style</a>
+                <a href="https://creamoda.ai/fashion-design/create" className="feature-item break-words">Change Fabric</a>
+                <a href="https://creamoda.ai/fashion-design/create" className="feature-item break-words">Change Printing</a>
+                <a href="https://creamoda.ai/fashion-design/create" className="feature-item break-words">Style Fusion</a>
               </div>
               
-              <div className="feature-group">
-              <a href="https://creamoda.ai/virtual-try-on/create" className="feature-item">Virtual Try-on</a>
-                <a href="https://creamoda.ai/virtual-try-on/create" className="feature-item">Change Pose</a>
+              <div className="feature-group min-w-0 ">
+              <a href="https://creamoda.ai/virtual-try-on/create" className="feature-item break-words">Virtual Try-on</a>
+                <a href="https://creamoda.ai/virtual-try-on/create" className="feature-item break-words">Change Pose</a>
               </div>
 
-              <div className="feature-group">
-              <a href="https://creamoda.ai/magic-kit/create" className="feature-item">Change Color</a>
-              <a href="https://creamoda.ai/magic-kit/create" className="feature-item">Change Background</a>
-                <a href="https://creamoda.ai/magic-kit/create" className="feature-item">Remove Background</a>
-                <a href="https://creamoda.ai/magic-kit/create" className="feature-item">Partial Modification</a>
-                <a href="https://creamoda.ai/magic-kit/create" className="feature-item">Upscale</a>
-                <a href="https://creamoda.ai/magic-kit/create" className="feature-item">Pattern Extraction</a>
-                <a href="https://creamoda.ai/magic-kit/create" className="feature-item">Pattern Application</a>
+              <div className="feature-group min-w-0 ">
+              <a href="https://creamoda.ai/magic-kit/create" className="feature-item break-words">Change Color</a>
+              <a href="https://creamoda.ai/magic-kit/create" className="feature-item break-words">Change Background</a>
+                <a href="https://creamoda.ai/magic-kit/create" className="feature-item break-words">Remove Background</a>
+                <a href="https://creamoda.ai/magic-kit/create" className="feature-item break-words">Partial Modification</a>
+                <a href="https://creamoda.ai/magic-kit/create" className="feature-item break-words">Upscale</a>
+                <a href="https://creamoda.ai/magic-kit/create" className="feature-item break-words">Pattern Extraction</a>
+                <a href="https://creamoda.ai/magic-kit/create" className="feature-item break-words">Pattern Application</a>
               </div>
             </div>
           </div>
           
           {/* Other Links Section */}
-          <div className="footer-other-links">
+          <div className="footer-other-links min-w-0">
             {/* Contact Us Column */}
-            <div className="footer-column">
-              <h3 className="footer-section-title pl-4 sm:pl-0">Contact Us</h3>
+            <div className="footer-column min-w-0">
+              <h3 className="footer-section-title pl-2 sm:pl-0 break-words">Contact Us</h3>
               <div className="footer-links">
-                <a href="mailto:contact@creamoda.ai" className="footer-link">contact@creamoda.ai</a>
+                <a href="mailto:contact@creamoda.ai" className="footer-link break-words">contact@creamoda.ai</a>
               </div>
             </div>
           </div>
@@ -127,9 +127,9 @@ export default function StaticFooter() {
       </div>
       
       {/* Copyright Section */}
-      <div className="max-w-7xl lg:max-w-[1450px] xl:max-w-[1550px] 2xl:max-w-[1650px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24" style={{ marginTop: '34px' }}>
+      <div className="max-w-7xl lg:max-w-[1450px] xl:max-w-[1550px] 2xl:max-w-[1650px] mx-auto px-3 sm:px-4 md:px-6 lg:px-12 xl:px-16 2xl:px-24 " style={{ marginTop: '34px' }}>
         <div className="footer-copyright" style={{ padding: '30px 0', borderTop: '1px solid rgba(255, 255, 255, 0.1)', backgroundColor: '#0a0a0a' }}>
-          <p style={{ fontFamily: 'system-ui, -apple-system, sans-serif', fontSize: '14px', color: 'rgba(255, 255, 255, 0.4)', margin: '0', textAlign: 'left', marginLeft: '-8px' }}>©2025 CHIMER AI PTE.LTD</p>
+          <p className="break-words" style={{ fontFamily: 'system-ui, -apple-system, sans-serif', fontSize: '14px', color: 'rgba(255, 255, 255, 0.4)', margin: '0', textAlign: 'left', marginLeft: '-8px' }}>©2025 CHIMER AI PTE.LTD</p>
         </div>
       </div>
     </footer>

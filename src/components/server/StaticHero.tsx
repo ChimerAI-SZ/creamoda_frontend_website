@@ -55,6 +55,7 @@ export default function StaticHero({ theme, saasUrl, isHomepage = false, current
               .hero-container {
                 min-height: 100vh !important;
                 height: 100vh !important;
+                overflow: hidden !important;
               }
               .hero-desktop {
                 display: flex !important;
@@ -75,13 +76,92 @@ export default function StaticHero({ theme, saasUrl, isHomepage = false, current
               .hero-container {
                 min-height: 85vh !important;
                 height: 85vh !important;
+                max-height: 85vh !important;
                 background-color: #000000 !important;
+                overflow: hidden !important;
               }
               .hero-desktop {
                 display: none !important;
               }
               .hero-mobile {
                 display: block !important;
+              }
+              
+              /* 确保 FeaturePageHero 的移动端布局适应容器高度 */
+              .hero-mobile {
+                height: 100% !important;
+                max-height: 100% !important;
+                min-height: auto !important;
+                padding-top: calc(var(--hero-nav-height, 75px) + 10px) !important;
+                padding-bottom: 10px !important;
+                box-sizing: border-box !important;
+                overflow: hidden !important;
+              }
+              
+              /* 移动端图片容器缩放 */
+              .hero-mobile > div:first-child {
+                width: 90% !important;
+                max-width: 320px !important;
+                aspect-ratio: 3/4 !important;
+                margin: 10px auto 0 auto !important;
+                flex-shrink: 1 !important;
+                min-height: 0 !important;
+              }
+              
+              /* 移动端内容区域缩放 */
+              .hero-mobile > div:last-child {
+                padding: 15px 20px !important;
+                flex-shrink: 1 !important;
+                min-height: 0 !important;
+              }
+              
+              /* 移动端标题字体缩放 */
+              .hero-mobile h2 {
+                font-size: clamp(24px, 5vw, 36px) !important;
+                line-height: 1.1 !important;
+                margin: 0 0 8px 0 !important;
+              }
+              
+              /* 移动端描述文字缩放 */
+              .hero-mobile p {
+                font-size: clamp(12px, 2.5vw, 14px) !important;
+                line-height: 1.3 !important;
+                margin: 0 !important;
+              }
+              
+              /* 移动端按钮缩放 */
+              .hero-mobile a {
+                padding: 12px 20px !important;
+                font-size: 16px !important;
+              }
+              
+              /* 移动端演示图片缩放 */
+              .hero-mobile .demo-thumbnails > div {
+                width: 50px !important;
+                height: 50px !important;
+              }
+            }
+            
+            /* 小屏幕设备进一步优化 */
+            @media (max-width: 480px) {
+              .hero-container {
+                height: 80vh !important;
+                max-height: 80vh !important;
+              }
+              
+              .hero-mobile {
+                padding-top: calc(var(--hero-nav-height, 75px) + 5px) !important;
+                padding-bottom: 5px !important;
+              }
+              
+              .hero-mobile > div:first-child {
+                width: 85% !important;
+                max-width: 280px !important;
+                margin: 5px auto 0 auto !important;
+              }
+              
+              .hero-mobile > div:last-child {
+                padding: 10px 15px !important;
               }
             }
           `

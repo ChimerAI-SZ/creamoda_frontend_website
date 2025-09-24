@@ -14,7 +14,9 @@ interface StaticHeroMainsProps {
 
 export default function StaticHeroMains({ className = '' }: StaticHeroMainsProps) {
   return (
-    <section className={`w-full h-[80vh] md:h-screen -mt-10 md:mt-0 overflow-hidden relative ${className}`}>
+    <section className={`w-full h-[80vh] md:h-screen -mt-10 md:mt-0 overflow-hidden relative ${className}`} style={{
+      maxHeight: '80vh'
+    }}>
       {/* 背景视频层 */}
       <div className="absolute inset-0">
         <video
@@ -120,7 +122,12 @@ export default function StaticHeroMains({ className = '' }: StaticHeroMainsProps
         </div>
 
         {/* 移动端布局 - 参照 Figma 设计 */}
-        <div className="md:hidden flex items-end justify-center gap-1">
+        <div className="md:hidden flex items-end justify-center gap-1" style={{
+          transform: 'scale(0.85)', 
+          transformOrigin: 'center bottom',
+          maxHeight: '200px',
+          overflow: 'hidden'
+        }}>
           {/* 第一列 - 左侧双图堆叠 */}
           <div className="flex flex-col items-center gap-1">
             <div className="relative w-[88px] h-[125px] rounded overflow-hidden opacity-70">

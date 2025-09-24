@@ -188,7 +188,7 @@ export default function OutfitGeneratorFeatureModule({ theme }: OutfitGeneratorF
         
         {/* Subtle fade mask at bottom - only for desktop */}
         <div 
-          className="hidden sm:block absolute inset-x-0 bottom-5 h-2/3 pointer-events-none z-10"
+          className="hidden sm:block absolute inset-x-0 bottom-0 h-2/3 pointer-events-none z-10"
           style={{
             background: 'linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.8) 10%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.3) 75%, transparent 100%)'
           }}
