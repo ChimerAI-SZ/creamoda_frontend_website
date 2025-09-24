@@ -140,96 +140,106 @@ export default function MobileMenuToggle() {
                 <h3 className="text-white text-lg font-semibold mb-3 pb-2 border-b border-gray-400/30">
                   Design Tools
                 </h3>
-                <div className="space-y-3">
-                  <Link
-                    href="/sketch-to-image"
-                    onClick={closeMenu}
-                    className="block text-white/80 hover:text-white text-base transition-colors duration-200"
-                  >
-                    Al Sketch to Image Converter
-                  </Link>
-                  <Link
-                    href="/outfit-generator"
-                    onClick={closeMenu}
-                    className="block text-white/80 hover:text-white text-base transition-colors duration-200"
-                  >
-                    AI outfit generator
-                  </Link>
+                
+                {/* Fashion Design 子分类 */}
+                <div className="mb-4">
+                  <h4 className="text-white text-lg font-semibold mb-3 pb-2 ">
+                    Fashion Design
+                  </h4>
+                  <div className="space-y-2">
+                    <Link
+                      href="/sketch-to-image"
+                      onClick={closeMenu}
+                      className="block text-white/70 hover:text-white text-sm transition-colors duration-200"
+                    >
+                      Al Sketch to Image Converter
+                    </Link>
+                    <Link
+                      href="/outfit-generator"
+                      onClick={closeMenu}
+                      className="block text-white/70 hover:text-white text-sm transition-colors duration-200"
+                    >
+                      AI outfit generator
+                    </Link>
+                  </div>
+                </div>
+
+                {/* Virtual Try-on 独立项 */}
+                <div className="mb-4">
                   <Link
                     href="/virtual-try-on"
                     onClick={closeMenu}
-                    className="block text-white/80 hover:text-white text-base transition-colors duration-200"
+                    className="text-white text-lg font-semibold mb-3 pb-2"
                   >
                     Virtual Try-on
                   </Link>
-                  <Link
-                    href="/image-background-remover"
-                    onClick={closeMenu}
-                    className="block text-white/80 hover:text-white text-base transition-colors duration-200"
-                  >
-                    Image Background Remover
-                  </Link>
-                  <Link
-                    href="/image-background-changer"
-                    onClick={closeMenu}
-                    className="block text-white/80 hover:text-white text-base transition-colors duration-200"
-                  >
-                    Image Background Changer
-                  </Link>
-                  <Link
-                    href="/image-enhancer"
-                    onClick={closeMenu}
-                    className="block text-white/80 hover:text-white text-base transition-colors duration-200"
-                  >
-                    Image Enhancer
-                  </Link>
-                  <Link
-                    href="/image-changer"
-                    onClick={closeMenu}
-                    className="block text-white/80 hover:text-white text-base transition-colors duration-200"
-                  >
-                    AI Image Changer
-                  </Link>
-                  <Link
-                    href="/image-color-changer"
-                    onClick={closeMenu}
-                    className="block text-white/80 hover:text-white text-base transition-colors duration-200"
-                  >
-                    Image Color Changer
-                  </Link>
+                </div>
+
+                {/* Magic Kit 子分类 */}
+                <div className="mb-4">
+                  <h4 className="text-white text-lg font-semibold mb-3 pb-2">
+                    Magic Kit
+                  </h4>
+                  <div className="space-y-2">
+                    <Link
+                      href="/image-background-remover"
+                      onClick={closeMenu}
+                      className="block text-white/70 hover:text-white text-sm transition-colors duration-200"
+                    >
+                      Image Background Remover
+                    </Link>
+                    <Link
+                      href="/image-background-changer"
+                      onClick={closeMenu}
+                      className="block text-white/70 hover:text-white text-sm transition-colors duration-200"
+                    >
+                      Image Background Changer
+                    </Link>
+                    <Link
+                      href="/image-enhancer"
+                      onClick={closeMenu}
+                      className="block text-white/70 hover:text-white text-sm transition-colors duration-200"
+                    >
+                      Image Enhancer
+                    </Link>
+                    <Link
+                      href="/image-changer"
+                      onClick={closeMenu}
+                      className="block text-white/70 hover:text-white text-sm transition-colors duration-200"
+                    >
+                      AI Image Changer
+                    </Link>
+                    <Link
+                      href="/image-color-changer"
+                      onClick={closeMenu}
+                      className="block text-white/70 hover:text-white text-sm transition-colors duration-200"
+                    >
+                      Image Color Changer
+                    </Link>
+                  </div>
                 </div>
               </div>
 
               {/* Fashion Agent 分类 */}
               <div className="mb-6">
-                <h3 className="text-white text-lg font-semibold mb-3 pb-2 border-b border-gray-400/30">
+                <Link
+                  href="/fashion-agent"
+                  onClick={closeMenu}
+                  className="block text-white text-lg font-semibold mb-3 pb-2 border-b border-gray-400/30 hover:text-white/80 transition-colors duration-200"
+                >
                   Fashion Agent
-                </h3>
-                <div className="space-y-3">
-                  <Link
-                    href="/fashion-agent"
-                    onClick={closeMenu}
-                    className="block text-white/80 hover:text-white text-base transition-colors duration-200"
-                  >
-                    AI Fashion Assistant
-                  </Link>
-                </div>
+                </Link>
               </div>
 
               {/* Design Ideas 分类 */}
               <div className="mb-6">
-                <h3 className="text-white text-lg font-semibold mb-3 pb-2 border-b border-gray-400/30">
+                <Link
+                  href="/designs"
+                  onClick={closeMenu}
+                  className="block text-white text-lg font-semibold mb-3 pb-2 border-b border-gray-400/30 hover:text-white/80 transition-colors duration-200"
+                >
                   Design Ideas
-                </h3>
-                <div className="space-y-3">
-                  <Link
-                    href="/designs"
-                    onClick={closeMenu}
-                    className="block text-white/80 hover:text-white text-base transition-colors duration-200"
-                  >
-                    Browse Designs
-                  </Link>
-                </div>
+                </Link>
               </div>
 
               {/* Pricing 分类 */}
