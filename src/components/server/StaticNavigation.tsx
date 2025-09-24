@@ -112,11 +112,9 @@ export default function StaticNavigation({ currentSaasUrl }: StaticNavigationPro
           <Link href="#">AI Image Changer</Link>
           <Link href="#">Image Color Changer</Link>
           
-          <h3>Fashion Agent</h3>
-          <Link href="/fashion-agent">AI Fashion Assistant</Link>
+          <Link href="/fashion-agent">Fashion Agent</Link>
           
-          <h3>Design Ideas</h3>
-          <Link href="/designs">Browse Designs</Link>
+          <Link href="/designs">Design Ideas</Link>
           
           {/* <h3>Pricing</h3>
           <Link href="/pricing">View Plans</Link> */}
