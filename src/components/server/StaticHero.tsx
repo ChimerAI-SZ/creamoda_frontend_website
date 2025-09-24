@@ -44,6 +44,9 @@ export default function StaticHero({ theme, saasUrl, isHomepage = false, current
     <section className="hero-container">
       {/* 功能页面背景图片 - 调整高度与容器一致 */}
       <div className="hero-background" style={{ top: 0, height: '100%' }}>
+        {/* 移动端底部蒙版 */}
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black via-black/60 to-transparent pointer-events-none z-10 md:hidden"></div>
+        
         {/* 响应式背景样式优化 */}
         <style dangerouslySetInnerHTML={{
           __html: `
@@ -70,13 +73,14 @@ export default function StaticHero({ theme, saasUrl, isHomepage = false, current
                 background-size: cover !important;
                 background-position: center center !important;
                 background-repeat: no-repeat !important;
-                height: 85vh !important;
-                min-height: 85vh !important;
+                height: 80vh !important;
+                min-height: 80vh !important;
+                top: 0px !important;
               }
               .hero-container {
-                min-height: 85vh !important;
-                height: 85vh !important;
-                max-height: 85vh !important;
+                min-height: 80vh !important;
+                height: 80vh !important;
+                max-height: 80vh !important;
                 background-color: #000000 !important;
                 overflow: hidden !important;
               }
@@ -100,8 +104,8 @@ export default function StaticHero({ theme, saasUrl, isHomepage = false, current
               
               /* 移动端图片容器缩放 */
               .hero-mobile > div:first-child {
-                width: 90% !important;
-                max-width: 320px !important;
+                width: 100% !important;
+                
                 aspect-ratio: 3/4 !important;
                 margin: 10px auto 0 auto !important;
                 flex-shrink: 1 !important;
@@ -144,6 +148,11 @@ export default function StaticHero({ theme, saasUrl, isHomepage = false, current
             
             /* 小屏幕设备进一步优化 */
             @media (max-width: 480px) {
+              .hero-background {
+                height: 80vh !important;
+                min-height: 80vh !important;
+                top: 0px !important;
+              }
               .hero-container {
                 height: 80vh !important;
                 max-height: 80vh !important;
@@ -155,8 +164,7 @@ export default function StaticHero({ theme, saasUrl, isHomepage = false, current
               }
               
               .hero-mobile > div:first-child {
-                width: 85% !important;
-                max-width: 280px !important;
+              
                 margin: 5px auto 0 auto !important;
               }
               

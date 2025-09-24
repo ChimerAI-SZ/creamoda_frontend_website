@@ -14,9 +14,7 @@ interface StaticHeroMainsProps {
 
 export default function StaticHeroMains({ className = '' }: StaticHeroMainsProps) {
   return (
-    <section className={`w-full h-[80vh] md:h-screen -mt-10 md:mt-0 overflow-hidden relative ${className}`} style={{
-      maxHeight: '80vh'
-    }}>
+    <section className={`w-full h-[80vh] md:h-screen -mt-10 md:mt-0 overflow-hidden relative ${className}`}>
       {/* 背景视频层 */}
       <div className="absolute inset-0">
         <video
