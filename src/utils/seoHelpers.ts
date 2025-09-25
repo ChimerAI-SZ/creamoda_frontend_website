@@ -142,7 +142,7 @@ export function getProductDataForRoute(route: string) {
       category: 'ImageEditingApplication',
       operatingSystem: 'Web',
       softwareVersion: '1.0',
-      image: getFullImageUrl('/marketing/images/hero/sketch_convert/sketch_conv.png'),
+      image: getFullImageUrl('/marketing/images/hero/sketch_convert/sketch_con.png'),
     },
     'free-nano-banana': {
       name: 'Free Nano-Banana Generator',

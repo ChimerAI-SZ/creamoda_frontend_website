@@ -4,7 +4,7 @@ import { ImageIcon, LinkIcon, ArrowUp } from 'lucide-react';
 
 const FashionAgent: React.FC = () => {
   return (
-    <Link href="/fashion-agent" className="block">
+    <Link href="/fashion-agent/create" className="block">
       <div className="relative w-full h-[400px] sm:h-[500px] lg:h-[670px] overflow-hidden cursor-pointer">
       {/* Background Image */}
       <div 

@@ -43,7 +43,14 @@ export default function StaticHero({ theme, saasUrl, isHomepage = false, current
   return (
     <section className="hero-container">
       {/* 功能页面背景图片 - 调整高度与容器一致 */}
-      <div className="hero-background" style={{ top: 0, height: '100%' }}>
+      <div 
+        className="hero-background" 
+        style={{ 
+          top: 0, 
+          height: '100%',
+          backgroundImage: theme.backgroundImage ? `url(${theme.backgroundImage})` : 'url(/marketing/images/bgs.png)'
+        }}
+      >
         {/* 移动端底部蒙版 */}
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black via-black/60 to-transparent pointer-events-none z-10 md:hidden"></div>
         

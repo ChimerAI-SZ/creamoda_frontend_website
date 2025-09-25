@@ -44,6 +44,7 @@ export interface FAQConfig {
 export interface ThemeConfig {
   id: string;
   name: string;
+  backgroundImage?: string;
   heroMain: HeroMainConfig;
   fusionGuide: FusionGuideConfig;
   whyChoose: WhyChooseConfig;

@@ -121,10 +121,9 @@ body {
   left: 0;
   right: 0;
   height: calc(100vh + 80px);
-  background: url('/marketing/images/bgs.png');
-  background-size: cover, cover;
-  background-position: center top, center top;
-  background-repeat: no-repeat, no-repeat;
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
   z-index: 0;
 }
 

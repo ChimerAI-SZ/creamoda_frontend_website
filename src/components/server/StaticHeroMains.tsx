@@ -20,11 +20,21 @@ export default function StaticHeroMains({ className = '' }: StaticHeroMainsProps
         <video
           src="/marketing/images/hero/bg.webm"
           autoPlay
-          loop
           muted
           playsInline
+          preload="metadata"
+          webkit-playsinline="true"
           className="w-full h-full object-cover"
-        />
+          style={{
+            objectFit: 'cover',
+            objectPosition: 'center center'
+          }}
+        >
+          {/* 如果浏览器不支持视频，显示fallback信息 */}
+          <div className="w-full h-full bg-black flex items-center justify-center">
+            <p className="text-white">您的浏览器不支持视频播放</p>
+          </div>
+        </video>
       </div>
 
       {/* 时尚图片网格 - 底部全宽自适应 */}
@@ -253,7 +263,7 @@ export default function StaticHeroMains({ className = '' }: StaticHeroMainsProps
           <div className="flex flex-row items-center gap-2 md:gap-4">
             {/* Chat With Fashion Agent 按钮 - 半透明样式 */}
             <Link
-              href="/fashion-agent"
+              href="/fashion-agent/create"
               className="flex items-center justify-center gap-2 md:px-4 lg:px-5 px-4 md:py-2.5 lg:py-3 py-2.5 rounded-lg transition-all duration-200 group"
               style={{
                 background: 'rgba(255, 255, 255, 0.25)',
@@ -277,7 +287,7 @@ export default function StaticHeroMains({ className = '' }: StaticHeroMainsProps
 
             {/* Start With Creative Tools 按钮 - 白底黑字样式 */}
             <Link
-              href="/designs"
+              href="/fashion-agent"
               className="flex items-center justify-center gap-2 md:px-4 lg:px-5 px-4 md:py-2.5 lg:py-3 py-2.5 bg-white rounded-lg shadow-[0_8px_20px_rgba(0,0,0,0.1)] hover:shadow-[0_12px_24px_rgba(0,0,0,0.15)] transition-all duration-200 group"
             >
               <div className="flex flex-col items-center justify-center">

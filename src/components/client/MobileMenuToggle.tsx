@@ -70,7 +70,7 @@ export default function MobileMenuToggle() {
       {/* 菜单切换按钮 */}
       <button
         onClick={toggleMenu}
-        className="flex items-center justify-center p-2 hover:bg-white/10 rounded-lg transition-colors duration-200"
+        className="flex items-center justify-center p-2 rounded-lg transition-colors duration-200"
         aria-label={isMenuOpen ? "关闭菜单" : "打开菜单"}
       >
         {isMenuOpen ? (
