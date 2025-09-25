@@ -12,6 +12,26 @@
   }
 }
 
+/* Mobile Brand Scroll Animation */
+@keyframes brandScrollMobile {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* Mobile Brand Scroll Animation (Reverse) */
+@keyframes brandScrollMobileReverse {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
 /* Feature Page Hero Responsive Styles */
 @media (max-width: 768px) {
   .hero-desktop {

@@ -169,7 +169,7 @@ export default async function DesignImagePage({ params }: PageProps) {
   const reviewData = getReviewDataForRoute('design');
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-black relative">
       {/* 增强版结构化数据 */}
       <StructuredDataEnhancer
         pageType="product"
@@ -186,7 +186,7 @@ export default async function DesignImagePage({ params }: PageProps) {
       <div className="dropdown-container"></div>
       
       {/* 主要内容区域 */}
-      <main className="flex-1">
+      <main className="flex-1 relative z-10">
         <DesignImageDetailPage image={image} similarImages={similarImages} />
       </main>
       
@@ -196,8 +196,10 @@ export default async function DesignImagePage({ params }: PageProps) {
       {/* 客户端交互增强 */}
       <ClientHeroInteractions currentSaasUrl="https://creamoda.ai/fashion-design/create" />
       
-      {/* Footer */}
-      <StaticFooter />
+      {/* Footer - 确保在最上层显示 */}
+      <div className="relative z-20">
+        <StaticFooter />
+      </div>
     </div>
   );
 }

@@ -80,6 +80,7 @@ const featureCards: FeatureCard[] = [
 
 // 功能ID到路径的映射
 const featureRouteMap: Record<string, string> = {
+  'fashion-agent': '/fashion-agent',
   'background-remover': '/image-background-remover',
   'background-changer': '/image-background-changer',
   'color-changer': '/image-color-changer',
@@ -284,9 +285,13 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ card, onTryNow }) => {
             
             {/* Try Now Button */}
             <div className="-ml-2">
-              <button 
-                onClick={onTryNow}
-                className="inline-flex items-center gap-2 pl-2 bg-white rounded-2xl shadow-[0px_0px_40px_0px_rgba(255,255,255,0.6)] group/btn"
+              <a 
+                href={featureRouteMap[card.id] || '#'}
+                onClick={(e) => {
+                  e.preventDefault()
+                  onTryNow()
+                }}
+                className="inline-flex items-center gap-2 pl-2 bg-white rounded-2xl shadow-[0px_0px_40px_0px_rgba(255,255,255,0.6)] group/btn cursor-pointer"
               >
                 <span className="text-[#5F2EFF] font-semibold text-sm">
                   Try now
@@ -294,7 +299,7 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ card, onTryNow }) => {
                 <div className="w-4 h-4 flex items-center justify-center">
                   <ArrowRight size={12} className="text-[#5F2EFF] stroke-[1.33px]" />
                 </div>
-              </button>
+              </a>
               {/* Purple bottom line same width as button */}
               <div className="h-px bg-[#5F2EFF] ml-2" style={{ width: '55px' }} />
             </div>

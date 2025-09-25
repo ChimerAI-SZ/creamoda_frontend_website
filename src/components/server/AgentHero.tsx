@@ -26,7 +26,6 @@ const AgentHero: React.FC = () => {
           height: '100%'
         }}
         autoPlay
-        loop
         muted
         playsInline
       >

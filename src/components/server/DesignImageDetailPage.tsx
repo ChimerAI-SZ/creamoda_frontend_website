@@ -102,7 +102,7 @@ const ModifyDesignCard = React.memo(function ModifyDesignCard({
       <div className="w-5 h-5 flex-shrink-0">
         {icon}
       </div>
-      <span className="text-white text-xs font-medium leading-tight break-words neue-machina text-left">
+      <span className="text-white text-xs font-medium leading-tight break-words text-left">
         {title}
       </span>
     </button>
@@ -238,7 +238,7 @@ export default function DesignImageDetailPage({ image, similarImages = [] }: Des
       </div>
 
       {/* 桌面端主要内容区域 */}
-      <div className="hidden lg:block relative z-10 w-full max-w-6xl mx-auto px-4 py-8 pt-20">
+      <div className="hidden lg:block relative z-5 w-full max-w-6xl mx-auto px-4 py-8 pt-20">
         {/* 注入组件样式 */}
         <style dangerouslySetInnerHTML={{ __html: componentStyles }} />
         
@@ -249,8 +249,8 @@ export default function DesignImageDetailPage({ image, similarImages = [] }: Des
           {/* 返回按钮 - 在顶部居左 */}
           <div className="flex items-center justify-start">
             <button
-              onClick={() => router.back()}
-              className="flex items-center gap-2 text-white hover:text-white/80 transition-colors duration-200 neue-machina"
+              onClick={() => router.push('/designs')}
+              className="flex items-center gap-2 text-white hover:text-white/80 transition-colors duration-200"
             >
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                 <path 
@@ -517,7 +517,7 @@ export default function DesignImageDetailPage({ image, similarImages = [] }: Des
         {/* 返回按钮 - 在顶部居左 */}
         <div className="flex items-center justify-start mb-6">
           <button
-            onClick={() => router.back()}
+            onClick={() => router.push('/designs')}
             className="flex items-center gap-2 text-white hover:text-white/80 transition-colors duration-200"
           >
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">

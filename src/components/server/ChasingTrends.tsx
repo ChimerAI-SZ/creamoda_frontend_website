@@ -6,12 +6,7 @@ export default function ChasingTrends() {
   return (
     <section className="w-full bg-black text-white py-12 lg:py-20">
       <div className="max-w-7xl lg:max-w-[1450px] xl:max-w-[1550px] 2xl:max-w-[1650px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24">
-        {/* 标题区域 */}
-        <div className="mb-8 md:mb-16">
-          <h2 className="fusion-title text-center lg:!text-left mb-4 pl-4 sm:pl-0">
-            Chasing Trends
-          </h2>
-        </div>
+
 
         {/* 内容区域 */}
         <div className="flex flex-col gap-8">

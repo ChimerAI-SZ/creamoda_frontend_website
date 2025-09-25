@@ -15,6 +15,9 @@ export default function FeaturePageHero({ theme, saasUrl, currentRoute }: Featur
   // 判断是否为需要贴合底部的页面
   const shouldStickToBottom = currentRoute === 'virtual-try-on' || currentRoute === 'outfit-generator' || currentRoute === 'image-color-changer';
   
+  // 判断是否为需要上移标题的页面
+  const shouldMoveUp = currentRoute === 'image-background-changer' || currentRoute === 'image-background-remover' || currentRoute === 'image-enhancer' || currentRoute === 'image-changer' || currentRoute === 'sketch-to-image';
+  
   // 根据页面决定左侧图片容器的transform值
   const getLeftImageTransform = () => {
     if (shouldStickToBottom) {
@@ -118,47 +121,40 @@ export default function FeaturePageHero({ theme, saasUrl, currentRoute }: Featur
               className="sample-img"
               style={{ objectFit: 'contain', objectPosition: 'center' }}
             />
+            {/* 标题和描述容器 - 统一管理间距 */}
             <div style={{
               position: 'absolute',
-              bottom: shouldStickToBottom ? '20%' : (heroMain.imageSize === 'medium' ? '10%' : '20%'),
-              left: '0px',
-              right: '0px',
+              bottom: shouldStickToBottom ? '20%' : (shouldMoveUp ? (heroMain.imageSize === 'medium' ? '20%' : '25%') : (heroMain.imageSize === 'medium' ? '15%' : '20%')),
+              left: shouldStickToBottom ? '-20%' : '0%',
+              right: shouldStickToBottom ? '-20%' : '0%',
               color: 'white',
-              overflow: 'visible'
+              zIndex: 10,
+              pointerEvents: 'none',
+              textAlign: 'center'
             }}>
+              <h2 style={{
+                fontSize: 'clamp(42px, 6vw, 72px)',
+                fontWeight: '500',
+                margin: '0 0 16px 0', // 标题底部16px间距
+                fontFamily: "'Instrument Sans', system-ui, -apple-system, sans-serif",
+                lineHeight: '1.1',
+                color: 'white',
+                width: '100%'
+              }}>
+                {heroMain.title}
+              </h2>
               <p style={{
                 fontSize: 'clamp(12px, 1.5vw, 16px)',
                 lineHeight: '1.5',
                 margin: '0',
                 fontFamily: "'Instrument Sans', system-ui, -apple-system, sans-serif",
                 opacity: '0.95',
-                maxWidth: '90%'
+                maxWidth: '90%',
+                marginLeft: 'auto',
+                marginRight: 'auto'
               }}>
                 {heroMain.subtitle}
               </p>
-            </div>
-            
-            {/* 标题直接在图片内部 */}
-            <div style={{
-              position: 'absolute',
-              bottom: shouldStickToBottom ? '30%' : (heroMain.imageSize === 'medium' ? '20%' : '30%'),
-              left: shouldStickToBottom ? '-20%' : '0%',
-              right: shouldStickToBottom ? '-20%' : '0%',
-              zIndex: 10,
-              pointerEvents: 'none'
-            }}>
-              <h2 style={{
-                fontSize: 'clamp(42px, 6vw, 72px)',
-                fontWeight: '500',
-                margin: '0',
-                fontFamily: "'Instrument Sans', system-ui, -apple-system, sans-serif",
-                lineHeight: '1.1',
-                color: 'white',
-                textAlign: 'center',
-                width: '100%'
-              }}>
-                {heroMain.title}
-              </h2>
             </div>
           </div>
         </div>
