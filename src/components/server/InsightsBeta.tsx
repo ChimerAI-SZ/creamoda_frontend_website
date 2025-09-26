@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 
@@ -17,15 +17,10 @@ interface TestimonialData {
 }
 
 export default function InsightsBeta() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isTransitioning, setIsTransitioning] = useState(false);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
-  
-  // 拖拽相关状态
-  const [isDragging, setIsDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [currentX, setCurrentX] = useState(0);
-  const [dragOffset, setDragOffset] = useState(0);
 
   const cardData: TestimonialData[] = [
 
@@ -67,19 +62,33 @@ export default function InsightsBeta() {
     
   ];
 
-  const goToPrevious = useCallback(() => {
-    if (currentIndex === 0 || isTransitioning) return;
-    setIsTransitioning(true);
-    setCurrentIndex((prevIndex) => prevIndex - 1);
-    setTimeout(() => setIsTransitioning(false), 300);
-  }, [currentIndex, isTransitioning]);
+  const checkScrollButtons = () => {
+    if (scrollContainerRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
+      setCanScrollLeft(scrollLeft > 0);
+      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
+    }
+  };
 
-  const goToNext = useCallback(() => {
-    if (currentIndex >= cardData.length - 1 || isTransitioning) return;
-    setIsTransitioning(true);
-    setCurrentIndex((prevIndex) => prevIndex + 1);
-    setTimeout(() => setIsTransitioning(false), 300);
-  }, [currentIndex, isTransitioning, cardData.length]);
+  const scrollLeft = () => {
+    if (scrollContainerRef.current) {
+      const cardWidth = isMobile ? window.innerWidth : window.innerWidth * 0.6667;
+      scrollContainerRef.current.scrollBy({
+        left: -cardWidth,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollContainerRef.current) {
+      const cardWidth = isMobile ? window.innerWidth : window.innerWidth * 0.6667;
+      scrollContainerRef.current.scrollBy({
+        left: cardWidth,
+        behavior: 'smooth'
+      });
+    }
+  };
 
   useEffect(() => {
     const checkIfMobile = () => {
@@ -88,68 +97,21 @@ export default function InsightsBeta() {
 
     // 初始检查
     checkIfMobile();
+    checkScrollButtons();
 
     // 监听窗口大小变化
     window.addEventListener('resize', checkIfMobile);
+    window.addEventListener('resize', checkScrollButtons);
 
-    return () => window.removeEventListener('resize', checkIfMobile);
+    return () => {
+      window.removeEventListener('resize', checkIfMobile);
+      window.removeEventListener('resize', checkScrollButtons);
+    };
   }, []);
 
-  // 全局鼠标事件监听
-  useEffect(() => {
-    const handleGlobalMouseMove = (e: MouseEvent) => {
-      if (!isDragging || isTransitioning) return;
-      
-      e.preventDefault();
-      const deltaX = e.clientX - startX;
-      setCurrentX(e.clientX);
-      setDragOffset(deltaX);
-    };
-
-    const handleGlobalMouseUp = () => {
-      if (!isDragging || isTransitioning) return;
-      
-      setIsDragging(false);
-      const threshold = 100; // 拖拽阈值
-      
-      if (dragOffset > threshold && currentIndex > 0) {
-        // 向右拖拽，显示上一张
-        goToPrevious();
-      } else if (dragOffset < -threshold && currentIndex < cardData.length - 1) {
-        // 向左拖拽，显示下一张
-        goToNext();
-      }
-      
-      // 重置拖拽状态
-      setDragOffset(0);
-      setStartX(0);
-      setCurrentX(0);
-    };
-
-    if (isDragging) {
-      document.addEventListener('mousemove', handleGlobalMouseMove);
-      document.addEventListener('mouseup', handleGlobalMouseUp);
-      
-      return () => {
-        document.removeEventListener('mousemove', handleGlobalMouseMove);
-        document.removeEventListener('mouseup', handleGlobalMouseUp);
-      };
-    }
-  }, [isDragging, startX, dragOffset, currentIndex, isTransitioning, cardData.length, goToPrevious, goToNext]);
-
-  // 拖拽处理函数
-  const handleMouseDown = (e: React.MouseEvent) => {
-    if (isTransitioning) return;
-    e.preventDefault();
-    setIsDragging(true);
-    setStartX(e.clientX);
-    setCurrentX(e.clientX);
-    setDragOffset(0);
-  };
-
   // 确定按钮是否可用
-  const isPreviousDisabled = currentIndex === 0;
-  const isNextDisabled = currentIndex >= cardData.length - 1;
+  const isPreviousDisabled = !canScrollLeft;
+  const isNextDisabled = !canScrollRight;
 
   return (
     <div className="bg-black text-white">
@@ -164,7 +126,7 @@ export default function InsightsBeta() {
             {/* Desktop Navigation buttons */}
             <div className="hidden md:flex gap-4">
               <button
-                onClick={goToPrevious}
+                onClick={scrollLeft}
                 disabled={isPreviousDisabled}
                 className={`w-12 h-12 flex items-center justify-center transition-all duration-200 ${
                   isPreviousDisabled 
@@ -176,7 +138,7 @@ export default function InsightsBeta() {
                 <ChevronLeft className="w-5 h-5 text-white" />
               </button>
               <button
-                onClick={goToNext}
+                onClick={scrollRight}
                 disabled={isNextDisabled}
                 className={`w-12 h-12 flex items-center justify-center transition-all duration-200 ${
                   isNextDisabled 
@@ -195,12 +157,13 @@ export default function InsightsBeta() {
       {/* Cards Section */}
       <div className="w-screen overflow-hidden" style={{ marginLeft: '-2px' }}>
         <div 
-          className={`flex ${isDragging ? '' : 'transition-transform duration-300 ease-in-out'} select-none`}
+          ref={scrollContainerRef}
+          onScroll={checkScrollButtons}
+          className="flex gap-0 overflow-x-auto scroll-smooth [&::-webkit-scrollbar]:hidden"
           style={{ 
-            transform: `translateX(calc(-${currentIndex * (isMobile ? 100 : 66.67)}${isMobile ? 'vw' : '%'} + ${dragOffset}px))`,
-            cursor: isDragging ? 'grabbing' : 'grab'
+            scrollbarWidth: 'none', 
+            msOverflowStyle: 'none'
           }}
-          onMouseDown={handleMouseDown}
         >
           {cardData.map((card) => (
             <div 
@@ -271,7 +234,7 @@ export default function InsightsBeta() {
       {/* Mobile Navigation buttons */}
       <div className="flex md:hidden justify-center gap-4 pb-8 pt-6">
         <button
-          onClick={goToPrevious}
+          onClick={scrollLeft}
           disabled={isPreviousDisabled}
           className={`w-12 h-12 flex items-center justify-center transition-all duration-200 ${
             isPreviousDisabled 
@@ -283,7 +246,7 @@ export default function InsightsBeta() {
           <ChevronLeft className="w-5 h-5 text-white" />
         </button>
         <button
-          onClick={goToNext}
+          onClick={scrollRight}
           disabled={isNextDisabled}
           className={`w-12 h-12 flex items-center justify-center transition-all duration-200 ${
             isNextDisabled 

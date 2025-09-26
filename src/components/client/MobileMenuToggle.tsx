@@ -8,21 +8,37 @@ export default function MobileMenuToggle() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isDesignSlugPage, setIsDesignSlugPage] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-    // 添加/移除模糊效果的CSS类到body或hero容器
     if (!isMenuOpen) {
+      setIsMenuOpen(true);
+      setIsAnimating(true);
+      // 添加模糊效果的CSS类到body
       document.body.classList.add('mobile-menu-open');
+      // 延迟一帧确保DOM更新后再开始动画
+      requestAnimationFrame(() => {
+        setIsAnimating(false);
+      });
     } else {
-      document.body.classList.remove('mobile-menu-open');
+      setIsAnimating(true);
+      // 延迟关闭，让动画完成
+      setTimeout(() => {
+        setIsMenuOpen(false);
+        setIsAnimating(false);
+        document.body.classList.remove('mobile-menu-open');
+      }, 300);
     }
   };
 
   const closeMenu = () => {
-    setIsMenuOpen(false);
-    // 移除模糊效果
-    document.body.classList.remove('mobile-menu-open');
+    setIsAnimating(true);
+    // 延迟关闭，让动画完成
+    setTimeout(() => {
+      setIsMenuOpen(false);
+      setIsAnimating(false);
+      document.body.classList.remove('mobile-menu-open');
+    }, 300);
   };
 
   // 检查当前路径是否为 /designs/slug
@@ -115,14 +131,15 @@ export default function MobileMenuToggle() {
             onClick={closeMenu}
           />
           
-          {/* 下拉菜单内容 - 全宽度与导航栏一致 */}
+          {/* 下拉菜单内容 - 占据整个视口高度 */}
           <div 
-            className="fixed left-0 right-0 z-40 border-t border-white/10"
+            className="fixed left-0 right-0 z-40 border-t border-white/10 transition-all duration-300 ease-out"
             style={{ 
               top: 'var(--hero-nav-height, 75px)',
+              height: isAnimating ? '0' : 'calc(100vh - var(--hero-nav-height, 75px))',
               background: isScrolled 
                 ? 'rgba(0, 0, 0, 0.88)' 
-                : 'rgba(169, 169, 169, 0.75)',
+                : 'linear-gradient(to right, rgb(101, 101, 101), rgb(67, 68, 70), rgb(39, 40, 40))',
               backdropFilter: isScrolled 
                 ? 'blur(10px) saturate(100%) brightness(100%)'
                 : 'blur(80px) saturate(120%) brightness(95%)',
@@ -131,135 +148,170 @@ export default function MobileMenuToggle() {
                 : 'blur(80px) saturate(120%) brightness(95%)',
               boxShadow: isScrolled 
                 ? '0 1px 0 rgba(255, 255, 255, 0.08)'
-                : '0 1px 0 rgba(255, 255, 255, 0.1)'
+                : '0 1px 0 rgba(255, 255, 255, 0.1)',
+              transform: isAnimating ? 'translateY(-10px)' : 'translateY(0)',
+              opacity: isAnimating ? 0 : 1,
+              overflow: 'hidden'
             }}
           >
-            <div className="px-6 py-6">
-              {/* Design Tools 分类 */}
-              <div className="mb-6">
-                <h3 className="text-white text-lg font-semibold mb-3 pb-2 border-b border-gray-400/30">
-                  Design Tools
-                </h3>
-                
-                {/* Fashion Design 子分类 */}
-                <div className="mb-4">
-                  <h4 className="text-white text-lg font-semibold mb-3 pb-2 ">
-                    Fashion Design
-                  </h4>
-                  <div className="space-y-2">
+            <div 
+              className="px-6 py-6 h-full flex flex-col justify-between transition-opacity duration-300 ease-out"
+              style={{
+                opacity: isAnimating ? 0 : 1,
+                transitionDelay: isAnimating ? '0ms' : '150ms'
+              }}
+            >
+              <div className="flex-1 overflow-y-auto">
+                {/* Design Tools 分类 */}
+                <div 
+                  className="mb-6 transition-opacity duration-300 ease-out"
+                  style={{
+                    opacity: isAnimating ? 0 : 1,
+                    transitionDelay: isAnimating ? '0ms' : '200ms'
+                  }}
+                >
+                  <h3 className="text-white text-lg font-semibold mb-3 pb-2 border-b border-gray-400/30">
+                    Design Tools
+                  </h3>
+                  
+                  {/* Fashion Design 子分类 */}
+                  <div className="mb-4">
+                    <h4 className="text-white text-lg font-semibold mb-3 pb-2 ">
+                      Fashion Design
+                    </h4>
+                    <div className="space-y-2">
+                      <Link
+                        href="/sketch-to-image"
+                        onClick={closeMenu}
+                        className="block text-white/70 hover:text-white text-sm transition-colors duration-200"
+                      >
+                        Al Sketch to Image Converter
+                      </Link>
+                      <Link
+                        href="/outfit-generator"
+                        onClick={closeMenu}
+                        className="block text-white/70 hover:text-white text-sm transition-colors duration-200"
+                      >
+                        AI outfit generator
+                      </Link>
+                    </div>
+                  </div>
+
+                  {/* Virtual Try-on 独立项 */}
+                  <div className="mb-4">
                     <Link
-                      href="/sketch-to-image"
+                      href="/virtual-try-on"
                       onClick={closeMenu}
-                      className="block text-white/70 hover:text-white text-sm transition-colors duration-200"
+                      className="text-white text-lg font-semibold mb-3 pb-2"
                     >
-                      Al Sketch to Image Converter
+                      Virtual Try-on
                     </Link>
-                    <Link
-                      href="/outfit-generator"
-                      onClick={closeMenu}
-                      className="block text-white/70 hover:text-white text-sm transition-colors duration-200"
-                    >
-                      AI outfit generator
-                    </Link>
+                  </div>
+
+                  {/* Magic Kit 子分类 */}
+                  <div className="mb-4">
+                    <h4 className="text-white text-lg font-semibold mb-3 pb-2">
+                      Magic Kit
+                    </h4>
+                    <div className="space-y-2">
+                      <Link
+                        href="/image-background-remover"
+                        onClick={closeMenu}
+                        className="block text-white/70 hover:text-white text-sm transition-colors duration-200"
+                      >
+                        Image Background Remover
+                      </Link>
+                      <Link
+                        href="/image-background-changer"
+                        onClick={closeMenu}
+                        className="block text-white/70 hover:text-white text-sm transition-colors duration-200"
+                      >
+                        Image Background Changer
+                      </Link>
+                      <Link
+                        href="/image-enhancer"
+                        onClick={closeMenu}
+                        className="block text-white/70 hover:text-white text-sm transition-colors duration-200"
+                      >
+                        Image Enhancer
+                      </Link>
+                      <Link
+                        href="/image-changer"
+                        onClick={closeMenu}
+                        className="block text-white/70 hover:text-white text-sm transition-colors duration-200"
+                      >
+                        AI Image Changer
+                      </Link>
+                      <Link
+                        href="/image-color-changer"
+                        onClick={closeMenu}
+                        className="block text-white/70 hover:text-white text-sm transition-colors duration-200"
+                      >
+                        Image Color Changer
+                      </Link>
+                    </div>
                   </div>
                 </div>
 
-                {/* Virtual Try-on 独立项 */}
-                <div className="mb-4">
+                {/* Fashion Agent 分类 */}
+                <div 
+                  className="mb-6 transition-opacity duration-300 ease-out"
+                  style={{
+                    opacity: isAnimating ? 0 : 1,
+                    transitionDelay: isAnimating ? '0ms' : '300ms'
+                  }}
+                >
                   <Link
-                    href="/virtual-try-on"
+                    href="/fashion-agent"
                     onClick={closeMenu}
-                    className="text-white text-lg font-semibold mb-3 pb-2"
+                    className="block text-white text-lg font-semibold mb-3 pb-2 border-b border-gray-400/30 hover:text-white/80 transition-colors duration-200"
                   >
-                    Virtual Try-on
+                    Fashion Agent
                   </Link>
                 </div>
 
-                {/* Magic Kit 子分类 */}
-                <div className="mb-4">
-                  <h4 className="text-white text-lg font-semibold mb-3 pb-2">
-                    Magic Kit
-                  </h4>
-                  <div className="space-y-2">
+                {/* Design Ideas 分类 */}
+                <div 
+                  className="mb-6 transition-opacity duration-300 ease-out"
+                  style={{
+                    opacity: isAnimating ? 0 : 1,
+                    transitionDelay: isAnimating ? '0ms' : '400ms'
+                  }}
+                >
+                  <Link
+                    href="/designs"
+                    onClick={closeMenu}
+                    className="block text-white text-lg font-semibold mb-3 pb-2 border-b border-gray-400/30 hover:text-white/80 transition-colors duration-200"
+                  >
+                    Design Ideas
+                  </Link>
+                </div>
+
+                {/* Pricing 分类 */}
+                {/* <div className="mb-6">
+                  <h3 className="text-white text-lg font-semibold mb-3 pb-2 border-b border-gray-400/30">
+                    Pricing
+                  </h3>
+                  <div className="space-y-3">
                     <Link
-                      href="/image-background-remover"
+                      href="/pricing"
                       onClick={closeMenu}
-                      className="block text-white/70 hover:text-white text-sm transition-colors duration-200"
+                      className="block text-white/80 hover:text-white text-base transition-colors duration-200"
                     >
-                      Image Background Remover
-                    </Link>
-                    <Link
-                      href="/image-background-changer"
-                      onClick={closeMenu}
-                      className="block text-white/70 hover:text-white text-sm transition-colors duration-200"
-                    >
-                      Image Background Changer
-                    </Link>
-                    <Link
-                      href="/image-enhancer"
-                      onClick={closeMenu}
-                      className="block text-white/70 hover:text-white text-sm transition-colors duration-200"
-                    >
-                      Image Enhancer
-                    </Link>
-                    <Link
-                      href="/image-changer"
-                      onClick={closeMenu}
-                      className="block text-white/70 hover:text-white text-sm transition-colors duration-200"
-                    >
-                      AI Image Changer
-                    </Link>
-                    <Link
-                      href="/image-color-changer"
-                      onClick={closeMenu}
-                      className="block text-white/70 hover:text-white text-sm transition-colors duration-200"
-                    >
-                      Image Color Changer
+                      View Plans
                     </Link>
                   </div>
-                </div>
+                </div> */}
               </div>
-
-              {/* Fashion Agent 分类 */}
-              <div className="mb-6">
-                <Link
-                  href="/fashion-agent"
-                  onClick={closeMenu}
-                  className="block text-white text-lg font-semibold mb-3 pb-2 border-b border-gray-400/30 hover:text-white/80 transition-colors duration-200"
-                >
-                  Fashion Agent
-                </Link>
-              </div>
-
-              {/* Design Ideas 分类 */}
-              <div className="mb-6">
-                <Link
-                  href="/designs"
-                  onClick={closeMenu}
-                  className="block text-white text-lg font-semibold mb-3 pb-2 border-b border-gray-400/30 hover:text-white/80 transition-colors duration-200"
-                >
-                  Design Ideas
-                </Link>
-              </div>
-
-              {/* Pricing 分类 */}
-              {/* <div className="mb-6">
-                <h3 className="text-white text-lg font-semibold mb-3 pb-2 border-b border-gray-400/30">
-                  Pricing
-                </h3>
-                <div className="space-y-3">
-                  <Link
-                    href="/pricing"
-                    onClick={closeMenu}
-                    className="block text-white/80 hover:text-white text-base transition-colors duration-200"
-                  >
-                    View Plans
-                  </Link>
-                </div>
-              </div> */}
               
-              {/* 底部登录按钮 */}
-              <div className="pt-4">
+              {/* 底部登录按钮 - 固定在底部 */}
+              <div 
+                className="pt-4 mt-auto transition-opacity duration-300 ease-out"
+                style={{
+                  opacity: isAnimating ? 0 : 1,
+                  transitionDelay: isAnimating ? '0ms' : '500ms'
+                }}
+              >
                 <button 
                   onClick={() => {
                     closeMenu();

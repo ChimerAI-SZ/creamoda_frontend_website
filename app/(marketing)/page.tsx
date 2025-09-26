@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import StaticHero from '@/src/components/server/StaticHero';
+import StaticNavigation from '@/src/components/server/StaticNavigation';
 import Endorsement from '@/src/components/client/Endorsement';
 import { getThemeForRoute } from '@/src/utils/themeRenderer';
 import StaticFooter from '@/src/components/server/StaticFooter';
@@ -11,6 +12,9 @@ import InsightsBeta from '@/src/components/server/InsightsBeta';
 import ChasingTrends from '@/src/components/server/ChasingTrends';
 import FashionAgent from '@/src/components/server/FasionAgent';
 import OutfitGeneratorFeatureModule from '@/src/components/server/OutfitGeneratorFeatureModule';
+import TestHero from '@/src/components/server/TestHero';
+import ClientHeroInteractions from '@/src/components/client/ClientHeroInteractions';
+import ClientGeneralWorkflowInteractions from '@/src/components/client/ClientGeneralWorkflowInteractions';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://creamoda.ai'),
@@ -74,9 +78,19 @@ export default function Home() {
         pageType="homepage"
         currentUrl="/"
       />
-      
+      {/* 独立的导航栏组件 - 添加适当的容器样式 */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-transparent">
+        <div className="hero-content">
+          <StaticNavigation currentSaasUrl={saasUrl} />
+          <div className="dropdown-container"></div>
+          {/* 客户端交互增强 */}
+          <ClientHeroInteractions currentSaasUrl={saasUrl} />
+          <ClientGeneralWorkflowInteractions />
+        </div>
+      </div>
+      <TestHero />
       {/* 静态Hero组件 - 包含所有主要内容 */}
-      <StaticHero theme={theme} saasUrl={saasUrl} isHomepage={true} />
+      {/* <StaticHero theme={theme} saasUrl={saasUrl} isHomepage={true} /> */}
       <Endorsement />
       <WhyChoose />
       <FashionAgent />

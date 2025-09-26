@@ -146,6 +146,279 @@ body {
   transition: filter 0.2s ease;
 }
 
+/* 下拉展开时虚化更多hero元素 - 使用更精确的选择器避免抖动 */
+body.dropdown-active h1,
+body.dropdown-active h2,
+body.dropdown-active p,
+body.dropdown-active a,
+body.dropdown-active button,
+body.dropdown-active img,
+body.dropdown-active [class*="Image"],
+body.dropdown-active .sample-image,
+body.dropdown-active .sample-img,
+body.dropdown-active .upload-demo-btn,
+body.dropdown-active .upload-tips-btn,
+body.dropdown-active .demo-thumbnails,
+body.dropdown-active .demo-thumb,
+body.dropdown-active .demo-img,
+body.dropdown-active .hero-visual,
+body.dropdown-active .hero-visual-img,
+body.dropdown-active .hero-card,
+body.dropdown-active .hero-card-image,
+body.dropdown-active .hero-slide,
+body.dropdown-active .hero-slide-image,
+body.dropdown-active .homepage-hero-cards,
+body.dropdown-active .homepage-hero-cards h1,
+body.dropdown-active .homepage-hero-cards p,
+body.dropdown-active .homepage-hero-cards a,
+body.dropdown-active .homepage-hero-cards button,
+body.dropdown-active .homepage-hero-cards img,
+body.dropdown-active .feature-overview-section,
+body.dropdown-active .feature-card,
+body.dropdown-active .feature-img,
+body.dropdown-active .stacked-cards-section,
+body.dropdown-active .stacked-card,
+body.dropdown-active .stacked-img {
+  filter: blur(6px);
+  transition: filter 0.3s ease;
+  will-change: filter;
+}
+
+/* 专门针对WhyChoose组件的模糊化 */
+body.dropdown-active section[class*="bg-black"] div[class*="rounded-full"],
+body.dropdown-active section[class*="bg-black"] span {
+  filter: blur(6px);
+  transition: filter 0.3s ease;
+  will-change: filter;
+}
+
+/* 专门针对HowToUse组件的模糊化 - 使用更通用的选择器 */
+body.dropdown-active div[class*="bg-\\[\\#222222\\]"] h2,
+body.dropdown-active div[class*="bg-\\[\\#222222\\]"] p,
+body.dropdown-active div[class*="bg-\\[\\#222222\\]"] span,
+body.dropdown-active div[class*="bg-\\[\\#222222\\]"] img,
+body.dropdown-active div[class*="bg-\\[\\#222222\\]"] div {
+  filter: blur(6px);
+  transition: filter 0.3s ease;
+  will-change: filter;
+}
+
+/* 备用方案：直接针对特定文本样式 */
+body.dropdown-active div[class*="text-white/70"],
+body.dropdown-active div[class*="text-lg"],
+body.dropdown-active div[class*="lg:text-2xl"] {
+  filter: blur(6px);
+  transition: filter 0.3s ease;
+  will-change: filter;
+}
+
+/* 专门针对HowToUse组件的步骤标签模糊化 */
+body.dropdown-active div[class*="inline-flex"][class*="items-center"][class*="justify-center"],
+body.dropdown-active div[class*="inline-flex"][class*="items-center"][class*="justify-center"] span {
+  filter: blur(6px);
+  transition: filter 0.3s ease;
+  will-change: filter;
+}
+
+/* 专门针对OutfitGeneratorFeatureModule组件的tags模糊化 */
+body.dropdown-active div[class*="flex"][class*="flex-wrap"][class*="gap-2"],
+body.dropdown-active div[class*="flex"][class*="flex-wrap"][class*="gap-2"] div,
+body.dropdown-active div[class*="flex"][class*="flex-wrap"][class*="gap-2"] div span {
+  filter: blur(6px);
+  transition: filter 0.3s ease;
+  will-change: filter;
+}
+
+/* 专门针对StaticOfferMore组件的模糊化 */
+body.dropdown-active div[class*="bg-cover"][class*="bg-center"][class*="bg-gray-800"],
+body.dropdown-active h3[class*="text-lg"][class*="font-semibold"][class*="text-black"],
+body.dropdown-active p[class*="text-xs"][class*="text-black/50"],
+body.dropdown-active span[class*="text-[#5F2EFF]"][class*="font-semibold"],
+body.dropdown-active div[class*="bg-white"][class*="p-4"],
+body.dropdown-active div[class*="bg-white"][class*="p-4"] h3,
+body.dropdown-active div[class*="bg-white"][class*="p-4"] p,
+body.dropdown-active div[class*="bg-white"][class*="p-4"] span,
+body.dropdown-active div[class*="absolute"][class*="bottom-6"][class*="left-4"],
+body.dropdown-active div[class*="absolute"][class*="bottom-6"][class*="left-4"] h3,
+body.dropdown-active div[class*="absolute"][class*="bottom-6"][class*="left-4"] p,
+body.dropdown-active div[class*="absolute"][class*="bottom-6"][class*="left-4"] span,
+body.dropdown-active div[class*="absolute"][class*="bottom-6"][class*="left-4"] a {
+  filter: blur(6px);
+  transition: filter 0.3s ease;
+  will-change: filter;
+}
+
+/* 专门针对StaticHeroMain组件的模糊化 */
+body.dropdown-active div[class*="upload-demo-area"],
+body.dropdown-active div[class*="upload-demo-area"] a,
+body.dropdown-active div[class*="upload-demo-area"] img,
+body.dropdown-active div[class*="demo-thumbnails"],
+body.dropdown-active div[class*="demo-thumbnails"] div,
+body.dropdown-active div[class*="demo-thumbnails"] img,
+body.dropdown-active div[class*="sample-image"],
+body.dropdown-active div[class*="sample-image"] img,
+body.dropdown-active div[class*="hero-images"],
+body.dropdown-active div[class*="hero-images"] div,
+body.dropdown-active div[class*="hero-images"] img,
+body.dropdown-active div[class*="upload-showcase"],
+body.dropdown-active div[class*="upload-showcase"] div,
+body.dropdown-active div[class*="upload-showcase"] p,
+body.dropdown-active div[class*="demo-suggestions"],
+body.dropdown-active div[class*="demo-suggestions"] p {
+  filter: blur(6px);
+  transition: filter 0.3s ease;
+  will-change: filter;
+}
+
+/* 专门针对StaticFusionGuide组件的模糊化 */
+body.dropdown-active h3[class*="fusion-card-title"],
+body.dropdown-active p[class*="fusion-card-desc"] {
+  filter: blur(6px);
+  transition: filter 0.3s ease;
+  will-change: filter;
+}
+
+/* 专门针对StaticFAQ组件的模糊化 */
+body.dropdown-active details[class*="group"][class*="border-b"][class*="border-gray-600"],
+body.dropdown-active details[class*="group"][class*="border-b"][class*="border-gray-600"] summary,
+body.dropdown-active details[class*="group"][class*="border-b"][class*="border-gray-600"] span,
+body.dropdown-active details[class*="group"][class*="border-b"][class*="border-gray-600"] div,
+body.dropdown-active details[class*="group"][class*="border-b"][class*="border-gray-600"] svg,
+body.dropdown-active h2[class*="text-3xl"][class*="md:text-5xl"][class*="lg:text-7xl"][class*="font-black"][class*="text-white"] {
+  filter: blur(6px);
+  transition: filter 0.3s ease;
+  will-change: filter;
+}
+
+/* 专门针对AgentHero组件的模糊化 */
+body.dropdown-active div[class*="flex"][class*="flex-col"][class*="gap-4"][class*="items-center"][class*="justify-center"][class*="w-full"][class*="max-w-4xl"],
+body.dropdown-active div[class*="flex"][class*="flex-col"][class*="gap-4"][class*="items-center"][class*="justify-center"][class*="w-full"][class*="max-w-4xl"] div,
+body.dropdown-active div[class*="flex"][class*="flex-col"][class*="gap-4"][class*="items-center"][class*="justify-center"][class*="w-full"][class*="max-w-4xl"] input,
+body.dropdown-active div[class*="flex"][class*="flex-col"][class*="gap-4"][class*="items-center"][class*="justify-center"][class*="w-full"][class*="max-w-4xl"] button,
+body.dropdown-active div[class*="flex"][class*="flex-col"][class*="gap-4"][class*="items-center"][class*="justify-center"][class*="w-full"][class*="max-w-4xl"] span {
+  filter: blur(6px);
+  transition: filter 0.3s ease;
+  will-change: filter;
+}
+
+/* 专门针对DesignFilterSection组件的模糊化 */
+body.dropdown-active div[class*="flex"][class*="items-center"][class*="gap-2"],
+body.dropdown-active div[class*="flex"][class*="items-center"][class*="gap-2"] div,
+body.dropdown-active div[class*="flex"][class*="items-center"][class*="gap-2"] span,
+body.dropdown-active div[class*="flex"][class*="items-center"][class*="gap-2"] button,
+body.dropdown-active div[class*="flex"][class*="items-center"][class*="gap-2"] svg {
+  filter: blur(6px);
+  transition: filter 0.3s ease;
+  will-change: filter;
+}
+
+/* 专门针对DesignAboutModule组件的模糊化 */
+body.dropdown-active div[class*="absolute"][class*="inset-0"][class*="bg-contain"][class*="bg-center"][class*="bg-no-repeat"],
+body.dropdown-active div[class*="absolute"][class*="inset-0"][class*="bg-contain"][class*="bg-center"][class*="bg-no-repeat"] div,
+body.dropdown-active div[class*="absolute"][class*="inset-0"][class*="bg-contain"][class*="bg-center"][class*="bg-no-repeat"] h2,
+body.dropdown-active div[class*="absolute"][class*="inset-0"][class*="bg-contain"][class*="bg-center"][class*="bg-no-repeat"] p,
+body.dropdown-active div[class*="absolute"][class*="inset-0"][class*="bg-contain"][class*="bg-center"][class*="bg-no-repeat"] span {
+  filter: blur(6px);
+  transition: filter 0.3s ease;
+  will-change: filter;
+}
+
+/* 专门针对HowToUse组件的模糊化 */
+body.dropdown-active div[class*="backdrop-blur-[49px]"][class*="bg-white/60"][class*="rounded-2xl"][class*="lg:rounded-lg"][class*="px-6"][class*="py-4"][class*="lg:px-6"][class*="lg:py-4"][class*="shadow-[0px_12px_49px_0px_rgba(0,0,0,0.06)]"][class*="relative"],
+body.dropdown-active div[class*="backdrop-blur-[49px]"][class*="bg-white/60"][class*="rounded-2xl"][class*="lg:rounded-lg"][class*="px-6"][class*="py-4"][class*="lg:px-6"][class*="lg:py-4"][class*="shadow-[0px_12px_49px_0px_rgba(0,0,0,0.06)]"][class*="relative"] div,
+body.dropdown-active div[class*="backdrop-blur-[49px]"][class*="bg-white/60"][class*="rounded-2xl"][class*="lg:rounded-lg"][class*="px-6"][class*="py-4"][class*="lg:px-6"][class*="lg:py-4"][class*="shadow-[0px_12px_49px_0px_rgba(0,0,0,0.06)]"][class*="relative"] p,
+body.dropdown-active div[class*="backdrop-blur-[49px]"][class*="bg-white/60"][class*="rounded-2xl"][class*="lg:rounded-lg"][class*="px-6"][class*="py-4"][class*="lg:px-6"][class*="lg:py-4"][class*="shadow-[0px_12px_49px_0px_rgba(0,0,0,0.06)]"][class*="relative"] span,
+body.dropdown-active div[class*="backdrop-blur-[49px]"][class*="bg-white/60"][class*="rounded-2xl"][class*="lg:rounded-lg"][class*="px-6"][class*="py-4"][class*="lg:px-6"][class*="lg:py-4"][class*="shadow-[0px_12px_49px_0px_rgba(0,0,0,0.06)]"][class*="relative"] img,
+body.dropdown-active div[class*="w-[63px]"][class*="h-[21px]"][class*="relative"][class*="ml-4"][class*="hidden"][class*="lg:block"],
+body.dropdown-active div[class*="w-[63px]"][class*="h-[21px]"][class*="relative"][class*="ml-4"][class*="hidden"][class*="lg:block"] svg {
+  filter: blur(6px);
+  transition: filter 0.3s ease;
+  will-change: filter;
+}
+
+/* 专门针对InsightsBeta组件的模糊化 */
+body.dropdown-active h3[class*="text-xl"][class*="md:text-2xl"][class*="font-semibold"],
+body.dropdown-active p[class*="text-sm"][class*="md:text-base"][class*="text-gray-300"],
+body.dropdown-active p[class*="text-white"][class*="text-base"][class*="md:text-lg"],
+body.dropdown-active h2[class*="text-2xl"][class*="md:text-3xl"][class*="lg:text-4xl"],
+body.dropdown-active div[class*="bg-black"][class*="border"][class*="border-[#4C4C4C]"],
+body.dropdown-active div[class*="bg-black"][class*="border"][class*="border-[#4C4C4C]"] h3,
+body.dropdown-active div[class*="bg-black"][class*="border"][class*="border-[#4C4C4C]"] p,
+body.dropdown-active div[class*="bg-black"][class*="border"][class*="border-[#4C4C4C]"] img {
+  filter: blur(6px);
+  transition: filter 0.3s ease;
+  will-change: filter;
+}
+
+/* 专门针对ChasingTrends组件的模糊化 */
+body.dropdown-active h3[class*="text-2xl"][class*="md:text-3xl"][class*="lg:text-4xl"][class*="xl:text-5xl"][class*="font-light"][class*="text-white"],
+body.dropdown-active button[class*="bg-white"][class*="text-black"][class*="px-6"][class*="py-3"],
+body.dropdown-active div[class*="backdrop-blur-sm"][class*="rounded-2xl"],
+body.dropdown-active div[class*="backdrop-blur-sm"][class*="rounded-2xl"] h3,
+body.dropdown-active div[class*="backdrop-blur-sm"][class*="rounded-2xl"] button,
+body.dropdown-active div[class*="backdrop-blur-sm"][class*="rounded-2xl"] img {
+  filter: blur(6px);
+  transition: filter 0.3s ease;
+  will-change: filter;
+}
+
+/* 专门针对StaticFooter组件的模糊化 */
+body.dropdown-active h3[class*="footer-section-title"],
+body.dropdown-active h3[class*="footer-section-title"][class*="pl-2"][class*="sm:pl-0"][class*="break-words"],
+body.dropdown-active a[class*="feature-item"][class*="break-words"],
+body.dropdown-active a[class*="footer-link"][class*="break-words"],
+body.dropdown-active p[class*="footer-description"],
+body.dropdown-active p[class*="break-words"] {
+  filter: blur(6px);
+  transition: filter 0.3s ease;
+  will-change: filter;
+}
+
+/* 专门针对Endorsement组件的模糊化 */
+body.dropdown-active div[class*="h-px"][class*="bg-gray-500"][class*="flex-1"][class*="max-w-32"],
+body.dropdown-active div[class*="h-px"][class*="bg-gray-600"][class*="flex-1"][class*="max-w-32"],
+body.dropdown-active h2[class*="text-gray-500"][class*="text-2xl"][class*="md:text-3xl"][class*="font-medium"],
+body.dropdown-active div[class*="flex"][class*="items-center"][class*="gap-16"],
+body.dropdown-active div[class*="flex"][class*="items-center"][class*="gap-8"],
+body.dropdown-active div[class*="flex"][class*="items-center"][class*="gap-16"] img,
+body.dropdown-active div[class*="flex"][class*="items-center"][class*="gap-8"] img {
+  filter: blur(6px);
+  transition: filter 0.3s ease;
+  will-change: filter;
+}
+
+/* 专门针对FashionAgent组件的模糊化 */
+body.dropdown-active h1[class*="text-3xl"][class*="sm:text-3xl"][class*="lg:text-5xl"][class*="font-normal"][class*="text-white"],
+body.dropdown-active p[class*="hidden"][class*="sm:block"][class*="text-base"][class*="lg:text-xl"][class*="font-medium"][class*="text-white/70"],
+body.dropdown-active div[class*="absolute"][class*="inset-0"][class*="w-full"][class*="h-full"],
+body.dropdown-active div[class*="bg-white/20"][class*="rounded-xl"][class*="sm:rounded-3xl"][class*="p-3"][class*="sm:p-6"][class*="lg:p-8"][class*="border"][class*="border-white/10"] {
+  filter: blur(6px);
+  transition: filter 0.3s ease;
+  will-change: filter;
+}
+
+
+/* 确保导航栏和下拉菜单本身不被模糊 */
+body.dropdown-active .hero-nav,
+body.dropdown-active .hero-nav *,
+body.dropdown-active .hero-nav img,
+body.dropdown-active .tools-dropdown,
+body.dropdown-active .tools-dropdown *,
+body.dropdown-active .tools-dropdown img,
+body.dropdown-active .dropdown-container,
+body.dropdown-active .dropdown-container *,
+body.dropdown-active .dropdown-container img {
+  filter: none !important;
+}
+
+/* 排除可能引起白色边框的元素 */
+body.dropdown-active div[class*="bg-white"][class*="p-4"][class*="shadow"],
+body.dropdown-active div[class*="backdrop-blur-sm"][class*="rounded-2xl"],
+body.dropdown-active .footer-section,
+body.dropdown-active footer[class*="footer-section"] {
+  filter: none !important;
+}
+
 /* 移动端菜单打开时模糊hero内容 */
 @media (max-width: 767px) {
   .mobile-menu-open .hero-title,

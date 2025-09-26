@@ -16,6 +16,7 @@ import {
 import { getTheme } from '@/src/config/themes';
 import FusionGuide from '@/src/components/server/StaticFusionGuide';
 
+
 // 强制动态渲染，避免在构建时预渲染（此时 API 不可用）
 export const dynamic = 'force-dynamic';
 
@@ -107,7 +108,7 @@ export default async function DesignsPage() {
         reviewData={reviewData}
         currentUrl="/designs"
       />
-      
+  
       {/* Hero组件 - 设计页面使用专门的DesignHero */}
       <DesignHero saasUrl={saasUrl} />
       

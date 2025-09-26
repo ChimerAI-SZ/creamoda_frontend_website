@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { ArrowRight } from 'lucide-react';
 import { ThemeConfig } from '../../types/theme';
 
 interface OutfitGeneratorFeatureModuleProps {
@@ -46,7 +47,7 @@ function Tag({ label, isActive, onClick }: TagProps) {
 function Card({ image, hasViewMore = false, className = '', onClick }: CardProps) {
   return (
     <div 
-      className={`relative w-full aspect-[268/356] rounded-lg sm:rounded-2xl overflow-hidden group cursor-pointer ${className}`}
+      className={`relative w-full aspect-[268/356] overflow-hidden group cursor-pointer ${className}`}
       onClick={onClick}
     >
       <Image
@@ -60,9 +61,9 @@ function Card({ image, hasViewMore = false, className = '', onClick }: CardProps
       {hasViewMore && (
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
-            <button className="bg-white text-black px-4 py-2 md:px-6 md:py-3 rounded-lg font-bold text-xs md:text-sm hover:bg-gray-400 hover:text-white transition-colors"
-              style={{ fontFamily: "'PP Neue Machina', 'Neue Machina', system-ui, -apple-system, sans-serif" }}>
+            <button className="bg-white text-black px-1.5 py-1 md:px-2 md:py-1.5 rounded-lg font-bold text-xs md:text-sm hover:bg-gray-400 hover:text-white transition-colors flex items-center gap-1.5">
               Discover more
+              <ArrowRight className="w-3 h-3 md:w-4 md:h-4" />
             </button>
           </div>
         </div>
@@ -80,27 +81,27 @@ export default function OutfitGeneratorFeatureModule({ theme }: OutfitGeneratorF
   const staticImages = [
     {
       id: 1,
-      src: '/marketing/images/outfit-generator/one.png',
+      src: '/marketing/images/outfit-generator/onee.png',
       alt: 'Fashion inspiration 1'
     },
     {
       id: 2,
-      src: '/marketing/images/outfit-generator/two.png',
+      src: '/marketing/images/outfit-generator/twoo.png',
       alt: 'Fashion inspiration 2'
     },
     {
       id: 3,
-      src: '/marketing/images/outfit-generator/three.png',
+      src: '/marketing/images/outfit-generator/threee.png',
       alt: 'Fashion inspiration 3'
     },
     {
       id: 4,
-      src: '/marketing/images/outfit-generator/four.png',
+      src: '/marketing/images/outfit-generator/fourr.png',
       alt: 'Fashion inspiration 4'
     },
     {
       id: 5,
-      src: '/marketing/images/outfit-generator/five.png',
+      src: '/marketing/images/outfit-generator/fivee.png',
       alt: 'Fashion inspiration 5'
     },
     {
@@ -156,7 +157,7 @@ export default function OutfitGeneratorFeatureModule({ theme }: OutfitGeneratorF
                 {/* 为最后两张图片（index 4和5）添加底部蒙版 */}
                 {index >= 4 && (
                   <div 
-                    className="absolute inset-0 pointer-events-none rounded-lg"
+                    className="absolute inset-0 pointer-events-none"
                     style={{
                       background: 'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, black 100%)'
                     }}
@@ -169,7 +170,7 @@ export default function OutfitGeneratorFeatureModule({ theme }: OutfitGeneratorF
 
         {/* Desktop: Horizontal scroll */}
         <div 
-          className="hidden sm:flex gap-2 md:gap-3 lg:gap-4 mb-6"
+          className="hidden sm:flex gap-2 md:gap-3 lg:gap-4 mb-6 relative"
           style={{ 
             width: 'calc(100% + 16rem)', // Extend beyond viewport significantly
             marginLeft: '-8rem' // Center the extended grid
@@ -184,6 +185,17 @@ export default function OutfitGeneratorFeatureModule({ theme }: OutfitGeneratorF
               />
             </div>
           ))}
+          
+          {/* Desktop: Discover more button - positioned over images */}
+          <div className="absolute inset-0 flex items-end justify-center pb-8 pointer-events-none z-20">
+            <button 
+              onClick={handleImageClick}
+              className="bg-white text-black px-4 py-3 rounded-lg font-bold text-base hover:bg-gray-100 transition-colors flex items-center gap-2 pointer-events-auto"
+            >
+              Discover more
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
         </div>
         
         {/* Subtle fade mask at bottom - only for desktop */}
@@ -194,15 +206,8 @@ export default function OutfitGeneratorFeatureModule({ theme }: OutfitGeneratorF
           }}
         />
 
-        {/* View more button */}
-        <div className="flex justify-center -mt-20 relative z-30">
-          <button 
-            className="bg-white text-black px-4 py-2 sm:px-6 sm:py-3 md:px-8 md:py-4 rounded-md font-bold text-xs sm:text-sm md:text-lg hover:bg-gray-900 hover:text-white transition-colors relative z-30"
-            onClick={() => router.push('/designs')}
-          >
-            Discover more
-          </button>
-        </div>
+
+       
       </div>
     </section>
   );
