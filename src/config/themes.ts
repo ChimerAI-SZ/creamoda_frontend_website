@@ -27,12 +27,12 @@ export const themes: Record<string, ThemeConfig> = {
           description: 'Upload images from your device (supports JPEG/PNG) or paste URLs, using high-resolution images can achieve the best results.'
         },
         {
-          icon: '/marketing/images/feature/browse.svg',
+          icon: '/marketing/images/feature/processing.svg',
           title: 'AI Instant Processing',
           description: 'Our AI removes backgrounds flawlessly in seconds with zero manual effort required.'
         },
         {
-          icon: '/marketing/images/feature/download.png',
+          icon: '/marketing/images/feature/download.svg',
           title: 'Download Ready-to-Use Images',
           description: 'Get transparent PNGs instantly, then save, remove, or enhance with Creamoda\'s full suite of design tools.'
         }
@@ -152,12 +152,12 @@ export const themes: Record<string, ThemeConfig> = {
           description: 'Upload original image (JPEG/PNG/URL) and describe your desired background (e.g., "sunset by the sea").'
         },
         {
-          icon: '/marketing/images/feature/browse.svg',
+          icon: '/marketing/images/feature/processing.svg',
           title: 'AI Automatic Processing ',
           description: 'AI intelligently matches tones and details, generating new backgrounds with seamless edge blending.'
         },
         {
-          icon: '/marketing/images/feature/download.png',
+          icon: '/marketing/images/feature/download.svg',
           title: 'Download & Use',
           description: 'Download your edited image for immediate use or further adjustments.'
         }
@@ -277,12 +277,12 @@ export const themes: Record<string, ThemeConfig> = {
           description: 'Drag & drop any JPEG/PNG file or paste an image URL. For best results, use images with clear outlines.'
         },
         {
-          icon: '/marketing/images/feature/browse.svg',
+          icon: '/marketing/images/feature/processing.svg',
           title: 'AI Magic Enhancement',
           description: 'Our AI analyzes textures, sharpens edges, and fills missing details—completely automatically.'
         },
         {
-          icon: '/marketing/images/feature/download.png',
+          icon: '/marketing/images/feature/download.svg',
           title: 'Download HD Results',
           description: 'Save your upscaled image as PNG. Feel free to use your brand new high-definition images!'
         }
@@ -402,12 +402,12 @@ export const themes: Record<string, ThemeConfig> = {
           description: 'Upload image (JPEG/PNG), sample colors or input HEX codes with sliders for fine-tuning.'
         },
         {
-          icon: '/marketing/images/feature/browse.svg',
+          icon: '/marketing/images/feature/processing.svg',
           title: 'AI-Powered Color Magic',
           description: 'AI adapts colors naturally based on material textures and lighting.'
         },
         {
-          icon: '/marketing/images/feature/download.png',
+          icon: '/marketing/images/feature/download.svg',
           title: 'Download & Use ',
           description: 'Get recolored PNGs instantly for further editing or saving.'
         }
@@ -528,12 +528,12 @@ export const themes: Record<string, ThemeConfig> = {
           description: 'Upload your apparel image and a target model image. For best results, use a clear, well-lit photo with visible posture.'
         },
         {
-          icon: '/marketing/images/feature/browse.svg',
+          icon: '/marketing/images/feature/processing.svg',
           title: 'Select Garment & Pose',
           description: 'Choose the garment category (Top/Bottom/One-Piece) and optionally upload a reference pose image for realistic adjustments.'
         },
         {
-          icon: '/marketing/images/feature/download.png',
+          icon: '/marketing/images/feature/download.svg',
           title: 'Generate & Download',
           description: 'Get your AI-processed image in seconds, then download the high-resolution try-on result.'
         }
@@ -657,12 +657,12 @@ export const themes: Record<string, ThemeConfig> = {
           description: 'Enter a prompt or upload a photo, then describe the desired changes or choose from the design features with multiple selections supported.'
         },
         {
-          icon: '/marketing/images/feature/browse.svg',
+          icon: '/marketing/images/feature/processing.svg',
           title: 'AI Processing',
           description: 'Our AI generates or transforms your image in seconds. For images, it preserves original details while applying your edits. Preview and tweak results if needed.'
         },
         {
-          icon: '/marketing/images/feature/download.png',
+          icon: '/marketing/images/feature/download.svg',
           title: 'Download & Share',
           description: 'Download your high-resolution image. Use it directly or refine further with Creamoda\'s editing tools. All outputs are saved to your portfolio for easy access.'
         }
@@ -784,12 +784,12 @@ export const themes: Record<string, ThemeConfig> = {
           description: 'Upload a hand-drawn sketch (JPEG/PNG) or URL. For best results, use clear lines and minimal shadows.'
         },
         {
-          icon: '/marketing/images/feature/browse.svg',
+          icon: '/marketing/images/feature/processing.svg',
           title: 'Describe Your Design',
           description: 'Type text prompts (e.g., "silk evening gown with floral embroidery") or select our preset design features, supports multi-selection for complex designs.'
         },
         {
-          icon: '/marketing/images/feature/download.png',
+          icon: '/marketing/images/feature/download.svg',
           title: 'Generate & Download',
           description: 'AI processes your inputs and generates a polished design in seconds, then downloads as PNG.'
         }
@@ -910,12 +910,12 @@ export const themes: Record<string, ThemeConfig> = {
           description: 'Edits Upload image (JPEG/PNG) and specify changes (e.g., "change shirt to T-shirt")'
         },
         {
-          icon: '/marketing/images/feature/browse.svg',
+          icon: '/marketing/images/feature/processing.svg',
           title: 'AI Precision Processing',
           description: 'AI applies context-aware edits while keeping unmodified areas intact.'
         },
         {
-          icon: '/marketing/images/feature/download.png',
+          icon: '/marketing/images/feature/download.svg',
           title: 'Download & Compare',
           description: 'Save modified PNGs for comparison or final use.'
         }
@@ -1035,12 +1035,12 @@ export const themes: Record<string, ThemeConfig> = {
           description: 'Access our Free Nano-Banana integration and explore pre-built templates tailored for fashion design and creative testing.'
         },
         {
-          icon: '/marketing/images/feature/browse.svg',
+          icon: '/marketing/images/feature/processing.svg',
           title: 'Enter Your Prompt',
           description: 'Describe your fashion idea — from outfit style and fabric to mood and background — and let AI interpret it.'
         },
         {
-          icon: '/marketing/images/feature/download.png',
+          icon: '/marketing/images/feature/download.svg',
           title: 'Generate & Export Instantly',
           description: 'Receive high-quality visuals in seconds and download them for prototyping, presentations, or campaigns.'
         }
@@ -1154,7 +1154,7 @@ export const themes: Record<string, ThemeConfig> = {
       title: 'How to Get Your Fashion Design Ideas',
       cards: [
         {
-          icon: '/marketing/images/feature/upload.svg',
+          icon: '/marketing/images/feature/browse.svg',
           title: 'Visit Designs Page',
           description: 'Explore a wide range of AI-generated outfits across casualwear, couture, sportswear, and more.'
         },
@@ -1164,7 +1164,7 @@ export const themes: Record<string, ThemeConfig> = {
           description: 'Filter by style or category to discover looks that fit your vision or upcoming collection.'
         },
         {
-          icon: '/marketing/images/feature/browse.svg',
+          icon: '/marketing/images/feature/upload.svg',
           title: 'Create Similar Designs',
           description: 'Use our AI fashion design tools to instantly produce variations and turn inspiration into new designs.'
         }
@@ -1280,12 +1280,12 @@ export const themes: Record<string, ThemeConfig> = {
           description: 'Describe your design concept through text prompts or visual references. Share your inspiration, preferred styles, color palettes, or specific garment details to guide the AI.'
         },
         {
-          icon: '/marketing/images/feature/browse.svg',
+          icon: '/marketing/images/feature/processing.svg',
           title: 'AI Generates Complete Designs',
           description: 'Our AI creates fully realized fashion designs including technical flats, style variations, and collection suggestions based on your input. '
         },
         {
-          icon: '/marketing/images/feature/download.png',
+          icon: '/marketing/images/feature/download.svg',
           title: 'Refine & Export',
           description: 'Review the generated designs, make adjustments using our editing tools, and export production-ready outputs for you.'
         }

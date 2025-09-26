@@ -1,11 +1,15 @@
+'use client';
+
 import React from 'react';
-import Link from 'next/link';
 import { ImageIcon, LinkIcon, ArrowUp } from 'lucide-react';
 
 const FashionAgent: React.FC = () => {
+  const handleInputClick = () => {
+    window.location.href = '/fashion-agent/create';
+  };
+
   return (
-    <Link href="/fashion-agent/create" className="block">
-      <div className="relative w-full h-[400px] sm:h-[500px] lg:h-[670px] overflow-hidden cursor-pointer">
+    <div className="relative w-full h-[400px] sm:h-[500px] lg:h-[670px] overflow-hidden">
       {/* Background Image */}
       <div 
         className="absolute inset-0 w-full h-full"
@@ -34,7 +38,7 @@ const FashionAgent: React.FC = () => {
       />
       
       {/* Content Container */}
-      <div className="relative z-10 flex flex-col items-center justify-center h-full px-4 py-8 sm:py-12 lg:py-20 sm:px-8 md:px-16 lg:px-40 xl:px-60">
+      <div className="relative flex flex-col items-center justify-center h-full px-4 py-8 sm:py-12 lg:py-20 sm:px-8 md:px-16 lg:px-40 xl:px-60">
         {/* Text Content */}
         <div className="flex flex-col items-center gap-6 sm:gap-10 lg:gap-14 w-full max-w-4xl">
           {/* Title and Description */}
@@ -49,7 +53,10 @@ const FashionAgent: React.FC = () => {
           
           {/* Input Area - Static Display */}
           <div className="w-full max-w-4xl">
-            <div className="bg-white/20 backdrop-blur-sm rounded-xl sm:rounded-3xl p-3 sm:p-6 lg:p-8 border border-white/10">
+            <div 
+              className="bg-white/20 rounded-xl sm:rounded-3xl p-3 sm:p-6 lg:p-8 border border-white/10 cursor-pointer hover:bg-white/25 transition-colors"
+              onClick={handleInputClick}
+            >
               {/* Mobile Layout - Input and Send Button on Same Row */}
               <div className="flex sm:hidden items-center gap-3">
                 <div className="flex-1 bg-transparent border-none text-base text-white/70 flex items-center min-h-[40px]">
@@ -98,8 +105,7 @@ const FashionAgent: React.FC = () => {
           </div>
         </div>
       </div>
-      </div>
-    </Link>
+    </div>
   );
 };
 

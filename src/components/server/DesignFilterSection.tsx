@@ -232,6 +232,12 @@ const MemoizedImageWithSkeleton = memo(function ImageWithSkeleton({
   );
 });
 
+// 检查是否为移动端的工具函数
+const isMobile = () => {
+  if (typeof window === 'undefined') return false;
+  return window.innerWidth < 1024; // lg断点
+};
+
 // 优化图片网格组件
 const MemoizedImageGrid = memo(function ImageGridSection({
   isInitialLoading,
@@ -268,7 +274,7 @@ const MemoizedImageGrid = memo(function ImageGridSection({
               <MemoizedImageWithSkeleton
                 src={img.image_url}
                 alt={img.clothing_description || ''}
-                href={`/designs/${img.slug}`}
+                href={isMobile() ? `/designs/${img.slug}` : undefined}
                 onClick={() => openDetailAt(idx)}
               />
             </div>
@@ -347,7 +353,7 @@ const SimilarImagesSection = memo(function SimilarImagesSection({
         <MemoizedImageWithSkeleton
           src={img.image_url}
           alt={img.clothing_description || ''}
-          href={img.slug ? `/designs/${img.slug}` : undefined}
+          href={isMobile() ? (img.slug ? `/designs/${img.slug}` : undefined) : undefined}
           onClick={() => {
             if (originalIndex >= 0) openDetailAt(originalIndex);
           }}
@@ -374,7 +380,7 @@ const ModifyDesignCard = memo(function ModifyDesignCard({
       className="flex items-center gap-2 p-2 rounded-sm cursor-pointer transition-all duration-200 hover:bg-white/25 flex-shrink-0 min-w-0"
       style={{
         background: 'rgba(255, 255, 255, 0.18)',
-        border: '0.5px solid rgba(255, 255, 255, 0.4)',
+        border: '0.4px solid rgba(255, 255, 255, 0.4)',
         width: 'calc(25% - 6px)'
       }}
     >
@@ -657,11 +663,6 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
 
   console.log('Component state:', { hasMore, currentPage, isLoadingMore, allImagesCount: allImages.length });
 
-  // 检查是否为移动端
-  const isMobile = () => {
-    if (typeof window === 'undefined') return false;
-    return window.innerWidth < 1024; // lg断点
-  };
 
   // 使用useCallback优化openDetailAt函数
   const openDetailAt = useCallback(async (idx: number) => {
@@ -906,9 +907,9 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
                       : 'rgba(255, 255, 255, 0.18)',
                     border: isSelected 
                       ? '1px solid transparent'
-                      : '1px solid rgba(255, 255, 255, 0.4)',
+                      : '0.4px solid rgba(255, 255, 255, 0.4)',
                     backgroundImage: isSelected
-                      ? 'linear-gradient(#FFFFFF, #FFFFFF), linear-gradient(45deg, #704DFF, #00D4FF, #704DFF)'
+                      ? 'linear-gradient(#FFFFFF, #FFFFFF)'
                       : 'none',
                     backgroundOrigin: isSelected ? 'border-box' : 'padding-box',
                     backgroundClip: isSelected ? 'padding-box, border-box' : 'padding-box'
@@ -924,36 +925,6 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
                   >
                     {category.label}
                   </span>
-                  <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 flex items-center justify-center">
-                    {isSelected ? (
-                      // binggo图标
-                      <svg 
-                        width="19" 
-                        height="18" 
-                        viewBox="0 0 19 18" 
-                        fill="none"
-                        className="w-full h-full"
-                      >
-                        <path 
-                          d="M15.9873 3.73633C16.0875 3.73636 16.1867 3.75652 16.2793 3.79492C16.3717 3.83326 16.4557 3.88923 16.5264 3.95996C16.5974 4.03079 16.6539 4.11537 16.6924 4.20801C16.7308 4.30057 16.751 4.39979 16.751 4.5C16.751 4.6002 16.7308 4.69943 16.6924 4.79199C16.6539 4.88463 16.5974 4.96921 16.5264 5.04004L8.65137 12.915C8.58067 12.9858 8.49667 13.0417 8.4043 13.0801C8.31174 13.1185 8.21251 13.1386 8.1123 13.1387C8.01201 13.1387 7.91197 13.1185 7.81934 13.0801C7.72689 13.0416 7.64297 12.985 7.57227 12.9141L3.63477 8.97754C3.49164 8.83441 3.41113 8.63992 3.41113 8.4375C3.41114 8.23509 3.49164 8.04058 3.63477 7.89746C3.77788 7.75442 3.97246 7.6748 4.1748 7.6748C4.37695 7.67488 4.57084 7.75463 4.71387 7.89746L8.1123 11.2959L15.4473 3.95996C15.5179 3.88922 15.602 3.8333 15.6943 3.79492C15.787 3.75648 15.887 3.73633 15.9873 3.73633Z" 
-                          fill="black" 
-                          stroke="black" 
-                          strokeWidth="1.2"
-                        />
-                      </svg>
-                    ) : (
-                      // 加号图标
-                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                        <path 
-                          d="M6 1V11M1 6H11" 
-                          stroke="#FFFFFF" 
-                          strokeWidth="1" 
-                          strokeLinecap="round" 
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    )}
-                  </div>
                 </button>
               );
             })}
@@ -1019,7 +990,7 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
               {/* 下拉列表 */}
               {isDropdownOpen && (
                 <div 
-                  className="absolute top-12 left-[74px] z-50 backdrop-blur-xl border border-white/20 rounded-md shadow-lg"
+                  className="absolute top-12 left-[65px] z-50 backdrop-blur-xl border border-white/20 rounded-md shadow-lg"
                   style={{ 
                     width: '180px',
                     transform: 'translateZ(0)',
@@ -1085,12 +1056,7 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
                         : 'rgba(255, 255, 255, 0.18)',
                       border: isSelected 
                         ? '1px solid transparent'
-                        : '1px solid rgba(255, 255, 255, 0.4)',
-                      backgroundImage: isSelected
-                        ? 'linear-gradient(#FFFFFF, #FFFFFF), linear-gradient(45deg, #704DFF, #00D4FF, #704DFF)'
-                        : 'none',
-                      backgroundOrigin: isSelected ? 'border-box' : 'padding-box',
-                      backgroundClip: isSelected ? 'padding-box, border-box' : 'padding-box'
+                        : '0.4px solid rgba(255, 255, 255, 0.4)'
                     }}
                     onClick={() => handleCategorySelect(category.id)}
                   >
@@ -1103,36 +1069,6 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
                     >
                       {category.label}
                     </span>
-                    <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 flex items-center justify-center">
-                      {isSelected ? (
-                        // binggo图标
-                        <svg 
-                          width="19" 
-                          height="18" 
-                          viewBox="0 0 19 18" 
-                          fill="none"
-                          className="w-full h-full"
-                        >
-                          <path 
-                            d="M15.9873 3.73633C16.0875 3.73636 16.1867 3.75652 16.2793 3.79492C16.3717 3.83326 16.4557 3.88923 16.5264 3.95996C16.5974 4.03079 16.6539 4.11537 16.6924 4.20801C16.7308 4.30057 16.751 4.39979 16.751 4.5C16.751 4.6002 16.7308 4.69943 16.6924 4.79199C16.6539 4.88463 16.5974 4.96921 16.5264 5.04004L8.65137 12.915C8.58067 12.9858 8.49667 13.0417 8.4043 13.0801C8.31174 13.1185 8.21251 13.1386 8.1123 13.1387C8.01201 13.1387 7.91197 13.1185 7.81934 13.0801C7.72689 13.0416 7.64297 12.985 7.57227 12.9141L3.63477 8.97754C3.49164 8.83441 3.41113 8.63992 3.41113 8.4375C3.41114 8.23509 3.49164 8.04058 3.63477 7.89746C3.77788 7.75442 3.97246 7.6748 4.1748 7.6748C4.37695 7.67488 4.57084 7.75463 4.71387 7.89746L8.1123 11.2959L15.4473 3.95996C15.5179 3.88922 15.602 3.8333 15.6943 3.79492C15.787 3.75648 15.887 3.73633 15.9873 3.73633Z" 
-                            fill="black" 
-                            stroke="black" 
-                            strokeWidth="1.2" 
-                          />
-                        </svg>
-                      ) : (
-                        // 加号图标
-                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                          <path 
-                            d="M6 1V11M1 6H11" 
-                            stroke="#FFFFFF" 
-                            strokeWidth="1" 
-                            strokeLinecap="round" 
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      )}
-                    </div>
                   </button>
                 );
               })}
@@ -1520,7 +1456,7 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
                           <MemoizedImageWithSkeleton
                             src={img.image_url}
                             alt={img.clothing_description || ''}
-                            href={`/designs/${img.slug}`}
+                            href={isMobile() ? `/designs/${img.slug}` : undefined}
                             onClick={() => {
                               if (originalIndex >= 0) openDetailAt(originalIndex);
                             }}

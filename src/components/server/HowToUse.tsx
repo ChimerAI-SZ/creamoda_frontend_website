@@ -68,9 +68,9 @@ const HowToUse: React.FC = () => {
         </div>
         
         {/* 描述文字 */}
-        <p className="text-white/70 text-lg lg:text-2xl font-normal leading-[1.21] text-left lg:text-center font-['Inter',system-ui,sans-serif] max-w-2xl lg:px-0">
+        <div className="text-white/70 text-lg lg:text-2xl font-normal leading-[1.21] text-left lg:text-center font-['Inter',system-ui,sans-serif] max-w-2xl lg:px-0">
           Type a prompt, upload a sketch, or add a reference image — it's simple, even without design expertise.
-        </p>
+        </div>
       </div>
     </div>
 
@@ -105,9 +105,9 @@ const HowToUse: React.FC = () => {
         </div>
         
         {/* 描述文字 */}
-        <p className="text-white/70 text-lg lg:text-2xl font-normal leading-[1.21] text-left lg:text-center font-['Inter',system-ui,sans-serif] max-w-2xl lg:px-0">
+        <div className="text-white/70 text-lg lg:text-2xl font-normal leading-[1.21] text-left lg:text-center font-['Inter',system-ui,sans-serif] max-w-2xl lg:px-0">
           AI delivers multiple fashion-ready concepts in seconds, with variations in fabrics, styles, and patterns.
-        </p>
+        </div>
       </div>
      
     </div>
@@ -161,9 +161,9 @@ const HowToUse: React.FC = () => {
         </div>
         
         {/* 描述文字 */}
-        <p className="text-white/70 text-lg lg:text-2xl font-normal leading-[1.21] text-left lg:text-center font-['Inter',system-ui,sans-serif] max-w-2xl lg:px-0">
+        <div className="text-white/70 text-lg lg:text-2xl font-normal leading-[1.21] text-left lg:text-center font-['Inter',system-ui,sans-serif] max-w-2xl lg:px-0">
           Download files optimized for prototyping or manufacturing, and move from concept to creation seamlessly.
-        </p>
+        </div>
       </div>
     </div>
     

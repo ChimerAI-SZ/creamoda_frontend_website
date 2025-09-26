@@ -35,6 +35,14 @@ export default function StaticHeroMains({ className = '' }: StaticHeroMainsProps
             <p className="text-white">您的浏览器不支持视频播放</p>
           </div>
         </video>
+        
+        {/* 上半部分渐变蒙版 */}
+        <div 
+          className="absolute top-0 left-0 right-0 h-1/2 pointer-events-none z-0"
+          style={{
+            background: 'linear-gradient(180deg, rgba(0, 0, 0, 0.70) 0%, rgba(0, 0, 0, 0.30) 60%, rgba(0, 0, 0, 0) 100%)'
+          }}
+        ></div>
       </div>
 
       {/* 时尚图片网格 - 底部全宽自适应 */}
@@ -195,7 +203,7 @@ export default function StaticHeroMains({ className = '' }: StaticHeroMainsProps
                 src="/marketing/images/main/hero/six.png"
                 alt="Fashion item 6"
                 fill
-                className="object-cover"
+                className="object-cover object-top"
               />
             </div>
           </div>
@@ -207,7 +215,7 @@ export default function StaticHeroMains({ className = '' }: StaticHeroMainsProps
                 src="/marketing/images/main/hero/seven.png"
                 alt="Fashion item 7"
                 fill
-                className="object-cover"
+                className="object-cover object-top"
               />
             </div>
             <div className="relative w-[88px] h-[46px] rounded overflow-hidden opacity-70">
@@ -215,7 +223,7 @@ export default function StaticHeroMains({ className = '' }: StaticHeroMainsProps
                 src="/marketing/images/main/hero/one.png"
                 alt="Fashion item 1"
                 fill
-                className="object-cover"
+                className="object-cover object-top"
               />
             </div>
           </div>
@@ -263,7 +271,7 @@ export default function StaticHeroMains({ className = '' }: StaticHeroMainsProps
           <div className="flex flex-row items-center gap-2 md:gap-4">
             {/* Chat With Fashion Agent 按钮 - 半透明样式 */}
             <Link
-              href="/fashion-agent/create"
+              href="/fashion-agent"
               className="flex items-center justify-center gap-2 md:px-4 lg:px-5 px-4 md:py-2.5 lg:py-3 py-2.5 rounded-lg transition-all duration-200 group"
               style={{
                 background: 'rgba(255, 255, 255, 0.25)',
@@ -287,7 +295,7 @@ export default function StaticHeroMains({ className = '' }: StaticHeroMainsProps
 
             {/* Start With Creative Tools 按钮 - 白底黑字样式 */}
             <Link
-              href="/fashion-agent"
+              href="/fashion-design/create"
               className="flex items-center justify-center gap-2 md:px-4 lg:px-5 px-4 md:py-2.5 lg:py-3 py-2.5 bg-white rounded-lg shadow-[0_8px_20px_rgba(0,0,0,0.1)] hover:shadow-[0_12px_24px_rgba(0,0,0,0.15)] transition-all duration-200 group"
             >
               <div className="flex flex-col items-center justify-center">

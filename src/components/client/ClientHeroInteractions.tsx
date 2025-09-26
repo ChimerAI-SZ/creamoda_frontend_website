@@ -224,16 +224,13 @@ export default function ClientHeroInteractions({ currentSaasUrl }: ClientHeroInt
         targetDropdown.addEventListener('mouseleave', handleMouseLeave);
       }
       
-      // 为hero-content添加dropdown-active类
-      const heroContent = document.querySelector('.hero-content');
-      if (heroContent) {
-        heroContent.classList.add('dropdown-active');
-      }
+      // 为body添加dropdown-active类
+      document.body.classList.add('dropdown-active');
+      console.log('Dropdown active - body class added:', document.body.classList.contains('dropdown-active'));
     } else {
-      const heroContent = document.querySelector('.hero-content');
-      if (heroContent) {
-        heroContent.classList.remove('dropdown-active');
-      }
+      // 移除body的dropdown-active类
+      document.body.classList.remove('dropdown-active');
+      console.log('Dropdown inactive - body class removed');
     }
   }, [activeDropdown]);
 
