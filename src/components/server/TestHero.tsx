@@ -1,6 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import VideoBackground from '@/src/components/client/VideoBackground';
 
 // Font definitions
 const fontStyles = `
@@ -36,15 +37,8 @@ const TestHero: React.FC<TestHeroProps> = ({
       <style dangerouslySetInnerHTML={{ __html: fontStyles }} />
       <div className={`relative text-white md:min-h-screen h-[74vh] md:h-auto flex flex-col overflow-hidden ${className}`} style={{ zIndex: 0 }}>
         {/* Video Background */}
-      <video 
-        className="absolute inset-0 w-full h-full object-cover z-0"
-        autoPlay
-        muted
-        loop
-        playsInline
-      >
-        <source src="/marketing/images/hero/bg.webm" type="video/webm" />
-      </video>
+      {/* 使用客户端组件控制视频播放 */}
+      <VideoBackground />
       
       {/* 蒙版层 - 在视频之上，但层级很低 */}
       <div className="absolute inset-0 pointer-events-none z-0">
@@ -260,7 +254,8 @@ const TestHero: React.FC<TestHeroProps> = ({
           transform: 'scale(1)', 
           transformOrigin: 'center bottom',
           maxHeight: '200px',
-          overflow: 'hidden'
+          overflow: 'hidden',
+          marginBottom: '20px'
         }}>
           {/* 第一列 - 展示一张 */}
           <div className="flex flex-col items-center">
@@ -340,9 +335,10 @@ const TestHero: React.FC<TestHeroProps> = ({
 
           {/* 移动端蒙版层 - 放在图片后面，确保在上层显示 */}
           {/* 底部蒙版 */}
-          <div className="absolute bottom-0 left-0 right-0 h-16 pointer-events-none z-20"
+          <div className="absolute left-0 right-0 h-32 pointer-events-none z-20"
                style={{
-                 background: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 30%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0) 100%)'
+                 bottom: '-30px',
+                 background: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 25%, rgba(0,0,0,0.7) 50%, rgba(0,0,0,0.4) 75%, rgba(0,0,0,0) 100%)'
                }}>
           </div>
           

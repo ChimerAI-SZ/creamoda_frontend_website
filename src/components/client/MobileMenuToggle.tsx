@@ -139,7 +139,7 @@ export default function MobileMenuToggle() {
               height: isAnimating ? '0' : 'calc(100vh - var(--hero-nav-height, 75px))',
               background: isScrolled 
                 ? 'rgba(0, 0, 0, 0.88)' 
-                : 'linear-gradient(to right, rgb(101, 101, 101), rgb(67, 68, 70), rgb(39, 40, 40))',
+                : 'linear-gradient(to right, rgb(34, 34, 34), rgb(56, 57, 58), rgb(28, 28, 28))',
               backdropFilter: isScrolled 
                 ? 'blur(10px) saturate(100%) brightness(100%)'
                 : 'blur(80px) saturate(120%) brightness(95%)',
