@@ -144,7 +144,7 @@ export default function OutfitGeneratorFeatureModule({ theme }: OutfitGeneratorF
 
       {/* Cards Grid - with contained overflow for cropped effect */}
       <div className="w-full overflow-hidden relative" style={{ zIndex: 0 }}>
-        {/* Mobile: 2x3 Grid, Desktop: Horizontal scroll */}
+        {/* Mobile: 2x3 Grid (6 images), Desktop: Horizontal scroll */}
         <div className="block sm:hidden px-4">
           <div className="grid grid-cols-2 gap-3 mb-6">
             {staticImages.slice(0, 6).map((image, index) => (
@@ -179,7 +179,7 @@ export default function OutfitGeneratorFeatureModule({ theme }: OutfitGeneratorF
           </div>
         </div>
 
-        {/* Desktop: Horizontal scroll */}
+        {/* Desktop: 5 images with extended width */}
         <div 
           className="hidden sm:flex gap-2 md:gap-3 lg:gap-4 mb-6 relative"
           style={{ 
@@ -187,8 +187,8 @@ export default function OutfitGeneratorFeatureModule({ theme }: OutfitGeneratorF
             marginLeft: '-8rem' // Center the extended grid
           }}
         >
-          {staticImages.map((image) => (
-            <div key={image.id} className="flex-shrink-0 w-72 md:w-80 lg:w-96">
+          {staticImages.slice(0, 5).map((image) => (
+            <div key={image.id} className="flex-1">
               <Card
                 image={image}
                 hasViewMore={false}
