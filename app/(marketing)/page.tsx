@@ -15,6 +15,7 @@ import OutfitGeneratorFeatureModule from '@/src/components/server/OutfitGenerato
 import TestHero from '@/src/components/server/TestHero';
 import ClientHeroInteractions from '@/src/components/client/ClientHeroInteractions';
 import ClientGeneralWorkflowInteractions from '@/src/components/client/ClientGeneralWorkflowInteractions';
+import MarqueeSection from '@/src/components/client/MarqueeSection';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://creamoda.ai'),
@@ -91,7 +92,8 @@ export default function Home() {
       <TestHero />
       {/* 静态Hero组件 - 包含所有主要内容 */}
       {/* <StaticHero theme={theme} saasUrl={saasUrl} isHomepage={true} /> */}
-      <Endorsement />
+      <MarqueeSection />
+      {/* <Endorsement /> */}
       <WhyChoose />
       <FashionAgent />
       <HowToUse />

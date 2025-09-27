@@ -113,6 +113,30 @@ export default {
           to: {
             transform: 'rotate(360deg)'
           }
+        },
+        'marquee-scroll': {
+          '0%': {
+            transform: 'translateX(0%)'
+          },
+          '100%': {
+            transform: 'translateX(-100%)'
+          }
+        },
+        'rotate-one-circle': {
+          '0%': {
+            transform: 'rotate(0deg)'
+          },
+          '100%': {
+            transform: 'rotate(-360deg)'
+          }
+        },
+        wave: {
+          '0%': {
+            transform: 'translateX(0)'
+          },
+          '100%': {
+            transform: 'translateX(-50%)'
+          }
         }
       },
       animation: {
@@ -121,7 +145,11 @@ export default {
         spin: 'spin 1s linear infinite',
         // wave 动画
         wave: 'wave 6s linear infinite',
-        'wave-offset': 'wave 6s linear infinite -3s'
+        'wave-offset': 'wave 6s linear infinite -3s',
+        // marquee 滚动动画
+        'marquee-scroll': 'marquee-scroll 8s linear infinite',
+        marquee: 'marquee-scroll 3s linear infinite',
+        'rotate-one-circle': 'rotateOneCircle 0.5s linear'
       },
       boxShadow: {
         'card-shadow': '0px 8px 40px 0px rgba(10, 21, 50, 0.06)'
@@ -129,36 +157,6 @@ export default {
       backgroundImage: {
         'gradient-primary': 'linear-gradient(to bottom, #704DFF, #599EFF, #6EFABB)',
         'gradient-card': 'linear-gradient(to bottom, #cfc4fb, #704df7)'
-      }
-    },
-    animation: {
-      rotateOneCircle: 'rotateOneCircle 0.5s linear', // 创建一个1秒的旋转动画
-      spin: 'spin 1s linear infinite'
-    },
-    keyframes: {
-      rotateOneCircle: {
-        '0%': {
-          transform: 'rotate(0deg)'
-        },
-        '100%': {
-          transform: 'rotate(-360deg)'
-        }
-      },
-      spin: {
-        '0%': {
-          transform: 'rotate(0deg)'
-        },
-        '100%': {
-          transform: 'rotate(360deg)'
-        }
-      },
-      loadingWave: {
-        '0%': {
-          transform: 'translateX(0)'
-        },
-        '100%': {
-          transform: 'translateX(-50%)'
-        }
       }
     }
   },

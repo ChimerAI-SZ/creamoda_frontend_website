@@ -9,40 +9,17 @@ export default function VideoBackground() {
     const video = videoRef.current;
     if (!video) return;
 
-    const handleVideoControl = () => {
-      const isMobile = window.innerWidth < 768;
-      
-      if (isMobile) {
-        // 移动端：不循环播放，播放完后暂停
-        video.loop = false;
-        
-        const handleEnded = () => {
-          video.pause();
-        };
-        
-        video.addEventListener('ended', handleEnded);
-        
-        return () => {
-          video.removeEventListener('ended', handleEnded);
-        };
-      } else {
-        // 桌面端：循环播放
-        video.loop = true;
-      }
+    // 所有设备：不循环播放，播放完后暂停
+    video.loop = false;
+    
+    const handleEnded = () => {
+      video.pause();
     };
-
-    // 初始设置
-    handleVideoControl();
-
-    // 监听窗口大小变化
-    const handleResize = () => {
-      handleVideoControl();
-    };
-
-    window.addEventListener('resize', handleResize);
+    
+    video.addEventListener('ended', handleEnded);
 
     return () => {
-      window.removeEventListener('resize', handleResize);
+      video.removeEventListener('ended', handleEnded);
     };
   }, []);
 

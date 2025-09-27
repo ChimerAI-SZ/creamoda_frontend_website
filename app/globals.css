@@ -32,6 +32,16 @@
   }
 }
 
+/* Marquee Scroll Animation */
+@keyframes marquee-scroll {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
 /* Feature Page Hero Responsive Styles */
 @media (max-width: 768px) {
   .hero-desktop {

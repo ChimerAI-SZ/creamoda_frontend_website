@@ -153,11 +153,12 @@ export default function OutfitGeneratorFeatureModule({ theme }: OutfitGeneratorF
                   image={image}
                   hasViewMore={false}
                   onClick={handleImageClick}
+                  className="rounded-lg sm:rounded-none"
                 />
                 {/* 为最后两张图片（index 4和5）添加底部蒙版 */}
                 {index >= 4 && (
                   <div 
-                    className="absolute inset-0 pointer-events-none"
+                    className="absolute inset-0 pointer-events-none rounded-lg"
                     style={{
                       background: 'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, black 100%)'
                     }}
@@ -165,6 +166,16 @@ export default function OutfitGeneratorFeatureModule({ theme }: OutfitGeneratorF
                 )}
               </div>
             ))}
+          </div>
+          
+          {/* Mobile: Discover more button */}
+          <div className="flex justify-center -mt-20 relative z-30">
+            <button 
+              onClick={handleImageClick}
+              className="bg-white text-black px-4 py-2.5 rounded-lg font-bold text-sm hover:bg-gray-100 transition-colors shadow-lg"
+            >
+              Discover More
+            </button>
           </div>
         </div>
 
