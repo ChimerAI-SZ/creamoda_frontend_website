@@ -1069,6 +1069,18 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
                     >
                       {category.label}
                     </span>
+                    <div className="w-4 h-4 flex items-center justify-center flex-shrink-0">
+                      <Image
+                        src={isSelected 
+                          ? '/marketing/images/design/bingos.svg' 
+                          : '/marketing/images/design/add.svg'
+                        }
+                        alt={isSelected ? 'Selected' : 'Add'}
+                        width={16}
+                        height={16}
+                        className="w-4 h-4"
+                      />
+                    </div>
                   </button>
                 );
               })}

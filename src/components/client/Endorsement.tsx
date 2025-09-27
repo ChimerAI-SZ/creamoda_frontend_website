@@ -11,7 +11,7 @@ export default function Endorsement() {
     { src: "/marketing/images/main/endor/four.svg", alt: "Brand 4", width: 147, height: 40 },
     { src: "/marketing/images/main/endor/five.svg", alt: "Brand 5", width: 227, height: 40 },
     { src: "/marketing/images/main/endor/six.svg", alt: "Brand 6", width: 173, height: 40 },
-    { src: "/marketing/images/main/endor/seven.svg", alt: "Brand 7", width: 86, height: 40 },
+    { src: "/marketing/images/main/endor/sevens.svg", alt: "Brand 7", width: 86, height: 40 },
   ];
 
   // 移动端分组
@@ -40,7 +40,7 @@ export default function Endorsement() {
           <div 
             className="flex items-center gap-16 w-fit"
             style={{
-              animation: 'brandScroll 25s linear infinite',
+              animation: 'brandScroll 5s linear infinite',
               animationPlayState: 'running'
             }}
             onMouseEnter={(e) => {
@@ -84,7 +84,7 @@ export default function Endorsement() {
             <div 
               className="flex items-center gap-8 w-fit"
               style={{
-                animation: 'brandScrollMobile 20s linear infinite',
+                animation: 'brandScrollMobile 4s linear infinite',
                 animationPlayState: 'running'
               }}
             >
@@ -120,7 +120,7 @@ export default function Endorsement() {
             <div 
               className="flex items-center gap-8 w-fit"
               style={{
-                animation: 'brandScrollMobileReverse 18s linear infinite',
+                animation: 'brandScrollMobileReverse 3s linear infinite',
                 animationPlayState: 'running'
               }}
             >

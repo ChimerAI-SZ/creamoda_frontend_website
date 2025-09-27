@@ -35,7 +35,7 @@ const TestHero: React.FC<TestHeroProps> = ({
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: fontStyles }} />
-      <div className={`relative text-white md:min-h-screen h-[74vh] md:h-auto flex flex-col overflow-hidden ${className}`} style={{ zIndex: 0 }}>
+      <div className={`relative text-white min-h-[75vh] md:min-h-screen md:h-auto flex flex-col overflow-hidden ${className}`} style={{ zIndex: 0 }}>
         {/* Video Background */}
       {/* 使用客户端组件控制视频播放 */}
       <VideoBackground />
@@ -73,8 +73,8 @@ const TestHero: React.FC<TestHeroProps> = ({
       </div>
       
       {/* Main Content */}
-      <div className="relative z-1 flex-1 flex items-start">
-        <div className="max-w-5xl mx-auto text-center mt-24 md:mt-36 px-4">
+      <div className="relative z-10 flex-1 flex  iiems-end md:items-center mt-20">
+        <div className="max-w-5xl mx-auto text-center mt-8 md:mt-0 px-4">
           <h1 
             className="text-4xl md:text-5xl lg:text-6xl mb-6 leading-tight md:leading-normal" 
             style={{ 
@@ -121,7 +121,7 @@ const TestHero: React.FC<TestHeroProps> = ({
           <div className="flex flex-row items-center gap-2 md:gap-4">
             {/* Chat With Fashion Agent 按钮 - 半透明样式 */}
             <Link
-              href="/fashion-agent"
+              href="/fashion-agent/create"
               className="flex items-center justify-start gap-2 md:px-4 lg:px-5 px-4 md:py-2.5 lg:py-3 py-2.5 rounded-lg transition-all duration-200 group"
               style={{
                 background: 'rgba(255, 255, 255, 0.25)',
@@ -162,7 +162,7 @@ const TestHero: React.FC<TestHeroProps> = ({
       </div>
 
       {/* Bottom Images Gallery - 桌面端 */}
-      <div className="relative z-1 w-full justify-center items-end gap-2 hidden md:flex -mb-[35vh] overflow-hidden">
+      <div className="relative w-full justify-center items-end gap-2 hidden md:flex -mb-[35vh] overflow-hidden" style={{ zIndex: 5 }}>
         {/* Column 1 */}
         <div className="flex flex-col justify-start items-start gap-4" style={{ width: '15vw' }}>
           <img 
@@ -245,17 +245,40 @@ const TestHero: React.FC<TestHeroProps> = ({
           />
         </div>
       </div>
+      
+      {/* 桌面端图片画廊蒙版层 - 独立层级 */}
+      <div className="absolute inset-x-0 bottom-0 pointer-events-none hidden md:block" style={{ zIndex: 10, height: '50vh' }}>
+        {/* 底部蒙版 */}
+        <div className="absolute bottom-0 left-0 right-0 h-64"
+             style={{
+               background: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 20%, rgba(0,0,0,0.7) 40%, rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)'
+             }}>
+        </div>
+        
+        {/* 左侧蒙版 */}
+        <div className="absolute left-0 top-0 bottom-0 w-32"
+             style={{
+               background: 'linear-gradient(to right, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.6) 40%, rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)'
+             }}>
+        </div>
+        
+        {/* 右侧蒙版 */}
+        <div className="absolute right-0 top-0 bottom-0 w-32"
+             style={{
+               background: 'linear-gradient(to left, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.6) 40%, rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)'
+             }}>
+        </div>
+      </div>
 
-      {/* Bottom Images Gallery - 移动端，独立容器 */}
-      <div className="absolute bottom-0 left-0 right-0 md:hidden flex items-end justify-center z-10" style={{
+      {/* Bottom Images Gallery - 移动端，相对定位避免重叠 */}
+      <div className="relative md:hidden flex items-end justify-center z-10 mt-8 mb-4" style={{
        
       }}>
         <div className="relative flex items-end justify-center gap-1" style={{
           transform: 'scale(1)', 
           transformOrigin: 'center bottom',
           maxHeight: '200px',
-          overflow: 'hidden',
-          marginBottom: '20px'
+          overflow: 'hidden'
         }}>
           {/* 第一列 - 展示一张 */}
           <div className="flex flex-col items-center">
@@ -355,30 +378,6 @@ const TestHero: React.FC<TestHeroProps> = ({
                  background: 'linear-gradient(to left, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0) 100%)'
                }}>
           </div>
-        </div>
-      </div>
-      
-      {/* 底部和边缘蒙版 - 固定在屏幕位置 */}
-      <div className="absolute inset-0 pointer-events-none z-1">
-        {/* 底部蒙版 - 固定在屏幕底部 */}
-        <div className="absolute bottom-0 left-0 right-0 h-80"
-             style={{
-               background: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.95) 15%, rgba(0,0,0,0.8) 30%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.2) 70%, rgba(0,0,0,0) 100%)'
-             }}>
-        </div>
-        
-        {/* 左侧蒙版 */}
-        <div className="absolute left-0 top-0 bottom-0 w-40"
-             style={{
-               background: 'linear-gradient(to right, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.7) 30%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0) 100%)'
-             }}>
-        </div>
-        
-        {/* 右侧蒙版 */}
-        <div className="absolute right-0 top-0 bottom-0 w-40"
-             style={{
-               background: 'linear-gradient(to left, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.7) 30%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0) 100%)'
-             }}>
         </div>
       </div>
       </div>

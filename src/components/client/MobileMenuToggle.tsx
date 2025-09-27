@@ -162,7 +162,7 @@ export default function MobileMenuToggle() {
               }}
             >
               <div className="flex-1 overflow-y-auto">
-                {/* Design Tools 分类 */}
+                {/* Fashion Design 分类 */}
                 <div 
                   className="mb-6 transition-opacity duration-300 ease-out"
                   style={{
@@ -170,86 +170,91 @@ export default function MobileMenuToggle() {
                     transitionDelay: isAnimating ? '0ms' : '200ms'
                   }}
                 >
-                  <h3 className="text-white text-lg font-semibold mb-3 pb-2 border-b border-gray-400/30">
-                    Design Tools
-                  </h3>
-                  
-                  {/* Fashion Design 子分类 */}
-                  <div className="mb-4">
-                    <h4 className="text-white text-lg font-semibold mb-3 pb-2 ">
-                      Fashion Design
-                    </h4>
-                    <div className="space-y-2">
-                      <Link
-                        href="/sketch-to-image"
-                        onClick={closeMenu}
-                        className="block text-white/70 hover:text-white text-sm transition-colors duration-200"
-                      >
-                        Al Sketch to Image Converter
-                      </Link>
-                      <Link
-                        href="/outfit-generator"
-                        onClick={closeMenu}
-                        className="block text-white/70 hover:text-white text-sm transition-colors duration-200"
-                      >
-                        AI outfit generator
-                      </Link>
-                    </div>
-                  </div>
-
-                  {/* Virtual Try-on 独立项 */}
-                  <div className="mb-4">
+                  <h4 className="text-white text-lg font-semibold mb-3 pb-2 ">
+                    Fashion Design
+                  </h4>
+                  <div className="space-y-2">
                     <Link
-                      href="/virtual-try-on"
+                      href="/sketch-to-image"
                       onClick={closeMenu}
-                      className="text-white text-lg font-semibold mb-3 pb-2"
+                      className="block text-white/70 hover:text-white text-sm transition-colors duration-200"
                     >
-                      Virtual Try-on
+                      Al Sketch to Image Converter
+                    </Link>
+                    <Link
+                      href="/outfit-generator"
+                      onClick={closeMenu}
+                      className="block text-white/70 hover:text-white text-sm transition-colors duration-200"
+                    >
+                      AI outfit generator
                     </Link>
                   </div>
+                </div>
 
-                  {/* Magic Kit 子分类 */}
-                  <div className="mb-4">
-                    <h4 className="text-white text-lg font-semibold mb-3 pb-2">
-                      Magic Kit
-                    </h4>
-                    <div className="space-y-2">
-                      <Link
-                        href="/image-background-remover"
-                        onClick={closeMenu}
-                        className="block text-white/70 hover:text-white text-sm transition-colors duration-200"
-                      >
-                        Image Background Remover
-                      </Link>
-                      <Link
-                        href="/image-background-changer"
-                        onClick={closeMenu}
-                        className="block text-white/70 hover:text-white text-sm transition-colors duration-200"
-                      >
-                        Image Background Changer
-                      </Link>
-                      <Link
-                        href="/image-enhancer"
-                        onClick={closeMenu}
-                        className="block text-white/70 hover:text-white text-sm transition-colors duration-200"
-                      >
-                        Image Enhancer
-                      </Link>
-                      <Link
-                        href="/image-changer"
-                        onClick={closeMenu}
-                        className="block text-white/70 hover:text-white text-sm transition-colors duration-200"
-                      >
-                        AI Image Changer
-                      </Link>
-                      <Link
-                        href="/image-color-changer"
-                        onClick={closeMenu}
-                        className="block text-white/70 hover:text-white text-sm transition-colors duration-200"
-                      >
-                        Image Color Changer
-                      </Link>
-                    </div>
+                {/* Virtual Try-on 独立项 */}
+                <div 
+                  className="mb-6 transition-opacity duration-300 ease-out"
+                  style={{
+                    opacity: isAnimating ? 0 : 1,
+                    transitionDelay: isAnimating ? '0ms' : '250ms'
+                  }}
+                >
+                  <Link
+                    href="/virtual-try-on"
+                    onClick={closeMenu}
+                    className="text-white text-lg font-semibold mb-3 pb-2"
+                  >
+                    Virtual Try-on
+                  </Link>
+                </div>
+
+                {/* Magic Kit 分类 */}
+                <div 
+                  className="mb-6 transition-opacity duration-300 ease-out"
+                  style={{
+                    opacity: isAnimating ? 0 : 1,
+                    transitionDelay: isAnimating ? '0ms' : '300ms'
+                  }}
+                >
+                  <h4 className="text-white text-lg font-semibold mb-3 pb-2">
+                    Magic Kit
+                  </h4>
+                  <div className="space-y-2">
+                    <Link
+                      href="/image-background-remover"
+                      onClick={closeMenu}
+                      className="block text-white/70 hover:text-white text-sm transition-colors duration-200"
+                    >
+                      Image Background Remover
+                    </Link>
+                    <Link
+                      href="/image-background-changer"
+                      onClick={closeMenu}
+                      className="block text-white/70 hover:text-white text-sm transition-colors duration-200"
+                    >
+                      Image Background Changer
+                    </Link>
+                    <Link
+                      href="/image-enhancer"
+                      onClick={closeMenu}
+                      className="block text-white/70 hover:text-white text-sm transition-colors duration-200"
+                    >
+                      Image Enhancer
+                    </Link>
+                    <Link
+                      href="/image-changer"
+                      onClick={closeMenu}
+                      className="block text-white/70 hover:text-white text-sm transition-colors duration-200"
+                    >
+                      AI Image Changer
+                    </Link>
+                    <Link
+                      href="/image-color-changer"
+                      onClick={closeMenu}
+                      className="block text-white/70 hover:text-white text-sm transition-colors duration-200"
+                    >
+                      Image Color Changer
+                    </Link>
                   </div>
                 </div>
 
@@ -258,13 +263,13 @@ export default function MobileMenuToggle() {
                   className="mb-6 transition-opacity duration-300 ease-out"
                   style={{
                     opacity: isAnimating ? 0 : 1,
-                    transitionDelay: isAnimating ? '0ms' : '300ms'
+                    transitionDelay: isAnimating ? '0ms' : '350ms'
                   }}
                 >
                   <Link
                     href="/fashion-agent"
                     onClick={closeMenu}
-                    className="block text-white text-lg font-semibold mb-3 pb-2 border-b border-gray-400/30 hover:text-white/80 transition-colors duration-200"
+                    className="block text-white text-lg font-semibold mb-3 pb-2 hover:text-white/80 transition-colors duration-200"
                   >
                     Fashion Agent
                   </Link>
@@ -281,7 +286,7 @@ export default function MobileMenuToggle() {
                   <Link
                     href="/designs"
                     onClick={closeMenu}
-                    className="block text-white text-lg font-semibold mb-3 pb-2 border-b border-gray-400/30 hover:text-white/80 transition-colors duration-200"
+                    className="block text-white text-lg font-semibold mb-3 pb-2 hover:text-white/80 transition-colors duration-200"
                   >
                     Design Ideas
                   </Link>
