@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 自定义字体定义 */
+@font-face {
+  font-family: 'Inter-Regular-9';
+  src: url('/marketing/fonts/Inter-Regular-9.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* Brand Scroll Animation */
 @keyframes brandScroll {
   0% {

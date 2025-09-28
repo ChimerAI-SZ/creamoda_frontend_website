@@ -13,13 +13,13 @@ interface FeatureCard {
 }
 
 const featureCards: FeatureCard[] = [
-  {
-    id: 'fashion-agent',
-    title: 'Fashion Agent',
-    description: 'Streamline design, prototyping, and marketing with an end-to-end AI fashion assistant.',
-    image: '/marketing/images/main/offer/nine.png',
-    gradientOverlay: 'bg-gradient-to-t from-black/20 to-transparent'
-  },
+  // {
+  //   id: 'fashion-agent',
+  //   title: 'Fashion Agent',
+  //   description: 'Streamline design, prototyping, and marketing with an end-to-end AI fashion assistant.',
+  //   image: '/marketing/images/main/offer/nine.png',
+  //   gradientOverlay: 'bg-gradient-to-t from-black/20 to-transparent'
+  // },
   {
     id: 'outfit-generator',
     title: 'AI Outfit Generator',

@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import StaticHero from '@/src/components/server/StaticHero';
 import StaticNavigation from '@/src/components/server/StaticNavigation';
-import Endorsement from '@/src/components/client/Endorsement';
 import { getThemeForRoute } from '@/src/utils/themeRenderer';
 import StaticFooter from '@/src/components/server/StaticFooter';
 import StructuredDataEnhancer from '@/src/components/seo/StructuredDataEnhancer';
@@ -95,7 +94,7 @@ export default function Home() {
       <MarqueeSection />
       {/* <Endorsement /> */}
       <WhyChoose />
-      <FashionAgent />
+      {/* <FashionAgent /> */}
       <HowToUse />
       <OutfitGeneratorFeatureModule theme={theme} />
       <StaticOfferMore />

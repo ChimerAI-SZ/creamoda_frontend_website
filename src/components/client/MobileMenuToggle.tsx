@@ -259,7 +259,7 @@ export default function MobileMenuToggle() {
                 </div>
 
                 {/* Fashion Agent 分类 */}
-                <div 
+                {/* <div 
                   className="mb-6 transition-opacity duration-300 ease-out"
                   style={{
                     opacity: isAnimating ? 0 : 1,
@@ -273,7 +273,7 @@ export default function MobileMenuToggle() {
                   >
                     Fashion Agent
                   </Link>
-                </div>
+                </div> */}
 
                 {/* Design Ideas 分类 */}
                 <div 

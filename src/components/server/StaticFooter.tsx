@@ -11,7 +11,7 @@ export default function StaticFooter() {
           {/* Logo */}
           <div className="footer-logo">
             <Image
-              src="/marketing/images/logo/Union.svg"
+              src="/marketing/images/logo/Creamoda.svg"
               alt="CREAMODA"
               width={200}
               height={60}
@@ -79,7 +79,7 @@ export default function StaticFooter() {
             <h3 className="footer-section-title pl-2 sm:pl-0 break-words">AI Features</h3>
             <div className="footer-features">
               <div className="feature-group min-w-0 ">
-              <a href="https://agent.chimer-ai.com/" className="feature-item break-words">AI Agent</a>
+              {/* <a href="https://agent.chimer-ai.com/" className="feature-item break-words">AI Agent</a> */}
               <a href="https://creamoda.ai/fashion-design/create" className="feature-item break-words">Text to Image</a>
                 <a href="https://creamoda.ai/fashion-design/create" className="feature-item break-words">Copy Style</a>
                 <a href="https://creamoda.ai/fashion-design/create" className="feature-item break-words">Mix 2 Images</a>
