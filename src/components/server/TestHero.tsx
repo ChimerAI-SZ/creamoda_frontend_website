@@ -35,6 +35,32 @@ const TestHero: React.FC<TestHeroProps> = ({
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: fontStyles }} />
+      
+      {/* 响应式底部图片样式 */}
+      <style dangerouslySetInnerHTML={{
+        __html: `
+          @media (max-width: 1200px) {
+            .bottom-images-gallery {
+              margin-bottom: clamp(-25vh, -30vh, -20vh) !important;
+            }
+          }
+          @media (max-width: 1024px) {
+            .bottom-images-gallery {
+              margin-bottom: clamp(-20vh, -25vh, -15vh) !important;
+            }
+          }
+          @media (max-width: 900px) {
+            .bottom-images-gallery {
+              margin-bottom: clamp(-15vh, -20vh, -10vh) !important;
+            }
+          }
+          @media (max-width: 768px) {
+            .bottom-images-gallery {
+              margin-bottom: clamp(-10vh, -15vh, -5vh) !important;
+            }
+          }
+        `
+      }} />
       <div className={`relative text-white min-h-[75vh] md:min-h-screen md:h-auto flex flex-col overflow-hidden ${className}`} style={{ zIndex: 0 }}>
         {/* Video Background */}
       {/* 使用客户端组件控制视频播放 */}
@@ -117,10 +143,10 @@ const TestHero: React.FC<TestHeroProps> = ({
           >
             {subtitle}
           </p>
-          {/* 两个操作按钮 */}
-          <div className="flex flex-row items-center gap-2 md:gap-4">
+          {/* 单个操作按钮 - 居中显示 */}
+          <div className="flex justify-center items-center">
             {/* Chat With Fashion Agent 按钮 - 半透明样式 */}
-            <Link
+            {/* <Link
               href="/fashion-agent/create"
               className="flex items-center justify-start gap-2 md:px-4 lg:px-5 px-4 md:py-2.5 lg:py-3 py-2.5 rounded-lg transition-all duration-200 group"
               style={{
@@ -139,7 +165,7 @@ const TestHero: React.FC<TestHeroProps> = ({
                   className="w-[18px] h-[18px] md:w-[22px] lg:w-[24px] md:h-[22px] lg:h-[24px]"
                 />
               </div>
-            </Link>
+            </Link> */}
 
             {/* Start With Creative Tools 按钮 - 白底黑字样式 */}
             <Link
@@ -162,7 +188,10 @@ const TestHero: React.FC<TestHeroProps> = ({
       </div>
 
       {/* Bottom Images Gallery - 桌面端 */}
-      <div className="relative w-full justify-center items-end gap-2 hidden md:flex -mb-[35vh] overflow-hidden" style={{ zIndex: 5 }}>
+      <div className="relative w-full justify-center items-end gap-2 hidden md:flex overflow-hidden bottom-images-gallery" style={{ 
+        zIndex: 5,
+        marginBottom: 'clamp(-35vh, -40vh, -30vh)' // 恢复大屏幕的截断效果
+      }}>
         {/* Column 1 */}
         <div className="flex flex-col justify-start items-start gap-4" style={{ width: '15vw' }}>
           <img 

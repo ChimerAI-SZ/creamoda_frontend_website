@@ -78,6 +78,101 @@ export default function FeaturePageHero({ theme, saasUrl, currentRoute }: Featur
 
   return (
     <>
+      {/* 添加响应式样式 */}
+      <style dangerouslySetInnerHTML={{
+        __html: `
+          .hero-desktop {
+            display: flex !important;
+            flex-wrap: wrap !important;
+          }
+          .hero-mobile {
+            display: none !important;
+          }
+          
+          /* 特大屏幕：双列并排 */
+          @media (min-width: 1200px) {
+            .hero-desktop {
+              flex-wrap: nowrap !important;
+              justify-content: space-between !important;
+            }
+          }
+          
+          /* 大屏幕：压缩右侧组件但仍并排 */
+          @media (min-width: 1101px) and (max-width: 1199px) {
+            .hero-desktop {
+              flex-wrap: nowrap !important;
+              justify-content: space-between !important;
+              gap: clamp(15px, 2vw, 40px) !important;
+            }
+            .hero-desktop .upload-showcase {
+              width: clamp(300px, 30vw, 400px) !important;
+              min-width: 300px !important;
+              max-width: 400px !important;
+            }
+          }
+          
+          /* 中等屏幕：强制换行，优雅地扩展容器高度 */
+          @media (max-width: 1100px) and (min-width: 769px) {
+            .hero-container {
+              height: auto !important;
+              /* 大幅增加高度以确保垂直布局时底部完全显示 */
+              min-height: max(100vh, 1250px) !important;
+            }
+            .hero-background {
+              height: 100% !important;
+              min-height: 100% !important;
+            }
+            .hero-desktop {
+              flex-wrap: wrap !important;
+              justify-content: center !important;
+              align-items: flex-start !important;
+              gap: 30px !important;
+              height: auto !important;
+              min-height: auto !important;
+              padding-bottom: 60px !important;
+              /* 确保内容在容器内正确布局 */
+              display: flex !important;
+            }
+            .hero-desktop > div:first-child {
+              flex: 0 0 auto !important;
+              max-width: 90vw !important;
+              margin-bottom: 0 !important;
+            }
+            .hero-desktop .upload-showcase {
+              flex: 0 0 auto !important;
+              width: 90vw !important;
+              max-width: 500px !important;
+              min-width: 350px !important;
+            }
+          }
+          
+          @media (max-width: 768px) {
+            .hero-desktop {
+              display: none !important;
+            }
+            .hero-mobile {
+              display: flex !important;
+            }
+          }
+          
+          /* 确保组件不被压缩 */
+          .hero-desktop > div:first-child,
+          .hero-desktop .upload-showcase {
+            flex-shrink: 0 !important;
+          }
+          
+          /* 覆盖StaticHero中的移动端图片样式 - 使用更高优先级选择器 */
+          @media (max-width: 768px) {
+            .hero-main.hero-mobile > div:first-child {
+              width: calc(100% - 20px) !important;
+              margin: 0px 10px 0 10px !important;
+              max-width: none !important;
+            }
+          }
+          
+        `
+      }} />
+      
       {/* Desktop Layout */}
       <div className="hero-main hero-desktop" style={{ 
         paddingBottom: 0,
@@ -101,7 +196,9 @@ export default function FeaturePageHero({ theme, saasUrl, currentRoute }: Featur
           position: 'relative', 
           alignSelf: shouldStickToBottom ? 'flex-end' : 'center',
           marginBottom: '0', 
-          transform: shouldStickToBottom ? getLeftImageTransform() : 'none'
+          transform: shouldStickToBottom ? getLeftImageTransform() : 'none',
+          flex: '0 0 auto', // 不缩放，保持固定尺寸
+          flexShrink: 0 // 明确禁止压缩
         }}>
           <div className="sample-image sample-1" style={{
             position: 'relative',
@@ -160,14 +257,16 @@ export default function FeaturePageHero({ theme, saasUrl, currentRoute }: Featur
         </div>
         
         <div className="upload-showcase" style={{
-          flex: '0 0 auto',
+          flex: '0 0 auto', // 不缩放，保持固定尺寸
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
-          width: 'clamp(400px, 40vw, 540px)',
-          maxWidth: '540px',
-          alignSelf: 'center'
+          width: 'clamp(350px, 35vw, 500px)', // 进一步减少视窗百分比
+          maxWidth: '500px',
+          minWidth: '350px',
+          alignSelf: 'center',
+          flexShrink: 0 // 明确禁止压缩
         }}>
           <div className="upload-demo-area" style={{
             background: 'rgba(0, 0, 0, 0.55)',
@@ -317,39 +416,56 @@ export default function FeaturePageHero({ theme, saasUrl, currentRoute }: Featur
       }}>
         {/* Centered Image with Overlay Text */}
         <div style={{
-          width: '100%',
-          maxWidth: '400px',
-          aspectRatio: '3/4',
-          overflow: 'hidden',
+          // width和margin由CSS媒体查询控制
+          aspectRatio: '4/5', // 调整宽高比以更好适应图片
+          overflow: 'visible', // 改为visible让背景渐变层突破限制
           position: 'relative',
-          borderRadius: '16px',
-          margin: '20px auto 0 auto',
+          // borderRadius: '16px',
           flexShrink: 0
         }}>
-          <Image
-            src={heroMain.mainImage}
-            alt={`${heroMain.title} sample image`}
-            fill
-            className="sample-img"
-            style={{ 
-              objectFit: 'cover', 
-              objectPosition: 'center center',
-              maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 60%, rgba(0,0,0,0.8) 80%, rgba(0,0,0,0) 100%)',
-              WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 60%, rgba(0,0,0,0.8) 80%, rgba(0,0,0,0) 100%)'
-            }}
-          />
+          {/* 图片内层裁剪容器 */}
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            overflow: 'hidden', // 内层容器负责图片裁剪
+            borderRadius: '16px',
+            marginBottom: '20px'
+          }}>
+            <Image
+              src={heroMain.mainImage}
+              alt={`${heroMain.title} sample image`}
+              fill
+              className="sample-img"
+              style={{ 
+                objectFit: 'contain', // 改为contain以完整显示图片
+                objectPosition: 'center center',
+                
+                // 移除遮罩效果，确保图片完整可见
+              }}
+            />
+          </div>
           
           {/* All Content Inside Image */}
           <div style={{
             position: 'absolute',
             bottom: '0px',
-            left: '20px',
-            right: '20px',
+            left: '50%', // 居中定位
+            transform: 'translateX(-50%)', // 居中偏移
+            width: '100vw', // 使用视窗宽度
             color: 'white',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '16px'
+            background: 'linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,0.3) 60%, rgba(0,0,0,0) 100%)',
+             marginBottom: '20px'
           }}>
+            {/* 内容容器，保持内边距 */}
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '16px',
+              padding: '20px 20px 0 20px' // 顶部和左右有padding，底部无padding
+            }}>
             {/* Title and Description */}
             <div style={{
               textAlign: 'left'
@@ -378,7 +494,8 @@ export default function FeaturePageHero({ theme, saasUrl, currentRoute }: Featur
             {/* Action Button */}
             <div style={{
               display: 'flex',
-              width: '100%'
+              width: '100%',
+             
             }}>
               <Link 
                 href={saasUrl}
@@ -396,7 +513,8 @@ export default function FeaturePageHero({ theme, saasUrl, currentRoute }: Featur
                   alignItems: 'center',
                   justifyContent: 'center',
                   gap: '12px',
-                  fontFamily: "'Instrument Sans', system-ui, -apple-system, sans-serif"
+                  fontFamily: "'Instrument Sans', system-ui, -apple-system, sans-serif",
+               
                 }}
               >
                 <Image
@@ -409,7 +527,8 @@ export default function FeaturePageHero({ theme, saasUrl, currentRoute }: Featur
                 {heroMain.uploadText}
               </Link>
             </div>
-          </div>
+            </div> {/* 关闭内容容器 */}
+          </div> {/* 关闭背景渐变容器 */}
         </div>
 
         {/* Content Below Image */}
@@ -417,7 +536,8 @@ export default function FeaturePageHero({ theme, saasUrl, currentRoute }: Featur
           width: '100%',
           padding: '24px 20px',
           textAlign: 'center',
-          color: 'white'
+          color: 'white',
+          marginBottom: '20px'
         }}>
 
           {/* Demo Images */}

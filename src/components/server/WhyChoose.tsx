@@ -26,7 +26,8 @@ const StaticWhyChoose: React.FC = () => {
           {/* Main Title */}
           <div className="mb-14 w-full">
             <h2 className="text-3xl md:text-4xl lg:text-[48px] font-normal text-left leading-[1.22] font-['Instrument_Sans',sans-serif]">
-              Why Choose Chimer AI
+              {/* Why Choose Chimer AI */}
+              Why Choose Creamoda AI
             </h2>
           </div>
 

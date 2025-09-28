@@ -3,6 +3,11 @@ import React from 'react';
 import Image from 'next/image';
 
 const HowToUse: React.FC = () => {
+  // 定义自定义字体样式
+  const customFontStyle = {
+    fontFamily: `'Inter-Regular-9', 'Inter', system-ui, sans-serif`,
+    lineHeight: '1.5', // 确保行高生效
+  };
   return (
     <div className="w-full bg-[#222222]">
       {/* 第一步：Input Your Idea */}
@@ -20,12 +25,14 @@ const HowToUse: React.FC = () => {
         </div>
         
         {/* 气泡提示框 */}
-        <div className="absolute left-1/2 -translate-x-1/2 bottom-8 lg:bottom-[120px] w-[calc(100%-4rem)] max-w-[500px] lg:w-[500px] flex flex-col">
+        <div className="absolute left-1/2 -translate-x-1/2 bottom-8 lg:bottom-[30px] w-[calc(100%-4rem)] max-w-[500px] lg:w-[500px] flex flex-col">
           <div className="backdrop-blur-[49px] bg-white/60 rounded-2xl lg:rounded-lg px-6 py-4 lg:px-6 lg:py-4 shadow-[0px_12px_49px_0px_rgba(0,0,0,0.06)] relative">
             <div className="flex items-center gap-2">
-              <p className="text-[#161617] text-lg lg:text-3xl font-normal leading-[1.5] tracking-tight flex-1 font-['Inter',system-ui,sans-serif]">
-                <span className="lg:hidden">I am a piece of content describing inspiration I am a piece of content describing inspiration.</span>
-                <span className="hidden lg:inline">A stylish female model with short black hair, wearing a strapless black dress, photographed in a glossy tiled room with dramatic lighting.</span>
+              <p 
+                className="text-[#161617] text-lg lg:text-2xl font-normal lg:font-light tracking-[-0.18px] flex-1"
+                style={customFontStyle}
+              >
+                A stylish female model with short black hair, wearing a strapless black dress, photographed in a glossy tiled room with dramatic lighting.
               </p>
             </div>
             {/* 左下角图标 - 仅移动端显示 */}
@@ -41,10 +48,14 @@ const HowToUse: React.FC = () => {
           </div>
           
           {/* 底部小箭头指示器 */}
-          <div className="w-[63px] h-[21px] relative ml-4 hidden lg:block">
-            <svg width="36" height="20" viewBox="0 0 36 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="absolute left-4 top-0">
-              <path d="M18 20L0 0H36L18 20Z" fill="rgba(255, 255, 255, 0.6)" />
-            </svg>
+          <div className="w-[63px] h-[30px] relative ml-4 hidden lg:block">
+            <Image
+              src="/marketing/images/main/how/d.svg"
+              alt="Arrow indicator"
+              width={50}
+              height={30}
+              className="absolute left-4 top-0"
+            />
           </div>
         </div>
       </div>
@@ -165,8 +176,7 @@ const HowToUse: React.FC = () => {
           Download files optimized for prototyping or manufacturing, and move from concept to creation seamlessly.
         </div>
       </div>
-    </div>
-    
+      </div>
     </div>
   );
 };

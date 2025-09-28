@@ -16,14 +16,14 @@ export default function StaticNavigation({ currentSaasUrl }: StaticNavigationPro
         <div className="hidden md:contents">
           <Link href="/" className="hero-logo">
             <Image
-              src="/marketing/images/logo/Union.svg"
+              src="/marketing/images/logo/Creamoda.svg"
               alt="CREAMODA"
               width={140}
               height={45}
               className="logo-image logo-default"
             />
             <Image
-              src="/marketing/images/logo/Union.svg"
+              src="/marketing/images/logo/Creamoda.svg"
               alt="CREAMODA"
               width={140}
               height={45}
@@ -50,9 +50,9 @@ export default function StaticNavigation({ currentSaasUrl }: StaticNavigationPro
             </div>
 
             {/* Fashion Agent 静态导航 - 直接跳转 */}
-            <Link href="/fashion-agent" className="nav-link" style={{ color: 'white' }}>
+            {/* <Link href="/fashion-agent" className="nav-link" style={{ color: 'white' }}>
               Fashion Agent
-            </Link>
+            </Link> */}
 
             {/* Design Ideas 静态导航 */}
             <Link href="/designs" className="nav-link" style={{ color: 'white' }}>
@@ -86,7 +86,7 @@ export default function StaticNavigation({ currentSaasUrl }: StaticNavigationPro
           {/* Mobile Logo */}
           <Link href="/" className="flex items-center">
             <Image
-              src="/marketing/images/logo/Union.svg"
+              src="/marketing/images/logo/Creamoda.svg"
               alt="CHIMERI AI"
               width={50}
               height={16}
@@ -112,7 +112,7 @@ export default function StaticNavigation({ currentSaasUrl }: StaticNavigationPro
           <Link href="#">AI Image Changer</Link>
           <Link href="#">Image Color Changer</Link>
           
-          <Link href="/fashion-agent">Fashion Agent</Link>
+          {/* <Link href="/fashion-agent">Fashion Agent</Link> */}
           
           <Link href="/designs">Design Ideas</Link>
           

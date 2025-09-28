@@ -1292,7 +1292,8 @@ export const themes: Record<string, ThemeConfig> = {
       ]
     },
     whyChoose: {
-      title: 'Why Choose Chimer AI',
+      // title: 'Why Choose Chimer AI',
+      title: 'Why Choose Creamoda AI',
       cards: [
         {
           title: 'Style Adaptation Intelligence',
