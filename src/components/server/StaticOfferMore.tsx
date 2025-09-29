@@ -325,3 +325,4 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ card, onTryNow }) => {
 }
 
 export default StaticOfferMore
+

@@ -766,3 +766,4 @@ export default function DesignImageDetailPage({ image, similarImages = [] }: Des
     </div>
   );
 }
+
