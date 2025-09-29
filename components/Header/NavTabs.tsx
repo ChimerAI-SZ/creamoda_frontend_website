@@ -12,10 +12,10 @@ type NavItem = {
 
 // 将导航项抽取为配置数组
 const navItems: NavItem[] = [
-  { text: 'Design Tools', href: '/fashion-design/create' },
-  // { text: 'Fashion Agent', href: '/fashion-agent' },
-  { text: 'Design Ideas', href: '/designs' },
-  // { text: 'Pricing', href: '/pricing' }
+  { text: 'Design', href: '/fashion-design/create' },
+  { text: 'Virtual Try-on', href: '/virtual-try-on/create' },
+  { text: 'Magic Kit', href: '/magic-kit/create' },
+  // { text: 'Community', href: '/community' }
 ];
 
 function NavItem({ text, href }: NavItem) {
@@ -47,8 +47,7 @@ function NavItem({ text, href }: NavItem) {
 
 export default function NavTabs() {
   return (
-    // 只保留桌面端导航，移动端由StaticNavigation中的MobileMenuToggle处理
-    <nav className="hidden md:flex items-center gap-[28px]">
+    <nav className="flex items-center gap-[28px]">
       {navItems.map(item => (
         <NavItem key={item.text} {...item} />
       ))}

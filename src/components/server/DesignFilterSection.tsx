@@ -194,6 +194,7 @@ const MemoizedImageWithSkeleton = memo(function ImageWithSkeleton({
             variant="ghost"
             className="w-full bg-white hover:bg-white/90 text-black rounded-md py-3 backdrop-blur-sm transition-all duration-200"
             onClick={e => {
+              e.preventDefault();
               e.stopPropagation();
               onClick && onClick();
             }}
