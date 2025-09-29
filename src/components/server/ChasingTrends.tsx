@@ -1,5 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 
 export default function ChasingTrends() {
@@ -38,10 +39,12 @@ export default function ChasingTrends() {
                 
                 {/* 按钮 */}
                 <div className="pl-2 text-left">
-                  <button className="bg-white text-black px-6 py-3 rounded-lg font-medium flex items-center gap-2 hover:bg-gray-100 transition-colors">
-                    Design now
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
+                  <Link href="/fashion-design/create">
+                    <button className="bg-white text-black px-6 py-3 rounded-lg font-medium flex items-center gap-2 hover:bg-gray-100 transition-colors">
+                      Design now
+                      <ArrowRight className="w-4 h-4" />
+                    </button>
+                  </Link>
                 </div>
               </div>
             </div>
