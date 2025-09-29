@@ -11,7 +11,7 @@ interface DesignHeroProps {
 export default function DesignHero({ saasUrl }: DesignHeroProps) {
   return (
     <section 
-      className="hero-section relative overflow-hidden bg-no-repeat"
+      className="hero-section relative overflow-hidden bg-no-repeat bg-black"
       style={{
         backgroundImage: 'url(/marketing/images/design/design_bg.png)',
         backgroundSize: 'cover', // 填满容器，无留白
