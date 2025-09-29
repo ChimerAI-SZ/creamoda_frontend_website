@@ -222,8 +222,8 @@ export default function FeaturePageHero({ theme, saasUrl, currentRoute }: Featur
             <div style={{
               position: 'absolute',
               bottom: shouldStickToBottom ? '20%' : (shouldMoveUp ? (heroMain.imageSize === 'medium' ? '20%' : '25%') : (heroMain.imageSize === 'medium' ? '15%' : '20%')),
-              left: shouldStickToBottom ? '-20%' : '0%',
-              right: shouldStickToBottom ? '-20%' : '0%',
+              // left: shouldStickToBottom ? '-20%' : '0%',
+              // right: shouldStickToBottom ? '-20%' : '0%',
               color: 'white',
               zIndex: 10,
               pointerEvents: 'none',
@@ -452,9 +452,9 @@ export default function FeaturePageHero({ theme, saasUrl, currentRoute }: Featur
           <div style={{
             position: 'absolute',
             bottom: '0px',
-            left: '50%', // 居中定位
-            transform: 'translateX(-50%)', // 居中偏移
-            width: '100vw', // 使用视窗宽度
+            left: '0', // 改为左对齐
+            right: '0', // 添加右对齐
+            width: '100%', // 改为100%宽度
             color: 'white',
             background: 'linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,0.3) 60%, rgba(0,0,0,0) 100%)',
              marginBottom: '20px'
@@ -464,7 +464,7 @@ export default function FeaturePageHero({ theme, saasUrl, currentRoute }: Featur
               display: 'flex',
               flexDirection: 'column',
               gap: '16px',
-              padding: '20px 20px 0 20px' // 顶部和左右有padding，底部无padding
+              padding: '20px clamp(16px, 4vw, 40px) 0 clamp(16px, 4vw, 40px)' // 减少左右padding，避免遮挡
             }}>
             {/* Title and Description */}
             <div style={{
@@ -485,7 +485,7 @@ export default function FeaturePageHero({ theme, saasUrl, currentRoute }: Featur
                 margin: '0',
                 fontFamily: "'Instrument Sans', system-ui, -apple-system, sans-serif",
                 opacity: '0.95',
-                maxWidth: '90%'
+                maxWidth: '100%' // 改为100%，让文字充分利用容器宽度
               }}>
                 {heroMain.subtitle}
               </p>

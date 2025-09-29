@@ -5,7 +5,7 @@ export default function StaticFooter() {
   return (
     <footer className="footer-section">
       <div className="max-w-7xl lg:max-w-[1450px] xl:max-w-[1550px] 2xl:max-w-[1650px] mx-auto px-3 sm:px-4 md:px-6 lg:px-12 xl:px-16 2xl:px-24 ">
-        <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 lg:gap-16 w-full min-w-0">
+        <div className="flex flex-col xl:flex-row gap-4 sm:gap-6 md:gap-8 lg:gap-12 xl:gap-16 w-full min-w-0">
           {/* Left section */}
           <div className="footer-left flex-1">
           {/* Logo */}
@@ -73,14 +73,14 @@ export default function StaticFooter() {
         </div>
           
           {/* Right section */}
-          <div className="footer-right flex-1 min-w-0 ">
+          <div className="footer-right flex-1 min-w-0 flex flex-col xl:flex-row gap-4 md:gap-6 lg:gap-8 xl:gap-20">
           {/* AI Features Section */}
           <div className="footer-ai-features min-w-0">
             <h3 className="footer-section-title pl-2 sm:pl-0 break-words">AI Features</h3>
-            <div className="footer-features">
-              <div className="feature-group min-w-0 ">
-              {/* <a href="https://agent.chimer-ai.com/" className="feature-item break-words">AI Agent</a> */}
-              <a href="https://creamoda.ai/fashion-design/create" className="feature-item break-words">Text to Image</a>
+            <div className="footer-features grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+              {/* Fashion Design Features */}
+              <div className="feature-group min-w-0">
+                <a href="https://creamoda.ai/fashion-design/create" className="feature-item break-words">Text to Image</a>
                 <a href="https://creamoda.ai/fashion-design/create" className="feature-item break-words">Copy Style</a>
                 <a href="https://creamoda.ai/fashion-design/create" className="feature-item break-words">Mix 2 Images</a>
                 <a href="https://creamoda.ai/fashion-design/create" className="feature-item break-words">Change Clothes</a>
@@ -88,21 +88,24 @@ export default function StaticFooter() {
                 <a href="https://creamoda.ai/fashion-design/create" className="feature-item break-words">Sketch to Design</a>
               </div>
               
-              <div className="feature-group min-w-0 ">
+              {/* Style & Fabric Features */}
+              <div className="feature-group min-w-0">
                 <a href="https://creamoda.ai/fashion-design/create" className="feature-item break-words">Change Style</a>
                 <a href="https://creamoda.ai/fashion-design/create" className="feature-item break-words">Change Fabric</a>
                 <a href="https://creamoda.ai/fashion-design/create" className="feature-item break-words">Change Printing</a>
                 <a href="https://creamoda.ai/fashion-design/create" className="feature-item break-words">Style Fusion</a>
               </div>
               
-              <div className="feature-group min-w-0 ">
-              <a href="https://creamoda.ai/virtual-try-on/create" className="feature-item break-words">Virtual Try-on</a>
+              {/* Virtual Try-on Features */}
+              <div className="feature-group min-w-0">
+                <a href="https://creamoda.ai/virtual-try-on/create" className="feature-item break-words">Virtual Try-on</a>
                 <a href="https://creamoda.ai/virtual-try-on/create" className="feature-item break-words">Change Pose</a>
               </div>
 
-              <div className="feature-group min-w-0 ">
-              <a href="https://creamoda.ai/magic-kit/create" className="feature-item break-words">Change Color</a>
-              <a href="https://creamoda.ai/magic-kit/create" className="feature-item break-words">Change Background</a>
+              {/* Magic Kit Features */}
+              <div className="feature-group min-w-0">
+                <a href="https://creamoda.ai/magic-kit/create" className="feature-item break-words">Change Color</a>
+                <a href="https://creamoda.ai/magic-kit/create" className="feature-item break-words">Change Background</a>
                 <a href="https://creamoda.ai/magic-kit/create" className="feature-item break-words">Remove Background</a>
                 <a href="https://creamoda.ai/magic-kit/create" className="feature-item break-words">Partial Modification</a>
                 <a href="https://creamoda.ai/magic-kit/create" className="feature-item break-words">Upscale</a>
@@ -113,7 +116,7 @@ export default function StaticFooter() {
           </div>
           
           {/* Other Links Section */}
-          <div className="footer-other-links min-w-0">
+          <div className="footer-other-links min-w-0 flex-shrink-0">
             {/* Contact Us Column */}
             <div className="footer-column min-w-0">
               <h3 className="footer-section-title pl-2 sm:pl-0 break-words">Contact Us</h3>
