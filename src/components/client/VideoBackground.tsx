@@ -30,6 +30,8 @@ export default function VideoBackground() {
       autoPlay
       muted
       playsInline
+      poster="/marketing/images/hero/firstframe.png"
+      preload="metadata"
     >
       <source src="/marketing/images/hero/bg.webm" type="video/webm" />
     </video>

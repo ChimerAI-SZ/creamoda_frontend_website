@@ -24,6 +24,7 @@ export default function StaticHeroMains({ className = '' }: StaticHeroMainsProps
           playsInline
           preload="metadata"
           webkit-playsinline="true"
+          poster="/marketing/images/hero/firstframe.png"
           className="w-full h-full object-cover"
           style={{
             objectFit: 'cover',
