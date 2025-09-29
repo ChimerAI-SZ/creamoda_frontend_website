@@ -118,20 +118,18 @@ interface DesignImageDetailPageProps {
 const MemoizedImageWithSkeleton = React.memo(function ImageWithSkeleton({ 
   src, 
   alt = '', 
+  href,
   onClick 
 }: { 
   src: string; 
   alt?: string; 
+  href?: string;
   onClick?: () => void 
 }) {
   const [loaded, setLoaded] = useState(false);
 
-  return (
-    <div
-      className="group relative w-full overflow-hidden rounded-md cursor-pointer"
-      style={{ aspectRatio: '3 / 4' }}
-      onClick={onClick}
-    >
+  const content = (
+    <>
       <Image
         src={src}
         alt={alt}
@@ -153,9 +151,8 @@ const MemoizedImageWithSkeleton = React.memo(function ImageWithSkeleton({
         <div className="flex justify-center pointer-events-auto">
           <Button
             variant="ghost"
-            className="w-full bg-white hover:bg-white/90 text-black rounded-md py-3 backdrop-blur-sm transition-all duration-200"
+            className="w-full bg-gray-800/70 hover:bg-gray-800/80 text-white rounded-md py-3 backdrop-blur-sm"
             onClick={e => {
-              e.preventDefault();
               e.stopPropagation();
               onClick && onClick();
             }}
@@ -164,6 +161,32 @@ const MemoizedImageWithSkeleton = React.memo(function ImageWithSkeleton({
           </Button>
         </div>
       </div>
+    </>
+  );
+
+  if (href) {
+    return (
+      <a
+        href={href}
+        className="group relative w-full overflow-hidden rounded-md cursor-pointer block"
+        style={{ aspectRatio: '3 / 4' }}
+        onClick={e => {
+          e.preventDefault();
+          onClick && onClick();
+        }}
+      >
+        {content}
+      </a>
+    );
+  }
+
+  return (
+    <div
+      className="group relative w-full overflow-hidden rounded-md cursor-pointer"
+      style={{ aspectRatio: '3 / 4' }}
+      onClick={onClick}
+    >
+      {content}
     </div>
   );
 });
@@ -497,6 +520,7 @@ export default function DesignImageDetailPage({ image, similarImages = [] }: Des
                   <MemoizedImageWithSkeleton
                     src={img.image_url}
                     alt={img.clothing_description || ''}
+                    href={`/designs/${img.slug}`}
                     onClick={() => {
                       window.location.href = `/designs/${img.slug}`;
                     }}
@@ -728,6 +752,7 @@ export default function DesignImageDetailPage({ image, similarImages = [] }: Des
                   <MemoizedImageWithSkeleton
                     src={img.image_url}
                     alt={img.clothing_description || ''}
+                    href={`/designs/${img.slug}`}
                     onClick={() => {
                       window.location.href = `/designs/${img.slug}`;
                     }}
@@ -741,3 +766,4 @@ export default function DesignImageDetailPage({ image, similarImages = [] }: Des
     </div>
   );
 }
+

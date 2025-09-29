@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react'
 import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 
 interface FeatureCard {
   id: string
@@ -93,10 +93,24 @@ const featureRouteMap: Record<string, string> = {
 
 const StaticOfferMore: React.FC = () => {
   const router = useRouter()
+  const pathname = usePathname()
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const [canScrollLeft, setCanScrollLeft] = useState(false)
   const [canScrollRight, setCanScrollRight] = useState(true)
   const [activeButton, setActiveButton] = useState<'left' | 'right' | null>(null)
+
+  // 根据当前路径过滤掉对应的功能卡片
+  const getFilteredFeatureCards = () => {
+    // 根据路径找到对应的功能ID
+    const currentFeatureId = Object.keys(featureRouteMap).find(
+      featureId => featureRouteMap[featureId] === pathname
+    )
+    
+    // 过滤掉当前页面的功能卡片
+    return featureCards.filter(card => card.id !== currentFeatureId)
+  }
+
+  const filteredCards = getFilteredFeatureCards()
 
   const checkScrollButtons = () => {
     if (scrollContainerRef.current) {
@@ -140,7 +154,7 @@ const StaticOfferMore: React.FC = () => {
     }
   }
 
-  // Initialize scroll state on mount
+  // Initialize scroll state on mount and when cards change
   useEffect(() => {
     checkScrollButtons()
     
@@ -149,7 +163,7 @@ const StaticOfferMore: React.FC = () => {
     window.addEventListener('resize', handleResize)
     
     return () => window.removeEventListener('resize', handleResize)
-  }, [checkScrollButtons])
+  }, [filteredCards.length]) // Re-run when number of cards changes
 
   return (
     <section className="w-full bg-black text-white overflow-visible">
@@ -200,7 +214,7 @@ const StaticOfferMore: React.FC = () => {
             msOverflowStyle: 'none'
           }}
         >
-          {featureCards.map((card, index) => (
+          {filteredCards.map((card, index) => (
             <div key={card.id} className="flex-none first:ml-0 last:mr-0">
               <FeatureCard 
                 card={card}
@@ -311,3 +325,4 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ card, onTryNow }) => {
 }
 
 export default StaticOfferMore
+

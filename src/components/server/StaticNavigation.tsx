@@ -69,8 +69,6 @@ export default function StaticNavigation({ currentSaasUrl }: StaticNavigationPro
           {currentSaasUrl ? (
             <a 
               href={currentSaasUrl} 
-              target="_blank" 
-              rel="noopener noreferrer" 
               className="flex items-center gap-2 px-4 py-2 bg-white text-black text-sm font-semibold rounded-xl shadow-sm hover:shadow-md transition-all duration-200 hover:scale-105"
             >
               Get Started
@@ -123,3 +121,4 @@ export default function StaticNavigation({ currentSaasUrl }: StaticNavigationPro
     </>
   );
 }
+
