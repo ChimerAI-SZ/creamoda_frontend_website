@@ -274,7 +274,7 @@ const MemoizedImageGrid = memo(function ImageGridSection({
               <MemoizedImageWithSkeleton
                 src={img.image_url}
                 alt={img.clothing_description || ''}
-                href={isMobile() ? `/designs/${img.slug}` : undefined}
+                href={`/designs/${img.slug}`}
                 onClick={() => openDetailAt(idx)}
               />
             </div>
