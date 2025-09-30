@@ -62,6 +62,17 @@ export default function StaticNavigation({ currentSaasUrl }: StaticNavigationPro
     }
   };
 
+  // 从完整URL中提取路径部分
+  const extractPathFromUrl = (url: string): string => {
+    try {
+      const urlObj = new URL(url);
+      return urlObj.pathname;
+    } catch {
+      // 如果URL格式不正确，返回默认路径
+      return '/fashion-design/create';
+    }
+  };
+
   return (
     <>
       <nav className="hero-nav">
@@ -152,12 +163,12 @@ export default function StaticNavigation({ currentSaasUrl }: StaticNavigationPro
                 >
                   Log in / Sign up
                 </button>
-                <a 
-                  href={currentSaasUrl} 
+                <Link 
+                  href={currentSaasUrl ? extractPathFromUrl(currentSaasUrl) : '/fashion-design/create'}
                   className="flex items-center gap-2 px-4 py-2 bg-white text-black text-sm font-semibold rounded-md shadow-sm hover:shadow-md transition-all duration-200 hover:scale-105"
                 >
                   Get started
-                </a>
+                </Link>
               </div>
             ) : (
               <DynamicCreateButton />
