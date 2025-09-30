@@ -145,12 +145,20 @@ export default function StaticNavigation({ currentSaasUrl }: StaticNavigationPro
           ) : (
             // 未登录：根据是否有传入URL显示不同按钮
             currentSaasUrl ? (
-              <a 
-                href={currentSaasUrl} 
-                className="flex items-center gap-2 px-4 py-2 bg-white text-black text-sm font-semibold rounded-xl shadow-sm hover:shadow-md transition-all duration-200 hover:scale-105"
-              >
-                Try now
-              </a>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={handleLoginClick}
+                  className="flex items-center gap-2 px-4 py-2 bg-white/20 text-white text-sm font-semibold rounded-md hover:bg-white/30 transition-all duration-200"
+                >
+                  Log in / Sign up
+                </button>
+                <a 
+                  href={currentSaasUrl} 
+                  className="flex items-center gap-2 px-4 py-2 bg-white text-black text-sm font-semibold rounded-md shadow-sm hover:shadow-md transition-all duration-200 hover:scale-105"
+                >
+                  Get started
+                </a>
+              </div>
             ) : (
               <DynamicCreateButton />
             )
