@@ -167,9 +167,9 @@ const StaticOfferMore: React.FC = () => {
 
   return (
     <section className="w-full bg-black text-white overflow-visible">
-      <div className="max-w-7xl lg:max-w-[1450px] xl:max-w-[1550px] 2xl:max-w-[1650px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 py-12 lg:py-20">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8 lg:mb-10">
+      {/* Header Section - Constrained width */}
+      <div className="max-w-7xl lg:max-w-[1450px] xl:max-w-[1550px] 2xl:max-w-[1650px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 pt-12 lg:pt-20 pb-8 lg:pb-10">
+        <div className="flex items-center justify-between">
           <h2 className="fusion-title !text-left pl-4 sm:pl-0">
             We Offer More
           </h2>
@@ -203,28 +203,30 @@ const StaticOfferMore: React.FC = () => {
             </button>
           </div>
         </div>
+      </div>
 
-        {/* Cards Container */}
-        <div 
-          ref={scrollContainerRef}
-          onScroll={checkScrollButtons}
-          className="flex gap-6 md:gap-8 lg:gap-10 overflow-x-auto scroll-smooth [&::-webkit-scrollbar]:hidden px-2 md:px-0"
-          style={{ 
-            scrollbarWidth: 'none', 
-            msOverflowStyle: 'none'
-          }}
-        >
-          {filteredCards.map((card, index) => (
-            <div key={card.id} className="flex-none first:ml-0 last:mr-0">
-              <FeatureCard 
-                card={card}
-                onTryNow={() => handleTryNow(card.id)}
-              />
-            </div>
-          ))}
-        </div>
+      {/* Cards Container - Full width */}
+      <div 
+        ref={scrollContainerRef}
+        onScroll={checkScrollButtons}
+        className="flex gap-6 md:gap-8 lg:gap-10 overflow-x-auto scroll-smooth [&::-webkit-scrollbar]:hidden px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24"
+        style={{ 
+          scrollbarWidth: 'none', 
+          msOverflowStyle: 'none'
+        }}
+      >
+        {filteredCards.map((card, index) => (
+          <div key={card.id} className="flex-none first:ml-0 last:mr-0">
+            <FeatureCard 
+              card={card}
+              onTryNow={() => handleTryNow(card.id)}
+            />
+          </div>
+        ))}
+      </div>
 
-        {/* Mobile Navigation Controls - Only visible on mobile */}
+      {/* Mobile Navigation Controls - Constrained width */}
+      <div className="max-w-7xl lg:max-w-[1450px] xl:max-w-[1550px] 2xl:max-w-[1650px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 pb-12 lg:pb-20">
         <div className="flex md:hidden justify-center gap-4 pt-8">
           <button
             onClick={scrollLeft}

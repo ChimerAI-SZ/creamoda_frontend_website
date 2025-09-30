@@ -310,7 +310,7 @@ export default function FeaturePageHero({ theme, saasUrl, currentRoute }: Featur
                 overflow: 'hidden'
               }}>
                 <Image
-                  src="/marketing/images/hero/upload_img.png"
+                  src="/marketing/images/hero/upload_imgs.png"
                   alt="Upload preview"
                   fill
                   style={{ objectFit: 'cover' }}

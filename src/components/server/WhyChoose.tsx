@@ -40,7 +40,7 @@ const StaticWhyChoose: React.FC = () => {
               >
                 {/* Circular Badge */}
                 <div className="flex flex-col items-center justify-center w-[80px] h-[80px] md:w-[100px] md:h-[100px] lg:w-[228px] lg:h-[228px] rounded-full border border-white border-opacity-50 p-3 md:p-4 lg:p-14 flex-shrink-0">
-                  <span className="text-[18px] md:text-[24px] lg:text-[62px] font-normal leading-[1.55] font-['Plus_Jakarta_Sans',sans-serif] text-white">
+                  <span className="text-[18px] md:text-[24px] lg:text-[62px] font-normal leading-[1.55] text-white" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                     {feature.metric}
                   </span>
                   <span className="text-[10px] md:text-xs lg:text-xl font-light leading-[1.5] font-['Inter',sans-serif] text-white whitespace-nowrap">
