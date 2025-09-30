@@ -32,14 +32,22 @@ export class AuthService {
       // 触发全局登录成功事件
       eventBus.emit('auth:login-success', undefined);
 
-      // 3. 执行成功回调
+      // 3. 登录成功后跳转到 fashion-design/create 页面
+      if (typeof window !== 'undefined') {
+        // 延迟一下让模态框关闭动画完成
+        setTimeout(() => {
+          window.location.href = '/fashion-design/create';
+        }, 300);
+      }
+
+      // 4. 执行成功回调
       if (onSuccess) {
         onSuccess();
       }
     } catch (error) {
       console.error('Error during post-login actions:', error);
 
-      // 4. 错误处理
+      // 5. 错误处理
       if (onError) {
         onError(error as Error);
       } else {

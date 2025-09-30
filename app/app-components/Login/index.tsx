@@ -46,15 +46,16 @@ export function LoginModal() {
     };
   }, []);
 
-  useEffect(() => {
-    const checkLoginStatus = () => {
-      const token = localStorage.getItem('auth_token') || '';
-      // 用户已登录，关闭模态框
-      setModalVisible(!token);
-    };
-    // 初始检查
-    checkLoginStatus();
-  }, []);
+  // 不要在页面加载时自动弹出登录弹窗，只有点击按钮时才弹出
+  // useEffect(() => {
+  //   const checkLoginStatus = () => {
+  //     const token = localStorage.getItem('auth_token') || '';
+  //     // 用户已登录，关闭模态框
+  //     setModalVisible(!token);
+  //   };
+  //   // 初始检查
+  //   checkLoginStatus();
+  // }, []);
 
   const handleToggleView = (view: ModalView) => {
     setCurrentView(view);
@@ -129,15 +130,15 @@ export function LoginModal() {
   return (
     modalVisible && (
       <div
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 overflow-y-auto"
+        className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[9999] overflow-y-auto"
         style={{ isolation: 'isolate' }}
       >
-        <div className="bg-white rounded-[16px] w-[936px] h-[714px] flex items-start justify-center relative z-50">
+        <div className="bg-white rounded-[16px] w-[936px] h-[714px] flex items-start justify-center relative z-10">
           <div
-            className="absolute top-0 right-[-95px] w-[50px] h-[50px] flex items-center justify-center bg-white rounded-full cursor-pointer"
+            className="absolute top-0 right-[-95px] w-[50px] h-[50px] flex items-center justify-center bg-white rounded-full cursor-pointer hover:bg-gray-50 transition-colors"
             onClick={handleCloseModal}
           >
-            <X className="w-6 h-6" />
+            <X className="w-6 h-6 text-gray-700" />
           </div>
           <div className="w-[504px] h-[714px] flex-1 relative overflow-hidden rounded-tl-[16px] rounded-bl-[16px]">
             <Image

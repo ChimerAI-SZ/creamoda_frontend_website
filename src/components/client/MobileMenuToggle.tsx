@@ -3,12 +3,18 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { eventBus } from '@/utils/events';
+import { isAuthenticated } from '@/lib/api/token';
+import { usePersonalInfoStore } from '@/stores/usePersonalInfoStore';
 
 export default function MobileMenuToggle() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isDesignSlugPage, setIsDesignSlugPage] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  
+  // 使用Zustand store获取用户信息
+  const { username, email, headPic, fetchUserInfo } = usePersonalInfoStore();
 
   const toggleMenu = () => {
     if (!isMenuOpen) {
@@ -47,6 +53,36 @@ export default function MobileMenuToggle() {
       setIsDesignSlugPage(window.location.pathname.startsWith('/designs/') && window.location.pathname !== '/designs');
     }
   }, []);
+
+  // 检查初始登录状态
+  useEffect(() => {
+    const checkLoginStatus = () => {
+      const loggedIn = isAuthenticated();
+      setIsLoggedIn(loggedIn);
+      
+      if (loggedIn) {
+        // 如果已登录，获取用户信息
+        fetchUserInfo();
+      }
+    };
+
+    checkLoginStatus();
+  }, [fetchUserInfo]);
+
+  // 监听登录成功事件
+  useEffect(() => {
+    const handleLoginSuccess = () => {
+      setIsLoggedIn(true);
+      // 重新获取用户信息
+      fetchUserInfo();
+    };
+
+    eventBus.on('auth:login-success', handleLoginSuccess);
+
+    return () => {
+      eventBus.off('auth:login-success', handleLoginSuccess);
+    };
+  }, [fetchUserInfo]);
 
   // 组件卸载时清理CSS类
   useEffect(() => {
@@ -309,7 +345,7 @@ export default function MobileMenuToggle() {
                 </div> */}
               </div>
               
-              {/* 底部登录按钮 - 固定在底部 */}
+              {/* 底部登录/用户信息 - 固定在底部 */}
               <div 
                 className="pt-4 mt-auto transition-opacity duration-300 ease-out"
                 style={{
@@ -317,16 +353,53 @@ export default function MobileMenuToggle() {
                   transitionDelay: isAnimating ? '0ms' : '500ms'
                 }}
               >
-                <button 
-                  onClick={() => {
-                    closeMenu();
-                    // 触发登录模态框
-                    eventBus.emit('auth:login', { isOpen: true });
-                  }}
-                  className="w-full bg-white text-black font-semibold py-4 px-6 rounded-lg hover:bg-gray-100 transition-colors duration-200"
-                >
-                  Get Started
-                </button>
+                {isLoggedIn ? (
+                  // 已登录：显示用户信息，点击可跳转
+                  <div 
+                    onClick={() => {
+                      closeMenu();
+                      // 跳转到功能页面
+                      if (typeof window !== 'undefined') {
+                        window.location.href = '/fashion-design/create';
+                      }
+                    }}
+                    className="w-full bg-white/10 text-white py-4 px-6 rounded-lg cursor-pointer hover:bg-white/20 transition-colors duration-200"
+                  >
+                    <div className="flex items-center gap-3">
+                      {headPic ? (
+                        <img
+                          src={headPic}
+                          alt="User Avatar"
+                          className="w-8 h-8 rounded-full"
+                        />
+                      ) : (
+                        <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center text-white text-sm font-semibold">
+                          {username?.charAt(0)?.toUpperCase() || email?.charAt(0)?.toUpperCase() || 'U'}
+                        </div>
+                      )}
+                      <div>
+                        <div className="font-semibold text-sm">
+                          {username || email?.split('@')[0] || 'User'}
+                        </div>
+                        <div className="text-xs text-white/70">
+                          Tap to enter app
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  // 未登录：显示登录按钮
+                  <button 
+                    onClick={() => {
+                      closeMenu();
+                      // 触发登录模态框
+                      eventBus.emit('auth:login', { isOpen: true });
+                    }}
+                    className="w-full bg-white text-black font-semibold py-4 px-6 rounded-lg hover:bg-gray-100 transition-colors duration-200"
+                  >
+                    Log in / Sign up
+                  </button>
+                )}
               </div>
             </div>
           </div>

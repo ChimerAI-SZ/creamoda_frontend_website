@@ -1,7 +1,13 @@
+'use client';
+
 import Image from 'next/image';
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
 import DynamicCreateButton from '../client/DynamicCreateButton';
 import MobileMenuToggle from '../client/MobileMenuToggle';
+import { eventBus } from '../../../utils/events';
+import { isAuthenticated } from '../../../lib/api/token';
+import { usePersonalInfoStore } from '../../../stores/usePersonalInfoStore';
 
 
 interface StaticNavigationProps {
@@ -9,6 +15,53 @@ interface StaticNavigationProps {
 }
 
 export default function StaticNavigation({ currentSaasUrl }: StaticNavigationProps) {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  
+  // 使用Zustand store获取用户信息
+  const { username, email, headPic, fetchUserInfo } = usePersonalInfoStore();
+
+  // 检查初始登录状态
+  useEffect(() => {
+    const checkLoginStatus = () => {
+      const loggedIn = isAuthenticated();
+      setIsLoggedIn(loggedIn);
+      
+      if (loggedIn) {
+        // 如果已登录，获取用户信息
+        fetchUserInfo();
+      }
+    };
+
+    checkLoginStatus();
+  }, [fetchUserInfo]);
+
+  // 监听登录成功事件
+  useEffect(() => {
+    const handleLoginSuccess = () => {
+      setIsLoggedIn(true);
+      // 重新获取用户信息
+      fetchUserInfo();
+    };
+
+    eventBus.on('auth:login-success', handleLoginSuccess);
+
+    return () => {
+      eventBus.off('auth:login-success', handleLoginSuccess);
+    };
+  }, [fetchUserInfo]);
+
+  // 处理登录按钮点击
+  const handleLoginClick = () => {
+    eventBus.emit('auth:login', { isOpen: true });
+  };
+
+  // 处理头像点击，跳转到功能页面
+  const handleAvatarClick = () => {
+    if (typeof window !== 'undefined') {
+      window.location.href = '/fashion-design/create';
+    }
+  };
+
   return (
     <>
       <nav className="hero-nav">
@@ -65,16 +118,45 @@ export default function StaticNavigation({ currentSaasUrl }: StaticNavigationPro
             </Link> */}
           </div>
           
-          {/* 如果有传入的URL就使用传入的，否则使用动态Create按钮 */}
-          {currentSaasUrl ? (
-            <a 
-              href={currentSaasUrl} 
-              className="flex items-center gap-2 px-4 py-2 bg-white text-black text-sm font-semibold rounded-xl shadow-sm hover:shadow-md transition-all duration-200 hover:scale-105"
+          {/* 根据登录状态显示不同的UI */}
+          {isLoggedIn ? (
+            // 已登录：显示用户头像
+            <div 
+              onClick={handleAvatarClick}
+              className="flex items-center gap-2 px-2 py-2 cursor-pointer hover:bg-white/10 rounded-lg transition-all duration-200"
             >
-              Get Started
-            </a>
+              {headPic ? (
+                <Image
+                  src={headPic}
+                  alt="User Avatar"
+                  width={32}
+                  height={32}
+                  className="rounded-full"
+                />
+              ) : (
+                <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center text-white text-sm font-semibold">
+                  {username?.charAt(0)?.toUpperCase() || email?.charAt(0)?.toUpperCase() || 'U'}
+                </div>
+              )}
+              <span className="text-white text-sm font-medium hidden sm:block">
+                {username || email?.split('@')[0] || 'User'}
+              </span>
+            </div>
           ) : (
-            <DynamicCreateButton />
+            // 未登录：显示登录按钮或saas链接
+            currentSaasUrl ? (
+              <button 
+                onClick={handleLoginClick}
+                className="flex items-center gap-2 px-4 py-2 text-white text-sm font-semibold rounded-md transition-all duration-200 hover:scale-105"
+                style={{ 
+                  background: 'rgba(255, 255, 255, 0.2)'
+                }}
+              >
+                Log in / Sign up
+              </button>
+            ) : (
+              <DynamicCreateButton />
+            )
           )}
         </div>
 
