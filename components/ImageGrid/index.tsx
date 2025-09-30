@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback, useMemo, memo } from 'react';
+import { useEffect, useState, useCallback, useMemo, memo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
@@ -30,7 +30,7 @@ export interface ImageItem {
   isCollected: boolean;
 }
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 10; // 匹配后端默认分页大小
 
 // 使用memo优化图片网格组件，避免不必要的重渲染
 const MemoizedImageGrid = memo(function ImageGridContent({
@@ -40,7 +40,8 @@ const MemoizedImageGrid = memo(function ImageGridContent({
   handleDeleteImage,
   handleCollectImage,
   isLoading,
-  hasMore
+  hasMore,
+  totalImages
 }: {
   images: ImageItem[];
   lastItemRef: (node: HTMLDivElement | null) => void;
@@ -49,6 +50,7 @@ const MemoizedImageGrid = memo(function ImageGridContent({
   handleCollectImage: (imageId: number, isCollected: boolean) => void;
   isLoading: boolean;
   hasMore: boolean;
+  totalImages: number;
 }) {
   return (
     <ResponsiveMasonry
@@ -76,22 +78,22 @@ const MemoizedImageGrid = memo(function ImageGridContent({
           />
         ))}
         
-        {/* 加载更多指示器 */}
-        {/* {isLoading && hasMore && (
+        {/* Loading more indicator */}
+        {isLoading && hasMore && (
           <div className="w-full h-20 flex items-center justify-center col-span-full">
             <div className="flex items-center gap-2 text-gray-500">
               <div className="w-4 h-4 border-2 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
-              <span>加载更多图片...</span>
+              <span>Loading more images...</span>
             </div>
           </div>
-        )} */}
-        
-        {/* 没有更多图片提示 */}
-        {!hasMore && images.length > 0 && (
-          <div className="w-full h-16 flex items-center justify-center col-span-full">
-            <span className="text-gray-500 text-sm">已加载全部图片</span>
-          </div>
         )}
+        
+        {/* All images loaded indicator */}
+        {/* {!hasMore && images.length > 0 && (
+          <div className="w-full h-16 flex items-center justify-center col-span-full">
+            <span className="text-gray-500 text-sm">All images loaded ({images.length} / {totalImages})</span>
+          </div>
+        )} */}
       </Masonry>
     </ResponsiveMasonry>
   );
@@ -104,6 +106,7 @@ export function ImageGrid() {
   const [currentPage, setCurrentPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [totalImages, setTotalImages] = useState(0); // 记录后端返回的总图片数
 
   const { clearUserInfo, fetchUserInfo } = usePersonalInfoStore();
   // 查看图片详情相关state
@@ -127,20 +130,31 @@ export function ImageGrid() {
     }
   });
 
+  // 使用 ref 来跟踪加载状态，避免依赖循环
+  const isLoadingRef = useRef(false);
+
   // 加载图片数据
   const fetchImages = useCallback(
     async (page: number, isLoadMore: boolean = false) => {
-      if (isLoading) return; // 防止重复请求
+      console.log('🔄 fetchImages called:', { page, isLoadMore, isLoadingRef: isLoadingRef.current });
+      if (isLoadingRef.current) {
+        console.log('⚠️ Already loading, skipping...');
+        return; // 防止重复请求
+      }
       
+      console.log('✅ Starting fetch, setting loading states');
+      isLoadingRef.current = true;
       setIsLoading(true);
       try {
         const data = await generate.getGenerateList(page, PAGE_SIZE);
 
         if (data.code === 0) {
           const imageList = data.data.list;
+          const total = data.data.total || 0; // 获取后端返回的总数
+          console.log('📥 API response:', { page, imageCount: imageList.length, total, isLoadMore });
           
-          // 检查是否还有更多数据
-          setHasMore(imageList.length === PAGE_SIZE);
+          // 更新总图片数
+          setTotalImages(total);
 
           // 检查是否有正在生成中的图片
           const pendingImages = imageList.filter((item: ImageItem) => [1, 2].includes(item.status));
@@ -157,11 +171,22 @@ export function ImageGrid() {
 
           if (isLoadMore) {
             // 加载更多时追加图片
-            setImages(prev => [...prev, ...imageList]);
+            setImages(prev => {
+              const newImages = [...prev, ...imageList];
+              return newImages;
+            });
+            // 根据当前页数和总数判断是否还有更多
+            const newHasMore = page * PAGE_SIZE < total;
+            console.log('Load more - hasMore updated:', { page, PAGE_SIZE, total, newHasMore });
+            setHasMore(newHasMore);
           } else {
             // 首次加载或刷新时替换图片
             setImages(imageList);
             setCurrentPage(1);
+            // 根据首页图片数量和总数判断是否还有更多
+            const newHasMore = imageList.length < total;
+            console.log('First load - hasMore updated:', { imageCount: imageList.length, total, newHasMore });
+            setHasMore(newHasMore);
           }
         } else {
           showAlert({
@@ -177,20 +202,26 @@ export function ImageGrid() {
             error.message || 'Something went wrong. Please try again later or contact support if the issue persists'
         });
       } finally {
+        console.log('✅ fetchImages completed, resetting loading states');
+        isLoadingRef.current = false;
         setIsLoading(false);
       }
     },
-    [pendingIdsRef, startPolling, showAlert, isLoading]
+    [pendingIdsRef, startPolling, showAlert]
   );
 
   // 加载更多图片
   const loadMore = useCallback(() => {
-    if (hasMore && !isLoading) {
+    console.log('🚀 loadMore triggered:', { hasMore, isLoadingRef: isLoadingRef.current, currentPage });
+    if (hasMore && !isLoadingRef.current) {
       const nextPage = currentPage + 1;
+      console.log('📄 Loading page:', nextPage);
       setCurrentPage(nextPage);
       fetchImages(nextPage, true);
+    } else {
+      console.log('❌ loadMore blocked:', { hasMore, isLoadingRef: isLoadingRef.current });
     }
-  }, [currentPage, hasMore, isLoading, fetchImages]);
+  }, [currentPage, hasMore, fetchImages]);
 
   // 无限滚动钩子
   const { lastItemRef } = useInfiniteScroll({
@@ -201,11 +232,37 @@ export function ImageGrid() {
   // 监听图片列表生成事件
   // 当用户登录成功或提交生成请求后，会触发此事件来刷新图片列表
   useEffect(() => {
-    const handler = () => {
+    const handler = async () => {
       // 收到事件后重新获取第一页的图片数据，重置分页状态
+      console.log('🎯 Event handler triggered: imageList:generate-list');
+      
+      // 重置状态
+      isLoadingRef.current = false;
       setCurrentPage(1);
       setHasMore(true);
-      fetchImages(1, false);
+      
+      // 直接调用API，避免函数依赖
+      try {
+        setIsLoading(true);
+        isLoadingRef.current = true;
+        
+        const data = await generate.getGenerateList(1, PAGE_SIZE);
+        if (data.code === 0) {
+          const imageList = data.data.list;
+          const total = data.data.total || 0;
+          
+          setImages(imageList);
+          setTotalImages(total);
+          setHasMore(imageList.length < total);
+          
+          console.log('🎯 Event refresh completed:', { imageCount: imageList.length, total });
+        }
+      } catch (error) {
+        console.error('🎯 Event refresh failed:', error);
+      } finally {
+        isLoadingRef.current = false;
+        setIsLoading(false);
+      }
     };
 
     // 订阅和卸载 imageList:generate-list 事件
@@ -214,7 +271,7 @@ export function ImageGrid() {
     return () => {
       eventBus.off('imageList:generate-list', handler);
     };
-  }, [fetchImages]);
+  }, []); // 完全不依赖任何函数
 
   // 加载最近图片
   const fetchRecentImages = useCallback(async () => {
@@ -223,6 +280,11 @@ export function ImageGrid() {
 
       if (data.code === 0) {
         const recentImages = data.data.list || [];
+        const total = data.data.total || 0;
+        
+        // 更新总图片数
+        setTotalImages(total);
+        
         // 使用函数式更新，避免依赖 images
         setImages(prevImages => {
           const existingGenImgIds = new Set(prevImages.map(img => img.genImgId));
@@ -240,13 +302,14 @@ export function ImageGrid() {
               startPolling();
             }
 
-            return [...newImages, ...prevImages];
+            const updatedImages = [...newImages, ...prevImages];
+            return updatedImages;
           }
           return prevImages;
         });
       }
     } catch (error) {
-      console.error('加载最近图片失败:', error);
+      console.error('Failed to load recent images:', error);
     }
   }, [pendingIdsRef, startPolling]);
 
@@ -360,15 +423,45 @@ export function ImageGrid() {
 
   // 初始加载
   useEffect(() => {
-    const token = localStorage.getItem('auth_token');
+    const loadInitialImages = async () => {
+      const token = localStorage.getItem('auth_token');
 
-    // 如果用户已登录，则加载图片
-    if (token) {
-      setCurrentPage(1);
-      setHasMore(true);
-      fetchImages(1, false);
-    }
-  }, [fetchImages]);
+      // 如果用户已登录，则加载图片
+      if (token) {
+        console.log('🏁 Initial load triggered');
+        
+        // 重置所有状态
+        isLoadingRef.current = false;
+        setCurrentPage(1);
+        setHasMore(true);
+        
+        // 直接调用API，避免函数依赖
+        try {
+          setIsLoading(true);
+          isLoadingRef.current = true;
+          
+          const data = await generate.getGenerateList(1, PAGE_SIZE);
+          if (data.code === 0) {
+            const imageList = data.data.list;
+            const total = data.data.total || 0;
+            
+            setImages(imageList);
+            setTotalImages(total);
+            setHasMore(imageList.length < total);
+            
+            console.log('🏁 Initial load completed:', { imageCount: imageList.length, total });
+          }
+        } catch (error) {
+          console.error('🏁 Initial load failed:', error);
+        } finally {
+          isLoadingRef.current = false;
+          setIsLoading(false);
+        }
+      }
+    };
+
+    loadInitialImages();
+  }, []); // 只在组件挂载时执行一次，完全不依赖任何函数
 
   // 监听提交成功事件，加载最近图片
   useEffect(() => {
@@ -416,10 +509,11 @@ export function ImageGrid() {
               handleCollectImage={memoizedHandlers.handleCollectImage}
               isLoading={isLoading}
               hasMore={hasMore}
+              totalImages={totalImages}
             />
           )}
           
-          {/* 空状态显示 */}
+          {/* Empty state display */}
           {/* {mounted && images.length === 0 && !isLoading && (
             <div className="h-full flex flex-col items-center justify-center text-gray-500">
               <div className="text-center">
@@ -436,12 +530,12 @@ export function ImageGrid() {
             </div>
           )} */}
           
-          {/* 初始加载状态 */}
+          {/* Initial loading state */}
           {mounted && images.length === 0 && isLoading && (
             <div className="h-full flex items-center justify-center">
               <div className="flex items-center gap-2 text-gray-500">
                 <div className="w-6 h-6 border-2 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
-                <span>Loading pictures...</span>
+                <span>Loading images...</span>
               </div>
             </div>
           )}

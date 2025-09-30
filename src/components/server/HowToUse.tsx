@@ -144,7 +144,7 @@ const HowToUse: React.FC = () => {
               src="/marketing/images/main/how/how_three_img.png"
               alt="Production mockup"
               fill
-             className="object-right"
+              className="object-contain object-right"
             />
           </div>
         </div>
