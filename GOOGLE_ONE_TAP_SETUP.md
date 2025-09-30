@@ -1,4 +1,4 @@
-# Google One Tap 设置指南
+# Google One Tap 设置指南.
 
 ## ✅ 后端配置已完成
 
