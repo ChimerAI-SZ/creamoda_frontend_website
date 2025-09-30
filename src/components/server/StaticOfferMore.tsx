@@ -205,7 +205,7 @@ const StaticOfferMore: React.FC = () => {
         </div>
       </div>
 
-      {/* Cards Container - Full width */}
+      {/* Cards Container - Full width with responsive padding */}
       <div 
         ref={scrollContainerRef}
         onScroll={checkScrollButtons}

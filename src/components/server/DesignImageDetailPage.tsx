@@ -151,7 +151,7 @@ const MemoizedImageWithSkeleton = React.memo(function ImageWithSkeleton({
         <div className="flex justify-center pointer-events-auto">
           <Button
             variant="ghost"
-            className="w-full bg-white hover:bg-white/90 text-black rounded-md py-3 backdrop-blur-sm transition-all duration-200"
+            className="w-full bg-gray-800/70 hover:bg-gray-800/80 text-white rounded-md py-3 backdrop-blur-sm"
             onClick={e => {
               e.stopPropagation();
               onClick && onClick();

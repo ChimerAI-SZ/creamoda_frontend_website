@@ -118,7 +118,7 @@ export default function StaticNavigation({ currentSaasUrl }: StaticNavigationPro
             </Link> */}
           </div>
           
-          {/* 根据登录状态显示不同的UI */}
+          {/* 根据登录状态和传入URL显示不同的UI */}
           {isLoggedIn ? (
             // 已登录：显示用户头像
             <div 
@@ -143,17 +143,14 @@ export default function StaticNavigation({ currentSaasUrl }: StaticNavigationPro
               </span>
             </div>
           ) : (
-            // 未登录：显示登录按钮或saas链接
+            // 未登录：根据是否有传入URL显示不同按钮
             currentSaasUrl ? (
-              <button 
-                onClick={handleLoginClick}
-                className="flex items-center gap-2 px-4 py-2 text-white text-sm font-semibold rounded-md transition-all duration-200 hover:scale-105"
-                style={{ 
-                  background: 'rgba(255, 255, 255, 0.2)'
-                }}
+              <a 
+                href={currentSaasUrl} 
+                className="flex items-center gap-2 px-4 py-2 bg-white text-black text-sm font-semibold rounded-xl shadow-sm hover:shadow-md transition-all duration-200 hover:scale-105"
               >
-                Log in / Sign up
-              </button>
+                Try now
+              </a>
             ) : (
               <DynamicCreateButton />
             )
