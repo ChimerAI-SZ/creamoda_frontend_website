@@ -118,12 +118,12 @@ export default function GoogleOneTap({
               // 保存token
               saveAuthToken(data.data.authorization);
               
-              // 执行登录后的操作，包括自动跳转到 /fashion-design/create
+              // 执行登录后的操作，但停留在当前页面，不跳转
               await AuthService.handlePostLoginActions({
-                skipRedirect: false, // 确保不跳过重定向
+                skipRedirect: true, // 跳过重定向，停留在当前页面
                 onSuccess: () => {
                   if (debug) {
-                    console.log('Google One Tap login successful, redirecting to /fashion-design/create');
+                    console.log('Google One Tap login successful, staying on current page');
                   }
                 },
                 onError: (error) => {
