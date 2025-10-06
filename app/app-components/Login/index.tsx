@@ -92,6 +92,20 @@ export function LoginModal() {
     });
   };
 
+  // Google 登录成功处理 - 不跳转到 /fashion-design/create
+  const handleGoogleLoginSuccess = async () => {
+    await AuthService.handlePostLoginActions({
+      closeModal: handleCloseModal,
+      skipRedirect: true,  // 跳过重定向，停留在当前页面
+      onError: error => {
+        console.error('Google login post-actions failed:', error);
+      },
+      onSuccess: () => {
+        console.log('Google login post-actions completed successfully');
+      }
+    });
+  };
+
   const handleGoogleLoginError = (error: string) => {
     setGoogleLoginError(error);
   };
@@ -213,7 +227,7 @@ export function LoginModal() {
                     </div>
                   </div>
 
-                  <GoogleLoginButton onSuccess={handleLoginSuccess} onError={handleGoogleLoginError} />
+                  <GoogleLoginButton onSuccess={handleGoogleLoginSuccess} onError={handleGoogleLoginError} />
                 </div>
                 <div className="text-center">
                   {currentView === 'login' ? (

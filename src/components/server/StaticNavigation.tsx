@@ -55,11 +55,10 @@ export default function StaticNavigation({ currentSaasUrl }: StaticNavigationPro
     eventBus.emit('auth:login', { isOpen: true });
   };
 
-  // 处理头像点击，跳转到功能页面
+  // 处理头像点击，不再跳转，只是一个占位函数
   const handleAvatarClick = () => {
-    if (typeof window !== 'undefined') {
-      window.location.href = '/fashion-design/create';
-    }
+    // 用户头像点击不再跳转，保持在当前页面
+    console.log('Avatar clicked - staying on current page');
   };
 
   // 从完整URL中提取路径部分

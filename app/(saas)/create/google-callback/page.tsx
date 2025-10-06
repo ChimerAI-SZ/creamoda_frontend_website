@@ -42,7 +42,7 @@ function CallbackHandler() {
 
           // Close this window if it was opened by another window
           if (window.opener) {
-            // window.close();
+            window.close();
           } else {
             // If opened directly, redirect to home
             router.push('/fashion-design/create');
@@ -53,7 +53,7 @@ function CallbackHandler() {
       } catch (error) {
         console.error('Google callback error:', error);
 
-        // Send error message to parent window
+          // Send error message to parent window
         if (window.opener) {
           window.opener.postMessage(
             {
@@ -62,7 +62,7 @@ function CallbackHandler() {
             },
             window.location.origin
           );
-          // window.close();
+          window.close();
         } else {
           // If opened directly, redirect to login page with error
           router.push('/login?error=google-login-failed');

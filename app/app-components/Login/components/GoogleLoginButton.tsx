@@ -56,8 +56,7 @@ export const GoogleLoginButton = ({ onError, onSuccess }: GoogleLoginButtonProps
           if (onSuccess) onSuccess();
           setIsLoading(false);
 
-          // Refresh the page or redirect as needed
-          router.refresh();
+          // 移除 router.refresh() 以避免触发不必要的跳转
         } else if (event.data && event.data.type === 'GOOGLE_LOGIN_ERROR') {
           // Remove event listener
           window.removeEventListener('message', messageHandler);

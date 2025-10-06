@@ -4,6 +4,7 @@ import { useAlertStore } from '@/stores/useAlertStore';
 
 export interface LoginPostActions {
   closeModal?: () => void;
+  skipRedirect?: boolean;  // 是否跳过重定向到 /fashion-design/create
   onError?: (error: Error) => void;
   onSuccess?: () => void;
 }
@@ -13,7 +14,7 @@ export class AuthService {
    * 执行登录后的所有必要操作
    */
   static async handlePostLoginActions(options: LoginPostActions = {}) {
-    const { closeModal, onError, onSuccess } = options;
+    const { closeModal, skipRedirect, onError, onSuccess } = options;
 
     try {
       // 1. 立即关闭模态框，提升用户体验
@@ -32,8 +33,8 @@ export class AuthService {
       // 触发全局登录成功事件
       eventBus.emit('auth:login-success', undefined);
 
-      // 3. 登录成功后跳转到 fashion-design/create 页面
-      if (typeof window !== 'undefined') {
+      // 3. 登录成功后跳转到 fashion-design/create 页面（除非跳过重定向）
+      if (!skipRedirect && typeof window !== 'undefined') {
         // 延迟一下让模态框关闭动画完成
         setTimeout(() => {
           window.location.href = '/fashion-design/create';
