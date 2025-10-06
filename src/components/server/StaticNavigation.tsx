@@ -130,27 +130,35 @@ export default function StaticNavigation({ currentSaasUrl }: StaticNavigationPro
           
           {/* 根据登录状态和传入URL显示不同的UI */}
           {isLoggedIn ? (
-            // 已登录：显示用户头像
-            <div 
-              onClick={handleAvatarClick}
-              className="flex items-center gap-2 px-2 py-2 cursor-pointer hover:bg-white/10 rounded-lg transition-all duration-200"
-            >
-              {headPic ? (
-                <Image
-                  src={headPic}
-                  alt="User Avatar"
-                  width={32}
-                  height={32}
-                  className="rounded-full"
-                />
-              ) : (
-                <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center text-white text-sm font-semibold">
-                  {username?.charAt(0)?.toUpperCase() || email?.charAt(0)?.toUpperCase() || 'U'}
-                </div>
-              )}
-              <span className="text-white text-sm font-medium hidden sm:block">
-                {username || email?.split('@')[0] || 'User'}
-              </span>
+            // 已登录：显示用户头像和 Get started 按钮
+            <div className="flex items-center gap-3">
+              <div 
+                onClick={handleAvatarClick}
+                className="flex items-center gap-2 px-2 py-2 cursor-pointer hover:bg-white/10 rounded-lg transition-all duration-200"
+              >
+                {headPic ? (
+                  <Image
+                    src={headPic}
+                    alt="User Avatar"
+                    width={32}
+                    height={32}
+                    className="rounded-full"
+                  />
+                ) : (
+                  <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center text-white text-sm font-semibold">
+                    {username?.charAt(0)?.toUpperCase() || email?.charAt(0)?.toUpperCase() || 'U'}
+                  </div>
+                )}
+                <span className="text-white text-sm font-medium hidden sm:block">
+                  {username || email?.split('@')[0] || 'User'}
+                </span>
+              </div>
+              <Link 
+                href={currentSaasUrl ? extractPathFromUrl(currentSaasUrl) : '/fashion-design/create'}
+                className="flex items-center gap-2 px-4 py-2 bg-white text-black text-sm font-semibold rounded-md shadow-sm hover:shadow-md transition-all duration-200 hover:scale-105"
+              >
+                Get started
+              </Link>
             </div>
           ) : (
             // 未登录：根据是否有传入URL显示不同按钮
