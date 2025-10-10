@@ -28,9 +28,22 @@ export default function DemoThumbnail({ imageSrc, index, title, saasUrl, tab, va
       params.append('variationType', variationType);
     }
     
-    // 添加图片 URL 参数（URLSearchParams.append 会自动编码，所以不需要手动 encodeURIComponent）
+    // 添加图片 URL 参数，如果是相对路径则转换为完整 URL
     if (imageSrc) {
-      params.append('imageUrl', imageSrc);
+      let fullImageUrl = imageSrc;
+      
+      // 如果是相对路径（以 / 开头），转换为完整 URL
+      if (imageSrc.startsWith('/')) {
+        // 在客户端获取当前域名
+        if (typeof window !== 'undefined') {
+          fullImageUrl = `${window.location.protocol}//${window.location.host}${imageSrc}`;
+        } else {
+          // 服务端渲染时使用默认域名
+          fullImageUrl = `https://creamoda.ai${imageSrc}`;
+        }
+      }
+      
+      params.append('imageUrl', fullImageUrl);
     }
     
     if (params.toString()) {

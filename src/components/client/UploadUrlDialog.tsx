@@ -35,8 +35,19 @@ export default function UploadUrlDialog({ isOpen, onClose, saasUrl, tab, variati
       params.append('variationType', variationType);
     }
     
-    // 添加图片 URL 参数（URLSearchParams.append 会自动编码，所以不需要手动 encodeURIComponent）
-    params.append('imageUrl', imageUrl);
+    // 处理图片 URL，如果是相对路径则转换为完整 URL
+    let fullImageUrl = imageUrl.trim();
+    
+    // 如果是相对路径（以 / 开头），转换为完整 URL
+    if (fullImageUrl.startsWith('/')) {
+      if (typeof window !== 'undefined') {
+        fullImageUrl = `${window.location.protocol}//${window.location.host}${fullImageUrl}`;
+      } else {
+        fullImageUrl = `https://creamoda.ai${fullImageUrl}`;
+      }
+    }
+    
+    params.append('imageUrl', fullImageUrl);
     
     const targetUrl = `${saasUrl}?${params.toString()}`;
     router.push(targetUrl);
