@@ -25,33 +25,43 @@ export function getMainDomainUrl(): string {
   // 根据当前环境判断主域名
   if (typeof window !== 'undefined') {
     const hostname = window.location.hostname;
+    const protocol = window.location.protocol;
     
     // 如果是本地开发环境
     if (hostname.includes('localhost') || hostname.includes('127.0.0.1')) {
-      return 'http://localhost:3000'; // 假设主站本地端口
+      return 'http://localhost:3000';
     }
     
-    // 如果是测试/预生产环境
+    // 如果是测试环境（包括所有 test 相关的子域名）
     if (hostname.includes('test-mvp.creamoda.ai')) {
       return 'https://test-mvp.creamoda.ai';
     }
     
+    if (hostname.includes('test-official.creamoda.ai')) {
+      return 'https://test-official.creamoda.ai';
+    }
+    
+    // 如果是其他 test 开头的域名
+    if (hostname.startsWith('test') && hostname.includes('creamoda.ai')) {
+      return `${protocol}//${hostname}`;
+    }
+    
     // 如果是vercel预览环境，根据域名判断
     if (hostname.includes('vercel.app')) {
-      // 如果是test-mvp相关的vercel部署，返回测试环境
-      if (hostname.includes('test') || hostname.includes('mvp')) {
-        return 'https://test-mvp.creamoda.ai';
+      // 如果是test相关的vercel部署，使用当前域名
+      if (hostname.includes('test')) {
+        return `${protocol}//${hostname}`;
       }
       return 'https://creamoda.ai'; // 生产环境主域名
     }
     
     // 生产环境
-    if (hostname.includes('creamoda.ai') && !hostname.includes('test-mvp')) {
+    if (hostname.includes('creamoda.ai') && !hostname.includes('test')) {
       return 'https://creamoda.ai';
     }
     
-    // 默认返回生产环境主域名
-    return 'https://creamoda.ai';
+    // 默认返回当前域名（兜底方案）
+    return `${protocol}//${hostname}`;
   }
   
   return 'https://creamoda.ai';

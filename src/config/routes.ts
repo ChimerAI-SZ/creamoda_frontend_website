@@ -85,9 +85,20 @@ export function getSaasUrlByRoute(route: string): string {
   }
   
   // 服务端渲染时，根据环境变量决定域名
-  const baseDomain = process.env.NODE_ENV === 'development' 
-    ? 'http://localhost:3000'
-    : (process.env.NEXT_PUBLIC_BASE_URL || 'https://creamoda.ai');
+  let baseDomain: string;
+  
+  if (process.env.NODE_ENV === 'development') {
+    baseDomain = 'http://localhost:3000';
+  } else if (process.env.NEXT_PUBLIC_BASE_URL) {
+    // 如果设置了环境变量，使用环境变量
+    baseDomain = process.env.NEXT_PUBLIC_BASE_URL;
+  } else if (process.env.VERCEL_URL) {
+    // Vercel 自动提供的域名
+    baseDomain = `https://${process.env.VERCEL_URL}`;
+  } else {
+    // 默认生产环境
+    baseDomain = 'https://creamoda.ai';
+  }
   
   const path = getPathByRoute(route);
   return `${baseDomain}${path}`;
