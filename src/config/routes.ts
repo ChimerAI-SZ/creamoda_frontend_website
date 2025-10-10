@@ -84,8 +84,13 @@ export function getSaasUrlByRoute(route: string): string {
     return `${baseDomain}${path}`;
   }
   
-  // 服务端渲染时的默认值
-  return routeToSaasUrlMap[route] || 'https://creamoda.ai/fashion-design/create';
+  // 服务端渲染时，根据环境变量决定域名
+  const baseDomain = process.env.NODE_ENV === 'development' 
+    ? 'http://localhost:3000'
+    : (process.env.NEXT_PUBLIC_BASE_URL || 'https://creamoda.ai');
+  
+  const path = getPathByRoute(route);
+  return `${baseDomain}${path}`;
 }
 
 // 获取所有可用路由

@@ -8,13 +8,36 @@ interface DemoThumbnailProps {
   index: number;
   title: string;
   saasUrl: string;
+  tab?: string;
+  variationType?: string;
 }
 
-export default function DemoThumbnail({ imageSrc, index, title, saasUrl }: DemoThumbnailProps) {
+export default function DemoThumbnail({ imageSrc, index, title, saasUrl, tab, variationType }: DemoThumbnailProps) {
   const router = useRouter();
 
   const handleDemoClick = () => {
-    router.push(saasUrl);
+    // 构建带参数的 URL
+    let targetUrl = saasUrl;
+    const params = new URLSearchParams();
+    
+    if (tab) {
+      params.append('tab', tab);
+    }
+    
+    if (variationType) {
+      params.append('variationType', variationType);
+    }
+    
+    // 添加图片 URL 参数（URLSearchParams.append 会自动编码，所以不需要手动 encodeURIComponent）
+    if (imageSrc) {
+      params.append('imageUrl', imageSrc);
+    }
+    
+    if (params.toString()) {
+      targetUrl = `${saasUrl}?${params.toString()}`;
+    }
+    
+    router.push(targetUrl);
   };
 
   return (
