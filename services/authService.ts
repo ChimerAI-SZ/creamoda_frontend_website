@@ -33,12 +33,26 @@ export class AuthService {
       // 触发全局登录成功事件
       eventBus.emit('auth:login-success', undefined);
 
-      // 3. 登录成功后跳转到 fashion-design/create 页面（除非跳过重定向）
+      // 3. 登录成功后的跳转逻辑
       if (!skipRedirect && typeof window !== 'undefined') {
-        // 延迟一下让模态框关闭动画完成
-        setTimeout(() => {
-          window.location.href = '/fashion-design/create';
-        }, 300);
+        const currentPath = window.location.pathname;
+        const currentSearch = window.location.search;
+        
+        // 如果已经在 SaaS 页面（fashion-design/create 或 magic-kit/create），
+        // 刷新当前页面并保留 URL 参数
+        if (currentPath.includes('/fashion-design/create') || 
+            currentPath.includes('/magic-kit/create') ||
+            currentPath.includes('/virtual-try-on/create')) {
+          setTimeout(() => {
+            // 保留当前 URL 的所有参数
+            window.location.href = `${currentPath}${currentSearch}`;
+          }, 300);
+        } else {
+          // 如果在其他页面，跳转到 fashion-design/create
+          setTimeout(() => {
+            window.location.href = '/fashion-design/create';
+          }, 300);
+        }
       }
 
       // 4. 执行成功回调
