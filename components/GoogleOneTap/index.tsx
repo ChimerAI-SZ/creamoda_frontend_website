@@ -118,17 +118,28 @@ export default function GoogleOneTap({
               // 保存token
               saveAuthToken(data.data.authorization);
               
-              // 执行登录后的操作，但停留在当前页面，不跳转
-              await AuthService.handlePostLoginActions({
+              // 立即触发登录成功事件，让页面快速显示登录状态
+              const { eventBus } = await import('@/utils/events');
+              eventBus.emit('auth:login-success', undefined);
+              
+              if (debug) {
+                console.log('Google One Tap login successful, staying on current page');
+              }
+              
+              // 在后台异步执行其他操作（不阻塞UI更新）
+              AuthService.handlePostLoginActions({
                 skipRedirect: true, // 跳过重定向，停留在当前页面
+                skipEvent: true, // 跳过事件触发，因为上面已经触发过了
                 onSuccess: () => {
                   if (debug) {
-                    console.log('Google One Tap login successful, staying on current page');
+                    console.log('Post-login data fetching completed');
                   }
                 },
                 onError: (error) => {
                   console.error('Post-login actions failed:', error);
                 }
+              }).catch(error => {
+                console.error('Background post-login actions failed:', error);
               });
             } else {
               if (debug) {
