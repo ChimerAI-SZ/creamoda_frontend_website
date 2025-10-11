@@ -54,7 +54,7 @@ const ImageCardComponent = forwardRef<HTMLDivElement, ImageCardProps>(
       <div
         suppressHydrationWarning
         ref={ref}
-        className="relative w-full group border-none z-50"
+        className="relative w-full group border-none z-10"
         onClick={() => !isGenerating && !isFailed && onClick()}
       >
         {/* 生成中状态，新生成的图片在 generate 和 load 操作完成之前一直展示生成中 */}
