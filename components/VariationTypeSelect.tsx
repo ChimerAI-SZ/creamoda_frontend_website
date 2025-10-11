@@ -22,16 +22,24 @@ export function VariationTypeSelect({
   placeholder = 'Category Switcher'
 }: VariationTypeSelectProps) {
   const [isLoading, setIsLoading] = useState(true);
+  const [hasSetDefault, setHasSetDefault] = useState(false);
 
   // Set initial value when variations are loaded
   useEffect(() => {
     if (variationTypes.length > 0) {
       setIsLoading(false);
-      if (!value && variationTypes.length > 0) {
-        onChange(variationTypes[0].variationType.toString());
-      }
+      
+      // 延迟设置默认值，给 SearchParamsHandler 时间处理 URL 参数
+      const timer = setTimeout(() => {
+        if (!value && variationTypes.length > 0 && !hasSetDefault) {
+          onChange(variationTypes[0].variationType.toString());
+          setHasSetDefault(true);
+        }
+      }, 100); // 100ms 延迟，让 SearchParamsHandler 先执行
+      
+      return () => clearTimeout(timer);
     }
-  }, [variationTypes, value, onChange]);
+  }, [variationTypes, value, onChange, hasSetDefault]);
 
   return (
     <div
