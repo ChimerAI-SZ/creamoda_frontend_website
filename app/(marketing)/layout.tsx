@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "@/src/context/ThemeContext";
 import EnvIndicator from "@/src/components/EnvIndicator";
+import DragDropOverlay from "@/src/components/client/DragDropOverlay";
 
 export const metadata: Metadata = {
   title: "Chimer AI Tools",
@@ -20,6 +21,7 @@ export default function RootLayout({
 
       <ThemeProvider>
         <EnvIndicator />
+        <DragDropOverlay />
         {children}
       </ThemeProvider>
     </>
