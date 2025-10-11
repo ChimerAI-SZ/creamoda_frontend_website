@@ -91,6 +91,10 @@ export default function GoogleOneTap({
         }
 
         try {
+          // 触发登录开始事件，让UI显示加载状态
+          const { eventBus: eventBusModule } = await import('@/utils/events');
+          eventBusModule.emit('auth:login-start', undefined);
+
           // 解析JWT token (可选，用于调试)
           if (debug) {
             const payload = parseJWT(response.credential);
@@ -145,14 +149,23 @@ export default function GoogleOneTap({
               if (debug) {
                 console.error('Google One Tap verification failed:', data.msg || 'Unknown error');
               }
+              // 登录失败，取消加载状态
+              const { eventBus: eventBusModule } = await import('@/utils/events');
+              eventBusModule.emit('auth:login-failed', undefined);
             }
           } catch (fetchError) {
             if (debug) {
               console.error('Network error during Google One Tap:', fetchError);
             }
+            // 网络错误，取消加载状态
+            const { eventBus: eventBusModule } = await import('@/utils/events');
+            eventBusModule.emit('auth:login-failed', undefined);
           }
         } catch (error) {
           console.error('Error processing Google One Tap credential:', error);
+          // 处理错误，取消加载状态
+          const { eventBus: eventBusModule } = await import('@/utils/events');
+          eventBusModule.emit('auth:login-failed', undefined);
         }
       };
 
