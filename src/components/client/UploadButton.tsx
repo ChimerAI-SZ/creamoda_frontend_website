@@ -6,6 +6,8 @@ import Image from 'next/image';
 import UploadUrlDialog from './UploadUrlDialog';
 import { uploadImage } from '@/lib/api/common';
 import { useAlertStore } from '@/stores/useAlertStore';
+import { usePendingUploadStore } from '@/stores/usePendingUploadStore';
+import { eventBus } from '@/utils/events';
 
 interface UploadButtonProps {
   uploadText: string;
@@ -20,6 +22,16 @@ export default function UploadButton({ uploadText, saasUrl, tab, variationType }
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
   const { showAlert } = useAlertStore();
+  const { setPendingUpload } = usePendingUploadStore();
+
+  // 检查用户是否已登录
+  const isUserLoggedIn = () => {
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('auth_token');
+      return !!token;
+    }
+    return false;
+  };
 
   // 处理文件选择
   const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,6 +44,34 @@ export default function UploadButton({ uploadText, saasUrl, tab, variationType }
         type: 'error',
         content: 'Please upload an image file'
       });
+      return;
+    }
+
+    // 检查用户是否登录
+    if (!isUserLoggedIn()) {
+      // 保存待上传的图片信息
+      setPendingUpload({
+        file,
+        saasUrl,
+        tab,
+        variationType
+      });
+      
+      // 先显示友好提示
+      showAlert({
+        type: 'warning',
+        content: 'Please login first to upload images'
+      });
+      
+      // 延迟弹出登录窗口，让用户有时间看到提示
+      setTimeout(() => {
+        eventBus.emit('auth:login', { isOpen: true });
+      }, 800);
+      
+      // 重置文件输入
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
       return;
     }
 
@@ -144,7 +184,7 @@ export default function UploadButton({ uploadText, saasUrl, tab, variationType }
             margin: '0'
           }}
         >
-          Or drop a file, paste image or{' '}
+          Or drop a image to this page,or paste{' '}
           <span
             onClick={() => setIsDialogOpen(true)}
             style={{

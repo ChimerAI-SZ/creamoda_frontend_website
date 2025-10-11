@@ -10,6 +10,10 @@ import { GoogleLoginButton } from './components/GoogleLoginButton';
 import { VerificationSuccess } from './components/VerificationSuccess';
 import { usePersonalInfoStore } from '@/stores/usePersonalInfoStore';
 import { AuthService } from '@/services/authService';
+import { usePendingUploadStore } from '@/stores/usePendingUploadStore';
+import { uploadImage } from '@/lib/api/common';
+import { useAlertStore } from '@/stores/useAlertStore';
+import { useRouter } from 'next/navigation';
 
 import { eventBus } from '@/utils/events';
 
@@ -22,6 +26,10 @@ export function LoginModal() {
   const [googleLoginError, setGoogleLoginError] = useState('');
 
   const [modalVisible, setModalVisible] = useState(false);
+  
+  const router = useRouter();
+  const { showAlert } = useAlertStore();
+  const { getPendingUpload, clearPendingUpload } = usePendingUploadStore();
 
   // Reset state when modal opens
   useEffect(() => {
@@ -79,31 +87,119 @@ export function LoginModal() {
   };
 
   const handleLoginSuccess = async () => {
-    await AuthService.handlePostLoginActions({
-      closeModal: handleCloseModal,
-      onError: error => {
-        console.error('Login post-actions failed:', error);
-        // 可以在这里添加特定的错误处理逻辑
-      },
-      onSuccess: () => {
-        console.log('Login post-actions completed successfully');
-        // 可以在这里添加成功后的特定逻辑
+    // 检查是否有待上传的图片
+    const pendingUpload = getPendingUpload();
+    
+    if (pendingUpload) {
+      // 关闭登录窗口
+      handleCloseModal();
+      
+      try {
+        // 上传图片
+        const uploadedUrl = await uploadImage(pendingUpload.file);
+        
+        if (uploadedUrl) {
+          // 构建URL参数
+          const params = new URLSearchParams();
+          
+          if (pendingUpload.tab) {
+            params.append('tab', pendingUpload.tab);
+          }
+          
+          if (pendingUpload.variationType) {
+            params.append('variationType', pendingUpload.variationType);
+          }
+          
+          params.append('imageUrl', uploadedUrl);
+          
+          const targetUrl = `${pendingUpload.saasUrl}?${params.toString()}`;
+          
+          // 清除待上传的图片
+          clearPendingUpload();
+          
+          // 跳转到目标页面
+          router.push(targetUrl);
+        }
+      } catch (error) {
+        console.error('Upload failed:', error);
+        showAlert({
+          type: 'error',
+          content: 'Image upload failed, please try again'
+        });
+        clearPendingUpload();
       }
-    });
+    } else {
+      // 没有待上传的图片，执行常规登录成功逻辑
+      await AuthService.handlePostLoginActions({
+        closeModal: handleCloseModal,
+        onError: error => {
+          console.error('Login post-actions failed:', error);
+          // 可以在这里添加特定的错误处理逻辑
+        },
+        onSuccess: () => {
+          console.log('Login post-actions completed successfully');
+          // 可以在这里添加成功后的特定逻辑
+        }
+      });
+    }
   };
 
   // Google 登录成功处理 - 不跳转到 /fashion-design/create
   const handleGoogleLoginSuccess = async () => {
-    await AuthService.handlePostLoginActions({
-      closeModal: handleCloseModal,
-      skipRedirect: true,  // 跳过重定向，停留在当前页面
-      onError: error => {
-        console.error('Google login post-actions failed:', error);
-      },
-      onSuccess: () => {
-        console.log('Google login post-actions completed successfully');
+    // 检查是否有待上传的图片
+    const pendingUpload = getPendingUpload();
+    
+    if (pendingUpload) {
+      // 关闭登录窗口
+      handleCloseModal();
+      
+      try {
+        // 上传图片
+        const uploadedUrl = await uploadImage(pendingUpload.file);
+        
+        if (uploadedUrl) {
+          // 构建URL参数
+          const params = new URLSearchParams();
+          
+          if (pendingUpload.tab) {
+            params.append('tab', pendingUpload.tab);
+          }
+          
+          if (pendingUpload.variationType) {
+            params.append('variationType', pendingUpload.variationType);
+          }
+          
+          params.append('imageUrl', uploadedUrl);
+          
+          const targetUrl = `${pendingUpload.saasUrl}?${params.toString()}`;
+          
+          // 清除待上传的图片
+          clearPendingUpload();
+          
+          // 跳转到目标页面
+          router.push(targetUrl);
+        }
+      } catch (error) {
+        console.error('Upload failed:', error);
+        showAlert({
+          type: 'error',
+          content: 'Image upload failed, please try again'
+        });
+        clearPendingUpload();
       }
-    });
+    } else {
+      // 没有待上传的图片，执行常规登录成功逻辑
+      await AuthService.handlePostLoginActions({
+        closeModal: handleCloseModal,
+        skipRedirect: true,  // 跳过重定向，停留在当前页面
+        onError: error => {
+          console.error('Google login post-actions failed:', error);
+        },
+        onSuccess: () => {
+          console.log('Google login post-actions completed successfully');
+        }
+      });
+    }
   };
 
   const handleGoogleLoginError = (error: string) => {

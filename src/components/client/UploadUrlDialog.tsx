@@ -122,8 +122,8 @@ export default function UploadUrlDialog({ isOpen, onClose, saasUrl, tab, variati
       <div className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50">
         <div className="w-[480px] p-6 bg-white rounded-xl shadow-[0px_4px_48px_0px_rgba(0,0,0,0.08)] inline-flex flex-col justify-start items-end gap-4 overflow-hidden">
           <div className="self-stretch flex flex-col justify-start items-start gap-2">
-            <div className="self-stretch text-left text-[#111827] text-lg font-semibold font-['Inter'] leading-7">Url upload</div>
-            <div className="self-stretch text-left text-[#6B7280] text-xs font-normal font-['Inter']">Upload a reference image, and AI applies its style to your photo.</div>
+            <div className="self-stretch text-left text-[#111827] text-lg font-semibold font-['Inter'] leading-7">Upload Image</div>
+            <div className="self-stretch text-left text-[#6B7280] text-xs font-normal font-['Inter']">Type or paste an image URL to upload image and start editing.</div>
           </div>
           
           <div className="self-stretch p-3 bg-[#F9FAFB] rounded-md outline outline-1 outline-offset-[-0.50px] outline-[#E5E7EB] inline-flex justify-start items-center gap-3 overflow-hidden">

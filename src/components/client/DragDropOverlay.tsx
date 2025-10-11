@@ -4,6 +4,8 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { uploadImage } from '@/lib/api/common';
 import { useAlertStore } from '@/stores/useAlertStore';
+import { usePendingUploadStore } from '@/stores/usePendingUploadStore';
+import { eventBus } from '@/utils/events';
 
 interface DragDropOverlayProps {
   /**
@@ -19,6 +21,7 @@ export default function DragDropOverlay({ enabled = true }: DragDropOverlayProps
   const router = useRouter();
   const pathname = usePathname();
   const { showAlert } = useAlertStore();
+  const { setPendingUpload } = usePendingUploadStore();
   
   // 用于跟踪拖拽进入的元素数量，避免在子元素间移动时频繁切换状态
   const dragCounterRef = useRef(0);
@@ -85,6 +88,15 @@ export default function DragDropOverlay({ enabled = true }: DragDropOverlayProps
     return { targetUrl, tab, variationType };
   };
 
+  // 检查用户是否已登录
+  const isUserLoggedIn = () => {
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('auth_token');
+      return !!token;
+    }
+    return false;
+  };
+
   // 上传图片并跳转到 SaaS 页面
   const handleImageUpload = async (file: File) => {
     if (!isImageFile(file)) {
@@ -95,6 +107,36 @@ export default function DragDropOverlay({ enabled = true }: DragDropOverlayProps
       return;
     }
 
+    // 获取跳转参数
+    const { targetUrl, tab, variationType } = getRouteParams();
+
+    // 检查用户是否登录
+    if (!isUserLoggedIn()) {
+      // 保存待上传的图片信息
+      setPendingUpload({
+        file,
+        saasUrl: targetUrl,
+        tab,
+        variationType
+      });
+      
+      // 先显示友好提示
+      showAlert({
+        type: 'warning',
+        content: 'Please login first to upload images'
+      });
+      
+      // 延迟弹出登录窗口，让用户有时间看到提示
+      setTimeout(() => {
+        eventBus.emit('auth:login', { isOpen: true });
+      }, 800);
+      
+      // 重置拖拽状态
+      setIsDragging(false);
+      dragCounterRef.current = 0;
+      return;
+    }
+
     setIsUploading(true);
 
     try {
@@ -102,9 +144,6 @@ export default function DragDropOverlay({ enabled = true }: DragDropOverlayProps
       const uploadedUrl = await uploadImage(file);
 
       if (uploadedUrl) {
-        // 获取跳转参数
-        const { targetUrl, tab, variationType } = getRouteParams();
-        
         // 构建URL参数
         const params = new URLSearchParams();
         
