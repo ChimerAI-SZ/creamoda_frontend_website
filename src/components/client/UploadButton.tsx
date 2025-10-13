@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import UploadUrlDialog from './UploadUrlDialog';
@@ -19,19 +19,44 @@ interface UploadButtonProps {
 export default function UploadButton({ uploadText, saasUrl, tab, variationType }: UploadButtonProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
   const { showAlert } = useAlertStore();
   const { setPendingUpload } = usePendingUploadStore();
 
   // 检查用户是否已登录
-  const isUserLoggedIn = () => {
+  const checkLoginStatus = () => {
     if (typeof window !== 'undefined') {
       const token = localStorage.getItem('auth_token');
       return !!token;
     }
     return false;
   };
+
+  // 初始化登录状态并监听登录事件
+  useEffect(() => {
+    // 初始检查登录状态
+    setIsLoggedIn(checkLoginStatus());
+
+    // 监听登录成功事件
+    const handleLoginSuccess = () => {
+      setIsLoggedIn(true);
+    };
+
+    // 监听登出事件
+    const handleLogout = () => {
+      setIsLoggedIn(false);
+    };
+
+    eventBus.on('auth:login-success', handleLoginSuccess);
+    eventBus.on('auth:logout', handleLogout);
+
+    return () => {
+      eventBus.off('auth:login-success', handleLoginSuccess);
+      eventBus.off('auth:logout', handleLogout);
+    };
+  }, []);
 
   // 处理文件选择
   const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,8 +72,8 @@ export default function UploadButton({ uploadText, saasUrl, tab, variationType }
       return;
     }
 
-    // 检查用户是否登录
-    if (!isUserLoggedIn()) {
+    // 检查用户是否登录（使用状态而不是函数调用）
+    if (!isLoggedIn) {
       // 保存待上传的图片信息
       setPendingUpload({
         file,
