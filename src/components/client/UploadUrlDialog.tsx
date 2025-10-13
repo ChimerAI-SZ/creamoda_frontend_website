@@ -3,7 +3,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { usePersonalInfoStore } from '@/stores/usePersonalInfoStore';
+import { useAlertStore } from '@/stores/useAlertStore';
+import { eventBus } from '@/utils/events';
 
 interface UploadUrlDialogProps {
   isOpen: boolean;
@@ -15,8 +16,42 @@ interface UploadUrlDialogProps {
 
 export default function UploadUrlDialog({ isOpen, onClose, saasUrl, tab, variationType }: UploadUrlDialogProps) {
   const [imageUrl, setImageUrl] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();
-  const { email, fetchUserInfo } = usePersonalInfoStore();
+  const { showAlert } = useAlertStore();
+
+  // 检查用户是否已登录
+  const checkLoginStatus = () => {
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('auth_token');
+      return !!token;
+    }
+    return false;
+  };
+
+  // 初始化登录状态并监听登录事件
+  useEffect(() => {
+    // 初始检查登录状态
+    setIsLoggedIn(checkLoginStatus());
+
+    // 监听登录成功事件
+    const handleLoginSuccess = () => {
+      setIsLoggedIn(true);
+    };
+
+    // 监听登出事件
+    const handleLogout = () => {
+      setIsLoggedIn(false);
+    };
+
+    eventBus.on('auth:login-success', handleLoginSuccess);
+    eventBus.on('auth:logout', handleLogout);
+
+    return () => {
+      eventBus.off('auth:login-success', handleLoginSuccess);
+      eventBus.off('auth:logout', handleLogout);
+    };
+  }, []);
 
   // 获取正确的公开可访问域名
   const getPublicDomain = (): string => {
@@ -59,38 +94,26 @@ export default function UploadUrlDialog({ isOpen, onClose, saasUrl, tab, variati
     onClose();
   }, [onClose]);
 
-  const handleConfirm = async () => {
+  const handleConfirm = () => {
     if (!imageUrl.trim()) return;
 
-    // 如果已登录但用户信息未加载，等待加载完成
-    const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
-    if (token && !email) {
-      console.log('⏳ URL upload: Waiting for user info to load...');
+    // 检查用户是否登录
+    if (!isLoggedIn) {
+      // 先关闭对话框
+      handleCancel();
       
-      // 等待最多 2 秒
-      let attempts = 0;
-      const maxAttempts = 20; // 20 * 100ms = 2秒
+      // 显示提示
+      showAlert({
+        type: 'warning',
+        content: 'Please login first to upload images'
+      });
       
-      while (attempts < maxAttempts) {
-        await new Promise(resolve => setTimeout(resolve, 100));
-        const currentEmail = usePersonalInfoStore.getState().email;
-        if (currentEmail) {
-          console.log('✅ URL upload: User info loaded, proceeding with navigation');
-          break;
-        }
-        attempts++;
-      }
+      // 延迟弹出登录窗口
+      setTimeout(() => {
+        eventBus.emit('auth:login', { isOpen: true });
+      }, 800);
       
-      // 如果超时还没有用户信息，尝试主动获取一次
-      const finalEmail = usePersonalInfoStore.getState().email;
-      if (!finalEmail) {
-        console.log('⚠️ URL upload: User info still not loaded, fetching manually...');
-        try {
-          await fetchUserInfo();
-        } catch (error) {
-          console.warn('Failed to fetch user info:', error);
-        }
-      }
+      return;
     }
 
     // 构建带参数的 URL
