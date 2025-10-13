@@ -127,24 +127,36 @@ export default function GoogleOneTap({
               eventBus.emit('auth:login-success', undefined);
               
               if (debug) {
-                console.log('Google One Tap login successful, staying on current page');
+                console.log('Google One Tap login successful, starting user data fetch');
               }
               
-              // 在后台异步执行其他操作（不阻塞UI更新）
-              AuthService.handlePostLoginActions({
-                skipRedirect: true, // 跳过重定向，停留在当前页面
-                skipEvent: true, // 跳过事件触发，因为上面已经触发过了
-                onSuccess: () => {
-                  if (debug) {
-                    console.log('Post-login data fetching completed');
+              // 确保用户信息加载完成后才标记完成
+              // 这样可以防止用户立即跳转时出现 401 错误
+              try {
+                await AuthService.handlePostLoginActions({
+                  skipRedirect: true, // 跳过重定向，停留在当前页面
+                  skipEvent: true, // 跳过事件触发，因为上面已经触发过了
+                  onSuccess: () => {
+                    if (debug) {
+                      console.log('Post-login data fetching completed');
+                    }
+                  },
+                  onError: (error) => {
+                    console.error('Post-login actions failed:', error);
                   }
-                },
-                onError: (error) => {
-                  console.error('Post-login actions failed:', error);
+                });
+                
+                // 标记用户信息已加载，方便其他组件检查
+                if (typeof sessionStorage !== 'undefined') {
+                  sessionStorage.setItem('user_info_ready', 'true');
                 }
-              }).catch(error => {
+                
+                if (debug) {
+                  console.log('✅ Google One Tap login fully completed');
+                }
+              } catch (error) {
                 console.error('Background post-login actions failed:', error);
-              });
+              }
             } else {
               if (debug) {
                 console.error('Google One Tap verification failed:', data.msg || 'Unknown error');

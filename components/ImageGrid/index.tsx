@@ -430,6 +430,37 @@ export function ImageGrid() {
       if (token) {
         console.log('🏁 Initial load triggered');
         
+        // 等待用户信息加载完成（防止 Google One Tap 登录后立即跳转导致 401）
+        const { email } = usePersonalInfoStore.getState();
+        if (!email) {
+          console.log('⏳ Waiting for user info to load...');
+          
+          // 等待最多 3 秒，让用户信息有时间加载
+          let attempts = 0;
+          const maxAttempts = 30; // 30 * 100ms = 3秒
+          
+          while (attempts < maxAttempts) {
+            await new Promise(resolve => setTimeout(resolve, 100));
+            const currentState = usePersonalInfoStore.getState();
+            if (currentState.email) {
+              console.log('✅ User info loaded, proceeding with image load');
+              break;
+            }
+            attempts++;
+          }
+          
+          // 如果 3 秒后还没有用户信息，尝试主动获取一次
+          const finalState = usePersonalInfoStore.getState();
+          if (!finalState.email) {
+            console.log('⚠️ User info still not loaded, fetching manually...');
+            try {
+              await fetchUserInfo();
+            } catch (error) {
+              console.warn('Failed to fetch user info:', error);
+            }
+          }
+        }
+        
         // 重置所有状态
         isLoadingRef.current = false;
         setCurrentPage(1);
@@ -461,7 +492,7 @@ export function ImageGrid() {
     };
 
     loadInitialImages();
-  }, []); // 只在组件挂载时执行一次，完全不依赖任何函数
+  }, [fetchUserInfo]); // 添加 fetchUserInfo 依赖
 
   // 监听提交成功事件，加载最近图片
   useEffect(() => {
