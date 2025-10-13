@@ -53,7 +53,19 @@ export default function DemoThumbnail({ imageSrc, index, title, saasUrl, tab, va
 
   const handleDemoClick = () => {
     // 构建带参数的 URL
-    let targetUrl = saasUrl;
+    // 确保使用当前域名，避免跨域 localStorage 问题
+    const currentOrigin = typeof window !== 'undefined' ? window.location.origin : '';
+    
+    // 从 saasUrl 中提取路径部分
+    let targetPath = saasUrl;
+    try {
+      const url = new URL(saasUrl);
+      targetPath = url.pathname;
+    } catch {
+      // 如果 saasUrl 已经是路径，直接使用
+      targetPath = saasUrl;
+    }
+    
     const params = new URLSearchParams();
     
     if (tab) {
@@ -77,9 +89,11 @@ export default function DemoThumbnail({ imageSrc, index, title, saasUrl, tab, va
       params.append('imageUrl', fullImageUrl);
     }
     
-    if (params.toString()) {
-      targetUrl = `${saasUrl}?${params.toString()}`;
-    }
+    // 使用相对路径跳转，保持在同一域名下
+    const targetUrl = params.toString() ? `${targetPath}?${params.toString()}` : targetPath;
+    
+    console.log('[DemoThumbnail] Navigating to:', targetUrl);
+    console.log('[DemoThumbnail] Current origin:', currentOrigin);
     
     router.push(targetUrl);
   };

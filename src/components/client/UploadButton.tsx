@@ -108,6 +108,16 @@ export default function UploadButton({ uploadText, saasUrl, tab, variationType }
 
       if (uploadedUrl) {
         // 构建跳转URL
+        // 确保使用相对路径，避免跨域 localStorage 问题
+        let targetPath = saasUrl;
+        try {
+          const url = new URL(saasUrl);
+          targetPath = url.pathname;
+        } catch {
+          // 如果 saasUrl 已经是路径，直接使用
+          targetPath = saasUrl;
+        }
+        
         const params = new URLSearchParams();
         
         if (tab) {
@@ -120,7 +130,11 @@ export default function UploadButton({ uploadText, saasUrl, tab, variationType }
         
         params.append('imageUrl', uploadedUrl);
         
-        const targetUrl = `${saasUrl}?${params.toString()}`;
+        const targetUrl = `${targetPath}?${params.toString()}`;
+        
+        console.log('[UploadButton] Navigating to:', targetUrl);
+        console.log('[UploadButton] Current origin:', window.location.origin);
+        
         router.push(targetUrl);
       }
     } catch (error) {

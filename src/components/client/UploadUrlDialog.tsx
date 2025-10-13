@@ -117,6 +117,16 @@ export default function UploadUrlDialog({ isOpen, onClose, saasUrl, tab, variati
     }
 
     // 构建带参数的 URL
+    // 确保使用相对路径，避免跨域 localStorage 问题
+    let targetPath = saasUrl;
+    try {
+      const url = new URL(saasUrl);
+      targetPath = url.pathname;
+    } catch {
+      // 如果 saasUrl 已经是路径，直接使用
+      targetPath = saasUrl;
+    }
+    
     const params = new URLSearchParams();
     
     if (tab) {
@@ -138,7 +148,11 @@ export default function UploadUrlDialog({ isOpen, onClose, saasUrl, tab, variati
     
     params.append('imageUrl', fullImageUrl);
     
-    const targetUrl = `${saasUrl}?${params.toString()}`;
+    const targetUrl = `${targetPath}?${params.toString()}`;
+    
+    console.log('[UploadUrlDialog] Navigating to:', targetUrl);
+    console.log('[UploadUrlDialog] Current origin:', window.location.origin);
+    
     router.push(targetUrl);
   };
 
