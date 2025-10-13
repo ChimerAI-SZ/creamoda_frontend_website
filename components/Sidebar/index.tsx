@@ -9,6 +9,7 @@ import TextToImageContent from './components/TextToImageContent';
 import ImageToImageContent from './components/ImageToImageContent/index';
 
 import { useAlertStore } from '@/stores/useAlertStore';
+import { useVariationFormStore } from '@/stores/useVariationFormStore';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -63,19 +64,26 @@ export function Sidebar({ initialPrompt }: { initialPrompt?: string }) {
   const { setGenerating } = useGenerationStore();
   const { showAlert } = useAlertStore();
   const searchParams = useSearchParams();
+  const { setCurrentVariationType } = useVariationFormStore();
   
   // Tab 状态管理
   const [activeTab, setActiveTab] = useState('text');
 
-  // 处理URL参数来设置默认Tab
+  // 处理URL参数来设置默认Tab和VariationType
   useEffect(() => {
     const tab = searchParams.get('tab');
+    const variationType = searchParams.get('variationType');
+    
     if (tab === 'image-to-image') {
       setActiveTab('image');
+      // 如果有 variationType 参数，则设置对应的 variation type
+      if (variationType) {
+        setCurrentVariationType(variationType);
+      }
     } else if (tab === 'text-to-image') {
       setActiveTab('text');
     }
-  }, [searchParams]);
+  }, [searchParams, setCurrentVariationType]);
 
   // 文生图 / 图生图 提交事件
   const handleSubmit = async (data: OutfitFormData) => {

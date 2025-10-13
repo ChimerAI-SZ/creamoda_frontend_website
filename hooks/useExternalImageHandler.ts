@@ -7,6 +7,9 @@ import { uploadImage } from '@/lib/api/common';
  */
 export function useExternalImageHandler() {
   const [isProcessingImage, setIsProcessingImage] = useState(false);
+  
+  // 验证标记：确认使用的是新版本代码（无alert版本）
+  console.log('🔥 useExternalImageHandler - 版本: v2.0-NO-ALERT');
 
   // 检查是否为外部URL（需要重新上传的URL）
   const isExternalUrl = useCallback((url: string) => {
@@ -89,9 +92,11 @@ export function useExternalImageHandler() {
 
       return uploadedUrl;
     } catch (error) {
-      console.error('下载并重新上传图片失败:', error);
-      // 如果重新上传失败，仍然使用原URL，但提示用户
-      alert('图片处理失败，可能会影响生成效果。建议重新上传图片。');
+      console.error('🚫 下载并重新上传图片失败:', error);
+      // 如果重新上传失败，静默处理，仍然使用原URL
+      // 让用户可以继续操作，如果图片真的加载不出来，用户会看到并可以重新上传
+      console.warn('⚠️ 将继续使用原始URL (NO ALERT):', imageUrl);
+      // 注意：这里不再显示 alert 弹窗，而是静默处理
       return imageUrl;
     } finally {
       setIsProcessingImage(false);

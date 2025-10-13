@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ThemeConfig } from '../../types/theme';
 import DemoThumbnail from '../client/DemoThumbnail';
+import UploadButton from '../client/UploadButton';
 
 interface FeaturePageHeroProps {
   theme: ThemeConfig;
@@ -17,6 +18,34 @@ export default function FeaturePageHero({ theme, saasUrl, currentRoute }: Featur
   
   // 判断是否为需要上移标题的页面
   const shouldMoveUp = currentRoute === 'image-background-changer' || currentRoute === 'image-background-remover' || currentRoute === 'image-enhancer' || currentRoute === 'image-changer' || currentRoute === 'sketch-to-image';
+  
+  // 根据当前页面返回对应的 tab 和 variationType
+  const getDemoClickParams = (): { tab?: string; variationType?: string } => {
+    switch (currentRoute) {
+      // Fashion Design 功能 - Image to Image (type: 2)
+      case 'sketch-to-image':
+        return { tab: 'image-to-image', variationType: '4' }; // Sketch to Design
+      case 'outfit-generator':
+        return { tab: 'text-to-image' }; // Text to Image
+      
+      // Magic Kit 功能 (type: 4)
+      case 'image-background-remover':
+        return { variationType: '3' }; // Remove Background
+      case 'image-background-changer':
+        return { variationType: '2' }; // Change Background
+      case 'image-enhancer':
+        return { variationType: '5' }; // Upscale
+      case 'image-changer':
+        return { variationType: '4' }; // Partial Modification
+      case 'image-color-changer':
+        return { variationType: '1' }; // Change Color
+      
+      default:
+        return {};
+    }
+  };
+  
+  const demoParams = getDemoClickParams();
   
   // 根据页面决定左侧图片容器的transform值
   const getLeftImageTransform = () => {
@@ -318,31 +347,12 @@ export default function FeaturePageHero({ theme, saasUrl, currentRoute }: Featur
               </div>
             </div>
             
-            <Link 
-              href={saasUrl} 
-              className="upload-demo-btn"
-              style={{
-                padding: '18px 32px',
-                fontSize: '20px',
-                fontWeight: '600',
-                borderRadius: '12px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '12px',
-                minWidth: '200px',
-                marginTop: '-15px'
-              }}
-            >
-              <Image
-                src="/marketing/images/upload.svg"
-                alt="Upload icon"
-                width={28}
-                height={28}
-                className="upload-icon"
-              />
-              {heroMain.uploadText}
-            </Link>
+            <UploadButton
+              uploadText={heroMain.uploadText}
+              saasUrl={saasUrl}
+              tab={demoParams.tab}
+              variationType={demoParams.variationType}
+            />
             
             {/* <p style={{ 
               color: 'rgba(255, 255, 255, 0.8)', 
@@ -392,6 +402,8 @@ export default function FeaturePageHero({ theme, saasUrl, currentRoute }: Featur
                     index={index}
                     title={heroMain.title}
                     saasUrl={saasUrl}
+                    tab={demoParams.tab}
+                    variationType={demoParams.variationType}
                   />
                 ))}
               </div>
@@ -497,35 +509,14 @@ export default function FeaturePageHero({ theme, saasUrl, currentRoute }: Featur
               width: '100%',
              
             }}>
-              <Link 
-                href={saasUrl}
-                style={{
-                  width: '100%',
-                  background: '#6b4ff6',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '12px',
-                  padding: '16px 24px',
-                  fontSize: '18px',
-                  fontWeight: '600',
-                  textDecoration: 'none',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '12px',
-                  fontFamily: "'Instrument Sans', system-ui, -apple-system, sans-serif",
-               
-                }}
-              >
-                <Image
-                  src="/marketing/images/upload.svg"
-                  alt="Upload icon"
-                  width={24}
-                  height={24}
-                  style={{ filter: 'brightness(0) invert(1)' }}
+              <div style={{ width: '100%' }}>
+                <UploadButton
+                  uploadText={heroMain.uploadText}
+                  saasUrl={saasUrl}
+                  tab={demoParams.tab}
+                  variationType={demoParams.variationType}
                 />
-                {heroMain.uploadText}
-              </Link>
+              </div>
             </div>
             </div> {/* 关闭内容容器 */}
           </div> {/* 关闭背景渐变容器 */}
@@ -566,6 +557,8 @@ export default function FeaturePageHero({ theme, saasUrl, currentRoute }: Featur
                   index={index}
                   title={heroMain.title}
                   saasUrl={saasUrl}
+                  tab={demoParams.tab}
+                  variationType={demoParams.variationType}
                 />
               ))}
             </div>

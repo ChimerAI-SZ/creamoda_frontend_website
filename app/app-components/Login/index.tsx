@@ -10,6 +10,10 @@ import { GoogleLoginButton } from './components/GoogleLoginButton';
 import { VerificationSuccess } from './components/VerificationSuccess';
 import { usePersonalInfoStore } from '@/stores/usePersonalInfoStore';
 import { AuthService } from '@/services/authService';
+import { usePendingUploadStore } from '@/stores/usePendingUploadStore';
+import { uploadImage } from '@/lib/api/common';
+import { useAlertStore } from '@/stores/useAlertStore';
+import { useRouter } from 'next/navigation';
 
 import { eventBus } from '@/utils/events';
 
@@ -22,6 +26,10 @@ export function LoginModal() {
   const [googleLoginError, setGoogleLoginError] = useState('');
 
   const [modalVisible, setModalVisible] = useState(false);
+  
+  const router = useRouter();
+  const { showAlert } = useAlertStore();
+  const { getPendingUpload, clearPendingUpload } = usePendingUploadStore();
 
   // Reset state when modal opens
   useEffect(() => {
@@ -46,15 +54,16 @@ export function LoginModal() {
     };
   }, []);
 
-  useEffect(() => {
-    const checkLoginStatus = () => {
-      const token = localStorage.getItem('auth_token') || '';
-      // 用户已登录，关闭模态框
-      setModalVisible(!token);
-    };
-    // 初始检查
-    checkLoginStatus();
-  }, []);
+  // 不要在页面加载时自动弹出登录弹窗，只有点击按钮时才弹出
+  // useEffect(() => {
+  //   const checkLoginStatus = () => {
+  //     const token = localStorage.getItem('auth_token') || '';
+  //     // 用户已登录，关闭模态框
+  //     setModalVisible(!token);
+  //   };
+  //   // 初始检查
+  //   checkLoginStatus();
+  // }, []);
 
   const handleToggleView = (view: ModalView) => {
     setCurrentView(view);
@@ -78,17 +87,119 @@ export function LoginModal() {
   };
 
   const handleLoginSuccess = async () => {
-    await AuthService.handlePostLoginActions({
-      closeModal: handleCloseModal,
-      onError: error => {
-        console.error('Login post-actions failed:', error);
-        // 可以在这里添加特定的错误处理逻辑
-      },
-      onSuccess: () => {
-        console.log('Login post-actions completed successfully');
-        // 可以在这里添加成功后的特定逻辑
+    // 检查是否有待上传的图片
+    const pendingUpload = getPendingUpload();
+    
+    if (pendingUpload) {
+      // 关闭登录窗口
+      handleCloseModal();
+      
+      try {
+        // 上传图片
+        const uploadedUrl = await uploadImage(pendingUpload.file);
+        
+        if (uploadedUrl) {
+          // 构建URL参数
+          const params = new URLSearchParams();
+          
+          if (pendingUpload.tab) {
+            params.append('tab', pendingUpload.tab);
+          }
+          
+          if (pendingUpload.variationType) {
+            params.append('variationType', pendingUpload.variationType);
+          }
+          
+          params.append('imageUrl', uploadedUrl);
+          
+          const targetUrl = `${pendingUpload.saasUrl}?${params.toString()}`;
+          
+          // 清除待上传的图片
+          clearPendingUpload();
+          
+          // 跳转到目标页面
+          router.push(targetUrl);
+        }
+      } catch (error) {
+        console.error('Upload failed:', error);
+        showAlert({
+          type: 'error',
+          content: 'Image upload failed, please try again'
+        });
+        clearPendingUpload();
       }
-    });
+    } else {
+      // 没有待上传的图片，执行常规登录成功逻辑
+      await AuthService.handlePostLoginActions({
+        closeModal: handleCloseModal,
+        onError: error => {
+          console.error('Login post-actions failed:', error);
+          // 可以在这里添加特定的错误处理逻辑
+        },
+        onSuccess: () => {
+          console.log('Login post-actions completed successfully');
+          // 可以在这里添加成功后的特定逻辑
+        }
+      });
+    }
+  };
+
+  // Google 登录成功处理 - 不跳转到 /fashion-design/create
+  const handleGoogleLoginSuccess = async () => {
+    // 检查是否有待上传的图片
+    const pendingUpload = getPendingUpload();
+    
+    if (pendingUpload) {
+      // 关闭登录窗口
+      handleCloseModal();
+      
+      try {
+        // 上传图片
+        const uploadedUrl = await uploadImage(pendingUpload.file);
+        
+        if (uploadedUrl) {
+          // 构建URL参数
+          const params = new URLSearchParams();
+          
+          if (pendingUpload.tab) {
+            params.append('tab', pendingUpload.tab);
+          }
+          
+          if (pendingUpload.variationType) {
+            params.append('variationType', pendingUpload.variationType);
+          }
+          
+          params.append('imageUrl', uploadedUrl);
+          
+          const targetUrl = `${pendingUpload.saasUrl}?${params.toString()}`;
+          
+          // 清除待上传的图片
+          clearPendingUpload();
+          
+          // 跳转到目标页面
+          router.push(targetUrl);
+        }
+      } catch (error) {
+        console.error('Upload failed:', error);
+        showAlert({
+          type: 'error',
+          content: 'Image upload failed, please try again'
+        });
+        clearPendingUpload();
+      }
+    } else {
+      // 没有待上传的图片，执行常规登录成功逻辑
+      await AuthService.handlePostLoginActions({
+        closeModal: handleCloseModal,
+        skipRedirect: true,  // 跳过重定向，停留在当前页面
+        onError: error => {
+          console.error('Google login post-actions failed:', error);
+        },
+        onSuccess: () => {
+          console.log('Google login post-actions completed successfully');
+        }
+      });
+    }
   };
 
   const handleGoogleLoginError = (error: string) => {
@@ -129,15 +240,15 @@ export function LoginModal() {
   return (
     modalVisible && (
       <div
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 overflow-y-auto"
+        className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[9999] overflow-y-auto"
         style={{ isolation: 'isolate' }}
       >
-        <div className="bg-white rounded-[16px] w-[936px] h-[714px] flex items-start justify-center relative z-50">
+        <div className="bg-white rounded-[16px] w-[936px] h-[714px] flex items-start justify-center relative z-10">
           <div
-            className="absolute top-0 right-[-95px] w-[50px] h-[50px] flex items-center justify-center bg-white rounded-full cursor-pointer"
+            className="absolute top-0 right-[-95px] w-[50px] h-[50px] flex items-center justify-center bg-white rounded-full cursor-pointer hover:bg-gray-50 transition-colors"
             onClick={handleCloseModal}
           >
-            <X className="w-6 h-6" />
+            <X className="w-6 h-6 text-gray-700" />
           </div>
           <div className="w-[504px] h-[714px] flex-1 relative overflow-hidden rounded-tl-[16px] rounded-bl-[16px]">
             <Image
@@ -212,7 +323,7 @@ export function LoginModal() {
                     </div>
                   </div>
 
-                  <GoogleLoginButton onSuccess={handleLoginSuccess} onError={handleGoogleLoginError} />
+                  <GoogleLoginButton onSuccess={handleGoogleLoginSuccess} onError={handleGoogleLoginError} />
                 </div>
                 <div className="text-center">
                   {currentView === 'login' ? (

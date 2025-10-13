@@ -14,7 +14,9 @@ export type AppEvents = {
     isOpen?: boolean;
   };
   'auth:logout': void;
+  'auth:login-start': void;  // 新增：登录开始事件
   'auth:login-success': void;
+  'auth:login-failed': void;  // 新增：登录失败事件
 };
 
 // 创建 mitt 实例

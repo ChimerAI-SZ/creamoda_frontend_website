@@ -16,9 +16,9 @@ const AvatarMenu: React.FC<{
   const { username, email, headPic } = usePersonalInfoStore();
 
   return (
-    <div className="fixed inset-0 top-[56px] z-40" onClick={closeMenu}>
+    <div className="fixed inset-0 top-[56px] z-50" onClick={closeMenu}>
       <div
-        className="fixed top-[56px] right-6 bg-white z-50 flex px-6 flex-col items-center w-[300px] rounded-[16px] shadow-[-2px_4px_10px_0px_rgba(0,0,0,0.05)]"
+        className="fixed top-[56px] right-6 bg-white z-[60] flex px-6 flex-col items-center w-[300px] rounded-[16px] shadow-[-2px_4px_10px_0px_rgba(0,0,0,0.05)]"
         onClick={e => e.stopPropagation()}
       >
         <div className="w-full">

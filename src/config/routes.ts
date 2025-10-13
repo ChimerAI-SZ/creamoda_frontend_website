@@ -84,8 +84,24 @@ export function getSaasUrlByRoute(route: string): string {
     return `${baseDomain}${path}`;
   }
   
-  // 服务端渲染时的默认值
-  return routeToSaasUrlMap[route] || 'https://creamoda.ai/fashion-design/create';
+  // 服务端渲染时，根据环境变量决定域名
+  let baseDomain: string;
+  
+  if (process.env.NODE_ENV === 'development') {
+    baseDomain = 'http://localhost:3000';
+  } else if (process.env.NEXT_PUBLIC_BASE_URL) {
+    // 如果设置了环境变量，使用环境变量
+    baseDomain = process.env.NEXT_PUBLIC_BASE_URL;
+  } else if (process.env.VERCEL_URL) {
+    // Vercel 自动提供的域名
+    baseDomain = `https://${process.env.VERCEL_URL}`;
+  } else {
+    // 默认生产环境
+    baseDomain = 'https://creamoda.ai';
+  }
+  
+  const path = getPathByRoute(route);
+  return `${baseDomain}${path}`;
 }
 
 // 获取所有可用路由

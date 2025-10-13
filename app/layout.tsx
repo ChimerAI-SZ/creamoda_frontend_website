@@ -6,6 +6,7 @@ import { Analytics } from '@vercel/analytics/react';
 import { GoogleAnalytics } from '@/components/GoogleAnalytics';
 import { ConditionalHeader } from '@/components/ConditionalHeader';
 import { ConditionalLoginModal } from '@/components/ConditionalLoginModal';
+import { ConditionalGoogleOneTap } from '@/components/ConditionalGoogleOneTap';
 
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { GlobalConfirm } from '@/components/GlobalConfirm';
@@ -93,6 +94,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
           <Analytics />
           <ConditionalLoginModal />
+          <ConditionalGoogleOneTap />
           <GlobalConfirm />
         </TooltipProvider>
         <AlertToast />

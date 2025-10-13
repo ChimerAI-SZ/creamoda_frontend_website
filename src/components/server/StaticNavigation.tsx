@@ -1,7 +1,13 @@
+'use client';
+
 import Image from 'next/image';
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
 import DynamicCreateButton from '../client/DynamicCreateButton';
 import MobileMenuToggle from '../client/MobileMenuToggle';
+import { eventBus } from '../../../utils/events';
+import { isAuthenticated } from '../../../lib/api/token';
+import { usePersonalInfoStore } from '../../../stores/usePersonalInfoStore';
 
 
 interface StaticNavigationProps {
@@ -9,6 +15,80 @@ interface StaticNavigationProps {
 }
 
 export default function StaticNavigation({ currentSaasUrl }: StaticNavigationProps) {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggingIn, setIsLoggingIn] = useState(false); // 新增：登录加载状态
+  
+  // 使用Zustand store获取用户信息
+  const { username, email, headPic, fetchUserInfo } = usePersonalInfoStore();
+
+  // 检查初始登录状态
+  useEffect(() => {
+    const checkLoginStatus = () => {
+      const loggedIn = isAuthenticated();
+      setIsLoggedIn(loggedIn);
+      
+      if (loggedIn) {
+        // 如果已登录，获取用户信息
+        fetchUserInfo();
+      }
+    };
+
+    checkLoginStatus();
+  }, [fetchUserInfo]);
+
+  // 监听登录相关事件
+  useEffect(() => {
+    // 登录开始 - 显示加载状态
+    const handleLoginStart = () => {
+      setIsLoggingIn(true);
+    };
+
+    // 登录成功 - 更新状态并获取用户信息
+    const handleLoginSuccess = () => {
+      setIsLoggingIn(false);
+      setIsLoggedIn(true);
+      // 重新获取用户信息
+      fetchUserInfo();
+    };
+
+    // 登录失败 - 取消加载状态
+    const handleLoginFailed = () => {
+      setIsLoggingIn(false);
+    };
+
+    eventBus.on('auth:login-start', handleLoginStart);
+    eventBus.on('auth:login-success', handleLoginSuccess);
+    eventBus.on('auth:login-failed', handleLoginFailed);
+
+    return () => {
+      eventBus.off('auth:login-start', handleLoginStart);
+      eventBus.off('auth:login-success', handleLoginSuccess);
+      eventBus.off('auth:login-failed', handleLoginFailed);
+    };
+  }, [fetchUserInfo]);
+
+  // 处理登录按钮点击
+  const handleLoginClick = () => {
+    eventBus.emit('auth:login', { isOpen: true });
+  };
+
+  // 处理头像点击，不再跳转，只是一个占位函数
+  const handleAvatarClick = () => {
+    // 用户头像点击不再跳转，保持在当前页面
+    console.log('Avatar clicked - staying on current page');
+  };
+
+  // 从完整URL中提取路径部分
+  const extractPathFromUrl = (url: string): string => {
+    try {
+      const urlObj = new URL(url);
+      return urlObj.pathname;
+    } catch {
+      // 如果URL格式不正确，返回默认路径
+      return '/fashion-design/create';
+    }
+  };
+
   return (
     <>
       <nav className="hero-nav">
@@ -65,16 +145,123 @@ export default function StaticNavigation({ currentSaasUrl }: StaticNavigationPro
             </Link> */}
           </div>
           
-          {/* 如果有传入的URL就使用传入的，否则使用动态Create按钮 */}
-          {currentSaasUrl ? (
-            <a 
-              href={currentSaasUrl} 
-              className="flex items-center gap-2 px-4 py-2 bg-white text-black text-sm font-semibold rounded-xl shadow-sm hover:shadow-md transition-all duration-200 hover:scale-105"
-            >
-              Get Started
-            </a>
+          {/* 根据登录状态和传入URL显示不同的UI */}
+          {isLoggedIn ? (
+            // 已登录：显示用户头像和 Get started 按钮
+            <div className="flex items-center gap-3">
+              <div 
+                onClick={handleAvatarClick}
+                className="flex items-center gap-2 px-2 py-2 cursor-pointer hover:bg-white/10 rounded-lg transition-all duration-200"
+              >
+                {headPic ? (
+                  <Image
+                    src={headPic}
+                    alt="User Avatar"
+                    width={32}
+                    height={32}
+                    className="rounded-full"
+                  />
+                ) : (
+                  <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center text-white text-sm font-semibold">
+                    {username?.charAt(0)?.toUpperCase() || email?.charAt(0)?.toUpperCase() || 'U'}
+                  </div>
+                )}
+                <span className="text-white text-sm font-medium hidden sm:block">
+                  {username || email?.split('@')[0] || 'User'}
+                </span>
+              </div>
+              <Link 
+                href={currentSaasUrl ? extractPathFromUrl(currentSaasUrl) : '/fashion-design/create'}
+                className="flex items-center gap-2 px-4 py-2 bg-white text-black text-sm font-semibold rounded-md shadow-sm hover:shadow-md transition-all duration-200 hover:scale-105"
+              >
+                Get started
+              </Link>
+            </div>
+          ) : isLoggingIn ? (
+            // 登录中：显示加载状态
+            currentSaasUrl ? (
+              <div className="flex items-center gap-3">
+                <button
+                  disabled
+                  className="flex items-center justify-center gap-2 px-4 py-2 bg-white/20 text-white text-sm font-semibold rounded-md cursor-wait"
+                >
+                  <svg 
+                    className="animate-spin h-4 w-4 text-white" 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    fill="none" 
+                    viewBox="0 0 24 24"
+                  >
+                    <circle 
+                      className="opacity-25" 
+                      cx="12" 
+                      cy="12" 
+                      r="10" 
+                      stroke="currentColor" 
+                      strokeWidth="4"
+                    />
+                    <path 
+                      className="opacity-75" 
+                      fill="currentColor" 
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    />
+                  </svg>
+                  <span>Logging in...</span>
+                </button>
+                <Link 
+                  href={currentSaasUrl ? extractPathFromUrl(currentSaasUrl) : '/fashion-design/create'}
+                  className="flex items-center gap-2 px-4 py-2 bg-white text-black text-sm font-semibold rounded-md shadow-sm hover:shadow-md transition-all duration-200 hover:scale-105"
+                >
+                  Get started
+                </Link>
+              </div>
+            ) : (
+              <button
+                disabled
+                className="flex items-center justify-center gap-2 px-4 py-2 bg-white/20 text-white text-sm font-semibold rounded-md cursor-wait"
+              >
+                <svg 
+                  className="animate-spin h-4 w-4 text-white" 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  fill="none" 
+                  viewBox="0 0 24 24"
+                >
+                  <circle 
+                    className="opacity-25" 
+                    cx="12" 
+                    cy="12" 
+                    r="10" 
+                    stroke="currentColor" 
+                    strokeWidth="4"
+                  />
+                  <path 
+                    className="opacity-75" 
+                    fill="currentColor" 
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  />
+                </svg>
+                <span>Logging in...</span>
+              </button>
+            )
           ) : (
-            <DynamicCreateButton />
+            // 未登录：根据是否有传入URL显示不同按钮
+            currentSaasUrl ? (
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={handleLoginClick}
+                  className="flex items-center gap-2 px-4 py-2 bg-white/20 text-white text-sm font-semibold rounded-md hover:bg-white/30 transition-all duration-200"
+                >
+                  Log in / Sign up
+                </button>
+                <Link 
+                  href={currentSaasUrl ? extractPathFromUrl(currentSaasUrl) : '/fashion-design/create'}
+                  className="flex items-center gap-2 px-4 py-2 bg-white text-black text-sm font-semibold rounded-md shadow-sm hover:shadow-md transition-all duration-200 hover:scale-105"
+                >
+                  Get started
+                </Link>
+              </div>
+            ) : (
+              <DynamicCreateButton />
+            )
           )}
         </div>
 
