@@ -1,11 +1,14 @@
 import { eventBus } from '@/utils/events';
 import { usePersonalInfoStore } from '@/stores/usePersonalInfoStore';
 import { useAlertStore } from '@/stores/useAlertStore';
+import { Analytics } from '@/lib/analytics';
+import { clearSavedUTMParams } from '@/utils/utm';
 
 export interface LoginPostActions {
   closeModal?: () => void;
   skipRedirect?: boolean;  // 是否跳过重定向到 /fashion-design/create
   skipEvent?: boolean;  // 是否跳过触发登录成功事件（用于已经触发过的场景）
+  loginMethod?: 'google' | 'email';  // 登录方式（用于埋点）
   onError?: (error: Error) => void;
   onSuccess?: () => void;
 }
@@ -15,7 +18,7 @@ export class AuthService {
    * 执行登录后的所有必要操作
    */
   static async handlePostLoginActions(options: LoginPostActions = {}) {
-    const { closeModal, skipRedirect, skipEvent, onError, onSuccess } = options;
+    const { closeModal, skipRedirect, skipEvent, loginMethod = 'email', onError, onSuccess } = options;
 
     try {
       // 1. 立即关闭模态框，提升用户体验
@@ -36,7 +39,17 @@ export class AuthService {
         this.triggerImageListGeneration()
       ]);
 
-      // 4. 登录成功后跳转到 fashion-design/create 页面（除非跳过重定向）
+      // 4. 发送登录成功埋点
+      const userInfo = usePersonalInfoStore.getState();
+      if (userInfo.email) {
+        Analytics.trackLoginSuccess(
+          userInfo.email,  // user_id
+          userInfo.email,  // email
+          loginMethod      // 登录方式
+        );
+      }
+
+      // 5. 登录成功后跳转到 fashion-design/create 页面（除非跳过重定向）
       if (!skipRedirect && typeof window !== 'undefined') {
         const currentPath = window.location.pathname;
         const currentSearch = window.location.search;
@@ -58,14 +71,14 @@ export class AuthService {
         }
       }
 
-      // 5. 执行成功回调
+      // 6. 执行成功回调
       if (onSuccess) {
         onSuccess();
       }
     } catch (error) {
       console.error('Error during post-login actions:', error);
 
-      // 6. 错误处理
+      // 7. 错误处理
       if (onError) {
         onError(error as Error);
       } else {
@@ -108,6 +121,9 @@ export class AuthService {
     try {
       // 清理用户信息
       usePersonalInfoStore.getState().clearUserInfo();
+
+      // 清理 UTM 参数缓存
+      clearSavedUTMParams();
 
       // 清理其他相关状态
       // 比如图片列表、生成历史等
