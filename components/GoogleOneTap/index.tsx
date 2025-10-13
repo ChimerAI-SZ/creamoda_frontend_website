@@ -140,11 +140,11 @@ export default function GoogleOneTap({
               
               // 在后台异步执行其他操作（不阻塞UI更新）
               AuthService.handlePostLoginActions({
-                skipRedirect: false, // Google One Tap 登录后跳转到 SaaS
+                skipRedirect: true, // Google One Tap 登录后停留在当前页面
                 skipEvent: true, // 跳过事件触发，因为上面已经触发过了
                 onSuccess: () => {
                   if (debug) {
-                    console.log('Post-login data fetching completed, redirecting to SaaS');
+                    console.log('Post-login data fetching completed, staying on current page');
                   }
                 },
                 onError: (error) => {

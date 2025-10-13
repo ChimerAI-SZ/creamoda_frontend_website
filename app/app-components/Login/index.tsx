@@ -142,16 +142,15 @@ export function LoginModal() {
         clearPendingUpload();
       }
     } else {
-      // 没有待上传的图片，执行常规登录成功逻辑
+      // 没有待上传的图片，账号密码登录后停留在当前页面
       await AuthService.handlePostLoginActions({
         closeModal: handleCloseModal,
+        skipRedirect: true,  // 停留在当前页面，不跳转
         onError: error => {
           console.error('Login post-actions failed:', error);
-          // 可以在这里添加特定的错误处理逻辑
         },
         onSuccess: () => {
-          console.log('Login post-actions completed successfully');
-          // 可以在这里添加成功后的特定逻辑
+          console.log('Login post-actions completed successfully, staying on current page');
         }
       });
     }
