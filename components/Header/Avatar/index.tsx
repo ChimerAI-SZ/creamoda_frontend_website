@@ -91,10 +91,19 @@ export default function Avatar() {
 
   useEffect(() => {
     const token = localStorage.getItem('auth_token');
+    console.log('[Avatar] Checking auth status:', {
+      hasToken: !!token,
+      tokenPreview: token?.substring(0, 20) + '...',
+      hasUsername: !!username,
+      hasEmail: !!email
+    });
 
     // 如果已经登录了，但是没有用户信息，则获取用户信息
     if (token && (!username || !email)) {
-      fetchUserInfo();
+      console.log('[Avatar] Fetching user info...');
+      fetchUserInfo().catch(error => {
+        console.error('[Avatar] Failed to fetch user info:', error);
+      });
     }
   }, [username, email, fetchUserInfo]);
 

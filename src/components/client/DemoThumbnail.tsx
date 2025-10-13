@@ -2,7 +2,6 @@
 
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { usePersonalInfoStore } from '@/stores/usePersonalInfoStore';
 
 interface DemoThumbnailProps {
   imageSrc: string;
@@ -15,7 +14,6 @@ interface DemoThumbnailProps {
 
 export default function DemoThumbnail({ imageSrc, index, title, saasUrl, tab, variationType }: DemoThumbnailProps) {
   const router = useRouter();
-  const { email, fetchUserInfo } = usePersonalInfoStore();
 
   // 获取正确的公开可访问域名
   const getPublicDomain = (): string => {
@@ -53,38 +51,7 @@ export default function DemoThumbnail({ imageSrc, index, title, saasUrl, tab, va
     return 'https://creamoda.ai';
   };
 
-  const handleDemoClick = async () => {
-    // 如果已登录但用户信息未加载，等待加载完成
-    const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
-    if (token && !email) {
-      console.log('⏳ Demo click: Waiting for user info to load...');
-      
-      // 等待最多 2 秒
-      let attempts = 0;
-      const maxAttempts = 20; // 20 * 100ms = 2秒
-      
-      while (attempts < maxAttempts) {
-        await new Promise(resolve => setTimeout(resolve, 100));
-        const currentEmail = usePersonalInfoStore.getState().email;
-        if (currentEmail) {
-          console.log('✅ Demo click: User info loaded, proceeding with navigation');
-          break;
-        }
-        attempts++;
-      }
-      
-      // 如果超时还没有用户信息，尝试主动获取一次
-      const finalEmail = usePersonalInfoStore.getState().email;
-      if (!finalEmail) {
-        console.log('⚠️ Demo click: User info still not loaded, fetching manually...');
-        try {
-          await fetchUserInfo();
-        } catch (error) {
-          console.warn('Failed to fetch user info:', error);
-        }
-      }
-    }
-    
+  const handleDemoClick = () => {
     // 构建带参数的 URL
     let targetUrl = saasUrl;
     const params = new URLSearchParams();

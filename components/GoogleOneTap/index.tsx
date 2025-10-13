@@ -120,43 +120,39 @@ export default function GoogleOneTap({
             
             if (data.code === 0 && data.data?.authorization) {
               // 保存token
-              saveAuthToken(data.data.authorization);
+              const token = data.data.authorization;
+              console.log('[GoogleOneTap] Received token:', token?.substring(0, 30) + '...');
+              console.log('[GoogleOneTap] Token length:', token?.length);
+              
+              saveAuthToken(token);
+              
+              // 验证 token 是否正确保存
+              const savedToken = localStorage.getItem('auth_token');
+              console.log('[GoogleOneTap] Token saved to localStorage:', savedToken === token ? 'YES' : 'NO');
               
               // 立即触发登录成功事件，让页面快速显示登录状态
               const { eventBus } = await import('@/utils/events');
               eventBus.emit('auth:login-success', undefined);
               
               if (debug) {
-                console.log('Google One Tap login successful, starting user data fetch');
+                console.log('Google One Tap login successful, staying on current page');
               }
               
-              // 确保用户信息加载完成后才标记完成
-              // 这样可以防止用户立即跳转时出现 401 错误
-              try {
-                await AuthService.handlePostLoginActions({
-                  skipRedirect: true, // 跳过重定向，停留在当前页面
-                  skipEvent: true, // 跳过事件触发，因为上面已经触发过了
-                  onSuccess: () => {
-                    if (debug) {
-                      console.log('Post-login data fetching completed');
-                    }
-                  },
-                  onError: (error) => {
-                    console.error('Post-login actions failed:', error);
+              // 在后台异步执行其他操作（不阻塞UI更新）
+              AuthService.handlePostLoginActions({
+                skipRedirect: true, // 跳过重定向，停留在当前页面
+                skipEvent: true, // 跳过事件触发，因为上面已经触发过了
+                onSuccess: () => {
+                  if (debug) {
+                    console.log('Post-login data fetching completed');
                   }
-                });
-                
-                // 标记用户信息已加载，方便其他组件检查
-                if (typeof sessionStorage !== 'undefined') {
-                  sessionStorage.setItem('user_info_ready', 'true');
+                },
+                onError: (error) => {
+                  console.error('Post-login actions failed:', error);
                 }
-                
-                if (debug) {
-                  console.log('✅ Google One Tap login fully completed');
-                }
-              } catch (error) {
+              }).catch(error => {
                 console.error('Background post-login actions failed:', error);
-              }
+              });
             } else {
               if (debug) {
                 console.error('Google One Tap verification failed:', data.msg || 'Unknown error');

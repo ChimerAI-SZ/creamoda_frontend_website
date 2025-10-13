@@ -54,6 +54,11 @@ const configureResponseInterceptor = (instance: AxiosInstance): void => {
 const configureRequestInterceptor = (instance: AxiosInstance): void => {
   instance.interceptors.request.use(config => {
     const token = getAuthToken();
+    console.log('[Axios] Request interceptor:', {
+      url: config.url,
+      hasToken: !!token,
+      tokenPreview: token?.substring(0, 20) + '...'
+    });
     if (token) {
       config.headers.Authorization = token;
     }

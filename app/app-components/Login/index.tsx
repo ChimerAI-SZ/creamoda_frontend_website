@@ -91,24 +91,10 @@ export function LoginModal() {
     const pendingUpload = getPendingUpload();
     
     if (pendingUpload) {
-      // 先加载用户信息，再上传图片
+      // 关闭登录窗口
+      handleCloseModal();
+      
       try {
-        await AuthService.handlePostLoginActions({
-          closeModal: handleCloseModal,
-          skipRedirect: true, // 不跳转，因为要上传图片
-          onError: error => {
-            console.error('Login post-actions failed:', error);
-          },
-          onSuccess: () => {
-            console.log('Login post-actions completed successfully');
-          }
-        });
-        
-        // 标记用户信息已加载
-        if (typeof sessionStorage !== 'undefined') {
-          sessionStorage.setItem('user_info_ready', 'true');
-        }
-        
         // 上传图片
         const uploadedUrl = await uploadImage(pendingUpload.file);
         
@@ -152,10 +138,7 @@ export function LoginModal() {
         },
         onSuccess: () => {
           console.log('Login post-actions completed successfully');
-          // 标记用户信息已加载
-          if (typeof sessionStorage !== 'undefined') {
-            sessionStorage.setItem('user_info_ready', 'true');
-          }
+          // 可以在这里添加成功后的特定逻辑
         }
       });
     }
@@ -167,24 +150,10 @@ export function LoginModal() {
     const pendingUpload = getPendingUpload();
     
     if (pendingUpload) {
-      // 先加载用户信息，再上传图片
+      // 关闭登录窗口
+      handleCloseModal();
+      
       try {
-        await AuthService.handlePostLoginActions({
-          closeModal: handleCloseModal,
-          skipRedirect: true, // 不跳转，因为要上传图片
-          onError: error => {
-            console.error('Google login post-actions failed:', error);
-          },
-          onSuccess: () => {
-            console.log('Google login post-actions completed successfully');
-          }
-        });
-        
-        // 标记用户信息已加载
-        if (typeof sessionStorage !== 'undefined') {
-          sessionStorage.setItem('user_info_ready', 'true');
-        }
-        
         // 上传图片
         const uploadedUrl = await uploadImage(pendingUpload.file);
         
@@ -228,10 +197,6 @@ export function LoginModal() {
         },
         onSuccess: () => {
           console.log('Google login post-actions completed successfully');
-          // 标记用户信息已加载
-          if (typeof sessionStorage !== 'undefined') {
-            sessionStorage.setItem('user_info_ready', 'true');
-          }
         }
       });
     }
