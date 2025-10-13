@@ -99,6 +99,16 @@ export function LoginModal() {
         const uploadedUrl = await uploadImage(pendingUpload.file);
         
         if (uploadedUrl) {
+          // 从 saasUrl 中提取路径，避免跨域 localStorage 问题
+          let targetPath = pendingUpload.saasUrl;
+          try {
+            const url = new URL(pendingUpload.saasUrl);
+            targetPath = url.pathname;
+          } catch {
+            // 如果 saasUrl 已经是路径，直接使用
+            targetPath = pendingUpload.saasUrl;
+          }
+          
           // 构建URL参数
           const params = new URLSearchParams();
           
@@ -112,12 +122,15 @@ export function LoginModal() {
           
           params.append('imageUrl', uploadedUrl);
           
-          const targetUrl = `${pendingUpload.saasUrl}?${params.toString()}`;
+          const targetUrl = `${targetPath}?${params.toString()}`;
+          
+          console.log('[LoginModal] Pending upload - Navigating to:', targetUrl);
+          console.log('[LoginModal] Current origin:', window.location.origin);
           
           // 清除待上传的图片
           clearPendingUpload();
           
-          // 跳转到目标页面
+          // 跳转到目标页面（相对路径，保持同域）
           router.push(targetUrl);
         }
       } catch (error) {
@@ -158,6 +171,16 @@ export function LoginModal() {
         const uploadedUrl = await uploadImage(pendingUpload.file);
         
         if (uploadedUrl) {
+          // 从 saasUrl 中提取路径，避免跨域 localStorage 问题
+          let targetPath = pendingUpload.saasUrl;
+          try {
+            const url = new URL(pendingUpload.saasUrl);
+            targetPath = url.pathname;
+          } catch {
+            // 如果 saasUrl 已经是路径，直接使用
+            targetPath = pendingUpload.saasUrl;
+          }
+          
           // 构建URL参数
           const params = new URLSearchParams();
           
@@ -171,12 +194,15 @@ export function LoginModal() {
           
           params.append('imageUrl', uploadedUrl);
           
-          const targetUrl = `${pendingUpload.saasUrl}?${params.toString()}`;
+          const targetUrl = `${targetPath}?${params.toString()}`;
+          
+          console.log('[LoginModal] Google login pending upload - Navigating to:', targetUrl);
+          console.log('[LoginModal] Current origin:', window.location.origin);
           
           // 清除待上传的图片
           clearPendingUpload();
           
-          // 跳转到目标页面
+          // 跳转到目标页面（相对路径，保持同域）
           router.push(targetUrl);
         }
       } catch (error) {
