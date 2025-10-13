@@ -5,6 +5,7 @@ import { useAlertStore } from '@/stores/useAlertStore';
 export interface LoginPostActions {
   closeModal?: () => void;
   skipRedirect?: boolean;  // 是否跳过重定向到 /fashion-design/create
+  skipEvent?: boolean;  // 是否跳过触发登录成功事件（用于已经触发过的场景）
   onError?: (error: Error) => void;
   onSuccess?: () => void;
 }
@@ -14,7 +15,7 @@ export class AuthService {
    * 执行登录后的所有必要操作
    */
   static async handlePostLoginActions(options: LoginPostActions = {}) {
-    const { closeModal, skipRedirect, onError, onSuccess } = options;
+    const { closeModal, skipRedirect, skipEvent, onError, onSuccess } = options;
 
     try {
       // 1. 立即关闭模态框，提升用户体验
@@ -22,7 +23,12 @@ export class AuthService {
         closeModal();
       }
 
-      // 2. 并行执行数据获取操作
+      // 2. 如果还没触发过登录事件，立即触发（让UI快速响应）
+      if (!skipEvent) {
+        eventBus.emit('auth:login-success', undefined);
+      }
+
+      // 3. 并行执行数据获取操作（在后台进行）
       await Promise.allSettled([
         // 获取用户信息
         this.fetchUserInfo(),
@@ -30,10 +36,7 @@ export class AuthService {
         this.triggerImageListGeneration()
       ]);
 
-      // 触发全局登录成功事件
-      eventBus.emit('auth:login-success', undefined);
-
-      // 3. 登录成功后的跳转逻辑
+      // 4. 登录成功后跳转到 fashion-design/create 页面（除非跳过重定向）
       if (!skipRedirect && typeof window !== 'undefined') {
         const currentPath = window.location.pathname;
         const currentSearch = window.location.search;
@@ -55,14 +58,14 @@ export class AuthService {
         }
       }
 
-      // 4. 执行成功回调
+      // 5. 执行成功回调
       if (onSuccess) {
         onSuccess();
       }
     } catch (error) {
       console.error('Error during post-login actions:', error);
 
-      // 5. 错误处理
+      // 6. 错误处理
       if (onError) {
         onError(error as Error);
       } else {

@@ -16,6 +16,7 @@ interface StaticNavigationProps {
 
 export default function StaticNavigation({ currentSaasUrl }: StaticNavigationProps) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggingIn, setIsLoggingIn] = useState(false); // 新增：登录加载状态
   
   // 使用Zustand store获取用户信息
   const { username, email, headPic, fetchUserInfo } = usePersonalInfoStore();
@@ -35,18 +36,34 @@ export default function StaticNavigation({ currentSaasUrl }: StaticNavigationPro
     checkLoginStatus();
   }, [fetchUserInfo]);
 
-  // 监听登录成功事件
+  // 监听登录相关事件
   useEffect(() => {
+    // 登录开始 - 显示加载状态
+    const handleLoginStart = () => {
+      setIsLoggingIn(true);
+    };
+
+    // 登录成功 - 更新状态并获取用户信息
     const handleLoginSuccess = () => {
+      setIsLoggingIn(false);
       setIsLoggedIn(true);
       // 重新获取用户信息
       fetchUserInfo();
     };
 
+    // 登录失败 - 取消加载状态
+    const handleLoginFailed = () => {
+      setIsLoggingIn(false);
+    };
+
+    eventBus.on('auth:login-start', handleLoginStart);
     eventBus.on('auth:login-success', handleLoginSuccess);
+    eventBus.on('auth:login-failed', handleLoginFailed);
 
     return () => {
+      eventBus.off('auth:login-start', handleLoginStart);
       eventBus.off('auth:login-success', handleLoginSuccess);
+      eventBus.off('auth:login-failed', handleLoginFailed);
     };
   }, [fetchUserInfo]);
 
@@ -160,6 +177,71 @@ export default function StaticNavigation({ currentSaasUrl }: StaticNavigationPro
                 Get started
               </Link>
             </div>
+          ) : isLoggingIn ? (
+            // 登录中：显示加载状态
+            currentSaasUrl ? (
+              <div className="flex items-center gap-3">
+                <button
+                  disabled
+                  className="flex items-center justify-center gap-2 px-4 py-2 bg-white/20 text-white text-sm font-semibold rounded-md cursor-wait"
+                >
+                  <svg 
+                    className="animate-spin h-4 w-4 text-white" 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    fill="none" 
+                    viewBox="0 0 24 24"
+                  >
+                    <circle 
+                      className="opacity-25" 
+                      cx="12" 
+                      cy="12" 
+                      r="10" 
+                      stroke="currentColor" 
+                      strokeWidth="4"
+                    />
+                    <path 
+                      className="opacity-75" 
+                      fill="currentColor" 
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    />
+                  </svg>
+                  <span>Logging in...</span>
+                </button>
+                <Link 
+                  href={currentSaasUrl ? extractPathFromUrl(currentSaasUrl) : '/fashion-design/create'}
+                  className="flex items-center gap-2 px-4 py-2 bg-white text-black text-sm font-semibold rounded-md shadow-sm hover:shadow-md transition-all duration-200 hover:scale-105"
+                >
+                  Get started
+                </Link>
+              </div>
+            ) : (
+              <button
+                disabled
+                className="flex items-center justify-center gap-2 px-4 py-2 bg-white/20 text-white text-sm font-semibold rounded-md cursor-wait"
+              >
+                <svg 
+                  className="animate-spin h-4 w-4 text-white" 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  fill="none" 
+                  viewBox="0 0 24 24"
+                >
+                  <circle 
+                    className="opacity-25" 
+                    cx="12" 
+                    cy="12" 
+                    r="10" 
+                    stroke="currentColor" 
+                    strokeWidth="4"
+                  />
+                  <path 
+                    className="opacity-75" 
+                    fill="currentColor" 
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  />
+                </svg>
+                <span>Logging in...</span>
+              </button>
+            )
           ) : (
             // 未登录：根据是否有传入URL显示不同按钮
             currentSaasUrl ? (
