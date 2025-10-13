@@ -145,7 +145,6 @@ export function LoginModal() {
       // 没有待上传的图片，执行常规登录成功逻辑
       await AuthService.handlePostLoginActions({
         closeModal: handleCloseModal,
-        skipRedirect: true,  // 停留在当前页面，不跳转到 /fashion-design/create
         onError: error => {
           console.error('Login post-actions failed:', error);
           // 可以在这里添加特定的错误处理逻辑
