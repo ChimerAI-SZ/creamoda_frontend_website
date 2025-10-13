@@ -2,6 +2,8 @@ import { api } from '@/lib/axios';
 import { getAuthToken } from './token';
 import { FrontendImagesParams, FrontendImagesResponse, FrontendImageDetailResponse, SimilarImageItem } from '@/types/frontendImages';
 import { withRetry } from '@/lib/utils/retryUtils';
+import { Analytics } from '@/lib/analytics';
+import { usePersonalInfoStore } from '@/stores/usePersonalInfoStore';
 
 /**
  * 获取变化类型列表
@@ -73,6 +75,10 @@ export async function contactUs(email: string, genImgId: number, source: '3d_mak
  * @param file 图片文件
  */
 export async function uploadImage(file: File) {
+  const startTime = Date.now();
+  const userInfo = usePersonalInfoStore.getState();
+  const featureName = Analytics.getCurrentFeatureName();
+  
   try {
     const formData = new FormData();
     formData.append('file', file);
@@ -84,10 +90,36 @@ export async function uploadImage(file: File) {
     });
 
     if (response.data.code === 0 && response.data.data && response.data.data.url) {
+      // 上传成功埋点
+      if (userInfo.email) {
+        Analytics.trackUploadImage(
+          userInfo.email,
+          featureName,
+          Analytics.getFileExtension(file.name),
+          'success',
+          {
+            file_size: Analytics.formatFileSize(file.size),
+          }
+        );
+      }
+      
       return response.data.data.url;
     }
     throw new Error(response.data.msg || 'Failed to upload image');
   } catch (error) {
+    // 上传失败埋点
+    if (userInfo.email) {
+      Analytics.trackUploadImage(
+        userInfo.email,
+        featureName,
+        Analytics.getFileExtension(file.name),
+        'fail',
+        {
+          file_size: Analytics.formatFileSize(file.size),
+        }
+      );
+    }
+    
     console.error('Error uploading image:', error);
     throw error;
   }

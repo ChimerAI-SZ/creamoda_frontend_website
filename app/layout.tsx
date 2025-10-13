@@ -7,6 +7,7 @@ import { GoogleAnalytics } from '@/components/GoogleAnalytics';
 import { ConditionalHeader } from '@/components/ConditionalHeader';
 import { ConditionalLoginModal } from '@/components/ConditionalLoginModal';
 import { ConditionalGoogleOneTap } from '@/components/ConditionalGoogleOneTap';
+import { UTMHandler } from '@/components/UTMHandler';
 
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { GlobalConfirm } from '@/components/GlobalConfirm';
@@ -89,6 +90,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="min-h-screen flex flex-col bg-[url('/images/bg.png')] bg-cover">
         <GoogleAnalytics measurementId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || ''} />
+        <UTMHandler />
         <TooltipProvider>
           <ConditionalHeader />
           {children}

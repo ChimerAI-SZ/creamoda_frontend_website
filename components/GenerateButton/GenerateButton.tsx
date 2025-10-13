@@ -5,6 +5,8 @@ import { useDebounceFn } from 'ahooks';
 
 import { eventBus } from '@/utils/events';
 import { Button } from '../ui/button';
+import { Analytics } from '@/lib/analytics';
+import { usePersonalInfoStore } from '@/stores/usePersonalInfoStore';
 
 export type GenerateButtonState = 'disabled' | 'ready' | 'generating';
 
@@ -21,6 +23,14 @@ export function GenerateButton({ onClick, state = 'disabled', className = '' }: 
       const token = localStorage.getItem('auth_token');
       const isAuthenticated = !!token;
       if (isAuthenticated) {
+        // 发送生成按钮点击埋点
+        const userInfo = usePersonalInfoStore.getState();
+        if (userInfo.email) {
+          Analytics.trackGenerateClick(
+            userInfo.email,
+            Analytics.getCurrentFeatureName()
+          );
+        }
         onClick();
       } else {
         eventBus.emit('auth:login', { isOpen: true });
