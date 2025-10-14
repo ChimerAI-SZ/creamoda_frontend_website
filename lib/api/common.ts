@@ -79,6 +79,16 @@ export async function uploadImage(file: File) {
   const userInfo = usePersonalInfoStore.getState();
   const featureName = Analytics.getCurrentFeatureName();
   
+  // 获取用户 ID（优先使用 email，其次使用 id，最后使用 'anonymous'）
+  const userId = userInfo.email || (userInfo.id ? `user_${userInfo.id}` : 'anonymous');
+  
+  console.log('[uploadImage] User info:', { 
+    email: userInfo.email, 
+    id: userInfo.id, 
+    userId,
+    featureName 
+  });
+  
   try {
     const formData = new FormData();
     formData.append('file', file);
@@ -91,35 +101,31 @@ export async function uploadImage(file: File) {
 
     if (response.data.code === 0 && response.data.data && response.data.data.url) {
       // 上传成功埋点
-      if (userInfo.email) {
-        Analytics.trackUploadImage(
-          userInfo.email,
-          featureName,
-          'success',
-          {
-            fileType: Analytics.getFileExtension(file.name),
-            fileSize: Analytics.formatFileSize(file.size),
-          }
-        );
-      }
+      Analytics.trackUploadImage(
+        userId,
+        featureName,
+        'success',
+        {
+          fileType: Analytics.getFileExtension(file.name),
+          fileSize: Analytics.formatFileSize(file.size),
+        }
+      );
       
       return response.data.data.url;
     }
     throw new Error(response.data.msg || 'Failed to upload image');
   } catch (error) {
     // 上传失败埋点
-    if (userInfo.email) {
-      Analytics.trackUploadImage(
-        userInfo.email,
-        featureName,
-        'fail',
-        {
-          fileType: Analytics.getFileExtension(file.name),
-          fileSize: Analytics.formatFileSize(file.size),
-          errorMessage: error instanceof Error ? error.message : 'Unknown error'
-        }
-      );
-    }
+    Analytics.trackUploadImage(
+      userId,
+      featureName,
+      'fail',
+      {
+        fileType: Analytics.getFileExtension(file.name),
+        fileSize: Analytics.formatFileSize(file.size),
+        errorMessage: error instanceof Error ? error.message : 'Unknown error'
+      }
+    );
     
     console.error('Error uploading image:', error);
     throw error;
