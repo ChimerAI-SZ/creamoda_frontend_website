@@ -6,6 +6,7 @@ import { validators } from '../const';
 
 import { login, saveAuthToken } from '@/lib/api';
 import { cn } from '@/utils';
+import { Analytics } from '@/lib/analytics';
 
 interface LoginFormProps {
   onToggleView: () => void;
@@ -58,6 +59,9 @@ export const LoginForm = ({ onToggleView, onSuccess }: LoginFormProps) => {
       return;
     }
 
+    // 📊 埋点：登录按钮点击
+    Analytics.trackLoginClick('email', formData.email);
+
     setIsLoading(true);
     setApiError('');
 
@@ -71,6 +75,13 @@ export const LoginForm = ({ onToggleView, onSuccess }: LoginFormProps) => {
         // Save the authorization token
         if (response.data && response.data.authorization) {
           saveAuthToken(response.data.authorization);
+
+          // 📊 埋点：登录成功
+          Analytics.trackLoginSuccess(
+            formData.email, // userId
+            formData.email, // email
+            'email'         // method
+          );
 
           // Here you would typically redirect the user or close the modal
           // For example:
