@@ -357,6 +357,21 @@ export const Analytics = {
    * 设置用户 ID
    */
   setUserId,
+
+  /**
+   * 获取文件扩展名
+   */
+  getFileExtension(filename: string): string {
+    const parts = filename.split('.');
+    return parts.length > 1 ? parts[parts.length - 1].toLowerCase() : 'unknown';
+  },
+
+  /**
+   * 格式化文件大小（字节）
+   */
+  formatFileSize(bytes: number): number {
+    return Math.round(bytes);
+  },
 };
 
 // ============= 全局类型扩展 =============

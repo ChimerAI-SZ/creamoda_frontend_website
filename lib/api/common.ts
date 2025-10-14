@@ -95,10 +95,10 @@ export async function uploadImage(file: File) {
         Analytics.trackUploadImage(
           userInfo.email,
           featureName,
-          Analytics.getFileExtension(file.name),
           'success',
           {
-            file_size: Analytics.formatFileSize(file.size),
+            fileType: Analytics.getFileExtension(file.name),
+            fileSize: Analytics.formatFileSize(file.size),
           }
         );
       }
@@ -112,10 +112,11 @@ export async function uploadImage(file: File) {
       Analytics.trackUploadImage(
         userInfo.email,
         featureName,
-        Analytics.getFileExtension(file.name),
         'fail',
         {
-          file_size: Analytics.formatFileSize(file.size),
+          fileType: Analytics.getFileExtension(file.name),
+          fileSize: Analytics.formatFileSize(file.size),
+          errorMessage: error instanceof Error ? error.message : 'Unknown error'
         }
       );
     }
