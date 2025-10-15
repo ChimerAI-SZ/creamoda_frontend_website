@@ -79,12 +79,11 @@ export async function uploadImage(file: File) {
   const userInfo = usePersonalInfoStore.getState();
   const featureName = Analytics.getCurrentFeatureName();
   
-  // 获取用户 ID（优先使用 email，其次使用 id，最后使用 'anonymous'）
-  const userId = userInfo.email || (userInfo.id ? `user_${userInfo.id}` : 'anonymous');
+  // 获取用户 ID（优先使用 email，最后使用 'anonymous'）
+  const userId = userInfo.email || 'anonymous';
   
   console.log('[uploadImage] User info:', { 
     email: userInfo.email, 
-    id: userInfo.id, 
     userId,
     featureName 
   });
