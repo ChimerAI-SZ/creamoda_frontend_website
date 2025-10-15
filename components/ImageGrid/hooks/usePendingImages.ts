@@ -3,6 +3,8 @@ import { useRef, useCallback } from 'react';
 import { generate } from '@/lib/api';
 import { useGenerationStore } from '@/stores/useGenerationStore';
 import { useAlertStore } from '@/stores/useAlertStore';
+import { Analytics } from '@/lib/analytics';
+import { usePersonalInfoStore } from '@/stores/usePersonalInfoStore';
 
 interface UsePendingImagesProps {
   onImageUpdate: (updatedImage: any) => void;
@@ -38,9 +40,34 @@ export function usePendingImages({ onImageUpdate, pollInterval = 3000 }: UsePend
           // 通知父组件更新图片
           onImageUpdate(image);
 
-          // 如果图片已完成，记录ID
+          // 如果图片已完成，记录ID 和发送埋点
           if ([3, 4].includes(image.status)) {
             completedIds.add(image.genImgId);
+
+            // 📊 埋点：图片生成完成
+            const userInfo = usePersonalInfoStore.getState();
+            const userId = userInfo.email || 'anonymous';
+            const featureName = Analytics.getCurrentFeatureName();
+            
+            // status 3: 成功, status 4: 失败
+            const status = image.status === 3 ? 'success' : 'fail';
+            
+            Analytics.trackGenerateResult(
+              userId,
+              featureName,
+              status,
+              {
+                requestId: image.genImgId?.toString(),
+                errorMessage: image.status === 4 ? (image.errorMsg || 'Generation failed') : undefined
+              }
+            );
+
+            console.log('[GA] Generate result tracked:', { 
+              status, 
+              genImgId: image.genImgId, 
+              userId, 
+              featureName 
+            });
           }
         });
 
