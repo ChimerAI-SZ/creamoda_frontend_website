@@ -131,11 +131,13 @@ const Membership: React.FC<{ onClose: () => void; defaultType?: PaymentType }> =
           ))}
         </div>
 
-        <PayPalScriptProvider options={{ 
-          clientId, 
-          vault: selectedType === 'Plan', // 只有订阅计划时才需要 vault
-          intent: selectedType === 'Plan' ? 'subscription' : 'capture' // 订阅用 subscription，一次性付款用 capture
-        }}>
+        <PayPalScriptProvider 
+          key={selectedType} // 当 selectedType 变化时，强制重新加载 PayPal SDK
+          options={{ 
+            clientId, 
+            vault: selectedType === 'Plan', // 只有订阅计划时才需要 vault
+            intent: selectedType === 'Plan' ? 'subscription' : 'capture' // 订阅用 subscription，一次性付款用 capture
+          }}>
           <div className="flex gap-5">
             {paymentList
               .find(item => item.title === selectedType)
