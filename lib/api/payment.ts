@@ -75,9 +75,15 @@ export async function handleCaptureOrder(token: string, subscription_id?: string
         0, // 价格从响应中获取，如果没有就用0
         'success',
         {
-          transaction_id: token,
+          transactionId: token,
         }
       );
+      
+      console.log('[GA] Purchase result tracked (success):', {
+        userId: userInfo.email,
+        planType: subscription_id ? 'subscribe' : 'one-time',
+        transactionId: token
+      });
     }
 
     return response.data;
@@ -91,9 +97,15 @@ export async function handleCaptureOrder(token: string, subscription_id?: string
         0,
         'fail',
         {
-          error_code: (error as any)?.response?.data?.msg || 'unknown_error',
+          errorMessage: (error as any)?.response?.data?.msg || 'unknown_error',
         }
       );
+      
+      console.log('[GA] Purchase result tracked (fail):', {
+        userId: userInfo.email,
+        planType: subscription_id ? 'subscribe' : 'one-time',
+        errorMessage: (error as any)?.response?.data?.msg || 'unknown_error'
+      });
     }
     
     console.error('Error capturing order:', error);
