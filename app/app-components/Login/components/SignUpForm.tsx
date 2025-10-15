@@ -10,6 +10,7 @@ import { useAlertStore } from '@/stores/useAlertStore';
 import { validators, verificationRules } from '../const';
 import { register } from '@/lib/api';
 import { cn } from '@/utils';
+import { Analytics } from '@/lib/analytics';
 
 interface SignUpFormProps {
   onToggleView: () => void;
@@ -82,6 +83,9 @@ export const SignUpForm = ({ onToggleView, onSignupSuccess }: SignUpFormProps) =
       return;
     }
 
+    // 📊 埋点：注册按钮点击
+    Analytics.trackSignupClick('email', formData.email);
+
     setIsLoading(true);
 
     try {
@@ -90,6 +94,13 @@ export const SignUpForm = ({ onToggleView, onSignupSuccess }: SignUpFormProps) =
       if (data.code === 0 || data.code === 402) {
         // Registration successful or email not verified (both cases proceed to next step)
         setRegistrationSuccess(true);
+
+        // 📊 埋点：注册成功
+        Analytics.trackSignupSuccess(
+          formData.email,  // userId
+          formData.email,  // email
+          'email'          // method
+        );
 
         // Call the success callback with the email
         if (onSignupSuccess) {
