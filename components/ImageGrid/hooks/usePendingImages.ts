@@ -37,6 +37,13 @@ export function usePendingImages({ onImageUpdate, pollInterval = 3000 }: UsePend
         const completedIds = new Set<string>();
 
         updatedImages.forEach((image: any) => {
+          // 添加调试日志
+          console.log('[usePendingImages] Image update:', {
+            genImgId: image.genImgId,
+            status: image.status,
+            isCompleted: [3, 4].includes(image.status)
+          });
+
           // 通知父组件更新图片
           onImageUpdate(image);
 
