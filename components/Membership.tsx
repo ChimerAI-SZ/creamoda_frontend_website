@@ -131,7 +131,11 @@ const Membership: React.FC<{ onClose: () => void; defaultType?: PaymentType }> =
           ))}
         </div>
 
-        <PayPalScriptProvider options={{ clientId, vault: true }}>
+        <PayPalScriptProvider options={{ 
+          clientId, 
+          vault: selectedType === 'Plan', // 只有订阅计划时才需要 vault
+          intent: selectedType === 'Plan' ? 'subscription' : 'capture' // 订阅用 subscription，一次性付款用 capture
+        }}>
           <div className="flex gap-5">
             {paymentList
               .find(item => item.title === selectedType)
@@ -190,13 +194,19 @@ const Membership: React.FC<{ onClose: () => void; defaultType?: PaymentType }> =
                           createOrder={
                             selectedType === 'Credit'
                               ? async () => {
-                                  const value = +type.key.split('_')[1];
+                                  try {
+                                    const value = +type.key.split('_')[1];
 
-                                  const res = await handlePurchaseCredit(value as 40 | 100 | 200);
-                                  if (res.code === 0) {
-                                    return res.data.id;
-                                  } else {
-                                    console.log(res);
+                                    const res = await handlePurchaseCredit(value as 40 | 100 | 200);
+                                    if (res.code === 0) {
+                                      return res.data.id;
+                                    } else {
+                                      console.error('Failed to create order:', res);
+                                      throw new Error(res.msg || 'Failed to create order');
+                                    }
+                                  } catch (error) {
+                                    console.error('Create order error:', error);
+                                    throw error;
                                   }
                                 }
                               : undefined
@@ -204,35 +214,54 @@ const Membership: React.FC<{ onClose: () => void; defaultType?: PaymentType }> =
                           createSubscription={
                             selectedType === 'Plan'
                               ? async () => {
-                                  const levelMap = new Map([
-                                    ['plan_basic', 1],
-                                    ['plan_pro', 2],
-                                    ['plan_enterprise', 3]
-                                  ]);
+                                  try {
+                                    const levelMap = new Map([
+                                      ['plan_basic', 1],
+                                      ['plan_pro', 2],
+                                      ['plan_enterprise', 3]
+                                    ]);
 
-                                  const res = await handleSubscribe(
-                                    levelMap.get(type.key as 'plan_basic' | 'plan_pro' | 'plan_enterprise') as 1 | 2 | 3
-                                  );
+                                    const res = await handleSubscribe(
+                                      levelMap.get(type.key as 'plan_basic' | 'plan_pro' | 'plan_enterprise') as 1 | 2 | 3
+                                    );
 
-                                  if (res.code === 0) {
-                                    return res.data.id;
-                                  } else {
-                                    console.log(res);
+                                    if (res.code === 0) {
+                                      return res.data.id;
+                                    } else {
+                                      console.error('Failed to create subscription:', res);
+                                      throw new Error(res.msg || 'Failed to create subscription');
+                                    }
+                                  } catch (error) {
+                                    console.error('Create subscription error:', error);
+                                    throw error;
                                   }
                                 }
                               : undefined
                           }
                           onApprove={async data => {
-                            const res = await handleCaptureOrder(
-                              data.orderID,
-                              selectedType === 'Plan' ? data.subscriptionID || '' : undefined
-                            );
+                            try {
+                              const res = await handleCaptureOrder(
+                                data.orderID,
+                                selectedType === 'Plan' ? data.subscriptionID || '' : undefined
+                              );
 
-                            if (res.code === 0) {
-                              onClose();
-                              await usePersonalInfoStore.getState().fetchUserInfo();
-                            } else {
-                              console.log(res);
+                              if (res.code === 0) {
+                                // 先关闭弹窗，再刷新用户信息
+                                onClose();
+                                
+                                // 刷新用户信息（不阻塞）
+                                usePersonalInfoStore.getState().fetchUserInfo().catch(err => {
+                                  console.error('Failed to fetch user info after payment:', err);
+                                });
+                                
+                                console.log('Payment completed successfully!');
+                              } else {
+                                console.error('Payment capture failed:', res);
+                                alert(res.msg || 'Payment failed, please try again');
+                              }
+                            } catch (error) {
+                              console.error('Payment approval error:', error);
+                              alert('Payment processing failed, please contact support');
                             }
                           }}
                         />
