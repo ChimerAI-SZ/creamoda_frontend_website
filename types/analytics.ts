@@ -119,7 +119,7 @@ export interface PurchaseResultParams extends PageInfo {
 // ============= 事件名称类型 =============
 
 export type GAEventName =
-  | 'page_view'
+  | 'page_enter'  // 修改为 page_enter
   | 'signup_click'
   | 'signup_success'
   | 'login_click'
@@ -134,7 +134,7 @@ export type GAEventName =
 // ============= 事件名称常量 =============
 
 export const GA_EVENTS = {
-  PAGE_VIEW: 'page_view',
+  PAGE_VIEW: 'page_enter',  // 修改为 page_enter，在 GA4 中显示为自定义事件
   SIGNUP_CLICK: 'signup_click',
   SIGNUP_SUCCESS: 'signup_success',
   LOGIN_CLICK: 'login_click',

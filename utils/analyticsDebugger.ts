@@ -17,7 +17,7 @@ export const AnalyticsDebugger = {
     const testEmail = 'test@creamoda.com';
 
     // 1. 页面浏览
-    console.log('1️⃣ 测试 page_view');
+    console.log('1️⃣ 测试 page_enter');
     Analytics.trackPageView();
 
     // 2. 注册点击
@@ -38,8 +38,9 @@ export const AnalyticsDebugger = {
 
     // 6. 上传图片
     console.log('6️⃣ 测试 upload_image');
-    Analytics.trackUploadImage(testUserId, 'magic-kit', 'png', 'success', {
-      file_size: 1024,
+    Analytics.trackUploadImage(testUserId, 'magic-kit', 'success', {
+      fileType: 'png',
+      fileSize: 1024,
     });
 
     // 7. 生成点击
@@ -51,16 +52,19 @@ export const AnalyticsDebugger = {
     Analytics.trackGenerateResult(
       testUserId,
       'fashion-design',
-      'req_test_123',
       'success',
-      { duration: 5.2 }
+      { 
+        requestId: 'req_test_123',
+        duration: 5.2 
+      }
     );
 
     // 9. 下载图片
     console.log('9️⃣ 测试 download_image');
-    Analytics.trackDownloadImage(testUserId, 'virtual-try-on', 'jpg', {
-      file_size: 2048,
-      request_id: 'req_test_123',
+    Analytics.trackDownloadImage(testUserId, 'virtual-try-on', {
+      fileType: 'jpg',
+      fileSize: 2048,
+      imageId: 'req_test_123',
     });
 
     // 10. 付费点击
@@ -70,7 +74,7 @@ export const AnalyticsDebugger = {
     // 11. 付费完成
     console.log('1️⃣1️⃣ 测试 purchase_result');
     Analytics.trackPurchaseResult(testUserId, 'subscribe', '2', 29.99, 'success', {
-      transaction_id: 'txn_test_123',
+      transactionId: 'txn_test_123',
     });
 
     console.log('\n✅ 所有埋点事件测试完成！请检查控制台输出。');
@@ -100,7 +104,7 @@ export const AnalyticsDebugger = {
     console.log(`🧪 测试事件: ${eventName}`);
 
     switch (eventName) {
-      case 'page_view':
+      case 'page_enter':
         Analytics.trackPageView();
         break;
       case 'login_click':
@@ -110,16 +114,24 @@ export const AnalyticsDebugger = {
         Analytics.trackLoginSuccess(testUserId, testEmail, 'email');
         break;
       case 'upload_image':
-        Analytics.trackUploadImage(testUserId, 'magic-kit', 'png', 'success');
+        Analytics.trackUploadImage(testUserId, 'magic-kit', 'success', {
+          fileType: 'png',
+          fileSize: 1024,
+        });
         break;
       case 'generate_click':
-        Analytics.trackGenerateClick(testUserId, 'fashion-design');
+        Analytics.trackGenerateClick(testUserId, 'fashion-design', 'req_123');
         break;
       case 'generate_result':
-        Analytics.trackGenerateResult(testUserId, 'fashion-design', 'req_123', 'success');
+        Analytics.trackGenerateResult(testUserId, 'fashion-design', 'success', {
+          requestId: 'req_123',
+        });
         break;
       case 'download_image':
-        Analytics.trackDownloadImage(testUserId, 'virtual-try-on', 'jpg');
+        Analytics.trackDownloadImage(testUserId, 'virtual-try-on', {
+          fileType: 'jpg',
+          fileSize: 2048,
+        });
         break;
       case 'purchase_click':
         Analytics.trackPurchaseClick(testUserId, 'subscribe', '2', 29.99);
@@ -154,7 +166,7 @@ export const AnalyticsDebugger = {
    AnalyticsDebugger.help()
 
 可用的事件名称：
-- page_view
+- page_enter
 - login_click
 - login_success
 - upload_image
