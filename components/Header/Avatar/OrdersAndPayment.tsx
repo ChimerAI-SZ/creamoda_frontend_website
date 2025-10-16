@@ -48,7 +48,7 @@ const AccountSettingsDrawer = React.memo(
     const [tableData, setTableData] = useState<BillingHistoryItem[]>([]); // bill history table data
     const [hasMore, setHasMore] = useState(true); // bill history has more
     const [page, setPage] = useState(1); // bill history page
-    const PAGE_SIZE = 10; // bill history page size
+    const PAGE_SIZE = 10; // bill history page sizee
     // bill history ends
 
     const { showConfirm } = useDialogStore();
