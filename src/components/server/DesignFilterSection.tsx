@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useState, useCallback, useMemo, memo } from 'react';
+import React, { useEffect, useRef, useState, useCallback, useMemo, memo, Suspense } from 'react';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -395,7 +395,8 @@ const ModifyDesignCard = memo(function ModifyDesignCard({
   );
 });
 
-export default function DesignFilterSection({ className = '', initialSelectedImage }: DesignFilterSectionProps) {
+// 将useSearchParams的使用拆分到单独的组件中
+function DesignFilterSectionInner({ className = '', initialSelectedImage }: DesignFilterSectionProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -1487,5 +1488,25 @@ export default function DesignFilterSection({ className = '', initialSelectedIma
         </Dialog>
       )}
     </section>
+  );
+}
+
+// 导出包裹了Suspense的组件
+export default function DesignFilterSection(props: DesignFilterSectionProps) {
+  return (
+    <Suspense fallback={
+      <div className="relative py-12 px-4 min-h-screen" style={{
+        backgroundImage: 'url(/images/bg.png)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center'
+      }}>
+        <div className="absolute inset-0 bg-black" />
+        <div className="relative flex items-center justify-center min-h-[400px]">
+          <div className="text-white text-lg">Loading...</div>
+        </div>
+      </div>
+    }>
+      <DesignFilterSectionInner {...props} />
+    </Suspense>
   );
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useExternalImageHandler } from '@/hooks/useExternalImageHandler';
 
@@ -13,11 +13,9 @@ interface SearchParamsHandlerProps {
 }
 
 /**
- * 通用的URL参数处理组件
- * 支持处理imageUrl、variationType、tab等参数
- * 自动检测并处理外部图片URL
+ * 内部组件：处理URL参数
  */
-export function SearchParamsHandler({ 
+function SearchParamsHandlerInner({ 
   onImageUrl, 
   onVariationType, 
   onTab,
@@ -77,4 +75,17 @@ export function SearchParamsHandler({
   }
 
   return null; // 这个组件只处理副作用，不渲染任何内容
+}
+
+/**
+ * 导出包裹了Suspense的组件
+ * 支持处理imageUrl、variationType、tab等参数
+ * 自动检测并处理外部图片URL
+ */
+export function SearchParamsHandler(props: SearchParamsHandlerProps) {
+  return (
+    <Suspense fallback={null}>
+      <SearchParamsHandlerInner {...props} />
+    </Suspense>
+  );
 }
